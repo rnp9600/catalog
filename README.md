@@ -1,56 +1,170 @@
 # Patel Marketing — Wholesale Kitchenware Catalogue
 
-262 products across 8 brands. Plain HTML/CSS/JS — no build step, no dependencies.
+Static site. No build step, no framework, no login. Drop the folder on any host and it works.
 
-## Files
-    index.html    the whole app
-    data.json     all product data (this is your database)
-    images/       one .jpg per product
+**406 products · 727 sizes · 8 brands**
 
-## Run locally
-Must be served over http — data.json is fetched, so double-clicking index.html will not work.
+---
 
-    cd site
-    python3 -m http.server 8000
-    # open http://localhost:8000
+## What to upload, and where
 
-## Put it online — two options
+Everything in this folder goes to the root of **github.com/rnp9600/catalog**, replacing what's there now:
 
-### A. Drag and drop (30 seconds)
-1. vercel.com/new
-2. Drag this whole `site` folder onto the page
-3. Framework preset: **Other**, no build command, output directory blank
-4. Deploy
+```
+index.html          ← replaces yours
+data.json           ← replaces yours (406 products, was 262)
+images/             ← replaces the whole folder (442 files, was 255)
+supabase/           ← new, optional (see below)
+README.md           ← this file
+```
 
-### B. GitHub (recommended — auto-redeploys on every change)
-    cd site
-    git init && git add . && git commit -m "Patel Marketing catalogue v1"
-    git branch -M main
-    git remote add origin https://github.com/<you>/patel-catalogue.git
-    git push -u origin main
-Then tell Claude the repo name and it can link and deploy it for you.
+Easiest route on a phone: open the repo → **Add file → Upload files** → drag the
+unzipped folder in → commit. GitHub replaces same-named files automatically.
 
-## Editing products
-Everything lives in `data.json`. One object per product:
+Delete the old `site/` wrapper folder if the repo still has one — `index.html`
+must sit at the repo root for GitHub Pages / Vercel to find it.
 
-    {
-      "img": "px_kadhai",           // must match images/px_kadhai.jpg
-      "name": "Cast Iron Kadhai",
-      "brand": "Paxton CI",
-      "cat": "Cast Iron",           // becomes a filter chip
-      "sub": "Kadhai",
-      "desc": "Twin loop handles",
-      "spec": "Pan 10-18 inch wide",
-      "price": null,                // null = "Enquire"; a number = shown incl. GST
-      "stock": "active",            // or "out"
-      "feat": false,                // true = Featured badge
-      "sizes": ["8 inch - 1.8 kg"], // optional expandable size/weight list
-      "code": null,                 // supplier code, e.g. "MS 241"
-      "hotel": null                 // hotel-size pans only
-    }
+> `images/` grew because every Mazda product now has its own photo — 442 files,
+> 13 MB. That uploads fine in one go, even on a phone.
 
-To swap a photo: drop a better .jpg into images/ with the same filename. Nothing else changes.
+---
 
-## Views
-Grid · Gallery · List · Compact, and four themes including Dark.
-**Save as PDF** exports whatever is currently filtered, laid out as a printed catalogue.
+## What changed in this pass
+
+**Mazda is now complete and correct.**
+
+| | Before | Now |
+|---|---|---|
+| Mazda products | 53 | **197** |
+| Mazda with a rate card | 0 | **197** |
+| Mazda sizes priced | 0 | **517** |
+| Mazda names | invented | **exactly as printed in the price list** |
+
+- All **182 numbered products** from *MAZDA PRICE LIST w.e.f. 01.04.2026*, plus
+  all **15 accessories / spares** from the last page.
+- Every size, finish and pack option carries its **rate incl. GST, MRP and MOQ** —
+  517 rows in total, transcribed from the price list.
+- Names are left exactly as Manak Steel wrote them: `SALT & PEPPER - SWISS SIXER
+  (GOLD / ROSEGOLD CAP)`, `GHEEPTO TRIPTO SEETHRU`, `TAJ PICKLE SET (CERA/ BLACK/
+  CLAY)`. Nothing renamed, nothing tidied up.
+- **181 product photos** lifted straight out of the price list PDF at 288 dpi,
+  trimmed and squared — so every product shows the right item.
+- The **studio photos you uploaded** are attached as extra images on the seven
+  pourers they belong to (Crystal, Crystal with Handle, Dream, Beauty, Penguin,
+  Easy, Real). Products with more than one photo show a *"n photos"* badge.
+- Of the old Mazda images, **44 were identified and re-attached to the correct
+  product**. The remaining 9 were salt-and-pepper shakers I could not tell apart
+  with confidence — they are left out rather than guessed at. That is what went
+  wrong last time.
+
+**No other brand was touched.** Senso, India Gold, Elephant, Paxton CI, Vyan,
+Lepel and NS · Priyam are byte-for-byte what you had.
+
+---
+
+## What changed in the page
+
+- **Tap any card** → a detail panel slides in with the full size/rate/MRP/MOQ
+  table, photo gallery, GST rate, and other products of the same type.
+- **Sub-category chips** — pick *Salt & Pepper* and a second row appears for
+  *Shakers* vs *Shaker Stands*. Searching "pickle set" returns all 11.
+- **Search** covers name, brand, category, type, code, description and every
+  size label. So `750` finds every product made in 750 ml, and `MZ-003` finds
+  one exact product. Abbreviations resolve too — `WH`→white, `SS`→stainless.
+- **Copy details** button puts a clean product + rate list on the clipboard,
+  ready to paste into WhatsApp.
+- Theme and view choice are now remembered between visits.
+- Price shows as a range on the card (`₹220–330`) because most products have
+  four sizes.
+- The pricing note you removed stays removed.
+
+---
+
+## Supabase (optional — the site does not need it)
+
+Both your Supabase projects are **paused**, so I could not load the data in.
+Nothing is blocked by this: at 406 products, `data.json` is 158 KB and loads in
+one request off the CDN, which is faster than any database round trip.
+
+Turn Supabase on when you want to **stop editing JSON by hand** — realistically
+somewhere past 1,000 products. The path is ready:
+
+1. Supabase dashboard → restore the project (use **Chandler**'s Mumbai region for
+   latency, but make a *separate* project — the catalogue stays uncoupled from
+   Chandler, as your vision doc requires).
+2. SQL Editor → paste **`supabase/01_schema.sql`** → Run.
+3. SQL Editor → paste **`supabase/02_seed.sql`** → Run. (212 KB; if the editor
+   complains, split it at any `insert into products` line.)
+4. Edit products in the Table Editor from then on.
+5. When you want the site to pick up changes:
+   ```bash
+   export SUPABASE_URL="https://xxxxx.supabase.co"
+   export SUPABASE_ANON_KEY="eyJ..."
+   node supabase/export.mjs      # rewrites data.json
+   git add data.json && git commit -m "refresh catalogue" && git push
+   ```
+
+The `catalogue` view returns rows shaped exactly like `data.json`, so the front
+end never changes.
+
+---
+
+## Adding the rest of your 10,000 SKUs
+
+The Mazda block is the template. Per supplier price list:
+
+1. Extract the product images — the script that did it for Mazda works on any
+   price list where products sit in numbered rows:
+   `pdfplumber` for the image boxes, `pypdfium2` to render at 4× scale.
+2. One record per **product**, not per size. Sizes go in `variants`.
+3. Keep the supplier's own product names, character for character.
+
+A record looks like this:
+
+```json
+{
+  "img": "mz003",
+  "imgs": ["mz003", "mz003_1"],
+  "name": "CRYSTAL OIL POURER",
+  "brand": "Mazda",
+  "cat": "Oil Pourers",
+  "sub": "Oil Pourer",
+  "desc": "See-through crystal oil pourer with steel collar and nozzle",
+  "code": "MZ-003",
+  "gst": 5,
+  "note": null,
+  "price": 220,
+  "variants": [
+    { "size": "350 ml",  "rate": 210, "price": 220, "mrp": 440, "moq": null },
+    { "size": "500 ml",  "rate": 235, "price": 247, "mrp": 494, "moq": null },
+    { "size": "750 ml",  "rate": 285, "price": 299, "mrp": 598, "moq": null },
+    { "size": "1000 ml", "rate": 315, "price": 330, "mrp": 660, "moq": null }
+  ],
+  "stock": "active", "hotel": null, "feat": true, "sizes": []
+}
+```
+
+`price` on the product is the cheapest variant — the card uses it for sorting
+and for the "from" figure. `rate` is the pre-GST supplier rate; it is stored but
+not displayed anywhere.
+
+**Where this design stops working:** past roughly 3,000 products `data.json`
+crosses a megabyte and the first paint gets slow on a weak connection. That is
+the point to switch the front end to fetch from Supabase per category rather
+than loading everything up front — not before.
+
+---
+
+## Two things to check when it is live
+
+1. **`SALT & PEPPER - OSCAR`** and **`SALT & PEPPER - TRIDENT`** — the price list
+   prints a different GST rate per finish (Steel 5%, Swiss/Cera 18%). Each shows
+   a note on its card. Confirm the rates are the ones you want customers to see.
+2. **`DEGCHI HANDI (HAMMER)` No. 9** — the price list shows rate 330 but price
+   incl. GST 246, which is lower than the rate. Every other row on that page adds
+   5%; 330 + 5% would be 347. It is entered exactly as printed, so it looks odd
+   on screen. Worth a call to Manak Steel.
+
+Nine unmatched salt-and-pepper photos from the old set are in the zip under
+`_unused_images/` in case you can identify them — drop any you recognise into
+`images/` and add the filename to that product's `imgs` array.
