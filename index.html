@@ -24,14 +24,22 @@ header{position:sticky;top:0;z-index:60;background:var(--sf);border-bottom:1px s
  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1rem;letter-spacing:-.03em;flex-shrink:0}
 .bn{font-size:1.1rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
 .bs{font-size:.66rem;color:var(--tm);font-weight:500}
-.ctl{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.gearbtn{border:1px solid var(--bd);background:var(--sf);color:var(--tm);width:38px;height:38px;
+ border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+ transition:border-color .16s,color .16s}
+.gearbtn:hover{border-color:var(--pr);color:var(--pr)}
+.headerctl{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .sw{display:flex;gap:3px;background:var(--sf2);padding:3px;border-radius:999px}
 .sw button{border:0;background:transparent;padding:6px 11px;border-radius:999px;font-family:var(--fd);
  font-size:.71rem;font-weight:600;color:var(--tm);cursor:pointer;transition:all .2s;white-space:nowrap}
 .sw button.on{background:var(--pr);color:#fff}
+.sw.wide{width:100%}
+.sw.wide button{flex:1}
 .pbtn{border:1px solid var(--bd);background:var(--sf);color:var(--tx);padding:7px 13px;border-radius:999px;
  font-family:var(--fd);font-size:.71rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px}
 .pbtn:hover{border-color:var(--pr);color:var(--pr)}
+.pbtn.wide{width:100%;justify-content:center;padding:11px}
+.hint{font-size:.72rem;color:var(--tm);line-height:1.5;margin-top:9px}
 main{max-width:1320px;margin:0 auto;padding:0 18px}
 .hero{padding:30px 0 14px}
 .eb{font-family:var(--fm);font-size:.64rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--pr);margin-bottom:8px;display:block}
@@ -51,8 +59,36 @@ h1{font-size:1.85rem;font-weight:800;letter-spacing:-.028em;line-height:1.1;marg
 .chip:hover{border-color:var(--pr)}
 .chip.on{background:var(--pr);border-color:transparent;color:#fff}
 .chip.sm{font-size:.68rem;padding:5px 9px}
-.chip.sm.on{background:var(--ac);color:#fff}
+.chip.sub.on{background:var(--ac);color:#fff}
 .chip .n{opacity:.55;font-family:var(--fm);font-size:.65rem;margin-left:4px}
+
+/* ---------- Quick filter row: category rail + Filters button ---------- */
+.quickrow{margin-top:11px;display:flex;gap:8px;align-items:center}
+.catrail{flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+ -webkit-overflow-scrolling:touch;padding-bottom:2px}
+.catrail::-webkit-scrollbar{display:none}
+.catrail .chip{flex-shrink:0;white-space:nowrap}
+.filterbtn{position:relative;flex-shrink:0;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);
+ padding:7px 14px;border-radius:999px;font-family:var(--fd);font-size:.76rem;font-weight:700;cursor:pointer;
+ display:flex;align-items:center;gap:6px;transition:border-color .16s}
+.filterbtn:hover{border-color:var(--pr)}
+.filterbtn.active{border-color:var(--pr);color:var(--pr)}
+.fbadge{background:var(--pr);color:#fff;font-family:var(--fm);font-size:.63rem;font-weight:700;
+ min-width:16px;height:16px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* ---------- Active filter summary pills ---------- */
+.activepills{margin-top:8px;display:none;gap:6px;flex-wrap:wrap;align-items:center}
+.activepills.show{display:flex}
+.pill{font-size:.7rem;font-weight:600;padding:5px 9px;border-radius:999px;background:var(--act);
+ color:var(--tx);cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent}
+.pill b{font-weight:700;opacity:.6;font-size:.85rem}
+.pill.clearall{background:transparent;border-color:var(--bd);color:var(--tm)}
+
+/* ---------- Filter sheet sections ---------- */
+.fsection{margin-bottom:20px}
+.fsection h4{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+ color:var(--tm);margin-bottom:9px}
+
 .bar{margin:20px 0 12px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .bar h2{font-size:1.06rem;font-weight:800}
 .bar span{font-size:.74rem;color:var(--tm)}
@@ -98,12 +134,28 @@ h1{font-size:1.85rem;font-weight:800;letter-spacing:-.028em;line-height:1.1;marg
 .cta:hover{background:var(--prh)}
 .cta.dis{background:var(--sf2);color:var(--tm);cursor:default}
 
-/* ---------- GALLERY view ---------- */
-body.v-gallery .grid{grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:18px}
-body.v-gallery .med{height:300px;padding:18px}
-body.v-gallery .ds,body.v-gallery .sp,body.v-gallery .szbtn,body.v-gallery .szlist,
-body.v-gallery .pw,body.v-gallery .cta,body.v-gallery .refnote,body.v-gallery .vcount{display:none}
-body.v-gallery .bd_{padding:12px 13px 14px;gap:3px}
+/* ---------- TABLE view — dense, no photos, for comparing prices fast ---------- */
+#tableHead{display:none}
+body.v-table #tableHead{display:grid;grid-template-columns:2.2fr 1fr .9fr 1fr;gap:10px;
+ padding:8px 14px;background:var(--sf2);border:1px solid var(--bd);border-bottom:0;
+ border-radius:var(--r) var(--r) 0 0;font-size:.63rem;font-weight:700;text-transform:uppercase;
+ letter-spacing:.05em;color:var(--tm)}
+body.v-table #tableHead span:last-child{text-align:right}
+body.v-table .grid{grid-template-columns:1fr;gap:0;border:1px solid var(--bd);border-top:0;
+ border-radius:0 0 var(--r) var(--r);overflow:hidden}
+body.v-table .card{flex-direction:row;border:0;border-bottom:1px solid var(--bd);border-radius:0;
+ animation:none}
+body.v-table .card:last-child{border-bottom:0}
+body.v-table .card:hover{transform:none;box-shadow:none;background:var(--sf2)}
+body.v-table .med{display:none}
+body.v-table .bd_{padding:9px 14px;display:grid;grid-template-columns:2.2fr 1fr .9fr 1fr;
+ gap:10px;align-items:center}
+body.v-table .ds,body.v-table .sp,body.v-table .szbtn,body.v-table .szlist,
+body.v-table .refnote,body.v-table .cta{display:none}
+body.v-table .nm{grid-column:1;font-size:.82rem}
+body.v-table .br{grid-column:2;font-size:.63rem}
+body.v-table .vcount{grid-column:3;font-size:.6rem;padding:2px 7px;justify-self:start}
+body.v-table .pw{grid-column:4;margin:0;padding:0;text-align:right}
 
 /* ---------- LIST view ---------- */
 body.v-list .grid{grid-template-columns:1fr;gap:9px}
@@ -160,6 +212,7 @@ body.v-compact .ph{font-size:.66rem}
 .tag{font-family:var(--fm);font-size:.63rem;font-weight:600;padding:4px 9px;border-radius:999px;
  background:var(--sf2);color:var(--tm)}
 .tag.pri{background:var(--prt);color:var(--pr)}
+.tag.alias{background:var(--act);color:var(--ac);font-style:italic}
 .sheet h3{font-size:1.12rem;font-weight:800;line-height:1.25;margin:8px 0 6px}
 .sdesc{font-size:.83rem;color:var(--tm);line-height:1.55;margin-bottom:6px}
 .snote{font-size:.75rem;background:var(--act);color:var(--tx);border-radius:var(--rs);padding:9px 11px;margin-top:9px;line-height:1.5}
@@ -240,42 +293,55 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
   body.v-list .sp,body.v-list .pw,body.v-list .cta,body.v-list .vcount{grid-column:1;grid-row:auto;text-align:left}
 }
 @media(max-width:560px){
-  h1{font-size:1.4rem}.hin{flex-direction:column;align-items:flex-start}
-  .ctl{width:100%;flex-direction:column;align-items:stretch}.sw{width:100%}.sw button{flex:1}
-  body.v-gallery .med{height:230px}
+  h1{font-size:1.4rem}
   body.v-list .med{width:104px}
   .sheet{width:100%}
   .hero-img{height:220px}
   .vt .vh,.vt .vr{grid-template-columns:1.3fr .8fr .8fr .55fr;font-size:.74rem;padding:9px}
+  #tableHead,body.v-table .bd_{grid-template-columns:2fr 1fr}
+  #tableHead span:nth-child(2),#tableHead span:nth-child(3),
+  body.v-table .br,body.v-table .vcount{display:none}
 }
 </style></head><body data-theme="sky" class="v-grid">
 <header><div class="hin">
  <div class="brandbox"><div class="mark">PM</div>
   <div><div class="bn">Patel Marketing</div><div class="bs">Wholesale Kitchenware</div></div></div>
- <div class="ctl">
-  <div class="sw" id="vsw">
-    <button class="on" data-v="grid">Grid</button><button data-v="gallery">Gallery</button>
-    <button data-v="list">List</button><button data-v="compact">Compact</button></div>
-  <div class="sw" id="tsw"><button class="on" data-t="sky">Sky</button><button data-t="copper">Copper</button>
-    <button data-t="emerald">Emerald</button><button data-t="charcoal">Dark</button></div>
-  <button class="pbtn" id="savepdf">⬇ Save as PDF</button>
- </div></div></header>
+ <div class="headerctl">
+  <button class="gearbtn" id="pdfBtn" aria-label="Save as PDF" title="Save as PDF">
+   <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+   </svg>
+  </button>
+  <button class="gearbtn" id="settingsBtn" aria-label="Menu" title="View & theme">
+   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <line x1="3" y1="12" x2="21" y2="12"/>
+    <line x1="3" y1="18" x2="21" y2="18"/>
+   </svg>
+  </button>
+ </div>
+</div></header>
 
 <main>
  <section class="hero">
   <span class="eb" id="eb">Loading catalogue…</span>
   <h1>Everything we stock, in one place.</h1>
-  <p>Search by product, not by brand. Looking for a kadhai shows every kadhai we carry, whoever makes it.</p>
+  <p>Search by product or by brand — or both. Type "kadhai" for every kadhai we carry across all brands, "Paxton" for the full Paxton range, or "Paxton tawa" to narrow to one.</p>
   <div class="sb">
    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-   <input id="q" type="text" placeholder="Try 'pickle set', 'pourer', 'napkin', '750', 'gheepot', 'kadhai'…" autocomplete="off">
+   <input id="q" type="text" placeholder="Try 'kadhai', 'tawa', 'Paxton', 'triply', 'appam', 'pickle set'…" autocomplete="off">
    <button class="sbx" id="qx" title="Clear">×</button>
   </div>
-  <div class="filters" id="cf"></div>
-  <div class="filters sub" id="sf"></div>
-  <div class="filters" id="bf" style="margin-top:9px"></div>
+  <div class="quickrow">
+   <div class="catrail" id="catrail"></div>
+   <button class="filterbtn" id="filterBtn">Filters<span class="fbadge" id="fbadge" style="display:none">0</span></button>
+  </div>
+  <div class="activepills" id="activepills"></div>
  </section>
  <div class="bar"><h2 id="bh">All products</h2><span id="bc"></span></div>
+ <div id="tableHead"><span>Product</span><span>Brand</span><span>Sizes</span><span>Price</span></div>
  <div class="grid" id="g"></div>
  <div class="empty" id="em" style="display:none"><strong>Nothing matches that.</strong>Try a shorter word — "pickle", "pourer", "mug", "dabbi".</div>
 
@@ -298,6 +364,45 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
 
 <div id="pdfsheet"></div>
 
+<div class="ov" id="fov"><div class="sheet" id="fsheet" onclick="event.stopPropagation()">
+ <div class="shead"><strong>Filters</strong><button class="sx" id="fxb">×</button></div>
+ <div class="sbody">
+  <div class="fsection"><h4>Category</h4><div class="filters" id="cf"></div></div>
+  <div class="fsection" id="subwrap" style="display:none"><h4>Type</h4><div class="filters" id="sf"></div></div>
+  <div class="fsection"><h4>Brand</h4><div class="filters" id="bf"></div></div>
+  <div class="sactions">
+   <button class="alt" id="clearFiltersBtn">Clear all</button>
+   <button id="applyFiltersBtn">Show results</button>
+  </div>
+ </div>
+</div></div>
+
+
+<div class="ov" id="sov"><div class="sheet" id="ssheet" onclick="event.stopPropagation()">
+ <div class="shead"><strong>Settings</strong><button class="sx" id="sxbtn">×</button></div>
+ <div class="sbody">
+  <div class="fsection">
+   <h4>View</h4>
+   <div class="sw wide" id="vsw">
+     <button class="on" data-v="grid">Grid</button>
+     <button data-v="list">List</button>
+     <button data-v="compact">Compact</button>
+     <button data-v="table">Table</button>
+   </div>
+   <p class="hint">Table drops the photos for a dense, scannable list — good for comparing prices across a lot of products at once.</p>
+  </div>
+  <div class="fsection">
+   <h4>Theme</h4>
+   <div class="sw wide" id="tsw">
+     <button class="on" data-t="sky">Sky</button>
+     <button data-t="copper">Copper</button>
+     <button data-t="emerald">Emerald</button>
+     <button data-t="charcoal">Dark</button>
+   </div>
+  </div>
+ </div>
+</div></div>
+
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
 <div class="lb" id="lb"><button class="lbx" id="lbx">×</button>
@@ -310,16 +415,33 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
 let P=[];
 let fc='All',fs='All',fb='All',q='';
 const g=document.getElementById('g'),em=document.getElementById('em');
-const IMG=n=>`images/${n}.jpg`;
+// Images load from the local /images/ folder by default. Once photos are
+// uploaded to the Supabase Storage bucket (see supabase/README.md), flip
+// this one line to serve from there instead — nothing else in the page
+// needs to change, filenames are identical in both places.
+const IMAGE_SOURCE = 'local'; // 'local' | 'supabase'
+const SUPABASE_IMAGE_BASE = 'https://vcrzauuxvgpsbforiszz.supabase.co/storage/v1/object/public/catalog-images';
+const IMG=n=>IMAGE_SOURCE==='supabase' ? `${SUPABASE_IMAGE_BASE}/${n}.jpg` : `images/${n}.jpg`;
 
 /* ---------- search helpers ---------- */
-const SYN={wh:'white',bk:'black',ss:'stainless steel',rd:'round',sq:'square',
- sp:'salt pepper',pm:'potato masher',fp:'frying pan',ltr:'litre',ml:'ml',
- pcs:'pieces',pc:'piece',cera:'cera ceramic',oil:'oil',tadka:'ogarala vagaria'};
+/* Each key maps to alternative *phrases*. They are matched whole, not split
+   into words — otherwise "dh" → "double handle" would match anything merely
+   containing "handle". */
+const SYN={wh:['white'],bk:['black'],ss:['stainless steel'],rd:['round'],sq:['square'],
+ sp:['salt pepper','salt & pepper'],pm:['potato masher'],fp:['frying pan'],
+ ltr:['litre'],pcs:['pieces'],pc:['piece'],cera:['cera','ceramic'],
+ tadka:['ogarala','vagaria','tadka'],
+ // Surya cast iron — the names customers actually use, mapped both ways.
+ kiwi:['addakal'],'kiwi tawa':['addakal'],addakal:['kiwi tawa'],adakal:['addakal','kiwi tawa'],
+ appam:['paniyarakal','appakal'],paniyarakal:['appam'],paniyaram:['paniyarakal','appam'],
+ appacity:['appakal'],appakal:['appacity','appam'],
+ dh:['double handle'],kadhai:['vadachatti'],kadai:['vadachatti','kadai'],
+ vadachatti:['kadhai','kadai'],kuzhi:['bump base','kuzhi'],
+ uttapam:['uttapakal'],uttapakal:['uttapam'],soppu:['miniature toys']};
 function hay(p){
   if(p._h) return p._h;
   const v=(p.variants||[]).map(x=>x.size).join(' ');
-  p._h=(p.name+' '+p.brand+' '+p.cat+' '+p.sub+' '+(p.desc||'')+' '+(p.spec||'')+' '+(p.code||'')+' '+v+' '+
+  p._h=(p.name+' '+p.brand+' '+p.cat+' '+p.sub+' '+(p.desc||'')+' '+(p.spec||'')+' '+(p.code||'')+' '+(p.alias||'')+' '+v+' '+
    (p.sizes||[]).join(' ')+(p.hotel?` ${p.hotel.pits} pits ${p.hotel.base} ${p.hotel.dia} ${p.hotel.kg}`:'')).toLowerCase();
   return p._h;
 }
@@ -328,27 +450,125 @@ function match(p){
   if(fs!=='All'&&p.sub!==fs)return false;
   if(fb!=='All'&&p.brand!==fb)return false;
   if(!q)return true;
-  const h=hay(p);
-  return q.toLowerCase().split(/\s+/).filter(Boolean).every(t=>
-    h.includes(t) || (SYN[t]&&SYN[t].split(' ').some(w=>h.includes(w))));
+  const h=hay(p), ql=q.toLowerCase().trim();
+  // Tokens of 1–2 characters match on a word boundary rather than anywhere in
+  // the text — otherwise "dh" hits every "kadhai" and the result is noise.
+  const has=t=>t.length<=2
+    ? new RegExp('(^|[^a-z0-9])'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'([^a-z0-9]|$)').test(h)
+    : h.includes(t);
+  const hit=t=>has(t)||(SYN[t]||[]).some(has);
+  // whole-phrase synonym first ("kiwi tawa" → addakal), else token by token
+  if(SYN[ql]&&SYN[ql].some(has))return true;
+  return ql.split(/\s+/).filter(Boolean).every(hit);
 }
 function cnt(k,v,scope){return (scope||P).filter(p=>p[k]===v).length}
 
-function mkChips(id,key,label,scope,cur,cb){
-  const vals=[...new Set((scope||P).map(p=>p[key]))].filter(Boolean).sort();
-  const el=document.getElementById(id);
-  if(vals.length<2&&key==='sub'){el.innerHTML='';return}
-  const sm=key==='sub'?' sm':'';
-  el.innerHTML=`<span class="chip${sm}${cur==='All'?' on':''}" data-v="All">${label}</span>`+
-    vals.map(v=>`<span class="chip${sm}${cur===v?' on':''}" data-v="${v}">${v}<span class="n">${cnt(key,v,scope)}</span></span>`).join('');
-  el.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>cb(c.dataset.v)));
+/* ---------- filter ordering ----------
+   Categories are ordered by what the business actually leads with, not
+   alphabetically — otherwise "Accessories & Spares" lands first and the
+   cookware ranges get buried. Anything not listed here falls into the
+   middle block, sorted alphabetically. Edit these two lists to reorder
+   the filters; nothing else needs changing.                            */
+const CAT_FIRST=[
+  'Cast Iron',            // Paxton flagship
+  'Triply',
+  'Triply Honeycomb',
+  'Stainless Steel',
+  'Hard Anodised',
+  'Aluminium & Non-Stick',
+  'Appam & Paniyaram',
+  'Steamers & Puttu',
+  'Murukku & Snack Makers',
+  'Hotel Size',
+];
+const CAT_LAST=[
+  'Accessories & Spares',  // spares are the last thing anyone browses for
+];
+const BRAND_FIRST=['Surya','Paxton CI'];   // own brands lead
+
+function orderBy(vals,first,last){
+  const rank=v=>{
+    const f=first.indexOf(v); if(f>-1) return [0,f,''];
+    const l=last.indexOf(v);  if(l>-1) return [2,l,''];
+    return [1,0,v.toLowerCase()];
+  };
+  return [...vals].sort((a,b)=>{
+    const ra=rank(a),rb=rank(b);
+    return ra[0]-rb[0] || ra[1]-rb[1] || ra[2].localeCompare(rb[2]);
+  });
 }
+
+/* One chip-row renderer used everywhere (rail, sheet) so every facet behaves
+   identically — this is what makes selection state reliable: whichever chip
+   row changes, the whole row is redrawn from fc/fs/fb, so the clicked chip
+   always ends up with .on applied, never left showing just a stale hover.
+   `compact` controls size only; the accent colour is tied to the sub-category
+   row via `key`, so the same selection never renders in two different colours
+   depending on which row it appears in. */
+function chipsHTML(vals,key,cur,scope,allLabel,compact){
+  const cls='chip'+(compact?' sm':'')+(key==='sub'?' sub':'');
+  return `<span class="${cls}${cur==='All'?' on':''}" data-v="All">${allLabel}</span>`+
+    vals.map(v=>`<span class="${cls}${cur===v?' on':''}" data-v="${v}">${v}${compact?'':`<span class="n">${cnt(key,v,scope)}</span>`}</span>`).join('');
+}
+function bindChips(el,onPick){
+  el.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>onPick(c.dataset.v)));
+}
+function afterFilterChange(){ rebuildFilters(); render(); }
+
 function rebuildFilters(){
-  mkChips('cf','cat','All categories',P,fc,v=>{fc=v;fs='All';rebuildFilters();render()});
-  const scope=fc==='All'?null:P.filter(p=>p.cat===fc);
-  if(fc==='All')document.getElementById('sf').innerHTML='';
-  else mkChips('sf','sub','All types',scope,fs,v=>{fs=v;rebuildFilters();render()});
-  mkChips('bf','brand','All brands',P,fb,v=>{fb=v;render()});
+  const catVals=orderBy([...new Set(P.map(p=>p.cat))].filter(Boolean),CAT_FIRST,CAT_LAST);
+  const pickCat=v=>{fc=v;fs='All';afterFilterChange();};
+
+  const railEl=document.getElementById('catrail');
+  railEl.innerHTML=chipsHTML(catVals,'cat',fc,P,'All',true);
+  bindChips(railEl,pickCat);
+
+  const cfEl=document.getElementById('cf');
+  cfEl.innerHTML=chipsHTML(catVals,'cat',fc,P,'All categories',false);
+  bindChips(cfEl,pickCat);
+
+  const subwrap=document.getElementById('subwrap');
+  const sfEl=document.getElementById('sf');
+  if(fc==='All'){
+    subwrap.style.display='none'; sfEl.innerHTML='';
+  }else{
+    const scope=P.filter(p=>p.cat===fc);
+    const subVals=[...new Set(scope.map(p=>p.sub))].filter(Boolean).sort();
+    if(subVals.length<2){
+      subwrap.style.display='none'; sfEl.innerHTML=''; fs='All';
+    }else{
+      subwrap.style.display='';
+      sfEl.innerHTML=chipsHTML(subVals,'sub',fs,scope,'All types',false);
+      bindChips(sfEl,v=>{fs=v;afterFilterChange();});
+    }
+  }
+
+  const brandVals=orderBy([...new Set(P.map(p=>p.brand))].filter(Boolean),BRAND_FIRST,[]);
+  const bfEl=document.getElementById('bf');
+  bfEl.innerHTML=chipsHTML(brandVals,'brand',fb,P,'All brands',false);
+  bindChips(bfEl,v=>{fb=v;afterFilterChange();});
+
+  updateFilterSummary();
+}
+
+function updateFilterSummary(){
+  const active=[];
+  if(fc!=='All') active.push({label:fc, clear:()=>{fc='All';fs='All';afterFilterChange();}});
+  if(fs!=='All') active.push({label:fs, clear:()=>{fs='All';afterFilterChange();}});
+  if(fb!=='All') active.push({label:fb, clear:()=>{fb='All';afterFilterChange();}});
+
+  const badge=document.getElementById('fbadge');
+  const btn=document.getElementById('filterBtn');
+  if(active.length){ badge.style.display=''; badge.textContent=active.length; btn.classList.add('active'); }
+  else { badge.style.display='none'; btn.classList.remove('active'); }
+
+  const wrap=document.getElementById('activepills');
+  if(!active.length){ wrap.classList.remove('show'); wrap.innerHTML=''; return; }
+  wrap.classList.add('show');
+  wrap.innerHTML=active.map((a,i)=>`<span class="pill" data-i="${i}">${a.label} <b>×</b></span>`).join('')+
+    `<span class="pill clearall" id="clearAllPill">Clear all</span>`;
+  wrap.querySelectorAll('.pill:not(.clearall)').forEach((el,i)=>el.addEventListener('click',()=>active[i].clear()));
+  document.getElementById('clearAllPill').addEventListener('click',()=>{fc='All';fs='All';fb='All';afterFilterChange();});
 }
 
 /* ---------- card ---------- */
@@ -447,6 +667,7 @@ function openSheet(p){
        <span class="tag pri">${p.brand}</span>
        <span class="tag">${p.cat}</span>
        ${p.sub?`<span class="tag">${p.sub}</span>`:''}
+       ${p.alias?`<span class="tag alias">also called ${p.alias}</span>`:''}
        ${p.code?`<span class="tag">${p.code}</span>`:''}
        ${p.gst?`<span class="tag">GST ${p.gst}%</span>`:''}
      </div>
@@ -491,8 +712,31 @@ function lbOpen(src,n,b){lbimg.src=src;lbn.textContent=n;lbb.textContent=b;lb.cl
 function closeLb(){lb.classList.remove('open')}
 lb.addEventListener('click',closeLb);
 document.getElementById('lbx').addEventListener('click',closeLb);
+
+/* ---------- filter sheet ---------- */
+const fov=document.getElementById('fov');
+function openFilterSheet(){fov.classList.add('open');document.body.style.overflow='hidden'}
+function closeFilterSheet(){fov.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('filterBtn').addEventListener('click',openFilterSheet);
+document.getElementById('fxb').addEventListener('click',closeFilterSheet);
+fov.addEventListener('click',closeFilterSheet);
+document.getElementById('applyFiltersBtn').addEventListener('click',closeFilterSheet);
+document.getElementById('clearFiltersBtn').addEventListener('click',()=>{
+  fc='All';fs='All';fb='All';afterFilterChange();});
+
+/* ---------- settings sheet (view, theme, export) ---------- */
+const sov=document.getElementById('sov');
+function openSettings(){sov.classList.add('open');document.body.style.overflow='hidden'}
+function closeSettings(){sov.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('settingsBtn').addEventListener('click',openSettings);
+document.getElementById('sxbtn').addEventListener('click',closeSettings);
+sov.addEventListener('click',closeSettings);
+
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
-  if(lb.classList.contains('open'))closeLb();else if(ov.classList.contains('open'))closeSheet();});
+  if(lb.classList.contains('open'))closeLb();
+  else if(fov.classList.contains('open'))closeFilterSheet();
+  else if(sov.classList.contains('open'))closeSettings();
+  else if(ov.classList.contains('open'))closeSheet();});
 
 /* ---------- PDF export ---------- */
 function buildPDF(){
@@ -524,7 +768,7 @@ function buildPDF(){
     h+=`</div>`;});
   document.getElementById('pdfsheet').innerHTML=h;
 }
-document.getElementById('savepdf').addEventListener('click',()=>{
+document.getElementById('pdfBtn').addEventListener('click',()=>{
   buildPDF();
   const imgs=[...document.querySelectorAll('#pdfsheet img')];
   Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=r;i.onerror=r;})))
@@ -549,7 +793,10 @@ try{
   const t=localStorage.getItem('pm_theme');
   if(t){document.body.dataset.theme=t;
     document.querySelectorAll('#tsw button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));}
-  const v=localStorage.getItem('pm_view');
+  let v=localStorage.getItem('pm_view');
+  // 'gallery' was removed as a view option — fall back cleanly for anyone
+  // who saved that preference on an earlier version of the page.
+  if(v && !['grid','list','compact','table'].includes(v)) v='grid';
   if(v){document.body.className='v-'+v;
     document.querySelectorAll('#vsw button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));}
 }catch(e){}

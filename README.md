@@ -80,32 +80,40 @@ Lepel and NS · Priyam are byte-for-byte what you had.
 
 ---
 
-## Supabase (optional — the site does not need it)
+## Supabase — already live
 
-Both your Supabase projects are **paused**, so I could not load the data in.
-Nothing is blocked by this: at 406 products, `data.json` is 158 KB and loads in
-one request off the CDN, which is faster than any database round trip.
+The database side is done, not optional setup: all 406 products and 517
+variants are loaded into your **Chandler** Supabase project, in a separate
+`catalog` schema so nothing touches whatever Chandler itself builds in
+`public`. Verified against the source data — every brand's product count
+matches exactly, zero orphaned variants, zero null prices, zero MRP-below-
+price errors.
 
-Turn Supabase on when you want to **stop editing JSON by hand** — realistically
-somewhere past 1,000 products. The path is ready:
+The site itself doesn't need this yet — `data.json` still serves the page,
+and that stays true even if the database is asleep (free-tier projects pause
+after 7 days idle). Supabase is where you **edit** going forward; `data.json`
+is what the site actually reads.
 
-1. Supabase dashboard → restore the project (use **Chandler**'s Mumbai region for
-   latency, but make a *separate* project — the catalogue stays uncoupled from
-   Chandler, as your vision doc requires).
-2. SQL Editor → paste **`supabase/01_schema.sql`** → Run.
-3. SQL Editor → paste **`supabase/02_seed.sql`** → Run. (212 KB; if the editor
-   complains, split it at any `insert into products` line.)
-4. Edit products in the Table Editor from then on.
-5. When you want the site to pick up changes:
-   ```bash
-   export SUPABASE_URL="https://xxxxx.supabase.co"
-   export SUPABASE_ANON_KEY="eyJ..."
-   node supabase/export.mjs      # rewrites data.json
-   git add data.json && git commit -m "refresh catalogue" && git push
-   ```
+**One dashboard step still needed** for the database to be reachable from
+outside SQL: Project Settings → API → **Exposed schemas** → add `catalog` →
+Save. That toggle has no API, so it has to be a manual click. Until it's
+done, `supabase/export.mjs` will fail with a message telling you exactly
+this.
 
-The `catalogue` view returns rows shaped exactly like `data.json`, so the front
-end never changes.
+**Product photos**: a `catalog-images` bucket is created and public, ready
+for the 442 photos. See **`supabase/UPLOAD_IMAGES.md`** — one drag-and-drop
+upload, then flip one line in `index.html` to serve images from there instead
+of the repo.
+
+**Editing a price or adding sizes later**: change it in the Supabase Table
+Editor, then run:
+```bash
+export SUPABASE_URL="https://vcrzauuxvgpsbforiszz.supabase.co"
+export SUPABASE_ANON_KEY="<anon key, in supabase/export.mjs>"
+node supabase/export.mjs
+git add data.json && git commit -m "refresh catalogue" && git push
+```
+That rewrites `data.json` from whatever's in the database.
 
 ---
 
