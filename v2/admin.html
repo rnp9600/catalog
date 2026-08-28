@@ -145,8 +145,9 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
   <div class="mark">PM</div>
   <h1>Admin sign in</h1>
   <p>Enter your admin phone number. Only the numbers listed as admins can open this page.</p>
-  <div class="row"><span>+91</span><input id="gp" type="tel" inputmode="numeric" maxlength="10"
+  <div class="row"><span>+91</span><input id="gp" type="tel" inputmode="numeric" maxlength="15"
     placeholder="98765 43210" autocomplete="off"></div>
+  <div id="gEcho" style="font-family:var(--fm);font-size:.7rem;color:var(--tm);margin:-4px 0 10px;min-height:15px"></div>
   <button class="btn" id="gb" style="width:100%">Continue</button>
   <div class="msg" id="gm"></div>
   <p style="margin-top:22px"><a class="ibtn" href="index.html">Back to catalogue</a></p>
@@ -206,7 +207,7 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
       digits and the name you give it. Keep your own list elsewhere.</div>
     <div class="bar">
       <input class="s" id="cName" placeholder="Name or shop">
-      <input class="s" id="cPhone" inputmode="numeric" maxlength="10" placeholder="10-digit number" style="flex:0 0 160px">
+      <input class="s" id="cPhone" inputmode="numeric" maxlength="15" placeholder="10-digit number" style="flex:0 0 160px">
       <button class="btn g" id="cAdd">Add</button>
     </div>
     <div class="stat" id="cStat"></div>
@@ -270,9 +271,17 @@ async function tryGate(raw){
   const a=(C.auth&&C.auth.admins||[]).find(r=>r.h===h);
   return a||null;
 }
+$('#gp').oninput=function(){
+  const d=($('#gp').value||'').replace(/\D/g,'');
+  $('#gEcho').textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10)
+                          : (d.length? d.length+' of 10 digits':'');
+};
+$('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
 $('#gb').onclick=async function(){
   const raw=($('#gp').value||'').replace(/\D/g,'');
   const m=$('#gm');
+  if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
+    '. Type the 10-digit number — 91 in front is fine too.'; m.classList.add('on'); return; }
   const a=await tryGate(raw);
   if(!a){ m.textContent='That number is not an admin.'; m.classList.add('on'); return; }
   localStorage.setItem(SESSK, JSON.stringify({ok:true,admin:true,name:a.n,tail:a.t}));
@@ -571,7 +580,8 @@ function drawCust(){
 $('#cAdd').onclick=async function(){
   const n=$('#cName').value.trim(), raw=($('#cPhone').value||'').replace(/\D/g,'');
   if(!n){alert('Give the customer a name so you can recognise them later.');return}
-  if(raw.length<10){alert('Enter all 10 digits.');return}
+  if(raw.length<10){alert('That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
+    '. Type the 10-digit number — 91 in front is fine too.');return}
   const ph='91'+raw.slice(-10);
   const h=await sha((C.salt||'')+':'+ph);
   if(CUSTOMERS.some(c=>c.h===h)){alert('That number is already on the list.');return}

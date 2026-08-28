@@ -1628,7 +1628,9 @@ function signInHtml(){
    '<p>Enter the phone number you order from. Everything in the catalogue stays '+
    'open either way — signing in only shows your rates instead of MRP.</p>'+
    '<div class="sgnrow"><span>+91</span><input id="sgnPh" type="tel" inputmode="numeric" '+
-   'maxlength="10" placeholder="98765 43210" autocomplete="tel-national"></div>'+
+   'maxlength="15" placeholder="98765 43210" autocomplete="tel"></div>'+
+   '<div id="sgnEcho" style="font-family:var(--fm);font-size:.7rem;color:var(--tm);'+
+   'margin:-4px 0 10px 2px;min-height:15px"></div>'+
    '<button class="sgnbtn" id="sgnGo">Continue</button>'+
    '<button class="sgnbtn ghost" id="sgnSkip">Keep browsing as guest</button>'+
    '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
@@ -1656,10 +1658,20 @@ function wireSignIn(){
   const x=document.getElementById('sgnX');
   if(x) x.onclick=closeSignIn;
   const go=document.getElementById('sgnGo');
+  const inp=document.getElementById('sgnPh'), echo=document.getElementById('sgnEcho');
+  if(inp) inp.oninput=function(){
+    const d=dg(inp.value);
+    echo.textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10)
+                     : (d.length?d.length+' of 10 digits':'');
+  };
+  if(inp) inp.onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); go.click(); } };
   if(go) go.onclick=async function(){
     const raw=dg(document.getElementById('sgnPh').value);
     const msg=document.getElementById('sgnMsg');
-    if(raw.length<10){ msg.innerHTML='Enter all 10 digits of your number.'; msg.classList.add('on'); return; }
+    if(raw.length<10){
+      msg.innerHTML='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+'. '+
+        'Type the 10-digit number — you can include 91 in front if you prefer.';
+      msg.classList.add('on'); return; }
     const ph='91'+raw.slice(-10);
     go.disabled=true; go.textContent='Checking…';
     let hit=null;
