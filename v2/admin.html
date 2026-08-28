@@ -201,10 +201,9 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
   <!-- CUSTOMERS -->
   <section class="panel" id="p-customers">
-    <div class="note"><b>Numbers are stored as one-way hashes.</b>
-      Nobody can read your customer list from the page source. That also means
-      the full number cannot be shown back to you here — only the last three
-      digits and the name you give it. Keep your own list elsewhere.</div>
+    <div class="note"><b>These numbers are readable in the page source.</b>
+      Plain text for now, as agreed. Keep the list to business numbers only.
+      v3 moves sign-in to a real OTP and the list stops being public.</div>
     <div class="bar">
       <input class="s" id="cName" placeholder="Name or shop">
       <input class="s" id="cPhone" inputmode="numeric" maxlength="15" placeholder="10-digit number" style="flex:0 0 160px">
@@ -259,17 +258,13 @@ const DRAFT='v2_admin_draft', CUSTD='v2_admin_customers', SESSK='v2_pm_session';
 let P=[], LIVE='', shown=40, q='', quick='all', dirty=false;
 let CUSTOMERS=null, custDirty=false;
 
-async function sha(t){
-  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));
-  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
-}
+const last10=s=>String(s||'').replace(/\D/g,'').slice(-10);
 
 /* ---------------- gate ---------------- */
-async function tryGate(raw){
+function tryGate(raw){
   if(raw.length<10) return null;
-  const h=await sha((C.salt||'')+':91'+raw.slice(-10));
-  const a=(C.auth&&C.auth.admins||[]).find(r=>r.h===h);
-  return a||null;
+  const t=last10(raw);
+  return (C.auth&&C.auth.admins||[]).find(r=>last10(r.p)===t)||null;
 }
 $('#gp').oninput=function(){
   const d=($('#gp').value||'').replace(/\D/g,'');
@@ -277,12 +272,12 @@ $('#gp').oninput=function(){
                           : (d.length? d.length+' of 10 digits':'');
 };
 $('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
-$('#gb').onclick=async function(){
+$('#gb').onclick=function(){
   const raw=($('#gp').value||'').replace(/\D/g,'');
   const m=$('#gm');
   if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
     '. Type the 10-digit number — 91 in front is fine too.'; m.classList.add('on'); return; }
-  const a=await tryGate(raw);
+  const a=tryGate(raw);
   if(!a){ m.textContent='That number is not an admin.'; m.classList.add('on'); return; }
   localStorage.setItem(SESSK, JSON.stringify({ok:true,admin:true,name:a.n,tail:a.t}));
   start(a);
@@ -567,7 +562,7 @@ function drawCust(){
   $('#cStat').textContent=CUSTOMERS.length+' customers can see dealer prices · '+
     ((C.auth&&C.auth.admins||[]).length)+' admins';
   $('#cList').innerHTML = CUSTOMERS.length ? CUSTOMERS.map((c,i)=>
-    '<tr><td><div class="nm">'+esc(c.n)+'</div><div class="ph">'+esc(c.t||'')+'</div></td>'+
+    '<tr><td><div class="nm">'+esc(c.n)+'</div><div class="ph">+'+esc(c.p||'')+'</div></td>'+
     '<td><button class="ibtn" data-rm="'+i+'">Remove</button></td></tr>').join('')
     : '<tr><td class="empty">No customers yet.</td></tr>';
   $('#cList').onclick=function(e){
@@ -577,16 +572,15 @@ function drawCust(){
     CUSTOMERS.splice(i,1); touchC();
   };
 }
-$('#cAdd').onclick=async function(){
+$('#cAdd').onclick=function(){
   const n=$('#cName').value.trim(), raw=($('#cPhone').value||'').replace(/\D/g,'');
   if(!n){alert('Give the customer a name so you can recognise them later.');return}
   if(raw.length<10){alert('That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
     '. Type the 10-digit number — 91 in front is fine too.');return}
   const ph='91'+raw.slice(-10);
-  const h=await sha((C.salt||'')+':'+ph);
-  if(CUSTOMERS.some(c=>c.h===h)){alert('That number is already on the list.');return}
-  if((C.auth&&C.auth.admins||[]).some(a=>a.h===h)){alert('That number is already an admin.');return}
-  CUSTOMERS.push({n:n,t:'…'+raw.slice(-3),h:h});
+  if(CUSTOMERS.some(c=>last10(c.p)===last10(ph))){alert('That number is already on the list.');return}
+  if((C.auth&&C.auth.admins||[]).some(a=>last10(a.p)===last10(ph))){alert('That number is already an admin.');return}
+  CUSTOMERS.push({n:n,p:ph});
   $('#cName').value='';$('#cPhone').value='';
   touchC();
 };
@@ -622,11 +616,10 @@ $('#dlConfig').onclick=function(){
    "  tagline: "+q(C.tagline||'Wholesale Kitchenware')+",\n"+
    "  whatsapp: "+q(C.whatsapp||'')+",\n"+
    "  site: "+q(C.site||'')+",\n\n"+
-   "  salt: "+q(C.salt||'')+",\n\n"+
    '  auth: {\n    admins: [\n'+
-   A.map(a=>'      { n:'+q(a.n)+', t:'+q(a.t||'')+', h:'+q(a.h)+' }').join(',\n')+'\n    ],\n'+
+   A.map(a=>'      { n:'+q(a.n)+', p:'+q(a.p)+' }').join(',\n')+'\n    ],\n'+
    '    customers: [\n'+
-   CUSTOMERS.map(c=>'      { n:'+q(c.n)+', t:'+q(c.t||'')+', h:'+q(c.h)+' }').join(',\n')+'\n    ],\n'+
+   CUSTOMERS.map(c=>'      { n:'+q(c.n)+', p:'+q(c.p)+' }').join(',\n')+'\n    ],\n'+
    '    noAccessMessage: '+q((C.auth&&C.auth.noAccessMessage)||'This number is not on our customer list yet.')+',\n'+
    '  },\n\n'+
    '  festive: '+JSON.stringify(C.festive||{},null,2).replace(/\n/g,'\n  ')+',\n\n'+

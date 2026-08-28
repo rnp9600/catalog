@@ -543,7 +543,7 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
     <line x1="12" y1="15" x2="12" y2="3"/>
    </svg>
   </button>
-  <button class="gearbtn" id="whoBtn" aria-label="Sign in" title="Sign in"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></button><button class="gearbtn" id="settingsBtn" aria-label="Menu" title="View & theme">
+  <button class="gearbtn" id="settingsBtn" aria-label="Menu" title="View & theme">
    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <line x1="3" y1="6" x2="21" y2="6"/>
     <line x1="3" y1="12" x2="21" y2="12"/>
@@ -758,17 +758,11 @@ const shareUrl=p=>`${SITE}/p/${slugOf(p)}`;
 // the rich product card render underneath it.
 function waMessage(p){
   const L=[];
-  L.push("Hi! 👋 I'm interested in this product:","");
-  L.push(`📦 *${p.brand}* — ${p.name}`);
-  if(p.code)L.push(`🔖 Code: ${p.code}`);
-  if(p.cat)L.push(`📂 ${p.cat}`);
-  if(p.variants&&p.variants.length){
-    L.push("","📏 *Sizes:*");
-    p.variants.forEach(v=>L.push(`  • ${v.size}${v.price!=null?` — ₹${v.price}`:''}`));
-  }else if(p.sizes&&p.sizes.length){
-    L.push("",`📏 *Sizes:* ${p.sizes.join(', ')}`);
-  }
-  L.push("",`🔗 ${shareUrl(p)}`,"","✨ Please share availability and delivery details.");
+  L.push('Hi, I am interested in this product.','');
+  L.push(p.name);
+  L.push([p.brand, p.code].filter(Boolean).join(' · '));
+  L.push('', shareUrl(p));
+  L.push('', 'Please let me know availability.');
   return L.join('\n');
 }
 
@@ -1115,7 +1109,19 @@ document.getElementById('clearFiltersBtn').addEventListener('click',()=>{
 const sov=document.getElementById('sov');
 function openSettings(){sov.classList.add('open');document.body.style.overflow='hidden'}
 function closeSettings(){sov.classList.remove('open');document.body.style.overflow=''}
-document.getElementById('settingsBtn').addEventListener('click',openSettings);
+document.getElementById('settingsBtn').addEventListener('click',function(){
+  openSettings();
+  try{
+    const body=document.querySelector('#ssheet .sbody')||document.getElementById('ssheet');
+    if(body && !document.getElementById('menuSignRow')){
+      const d=document.createElement('div');
+      d.className='fsection'; d.id='menuSignRow';
+      body.appendChild(d);
+    }
+    const row=document.getElementById('menuSignRow');
+    if(row){ row.innerHTML='<h4>Your account</h4>'+menuSignHtml(); wireMenuSign(); }
+  }catch(e){}
+});
 document.getElementById('sxbtn').addEventListener('click',closeSettings);
 sov.addEventListener('click',closeSettings);
 
@@ -1537,16 +1543,13 @@ const AUTH = (CFG.auth||{admins:[],customers:[]});
 const dg = s => (s||'').replace(/\D/g,'');
 let SESS   = JSON.parse(localStorage.getItem('v2_pm_session')||'null');
 let RETAIL = JSON.parse(localStorage.getItem('v2_pm_retail')||'null') || {on:false, off:10};
-async function sha(txt){
-  const b=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
-  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
-}
-async function lookup(phone){
-  const hsh = await sha((CFG.salt||'')+':'+phone);
-  const a=(AUTH.admins||[]).find(r=>r.h===hsh);
-  if(a) return {ok:true, admin:true,  name:a.n, tail:a.t};
-  const c=(AUTH.customers||[]).find(r=>r.h===hsh);
-  if(c) return {ok:true, admin:false, name:c.n, tail:c.t};
+function lookup(phone){
+  const last = dg(phone).slice(-10);
+  const hit = list => (list||[]).find(r => dg(r.p||'').slice(-10) === last);
+  const a=hit(AUTH.admins);
+  if(a) return {ok:true, admin:true,  name:a.n, tail:'…'+last.slice(-3)};
+  const c=hit(AUTH.customers);
+  if(c) return {ok:true, admin:false, name:c.n, tail:'…'+last.slice(-3)};
   return null;
 }
 const signedIn = () => !!(SESS && SESS.ok);
@@ -1591,7 +1594,7 @@ function priceLine(p){
       '<br><button class="signlink" data-sign="1">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">'+
       '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>'+
-      'Sign in for dealer price</button>';
+      'Sign in to check for a discount</button>';
   }
   return '<span class="ph">Enquire for pricing</span>';
 }
@@ -1619,14 +1622,34 @@ function openSignIn(){
   document.getElementById('sgnSheet').innerHTML = signedIn() ? accountHtml() : signInHtml();
   ov2.classList.add('open'); document.body.style.overflow='hidden';
   wireSignIn();
+  const sv=document.getElementById('sov'); if(sv) sv.classList.remove('open');
   const f=document.getElementById('sgnPh'); if(f) setTimeout(()=>f.focus(),120);
+}
+function menuSignHtml(){
+  if(signedIn()){
+    return '<div class="who"><div class="whoav">'+
+      ((SESS.name||'PM').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
+      '<div><b>'+(SESS.name||'Signed in')+'</b><small>'+(SESS.tail||'')+
+      (SESS.admin?' · admin':'')+'</small></div></div>'+
+      '<button class="sgnbtn" id="menuAcct" style="margin-top:10px">Your account'+
+      (RETAIL.on?' · showing customer prices':'')+'</button>';
+  }
+  return '<p style="font-size:.8rem;color:var(--tm);line-height:1.55;margin-bottom:10px">'+
+    'Sign in to see if a discount applies to your account, and to place an order.</p>'+
+    '<button class="sgnbtn" id="menuSign">Sign in</button>';
+}
+function wireMenuSign(){
+  const a=document.getElementById('menuSign'), b=document.getElementById('menuAcct');
+  if(a) a.onclick=openSignIn;
+  if(b) b.onclick=openSignIn;
 }
 function signInHtml(){
   return '<div class="shead"><strong>Sign in</strong><button class="sx" id="sgnX">×</button></div>'+
    '<div class="sbody"><div class="sgn">'+
-   '<h4>See your dealer price</h4>'+
-   '<p>Enter the phone number you order from. Everything in the catalogue stays '+
-   'open either way — signing in only shows your rates instead of MRP.</p>'+
+   '<h4>Sign in to order</h4>'+
+   '<p>Enter the phone number you order from. If we have agreed a discount for '+
+   'you it will show against every product. Everything in the catalogue stays '+
+   'open either way.</p>'+
    '<div class="sgnrow"><span>+91</span><input id="sgnPh" type="tel" inputmode="numeric" '+
    'maxlength="15" placeholder="98765 43210" autocomplete="tel"></div>'+
    '<div id="sgnEcho" style="font-family:var(--fm);font-size:.7rem;color:var(--tm);'+
@@ -1642,9 +1665,9 @@ function accountHtml(){
    '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
    '<div><b>'+nm+'</b><small>'+tail+(SESS.admin?' · admin':'')+'</small></div></div>'+
    '<div class="fsection" style="border:0;padding-top:14px">'+
-   '<h4 style="font-size:.95rem">Retail mode</h4>'+
-   '<p style="margin-bottom:8px">Turn this on when you are showing the catalogue to a walk-in '+
-   'customer. Prices switch to MRP with your discount applied. Your dealer price is hidden.</p>'+
+   '<h4 style="font-size:.95rem">Showing to a customer</h4>'+
+   '<p style="margin-bottom:8px">Turn this on when someone is looking over your shoulder. '+
+   'Prices switch to MRP with your discount applied, and your own rate is hidden.</p>'+
    '<div class="rtl"><span class="tgl2"><input type="checkbox" id="rtlOn"'+(RETAIL.on?' checked':'')+
    '><i></i></span><label for="rtlOff">Discount on MRP</label>'+
    '<input type="number" id="rtlOff" min="0" max="90" value="'+(RETAIL.off||0)+'"><label>%</label></div>'+
@@ -1675,17 +1698,17 @@ function wireSignIn(){
     const ph='91'+raw.slice(-10);
     go.disabled=true; go.textContent='Checking…';
     let hit=null;
-    try{ hit=await lookup(ph); }catch(e){}
+    try{ hit=lookup(ph); }catch(e){}
     go.disabled=false; go.textContent='Continue';
     if(!hit){
       msg.innerHTML=(AUTH.noAccessMessage||'This number is not on our customer list yet.')+
         ' <a href="https://wa.me/'+(CFG.whatsapp||'')+'?text='+
-        encodeURIComponent('Please give me dealer price access for +'+ph)+'">Message us on WhatsApp</a>';
+        encodeURIComponent('Hi, please give my number access to order rates. +'+ph)+'">Message us on WhatsApp</a>';
       msg.classList.add('on'); return;
     }
     SESS={ok:true, admin:hit.admin, name:hit.name, tail:hit.tail}; saveSess();
     closeSignIn(); markWho(); render(); if(CUR) openSheet(CUR);
-    toastMsg(hit.admin?'Signed in as admin':'Signed in — showing your dealer price');
+    toastMsg(hit.admin?'Signed in as admin':'Signed in as '+hit.name);
   };
   const skip=document.getElementById('sgnSkip');
   if(skip) skip.onclick=closeSignIn;
@@ -1708,6 +1731,8 @@ function closeSignIn(){
 function markWho(){
   const b=document.getElementById('whoBtn');
   if(b) b.classList.toggle('in', signedIn());
+  const s=document.getElementById('menuSignRow');
+  if(s) s.innerHTML=menuSignHtml();
 }
 function toastMsg(m){
   const d=document.createElement('div'); d.textContent=m;
@@ -1726,7 +1751,7 @@ function retailBanner(){
       RETAIL.on=false; saveRtl(); render(); if(CUR) openSheet(CUR); retailBanner(); };
   } else b.classList.remove('on');
 }
-document.getElementById('whoBtn').addEventListener('click', openSignIn);
+const _wb=document.getElementById('whoBtn'); if(_wb) _wb.addEventListener('click', openSignIn);
 
 /* ---------- the sheet's size table has to follow the same rules ---------- */
 function repriceSheet(){

@@ -1,7 +1,9 @@
 /* Patel Marketing catalogue — v2 settings.
-   Numbers are stored as one-way hashes, never in the clear, so opening the
-   page source does not reveal your customer list. The admin panel generates
-   this file for you — you should not need to hand-edit it. */
+
+   Numbers are in plain text for now, as you asked. Anyone who opens the page
+   source can read this list, so it holds business numbers only — no notes,
+   no addresses. v3 moves this to Supabase phone OTP and the list stops being
+   public at all. */
 
 window.PM_CONFIG = {
 
@@ -10,28 +12,24 @@ window.PM_CONFIG = {
   whatsapp: '917892967505',
   site: 'https://patelmarketing-catalog.vercel.app',
 
-  /* hashing salt — changing this invalidates every number below */
-  salt: 'patel-marketing-catalogue-v2',
-
   auth: {
     admins: [
-      { n:'Raj', t:'…024', h:'30ddf9c8f34b9bbbfd6e81c0252d9482313e6720c5c39feac84432d79942bc6b' },
-      { n:'Admin 2', t:'…840', h:'39c34264f152a7812d3d81eb222885727568219417b38ea5374f787f4d96bd60' }
-      /* Third admin: add from the admin panel — Customers tab — rather than
-         picking a number here. I have deliberately not invented one, because
-         any number I made up could belong to a real person who would then be
-         able to edit your catalogue. */
+      { n:'Raj',     p:'919686754024' },
+      { n:'Admin 2', p:'918800353840' },
+      /* Third admin: add it here as another line, or from the admin panel.
+         I have not invented a number — a made-up one could belong to a real
+         person who would then be able to edit the catalogue. */
     ],
     customers: [
-      { n:'Customer 1', t:'…177', h:'55cabff00261ca2b53fdab9a20475646f0028914fc6cbd56ccf8d1ac2dd97219' },
-      { n:'Customer 2', t:'…050', h:'2f2e79202d1e4d1103f56cfa2408fb920b6ffc923d51727ec1f94648065bc6cb' },
-      { n:'Customer 3', t:'…230', h:'d56d6451f75168cd64b37e9e4667503390afd540f75709e3153bd47f14e96e50' },
-      { n:'Customer 4', t:'…795', h:'0d594ad7cd2acf0bc3e565e88f3016bdbeb76a82dadca27cb6ea4bedeb933b9b' },
-      { n:'Customer 5', t:'…254', h:'ef2442ce2d62592652731c19e867b479129e759ecbba38d73576e58c031ea82a' },
-      { n:'Customer 6', t:'…843', h:'533ac18a93ac1f27224efe9211d23d80cb0a15ba9e1f9a4441f932205fbd0a88' },
-      { n:'Customer 7', t:'…026', h:'701d69c97b03aeb7992ae5b7060970d2b79c149a52bbc8224f5e91d1b36377a1' }
+      { n:'Customer 1', p:'919448666177' },
+      { n:'Customer 2', p:'918880050050' },
+      { n:'Customer 3', p:'918431625230' },
+      { n:'Customer 4', p:'919448471795' },
+      { n:'Customer 5', p:'919448463254' },
+      { n:'Customer 6', p:'918800353843' },
+      { n:'Customer 7', p:'919686754026' },
     ],
-    noAccessMessage: 'This number is not on our customer list yet.',
+    noAccessMessage: 'We do not recognise that number yet.',
   },
 
   festive: {
