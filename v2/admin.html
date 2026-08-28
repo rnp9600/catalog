@@ -2,256 +2,646 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Catalogue admin — Patel Marketing</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin — Patel Marketing</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0D2137;--mute:#5B7690;--paper:#F2F8FD;--card:#FFF;--line:#D6E6F2;--line2:#E8F3FC;
-  --brass:#12A594;--steel:#2F6FA8;--ok:#12A594;--warn:#B4433B;
-  --fd:'Inter',-apple-system,sans-serif;--fb:'Inter',-apple-system,sans-serif;--fm:'IBM Plex Mono',monospace}
+:root{--r:14px;--rs:9px;--fd:'Inter',-apple-system,sans-serif;--fm:'IBM Plex Mono',monospace}
+[data-theme="sky"]{--bg:#F2F8FD;--sf:#FFF;--sf2:#E8F3FC;--pr:#2F6FA8;--prh:#245880;--prt:#B7DCF7;
+ --ac:#12A594;--act:#CFF5F0;--tx:#0D2137;--tm:#5B7690;--bd:#D6E6F2;--sh:15,60,100}
+[data-theme="charcoal"]{--bg:#14181C;--sf:#1D2328;--sf2:#262D34;--pr:#5AA9E0;--prh:#4691C4;--prt:#2C4557;
+ --ac:#E0A458;--act:#3A2F20;--tx:#E8EDF2;--tm:#93A3B2;--bd:#2E363E;--sh:0,0,0}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:var(--paper);color:var(--ink);line-height:1.45;padding-bottom:90px}
-button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
-:focus-visible{outline:2.5px solid var(--brass);outline-offset:2px}
-header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);
-  padding:10px 14px;display:flex;align-items:center;gap:10px}
-header img{height:30px}header b{font-family:var(--fd);font-size:.95rem}
-.tag{font-family:var(--fm);font-size:.62rem;background:var(--brass);color:#fff;padding:2px 7px;border-radius:5px}
-.wrap{max-width:900px;margin:0 auto;padding:14px}
-.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.bar input{flex:1;min-width:180px;padding:10px 12px;border:1.5px solid var(--line);
-  border-radius:8px;background:var(--card)}
-.btn{padding:10px 14px;border:0;border-radius:9px;background:var(--steel);color:#fff;font-weight:700;font-size:.85rem}
-.btn.g{background:var(--ok)}
-.mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--steel),var(--brass));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.85rem;flex-shrink:0}.btn.o{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
-.btn.r{background:var(--warn)}
-.stat{font-family:var(--fm);font-size:.72rem;color:var(--mute);margin-bottom:10px}
-.rowitem{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
-  border-radius:10px;padding:9px 11px;margin-bottom:7px}
-.rowitem img{width:42px;height:42px;object-fit:contain;background:#fff;border:1px solid var(--line2);
-  border-radius:6px;flex-shrink:0}
-.rowitem .t{flex:1;min-width:0}
-.rowitem .n{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rowitem .s{font-family:var(--fm);font-size:.66rem;color:var(--mute)}
-.rowitem .p{font-family:var(--fm);font-size:.8rem;font-weight:600;white-space:nowrap}
-.edit{position:fixed;inset:0;background:rgba(10,16,20,.55);z-index:50;display:none}
-.edit.on{display:block}
-.ein{position:absolute;inset:auto 0 0 0;max-height:94vh;overflow-y:auto;background:var(--card);
-  border-radius:16px 16px 0 0;padding:0 0 22px}
-@media(min-width:820px){.ein{max-width:640px;margin:0 auto;border-radius:16px;top:50%;bottom:auto;
-  transform:translateY(-50%);max-height:88vh}}
-.ehead{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--line);
-  padding:12px 15px;display:flex;gap:10px;align-items:center;z-index:2}
-.ehead b{flex:1;font-family:var(--fd)}
-.x{border:0;background:var(--paper);width:31px;height:31px;border-radius:50%;font-size:1.1rem}
-.fields{padding:14px 15px;display:grid;gap:11px}
-label{font-size:.74rem;font-weight:600;color:var(--mute);display:block;margin-bottom:4px;
-  text-transform:uppercase;letter-spacing:.06em}
-input.f,select.f,textarea.f{width:100%;padding:9px 11px;border:1.5px solid var(--line);
-  border-radius:8px;background:var(--paper);font-size:.88rem}
-textarea.f{min-height:62px;resize:vertical}
+body{font-family:var(--fd);background:var(--bg);color:var(--tx);line-height:1.45;padding-bottom:96px}
+button,input,select,textarea{font-family:var(--fd);color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2.5px solid var(--pr);outline-offset:2px}
+.warn{background:#B4433B;color:#fff}
+header{position:sticky;top:0;z-index:40;background:var(--sf);border-bottom:1px solid var(--bd)}
+.hin{display:flex;align-items:center;gap:10px;padding:10px 14px;max-width:1000px;margin:0 auto}
+.mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--pr),var(--ac));
+ display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.85rem;flex-shrink:0}
+.hin b{font-size:.98rem;font-weight:800;letter-spacing:-.02em}
+.hin .who{font-family:var(--fm);font-size:.62rem;color:var(--tm)}
+.sp{flex:1}
+.ibtn{border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:999px;
+ padding:7px 12px;font-size:.72rem;font-weight:700;text-decoration:none;display:inline-block}
+.ibtn:hover{border-color:var(--pr);color:var(--pr)}
+.tabs{display:flex;gap:4px;padding:0 14px 9px;max-width:1000px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:0;background:var(--sf2);color:var(--tm);border-radius:999px;
+ padding:7px 14px;font-size:.76rem;font-weight:700;white-space:nowrap}
+.tab.on{background:var(--pr);color:#fff}
+main{max-width:1000px;margin:0 auto;padding:14px}
+.panel{display:none}.panel.on{display:block}
+.bar{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+.bar input.s{flex:1;min-width:170px;padding:10px 13px;border:1.5px solid var(--bd);border-radius:var(--rs);
+ background:var(--sf);font-size:.88rem}
+.btn{padding:10px 14px;border:0;border-radius:var(--rs);background:var(--pr);color:#fff;
+ font-weight:700;font-size:.83rem}
+.btn.g{background:var(--ac)}
+.btn.o{background:var(--sf);color:var(--tx);border:1.5px solid var(--bd)}
+.btn.r{background:#B4433B;color:#fff}
+.btn:disabled{opacity:.45}
+.fl{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
+.fl button{border:1px solid var(--bd);background:var(--sf);border-radius:999px;padding:5px 11px;
+ font-size:.71rem;font-weight:600;color:var(--tx)}
+.fl button.on{background:var(--pr);border-color:transparent;color:#fff}
+.fl button b{font-family:var(--fm);font-weight:500;opacity:.6;margin-left:4px;font-size:.65rem}
+.stat{font-family:var(--fm);font-size:.68rem;color:var(--tm);margin-bottom:9px}
+.item{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--bd);
+ border-radius:var(--rs);padding:9px 11px;margin-bottom:7px}
+.item.hid{opacity:.5}
+.item img{width:44px;height:44px;object-fit:contain;background:#fff;border:1px solid var(--bd);
+ border-radius:7px;flex-shrink:0}
+.item .t{flex:1;min-width:0}
+.item .n{font-size:.85rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .s{font-family:var(--fm);font-size:.64rem;color:var(--tm);margin-top:2px}
+.item .p{font-family:var(--fm);font-size:.78rem;font-weight:600;white-space:nowrap;text-align:right}
+.flag{display:inline-block;font-size:.55rem;font-weight:800;padding:2px 6px;border-radius:4px;
+ margin-left:5px;letter-spacing:.04em;vertical-align:middle}
+.flag.h{background:var(--sf2);color:var(--tm)}
+.flag.o{background:#F6DEDC;color:#8C2F28}
+.flag.f{background:var(--act);color:var(--ac)}
+.ov{position:fixed;inset:0;z-index:60;background:rgba(6,12,18,.72);display:none}
+.ov.open{display:block}
+.sheet{position:absolute;right:0;top:0;height:100%;width:min(620px,100%);background:var(--bg);
+ overflow-y:auto;box-shadow:-8px 0 30px rgba(0,0,0,.2)}
+.shead{position:sticky;top:0;background:var(--sf);border-bottom:1px solid var(--bd);
+ padding:12px 15px;display:flex;align-items:center;gap:9px;z-index:3}
+.shead strong{flex:1;font-size:.93rem;font-weight:800}
+.sx{border:0;background:var(--sf2);width:32px;height:32px;border-radius:50%;font-size:1.2rem;
+ line-height:1;color:var(--tx)}
+.sbody{padding:14px 15px 30px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:.66rem;font-weight:700;color:var(--tm);text-transform:uppercase;
+ letter-spacing:.07em;margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bd);
+ border-radius:var(--rs);background:var(--sf);font-size:.88rem}
+.fg textarea{min-height:66px;resize:vertical;font-family:var(--fd)}
+.fg .hint{font-size:.7rem;color:var(--tm);margin-top:4px;line-height:1.5}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.vrow{display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:6px;margin-bottom:6px;align-items:center}
-.vrow input{padding:8px 9px;border:1.5px solid var(--line);border-radius:7px;background:var(--paper);
-  font-family:var(--fm);font-size:.8rem}
-.del{border:0;background:#F6DEDC;color:#8C2F28;border-radius:7px;width:32px;height:32px;font-size:1rem}
-.foot{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
-  padding:11px 14px;display:flex;gap:8px;z-index:30}
-.foot .btn{flex:1}
-.note{background:#FFF7E6;border:1px solid #F0DEB4;border-radius:9px;padding:11px 13px;
-  font-size:.79rem;color:#6B4A14;margin-bottom:12px;line-height:1.55}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;
+ border-bottom:1px solid var(--bd)}
+.sw:last-child{border:0}
+.sw .lab{font-size:.85rem;font-weight:600}
+.sw .lab small{display:block;font-weight:400;color:var(--tm);font-size:.71rem;margin-top:2px;line-height:1.45}
+.tg{position:relative;width:46px;height:27px;flex-shrink:0}
+.tg input{opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.tg i{position:absolute;inset:0;background:var(--bd);border-radius:999px;transition:.18s;pointer-events:none}
+.tg i::after{content:'';position:absolute;top:3px;left:3px;width:21px;height:21px;background:#fff;
+ border-radius:50%;transition:.18s}
+.tg input:checked+i{background:var(--ac)}
+.tg input:checked+i::after{transform:translateX(19px)}
+.tg.danger input:checked+i{background:#B4433B}
+.vrow{display:grid;grid-template-columns:1.25fr .8fr .8fr .6fr auto;gap:6px;margin-bottom:6px;align-items:center}
+.vrow input{padding:8px 9px;border:1.5px solid var(--bd);border-radius:7px;background:var(--sf);
+ font-family:var(--fm);font-size:.79rem;min-width:0}
+.mini{border:0;background:var(--sf2);color:var(--tx);border-radius:7px;width:31px;height:31px;
+ font-size:.95rem;line-height:1;flex-shrink:0}
+.mini.del{background:#F6DEDC;color:#8C2F28}
+.photo{display:flex;align-items:center;gap:9px;background:var(--sf);border:1px solid var(--bd);
+ border-radius:var(--rs);padding:7px 9px;margin-bottom:6px}
+.photo img{width:46px;height:46px;object-fit:contain;background:#fff;border:1px solid var(--bd);
+ border-radius:6px;flex-shrink:0}
+.photo code{flex:1;font-family:var(--fm);font-size:.65rem;color:var(--tm);word-break:break-all}
+.photo .main{font-size:.55rem;font-weight:800;background:var(--act);color:var(--ac);
+ padding:2px 6px;border-radius:4px;letter-spacing:.04em}
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--sf);
+ border-top:1px solid var(--bd);padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+ display:flex;gap:8px;align-items:center}
+.foot .n{font-family:var(--fm);font-size:.66rem;color:var(--tm);flex:1}
+.foot .n b{color:var(--ac)}
+.gate{max-width:340px;margin:70px auto;text-align:center}
+.gate .mark{margin:0 auto 18px}
+.gate h1{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.gate p{font-size:.84rem;color:var(--tm);margin-bottom:18px;line-height:1.55}
+.gate .row{display:flex;margin-bottom:10px}
+.gate .row span{font-family:var(--fm);padding:13px 11px;border:1.5px solid var(--bd);border-right:0;
+ border-radius:var(--rs) 0 0 var(--rs);background:var(--sf2);color:var(--tm);font-size:.88rem}
+.gate .row input{flex:1;min-width:0;padding:13px 12px;border:1.5px solid var(--bd);border-left:0;
+ border-radius:0 var(--rs) var(--rs) 0;background:var(--sf);font-family:var(--fm);
+ letter-spacing:.08em;font-size:.95rem}
+.gate .msg{font-size:.8rem;color:#B4433B;margin-top:11px;display:none}
+.gate .msg.on{display:block}
+.note{background:var(--act);border-radius:var(--rs);padding:12px 14px;font-size:.79rem;
+ line-height:1.6;margin-bottom:14px}
 .note b{display:block;margin-bottom:3px}
+.empty{padding:44px 16px;text-align:center;color:var(--tm);font-size:.85rem}
+.tt{width:100%;border-collapse:collapse;font-size:.8rem}
+.tt td{padding:9px 6px;border-bottom:1px solid var(--bd)}
+.tt td:last-child{text-align:right;width:1%;white-space:nowrap}
+.tt .nm{font-weight:600}
+.tt .ph{font-family:var(--fm);font-size:.68rem;color:var(--tm)}
+code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11px 12px;
+ font-family:var(--fm);font-size:.68rem;word-break:break-all;line-height:1.6;margin-top:8px}
 </style>
 </head>
-<body>
-<header>
+<body data-theme="sky">
+
+<div id="gate" class="gate">
   <div class="mark">PM</div>
-  <b>Catalogue admin</b><span class="tag">DRAFT</span>
-  <span style="flex:1"></span>
-  <a class="btn o" href="index.html" style="text-decoration:none">View catalogue</a>
+  <h1>Admin sign in</h1>
+  <p>Enter your admin phone number. Only the numbers listed as admins can open this page.</p>
+  <div class="row"><span>+91</span><input id="gp" type="tel" inputmode="numeric" maxlength="10"
+    placeholder="98765 43210" autocomplete="off"></div>
+  <button class="btn" id="gb" style="width:100%">Continue</button>
+  <div class="msg" id="gm"></div>
+  <p style="margin-top:22px"><a class="ibtn" href="index.html">Back to catalogue</a></p>
+</div>
+
+<div id="app" style="display:none">
+<header>
+  <div class="hin">
+    <div class="mark">PM</div>
+    <div><b>Admin</b><div class="who" id="whoLine"></div></div>
+    <div class="sp"></div>
+    <a class="ibtn" href="index.html">Catalogue</a>
+    <button class="ibtn" id="outBtn">Sign out</button>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-t="products">Products</button>
+    <button class="tab" data-t="taxonomy">Brands &amp; categories</button>
+    <button class="tab" data-t="customers">Customers</button>
+    <button class="tab" data-t="publish">Publish</button>
+  </div>
 </header>
 
-<div class="wrap">
-  <div class="note">
-    <b>Changes stay on this phone until you export.</b>
-    Edit as much as you like, then press <b>Download data.json</b> and upload that one file to
-    GitHub. The site updates when Vercel finishes deploying.
-  </div>
+<main>
+  <!-- PRODUCTS -->
+  <section class="panel on" id="p-products">
+    <div class="bar">
+      <input class="s" id="q" placeholder="Search name, code, brand…">
+      <button class="btn g" id="addBtn">+ New</button>
+    </div>
+    <div class="fl" id="quick"></div>
+    <div class="stat" id="stat"></div>
+    <div id="list"></div>
+    <button class="btn o" id="more" style="width:100%;margin-top:10px;display:none">Show more</button>
+  </section>
 
-  <div class="bar">
-    <input id="q" placeholder="Search name, brand or code…">
-    <button class="btn g" id="add">+ New product</button>
-  </div>
-  <div class="stat" id="stat"></div>
-  <div id="list"></div>
-  <button class="btn o" id="more" style="width:100%;margin-top:10px;display:none">Show more</button>
-</div>
+  <!-- TAXONOMY -->
+  <section class="panel" id="p-taxonomy">
+    <div class="note"><b>Renaming changes every product at once.</b>
+      Rename a brand or category here and every product using it is updated. To
+      remove one, move its products to another name first.</div>
+    <div class="bar">
+      <select class="s" id="taxKind">
+        <option value="brand">Brands</option>
+        <option value="cat">Categories</option>
+        <option value="sub">Sub-groups</option>
+      </select>
+      <button class="btn g" id="taxAdd">+ Add</button>
+    </div>
+    <div id="taxList"></div>
+  </section>
+
+  <!-- CUSTOMERS -->
+  <section class="panel" id="p-customers">
+    <div class="note"><b>Numbers are stored as one-way hashes.</b>
+      Nobody can read your customer list from the page source. That also means
+      the full number cannot be shown back to you here — only the last three
+      digits and the name you give it. Keep your own list elsewhere.</div>
+    <div class="bar">
+      <input class="s" id="cName" placeholder="Name or shop">
+      <input class="s" id="cPhone" inputmode="numeric" maxlength="10" placeholder="10-digit number" style="flex:0 0 160px">
+      <button class="btn g" id="cAdd">Add</button>
+    </div>
+    <div class="stat" id="cStat"></div>
+    <table class="tt"><tbody id="cList"></tbody></table>
+  </section>
+
+  <!-- PUBLISH -->
+  <section class="panel" id="p-publish">
+    <div class="note"><b>Nothing is live until you upload.</b>
+      Changes are saved on this phone as you work. Download the files below and
+      upload them to GitHub — Vercel redeploys on its own in about a minute.</div>
+    <div id="pubSummary"></div>
+    <div class="fg"><button class="btn" id="dlData" style="width:100%">Download data.json</button>
+      <div class="hint">Every product change. Goes in the repo root, replacing the old one.</div></div>
+    <div class="fg"><button class="btn" id="dlConfig" style="width:100%">Download config.js</button>
+      <div class="hint">Only needed when you have added or removed customers. Goes in <code>v2/</code>.</div></div>
+    <div class="fg"><button class="btn o" id="dlOrphans" style="width:100%">List unused photo files</button>
+      <div class="hint">Photos in the repo that no product points at any more. Safe to delete to save space.</div></div>
+    <div id="orph"></div>
+    <div class="fg" style="margin-top:22px">
+      <label>After Vercel finishes</label>
+      <div class="hint">Run this once in the Supabase SQL editor so the database matches. It
+        also removes rows for products you deleted.</div>
+      <code class="blk">select * from catalog.sync_from_site();</code>
+    </div>
+    <div class="fg" style="margin-top:22px">
+      <button class="btn r" id="resetBtn" style="width:100%">Discard all unsaved changes</button>
+      <div class="hint">Throws away everything since your last download and reloads the live file.</div>
+    </div>
+  </section>
+</main>
 
 <div class="foot">
-  <button class="btn o" id="revert">Discard changes</button>
-  <button class="btn" id="save">Download data.json</button>
+  <span class="n" id="footNote"></span>
+  <button class="btn o" id="goPublish">Publish</button>
+</div>
 </div>
 
-<div class="edit" id="edit"><div class="ein" id="ein"></div></div>
+<div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
 <script src="config.js"></script>
 <script>
-const $ = s => document.querySelector(s);
-const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let P = [], ORIG = '', shown = 40, q = '', dirty = false;
+const C=window.PM_CONFIG||{}, $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=n=>'₹'+Number(n).toLocaleString('en-IN');
+const IMG=n=>'../images/'+n+'.jpg';
+const DRAFT='v2_admin_draft', CUSTD='v2_admin_customers', SESSK='v2_pm_session';
 
-const DRAFT = 'pm_admin_draft';
-const money = n => '₹' + Number(n).toLocaleString('en-IN');
+let P=[], LIVE='', shown=40, q='', quick='all', dirty=false;
+let CUSTOMERS=null, custDirty=false;
 
-async function boot(){
-  const s = localStorage.getItem(DRAFT);
-  const r = await fetch('../data.json', { cache:'no-cache' });
-  ORIG = JSON.stringify(await r.clone().json());
-  P = s ? JSON.parse(s) : JSON.parse(ORIG);
-  dirty = !!s;
-  draw();
+async function sha(t){
+  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
 }
+
+/* ---------------- gate ---------------- */
+async function tryGate(raw){
+  if(raw.length<10) return null;
+  const h=await sha((C.salt||'')+':91'+raw.slice(-10));
+  const a=(C.auth&&C.auth.admins||[]).find(r=>r.h===h);
+  return a||null;
+}
+$('#gb').onclick=async function(){
+  const raw=($('#gp').value||'').replace(/\D/g,'');
+  const m=$('#gm');
+  const a=await tryGate(raw);
+  if(!a){ m.textContent='That number is not an admin.'; m.classList.add('on'); return; }
+  localStorage.setItem(SESSK, JSON.stringify({ok:true,admin:true,name:a.n,tail:a.t}));
+  start(a);
+};
+(function(){
+  const s=JSON.parse(localStorage.getItem(SESSK)||'null');
+  if(s&&s.ok&&s.admin) start(s);
+})();
+$('#outBtn').onclick=function(){ localStorage.removeItem(SESSK); location.reload(); };
+
+async function start(a){
+  $('#gate').style.display='none'; $('#app').style.display='block';
+  $('#whoLine').textContent=(a.n||'admin')+' '+(a.t||'');
+  await load();
+}
+
+/* ---------------- data ---------------- */
+async function load(){
+  const r=await fetch('../data.json',{cache:'no-cache'});
+  const live=await r.json();
+  LIVE=JSON.stringify(live);
+  const d=localStorage.getItem(DRAFT);
+  P = d ? JSON.parse(d) : JSON.parse(LIVE);
+  dirty = !!d;
+  const cd=localStorage.getItem(CUSTD);
+  CUSTOMERS = cd ? JSON.parse(cd) : JSON.parse(JSON.stringify((C.auth&&C.auth.customers)||[]));
+  custDirty = !!cd;
+  draw(); drawTax(); drawCust(); footer();
+}
+function touch(){ dirty=true; localStorage.setItem(DRAFT,JSON.stringify(P)); draw(); footer(); }
+function touchC(){ custDirty=true; localStorage.setItem(CUSTD,JSON.stringify(CUSTOMERS)); drawCust(); footer(); }
+function footer(){
+  const n=changeCount();
+  $('#footNote').innerHTML = (dirty||custDirty)
+    ? '<b>'+n+' unsaved change'+(n===1?'':'s')+'</b> — not live yet'
+    : 'Everything matches the live catalogue';
+}
+function changeCount(){
+  let n=0;
+  try{
+    const live=JSON.parse(LIVE), byS={};
+    live.forEach(p=>byS[p.slug||p.name]=JSON.stringify(p));
+    P.forEach(p=>{ const k=p.slug||p.name; if(byS[k]!==JSON.stringify(p)) n++; delete byS[k]; });
+    n+=Object.keys(byS).length;
+  }catch(e){}
+  if(custDirty) n++;
+  return n;
+}
+
+/* ---------------- tabs ---------------- */
+document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  $('#p-'+b.dataset.t).classList.add('on');
+  if(b.dataset.t==='publish') drawPublish();
+  window.scrollTo(0,0);
+});
+$('#goPublish').onclick=()=>document.querySelector('.tab[data-t="publish"]').click();
+
+/* ---------------- products list ---------------- */
+const QUICK=[
+  ['all','Everything',()=>true],
+  ['hidden','Hidden',p=>!!p.hidden],
+  ['out','Out of stock',p=>p.stock==='out'],
+  ['feat','Featured',p=>!!p.feat],
+  ['noprice','No rate',p=>p.price==null&&!(p.variants||[]).some(v=>v.price!=null)],
+  ['nophoto','No photo',p=>!p.img||p.img==='_placeholder'],
+];
 function filtered(){
-  if (!q) return P;
-  const t = q.toLowerCase();
-  return P.filter(p => [p.name,p.brand,p.code,p.cat,p.sub].filter(Boolean)
-    .join(' ').toLowerCase().includes(t));
+  const f=QUICK.find(x=>x[0]===quick)[2];
+  const t=q.toLowerCase();
+  return P.filter(p=>f(p) && (!t ||
+    [p.name,p.brand,p.code,p.cat,p.sub].filter(Boolean).join(' ').toLowerCase().includes(t)));
 }
 function draw(){
-  const L = filtered();
-  $('#stat').textContent = `${L.length} shown · ${P.length} products · ` +
-    `${P.filter(p=>p.price!=null).length} priced` + (dirty ? ' · unsaved changes' : '');
-  $('#list').innerHTML = L.slice(0, shown).map(p => {
-    const i = P.indexOf(p);
-    return `<div class="rowitem" data-i="${i}">
-      <img loading="lazy" src="../images/${esc(p.img)}.jpg" onerror="this.style.opacity=.12">
-      <div class="t"><div class="n">${esc(p.name)}</div>
-        <div class="s">${esc(p.brand)}${p.code?' · '+esc(p.code):''} · ${esc(p.cat)}</div></div>
-      <div class="p">${p.price!=null?money(p.price):'—'}</div>
-    </div>`;
-  }).join('');
-  $('#more').style.display = L.length > shown ? 'block' : 'none';
+  $('#quick').innerHTML=QUICK.map(([k,l,f])=>
+    '<button class="'+(quick===k?'on':'')+'" data-q="'+k+'">'+l+'<b>'+P.filter(f).length+'</b></button>').join('');
+  $('#quick').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+    quick=b.dataset.q;shown=40;draw();};
+  const L=filtered();
+  $('#stat').textContent=L.length+' shown · '+P.length+' products · '+
+    P.filter(p=>p.price!=null||(p.variants||[]).some(v=>v.price!=null)).length+' with rates';
+  $('#list').innerHTML=L.slice(0,shown).map(p=>{
+    const i=P.indexOf(p);
+    const rate=(p.variants||[]).map(v=>v.price).filter(x=>x!=null);
+    const shownRate=rate.length?(Math.min(...rate)===Math.max(...rate)?money(rate[0]):money(Math.min(...rate))+'+')
+      :(p.price!=null?money(p.price):'—');
+    return '<div class="item '+(p.hidden?'hid':'')+'" data-i="'+i+'">'+
+      '<img loading="lazy" src="'+IMG(p.img||'_placeholder')+'" onerror="this.style.opacity=.15">'+
+      '<div class="t"><div class="n">'+esc(p.name)+
+        (p.hidden?'<span class="flag h">HIDDEN</span>':'')+
+        (p.stock==='out'?'<span class="flag o">OUT</span>':'')+
+        (p.feat?'<span class="flag f">NEW</span>':'')+'</div>'+
+        '<div class="s">'+esc(p.brand)+(p.code?' · '+esc(p.code):'')+' · '+esc(p.cat)+
+        ' · '+((p.imgs||[]).length||(p.img?1:0))+' photo'+(((p.imgs||[]).length||1)===1?'':'s')+'</div></div>'+
+      '<div class="p">'+shownRate+'</div></div>';
+  }).join('') || '<div class="empty">Nothing matches.</div>';
+  $('#more').style.display=L.length>shown?'block':'none';
 }
-$('#q').oninput = e => { q = e.target.value.trim(); shown = 40; draw(); };
-$('#more').onclick = () => { shown += 40; draw(); };
-$('#list').onclick = e => {
-  const r = e.target.closest('.rowitem'); if (r) openEdit(+r.dataset.i);
-};
-$('#add').onclick = () => {
-  P.unshift({ img:'', imgs:[], name:'', brand:'', cat:'', sub:'', desc:'', spec:'',
-    code:'', gst:18, note:null, price:null, mrp:null, variants:[], stock:'active',
-    hotel:null, feat:false, sizes:[], alias:null, hsn:null });
-  touch(); openEdit(0);
+$('#q').oninput=e=>{q=e.target.value.trim();shown=40;draw()};
+$('#more').onclick=()=>{shown+=40;draw()};
+$('#list').onclick=e=>{const r=e.target.closest('.item');if(r)edit(+r.dataset.i)};
+$('#addBtn').onclick=function(){
+  P.unshift({slug:'',img:'',imgs:[],name:'',brand:'',cat:'',sub:'',desc:'',spec:'',code:null,
+    gst:18,hsn:null,note:null,price:null,mrp:null,variants:[],sizes:[],alias:null,
+    stock:'active',hidden:false,feat:true,hotel:null});
+  touch(); edit(0);
 };
 
-function openEdit(i){
-  const p = P[i];
-  const brands = [...new Set(P.map(x=>x.brand).filter(Boolean))].sort();
-  const cats = [...new Set(P.map(x=>x.cat).filter(Boolean))].sort();
-  $('#ein').innerHTML = `
-   <div class="ehead"><b>${p.name ? 'Edit product' : 'New product'}</b>
-     <button class="btn r" id="eDel">Delete</button>
-     <button class="x" id="eX">×</button></div>
-   <div class="fields">
-     <div><label>Name — exactly as printed on the supplier list</label>
-       <input class="f" id="fName" value="${esc(p.name)}"></div>
-     <div class="two">
-       <div><label>Brand</label><input class="f" id="fBrand" list="dlB" value="${esc(p.brand)}">
-         <datalist id="dlB">${brands.map(b=>`<option value="${esc(b)}">`).join('')}</datalist></div>
-       <div><label>Code</label><input class="f" id="fCode" value="${esc(p.code||'')}"></div>
-     </div>
-     <div class="two">
-       <div><label>Category</label><input class="f" id="fCat" list="dlC" value="${esc(p.cat)}">
-         <datalist id="dlC">${cats.map(b=>`<option value="${esc(b)}">`).join('')}</datalist></div>
-       <div><label>Sub-group</label><input class="f" id="fSub" value="${esc(p.sub||'')}"></div>
-     </div>
-     <div><label>Description</label><textarea class="f" id="fDesc">${esc(p.desc||'')}</textarea></div>
-     <div class="two">
-       <div><label>Rate ${'\u20B9'}</label><input class="f" id="fPrice" type="number" value="${p.price??''}"></div>
-       <div><label>MRP ${'\u20B9'}</label><input class="f" id="fMrp" type="number" value="${p.mrp??''}"></div>
-     </div>
-     <div class="three">
-       <div><label>GST %</label><input class="f" id="fGst" type="number" value="${p.gst??18}"></div>
-       <div><label>HSN</label><input class="f" id="fHsn" value="${esc(p.hsn||'')}"></div>
-       <div><label>Stock</label><select class="f" id="fStock">
-         <option value="active"${p.stock!=='out'?' selected':''}>In stock</option>
-         <option value="out"${p.stock==='out'?' selected':''}>Out of stock</option></select></div>
-     </div>
-     <div><label>Pack / spec line</label><input class="f" id="fSpec" value="${esc(p.spec||'')}"></div>
-     <div><label>Other names customers use (helps search)</label>
-       <input class="f" id="fAlias" value="${esc(p.alias||'')}"></div>
-     <div><label>Main image — folder/file without .jpg</label>
-       <input class="f" id="fImg" value="${esc(p.img)}" placeholder="paxton-alu/pxa_modak_mould_flat"></div>
-     <div><label>Extra images — one per line</label>
-       <textarea class="f" id="fImgs">${esc((p.imgs||[]).join('\n'))}</textarea></div>
-     <div><label>Sizes and rates</label><div id="vlist"></div>
-       <button class="btn o" id="vAdd" style="margin-top:4px">+ Add size</button></div>
-     <div><label>Note shown on the product</label>
-       <input class="f" id="fNote" value="${esc(p.note||'')}"></div>
-     <button class="btn g" id="eSave" style="margin-top:6px">Done</button>
-   </div>`;
+/* ---------------- edit sheet ---------------- */
+const ov=$('#ov'), sheet=$('#sheet');
+function closeSheet(){ov.classList.remove('open');document.body.style.overflow=''}
+ov.onclick=closeSheet;
+function uniq(k){return [...new Set(P.map(p=>p[k]).filter(Boolean))].sort()}
 
-  let vs = JSON.parse(JSON.stringify(p.variants || []));
-  const drawV = () => {
-    $('#vlist').innerHTML = vs.map((v,ix)=>`<div class="vrow">
-      <input placeholder="Size" value="${esc(v.size||'')}" data-k="size" data-ix="${ix}">
-      <input placeholder="Rate" type="number" value="${v.price??''}" data-k="price" data-ix="${ix}">
-      <input placeholder="MRP" type="number" value="${v.mrp??''}" data-k="mrp" data-ix="${ix}">
-      <button class="del" data-del="${ix}">×</button></div>`).join('');
-    $('#vlist').oninput = e => {
-      const t = e.target; if (!t.dataset.k) return;
-      const v = vs[+t.dataset.ix];
-      v[t.dataset.k] = t.dataset.k === 'size' ? t.value : (t.value === '' ? null : +t.value);
+function edit(i){
+  const p=P[i];
+  let imgs=(p.imgs&&p.imgs.length)?p.imgs.slice():(p.img?[p.img]:[]);
+  let vs=JSON.parse(JSON.stringify(p.variants||[]));
+
+  sheet.innerHTML=
+   '<div class="shead"><strong>'+(p.name?'Edit product':'New product')+'</strong>'+
+   '<button class="btn r" id="delP">Delete</button><button class="sx" id="xb">×</button></div>'+
+   '<div class="sbody">'+
+    '<div class="sw"><div class="lab">Hidden from the catalogue'+
+      '<small>Nobody sees it. Use this instead of deleting when a line may come back.</small></div>'+
+      '<span class="tg danger"><input type="checkbox" id="fHidden"'+(p.hidden?' checked':'')+'><i></i></span></div>'+
+    '<div class="sw"><div class="lab">Out of stock'+
+      '<small>Still listed, shown greyed with an Out of stock badge.</small></div>'+
+      '<span class="tg danger"><input type="checkbox" id="fOut"'+(p.stock==='out'?' checked':'')+'><i></i></span></div>'+
+    '<div class="sw"><div class="lab">Mark as new'+
+      '<small>Shows a badge on the card.</small></div>'+
+      '<span class="tg"><input type="checkbox" id="fFeat"'+(p.feat?' checked':'')+'><i></i></span></div>'+
+
+    '<div class="fg" style="margin-top:16px"><label>Name — exactly as the supplier prints it</label>'+
+      '<input id="fName" value="'+esc(p.name)+'"><div class="hint">Never tidy or reword a supplier name.</div></div>'+
+    '<div class="two">'+
+      '<div class="fg"><label>Brand</label><input id="fBrand" list="dB" value="'+esc(p.brand)+'">'+
+        '<datalist id="dB">'+uniq('brand').map(b=>'<option value="'+esc(b)+'">').join('')+'</datalist></div>'+
+      '<div class="fg"><label>Code</label><input id="fCode" value="'+esc(p.code||'')+'"></div></div>'+
+    '<div class="two">'+
+      '<div class="fg"><label>Category</label><input id="fCat" list="dC" value="'+esc(p.cat)+'">'+
+        '<datalist id="dC">'+uniq('cat').map(b=>'<option value="'+esc(b)+'">').join('')+'</datalist></div>'+
+      '<div class="fg"><label>Sub-group</label><input id="fSub" list="dS" value="'+esc(p.sub||'')+'">'+
+        '<datalist id="dS">'+uniq('sub').map(b=>'<option value="'+esc(b)+'">').join('')+'</datalist></div></div>'+
+    '<div class="fg"><label>Description</label><textarea id="fDesc">'+esc(p.desc||'')+'</textarea></div>'+
+    '<div class="fg"><label>Also called (helps search)</label><input id="fAlias" value="'+esc(p.alias||'')+'"></div>'+
+    '<div class="fg"><label>Pack / spec line</label><input id="fSpec" value="'+esc(p.spec||'')+'"></div>'+
+    '<div class="three">'+
+      '<div class="fg"><label>GST %</label><input id="fGst" type="number" value="'+(p.gst??18)+'"></div>'+
+      '<div class="fg"><label>HSN</label><input id="fHsn" value="'+esc(p.hsn||'')+'"></div>'+
+      '<div class="fg"><label>Note</label><input id="fNote" value="'+esc(p.note||'')+'"></div></div>'+
+
+    '<h4 style="font-size:.85rem;margin:18px 0 8px">Photos</h4>'+
+    '<div id="pl"></div>'+
+    '<div class="bar" style="margin-top:8px"><input class="s" id="newImg" placeholder="folder/file — no .jpg">'+
+      '<button class="btn o" id="addImg">Add</button></div>'+
+    '<div class="hint" style="font-size:.7rem;color:var(--tm)">First photo is the main one. '+
+      'Upload the file to <code>images/&lt;folder&gt;/</code> in GitHub with the same name.</div>'+
+
+    '<h4 style="font-size:.85rem;margin:18px 0 8px">Sizes and rates</h4>'+
+    '<div id="vl"></div>'+
+    '<button class="btn o" id="addV" style="margin-top:6px">+ Add size</button>'+
+    '<div class="two" style="margin-top:12px">'+
+      '<div class="fg"><label>Single rate (no sizes)</label><input id="fPrice" type="number" value="'+(p.price??'')+'"></div>'+
+      '<div class="fg"><label>Single MRP</label><input id="fMrp" type="number" value="'+(p.mrp??'')+'"></div></div>'+
+
+    '<button class="btn g" id="saveP" style="width:100%;margin-top:18px">Done</button>'+
+   '</div>';
+
+  function drawImgs(){
+    $('#pl').innerHTML = imgs.length ? imgs.map((n,ix)=>
+      '<div class="photo"><img src="'+IMG(n)+'" onerror="this.style.opacity=.15">'+
+      '<code>'+esc(n)+'</code>'+(ix===0?'<span class="main">MAIN</span>':'')+
+      '<button class="mini" data-up="'+ix+'" '+(ix===0?'disabled':'')+'>↑</button>'+
+      '<button class="mini" data-dn="'+ix+'" '+(ix===imgs.length-1?'disabled':'')+'>↓</button>'+
+      '<button class="mini del" data-rm="'+ix+'">×</button></div>').join('')
+      : '<div class="hint">No photos. The catalogue will show a placeholder tile.</div>';
+    $('#pl').onclick=function(e){
+      const b=e.target.closest('button'); if(!b) return;
+      if(b.dataset.up!==undefined){const i2=+b.dataset.up;[imgs[i2-1],imgs[i2]]=[imgs[i2],imgs[i2-1]]}
+      if(b.dataset.dn!==undefined){const i2=+b.dataset.dn;[imgs[i2+1],imgs[i2]]=[imgs[i2],imgs[i2+1]]}
+      if(b.dataset.rm!==undefined){imgs.splice(+b.dataset.rm,1)}
+      drawImgs();
     };
-    $('#vlist').onclick = e => {
-      const d = e.target.dataset.del; if (d === undefined) return;
-      vs.splice(+d,1); drawV();
-    };
+  }
+  drawImgs();
+  $('#addImg').onclick=function(){
+    const v=$('#newImg').value.trim().replace(/\.jpg$/i,'');
+    if(v && imgs.indexOf(v)<0){imgs.push(v);$('#newImg').value='';drawImgs()}
   };
+
+  function drawV(){
+    $('#vl').innerHTML = vs.length ? ('<div class="vrow" style="font-size:.6rem;color:var(--tm);'+
+      'text-transform:uppercase;letter-spacing:.07em"><span>Size</span><span>DP</span><span>MRP</span>'+
+      '<span>MOQ</span><span></span></div>') + vs.map((v,ix)=>
+      '<div class="vrow">'+
+      '<input placeholder="Size" value="'+esc(v.size||'')+'" data-k="size" data-i="'+ix+'">'+
+      '<input placeholder="DP" type="number" value="'+(v.price??'')+'" data-k="price" data-i="'+ix+'">'+
+      '<input placeholder="MRP" type="number" value="'+(v.mrp??'')+'" data-k="mrp" data-i="'+ix+'">'+
+      '<input placeholder="MOQ" type="number" value="'+(v.moq??'')+'" data-k="moq" data-i="'+ix+'">'+
+      '<button class="mini del" data-rm="'+ix+'">×</button></div>').join('') : '';
+    $('#vl').oninput=function(e){
+      const t=e.target; if(!t.dataset.k) return;
+      const v=vs[+t.dataset.i];
+      v[t.dataset.k] = t.dataset.k==='size' ? t.value : (t.value===''?null:+t.value);
+    };
+    $('#vl').onclick=function(e){
+      const b=e.target.closest('button[data-rm]'); if(!b) return;
+      vs.splice(+b.dataset.rm,1); drawV();
+    };
+  }
   drawV();
-  $('#vAdd').onclick = () => { vs.push({size:'',rate:null,price:null,mrp:null,moq:null}); drawV(); };
+  $('#addV').onclick=function(){vs.push({size:'',rate:null,price:null,mrp:null,moq:null});drawV()};
 
-  $('#eX').onclick = closeEdit;
-  $('#eDel').onclick = () => {
-    if (!confirm('Delete this product from the catalogue?')) return;
-    P.splice(i,1); touch(); closeEdit();
+  $('#xb').onclick=closeSheet;
+  $('#delP').onclick=function(){
+    if(!confirm('Delete "'+(p.name||'this product')+'" from the catalogue?\n\nHiding it is usually safer.')) return;
+    P.splice(i,1); touch(); closeSheet();
   };
-  $('#eSave').onclick = () => {
-    const num = id => { const v = $(id).value; return v === '' ? null : +v; };
-    Object.assign(p, {
-      name:$('#fName').value.trim(), brand:$('#fBrand').value.trim(),
-      code:$('#fCode').value.trim()||null, cat:$('#fCat').value.trim(),
-      sub:$('#fSub').value.trim(), desc:$('#fDesc').value.trim(),
-      price:num('#fPrice'), mrp:num('#fMrp'), gst:num('#fGst'),
-      hsn:$('#fHsn').value.trim()||null, stock:$('#fStock').value,
-      spec:$('#fSpec').value.trim(), alias:$('#fAlias').value.trim()||null,
-      note:$('#fNote').value.trim()||null, img:$('#fImg').value.trim(),
-      imgs:$('#fImgs').value.split('\n').map(s=>s.trim()).filter(Boolean),
-      variants: vs.filter(v=>v.size||v.price!=null),
+  $('#saveP').onclick=function(){
+    const num=id=>{const v=$(id).value;return v===''?null:+v};
+    const name=$('#fName').value.trim(), brand=$('#fBrand').value.trim();
+    if(!name||!brand){alert('Name and brand are both required.');return}
+    Object.assign(p,{
+      name:name, brand:brand,
+      code:$('#fCode').value.trim()||null,
+      cat:$('#fCat').value.trim(), sub:$('#fSub').value.trim(),
+      desc:$('#fDesc').value.trim(), alias:$('#fAlias').value.trim()||null,
+      spec:$('#fSpec').value.trim(), gst:num('#fGst'),
+      hsn:$('#fHsn').value.trim()||null, note:$('#fNote').value.trim()||null,
+      price:num('#fPrice'), mrp:num('#fMrp'),
+      hidden:$('#fHidden').checked, feat:$('#fFeat').checked,
+      stock:$('#fOut').checked?'out':'active',
+      imgs:imgs.slice(), img:imgs[0]||'_placeholder',
+      variants:vs.filter(v=>v.size||v.price!=null||v.mrp!=null),
     });
-    if (!p.imgs.length && p.img) p.imgs = [p.img];
-    touch(); closeEdit();
+    if(!p.slug) p.slug=mkSlug(p);
+    touch(); closeSheet();
   };
-  $('#edit').classList.add('on'); document.body.style.overflow='hidden';
+  ov.classList.add('open'); document.body.style.overflow='hidden'; sheet.scrollTop=0;
 }
-function closeEdit(){ $('#edit').classList.remove('on'); document.body.style.overflow=''; draw(); }
-function touch(){ dirty = true; localStorage.setItem(DRAFT, JSON.stringify(P)); draw(); }
+function mkSlug(p){
+  let b=(p.brand+'-'+p.name).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  let s=b, n=2;
+  while(P.some(x=>x!==p&&x.slug===s)) s=b+'-'+(n++);
+  return s;
+}
 
-$('#save').onclick = () => {
-  const clean = P.map(p => { const c = {...p}; delete c._h; return c; });
-  const blob = new Blob([JSON.stringify(clean, null, 1)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = 'data.json'; a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+/* ---------------- taxonomy ---------------- */
+$('#taxKind').onchange=drawTax;
+function drawTax(){
+  const k=$('#taxKind').value;
+  const counts={};
+  P.forEach(p=>{const v=p[k]; if(v) counts[v]=(counts[v]||0)+1});
+  const keys=Object.keys(counts).sort();
+  $('#taxList').innerHTML = keys.length ? keys.map(v=>
+    '<div class="item"><div class="t"><div class="n">'+esc(v)+'</div>'+
+    '<div class="s">'+counts[v]+' product'+(counts[v]===1?'':'s')+'</div></div>'+
+    '<button class="ibtn" data-ren="'+esc(v)+'">Rename</button></div>').join('')
+    : '<div class="empty">None yet.</div>';
+  $('#taxList').onclick=function(e){
+    const b=e.target.closest('[data-ren]'); if(!b) return;
+    const old=b.dataset.ren;
+    const nn=prompt('Rename "'+old+'" to:', old);
+    if(!nn||nn===old) return;
+    P.forEach(p=>{ if(p[k]===old) p[k]=nn.trim(); });
+    touch(); drawTax();
+  };
+}
+$('#taxAdd').onclick=function(){
+  const k=$('#taxKind').value;
+  const v=prompt('New '+(k==='brand'?'brand':k==='cat'?'category':'sub-group')+' name:');
+  if(!v) return;
+  alert('"'+v.trim()+'" is ready to use.\n\nIt appears in the list once a product uses it — '+
+        'open any product and type it into the '+(k==='brand'?'Brand':k==='cat'?'Category':'Sub-group')+' box.');
 };
-$('#revert').onclick = () => {
-  if (!confirm('Throw away every change made on this phone since the last download?')) return;
-  localStorage.removeItem(DRAFT); location.reload();
+
+/* ---------------- customers ---------------- */
+function drawCust(){
+  $('#cStat').textContent=CUSTOMERS.length+' customers can see dealer prices · '+
+    ((C.auth&&C.auth.admins||[]).length)+' admins';
+  $('#cList').innerHTML = CUSTOMERS.length ? CUSTOMERS.map((c,i)=>
+    '<tr><td><div class="nm">'+esc(c.n)+'</div><div class="ph">'+esc(c.t||'')+'</div></td>'+
+    '<td><button class="ibtn" data-rm="'+i+'">Remove</button></td></tr>').join('')
+    : '<tr><td class="empty">No customers yet.</td></tr>';
+  $('#cList').onclick=function(e){
+    const b=e.target.closest('[data-rm]'); if(!b) return;
+    const i=+b.dataset.rm;
+    if(!confirm('Remove '+CUSTOMERS[i].n+'? They will see MRP only.')) return;
+    CUSTOMERS.splice(i,1); touchC();
+  };
+}
+$('#cAdd').onclick=async function(){
+  const n=$('#cName').value.trim(), raw=($('#cPhone').value||'').replace(/\D/g,'');
+  if(!n){alert('Give the customer a name so you can recognise them later.');return}
+  if(raw.length<10){alert('Enter all 10 digits.');return}
+  const ph='91'+raw.slice(-10);
+  const h=await sha((C.salt||'')+':'+ph);
+  if(CUSTOMERS.some(c=>c.h===h)){alert('That number is already on the list.');return}
+  if((C.auth&&C.auth.admins||[]).some(a=>a.h===h)){alert('That number is already an admin.');return}
+  CUSTOMERS.push({n:n,t:'…'+raw.slice(-3),h:h});
+  $('#cName').value='';$('#cPhone').value='';
+  touchC();
 };
-$('#edit').onclick = e => { if (e.target.id === 'edit') closeEdit(); };
-boot();
+
+/* ---------------- publish ---------------- */
+function drawPublish(){
+  const n=changeCount();
+  $('#pubSummary').innerHTML = n
+    ? '<div class="note" style="background:var(--act)"><b>'+n+' change'+(n===1?'':'s')+' waiting</b>'+
+      (dirty?'data.json has product changes. ':'')+
+      (custDirty?'config.js has customer changes. ':'')+'</div>'
+    : '<div class="note"><b>Nothing to publish</b>Everything here matches the live catalogue.</div>';
+  $('#dlConfig').disabled=!custDirty;
+}
+function dl(name, text, type){
+  const b=new Blob([text],{type:type||'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+}
+$('#dlData').onclick=function(){
+  const clean=P.map(p=>{const c=Object.assign({},p); delete c._h; return c});
+  dl('data.json', JSON.stringify(clean,null,1), 'application/json');
+};
+$('#dlConfig').onclick=function(){
+  const A=(C.auth&&C.auth.admins)||[];
+  const q=o=>JSON.stringify(o);
+  const txt='/* Patel Marketing catalogue — v2 settings.\n'+
+   '   Generated by the admin panel on '+new Date().toLocaleString('en-IN')+'.\n'+
+   '   Numbers are one-way hashes, never stored in the clear. */\n\n'+
+   'window.PM_CONFIG = {\n\n'+
+   "  firm: "+q(C.firm||'Patel Marketing')+",\n"+
+   "  tagline: "+q(C.tagline||'Wholesale Kitchenware')+",\n"+
+   "  whatsapp: "+q(C.whatsapp||'')+",\n"+
+   "  site: "+q(C.site||'')+",\n\n"+
+   "  salt: "+q(C.salt||'')+",\n\n"+
+   '  auth: {\n    admins: [\n'+
+   A.map(a=>'      { n:'+q(a.n)+', t:'+q(a.t||'')+', h:'+q(a.h)+' }').join(',\n')+'\n    ],\n'+
+   '    customers: [\n'+
+   CUSTOMERS.map(c=>'      { n:'+q(c.n)+', t:'+q(c.t||'')+', h:'+q(c.h)+' }').join(',\n')+'\n    ],\n'+
+   '    noAccessMessage: '+q((C.auth&&C.auth.noAccessMessage)||'This number is not on our customer list yet.')+',\n'+
+   '  },\n\n'+
+   '  festive: '+JSON.stringify(C.festive||{},null,2).replace(/\n/g,'\n  ')+',\n\n'+
+   '  motion: '+q(C.motion||'full')+',\n};\n';
+  dl('config.js', txt, 'application/javascript');
+};
+$('#dlOrphans').onclick=async function(){
+  const used=new Set();
+  P.forEach(p=>{ if(p.img)used.add(p.img); (p.imgs||[]).forEach(i=>used.add(i)); });
+  let live=[];
+  try{ live=JSON.parse(LIVE); }catch(e){}
+  const before=new Set();
+  live.forEach(p=>{ if(p.img)before.add(p.img); (p.imgs||[]).forEach(i=>before.add(i)); });
+  const gone=[...before].filter(x=>!used.has(x)&&x!=='_placeholder');
+  $('#orph').innerHTML = gone.length
+    ? '<code class="blk">'+gone.map(esc).join('<br>')+'</code>'+
+      '<div class="hint">'+gone.length+' file'+(gone.length===1?'':'s')+' no product points at any more. '+
+      'Delete them from <code>images/</code> in GitHub, and from the Supabase bucket, to save space. '+
+      'Leaving them costs nothing but clutter.</div>'
+    : '<div class="hint">No unused photos.</div>';
+};
+$('#resetBtn').onclick=function(){
+  if(!confirm('Throw away every change made on this phone since your last download?')) return;
+  localStorage.removeItem(DRAFT); localStorage.removeItem(CUSTD); location.reload();
+};
 </script>
 </body>
 </html>
