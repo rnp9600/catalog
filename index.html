@@ -1,1 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patel Marketing — Wholesale Kitchenware Catalogue</title>
+<meta name="description" content="Browse our wholesale kitchenware range by brand, search by product type, and enquire directly on WhatsApp.">
+<!-- Link preview card shown when the catalogue itself is shared (WhatsApp,
+     Facebook, Telegram, iMessage). Individual products get their own card
+     from /api/p.js — see vercel.json. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Patel Marketing">
+<meta property="og:title" content="Patel Marketing — Wholesale Kitchenware Catalogue">
+<meta property="og:description" content="Browse our wholesale kitchenware range by brand, search by product type, and enquire directly on WhatsApp.">
+<meta property="og:image" content="https://patelmarketing-catalog.vercel.app/og-banner.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://patelmarketing-catalog.vercel.app/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--r:14px;--rs:9px;--fd:'Inter',-apple-system,sans-serif;--fm:'IBM Plex Mono',monospace}
+[data-theme="sky"]{--bg:#F2F8FD;--sf:#FFF;--sf2:#E8F3FC;--pr:#2F6FA8;--prh:#245880;--prt:#B7DCF7;
+ --ac:#12A594;--act:#CFF5F0;--tx:#0D2137;--tm:#5B7690;--bd:#D6E6F2;--sh:15,60,100}
+[data-theme="copper"]{--bg:#FBF7F2;--sf:#FFF;--sf2:#F5E9DA;--pr:#9C5227;--prh:#7D4120;--prt:#E9CBAC;
+ --ac:#B8862F;--act:#F2E3BE;--tx:#2B2117;--tm:#8A7A67;--bd:#EBDCC8;--sh:70,45,20}
+[data-theme="emerald"]{--bg:#F3F8F5;--sf:#FFF;--sf2:#E3EFE8;--pr:#116149;--prh:#0B4B38;--prt:#BFE3D3;
+ --ac:#A98833;--act:#EEE0B8;--tx:#11251D;--tm:#5F756A;--bd:#DBE8E0;--sh:10,50,40}
+[data-theme="charcoal"]{--bg:#14181C;--sf:#1D2328;--sf2:#262D34;--pr:#5AA9E0;--prh:#4691C4;--prt:#2C4557;
+ --ac:#E0A458;--act:#3A2F20;--tx:#E8EDF2;--tm:#93A3B2;--bd:#2E363E;--sh:0,0,0}
+/* Text size. The whole interface is sized in rem, so shifting the root font
+   size scales headings, labels, prices and buttons together rather than just
+   the body copy. Small is for people who want more on screen at once;
+   Largest is for reading at arm's length without glasses. */
+html{font-size:16px}
+html[data-fs="s"]{font-size:14.5px}
+html[data-fs="l"]{font-size:18.5px}
+html[data-fs="xl"]{font-size:21px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fd);background:var(--bg);color:var(--tx);transition:background .3s,color .3s;padding-bottom:40px}
+::selection{background:var(--prt)}
+header{position:sticky;top:0;z-index:60;background:var(--sf);border-bottom:1px solid var(--bd)}
+.hin{max-width:1320px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brandbox{display:flex;align-items:center;gap:11px}
+.mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--pr),var(--ac));
+ display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1rem;letter-spacing:-.03em;flex-shrink:0}
+.bn{font-size:1.1rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.bs{font-size:.66rem;color:var(--tm);font-weight:500}
+.gearbtn{border:1px solid var(--bd);background:var(--sf);color:var(--tm);width:38px;height:38px;
+ border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+ transition:border-color .16s,color .16s}
+.gearbtn:hover{border-color:var(--pr);color:var(--pr)}
+.headerctl{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.sw{display:flex;gap:3px;background:var(--sf2);padding:3px;border-radius:999px}
+.sw button{border:0;background:transparent;padding:6px 11px;border-radius:999px;font-family:var(--fd);
+ font-size:.71rem;font-weight:600;color:var(--tm);cursor:pointer;transition:all .2s;white-space:nowrap}
+.sw button.on{background:var(--pr);color:#fff}
+.sw.wide{width:100%}
+.sw.wide button{flex:1}
+.pbtn{border:1px solid var(--bd);background:var(--sf);color:var(--tx);padding:7px 13px;border-radius:999px;
+ font-family:var(--fd);font-size:.71rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px}
+.pbtn:hover{border-color:var(--pr);color:var(--pr)}
+.pbtn.wide{width:100%;justify-content:center;padding:11px}
+.hint{font-size:.72rem;color:var(--tm);line-height:1.5;margin-top:9px}
+main{max-width:1320px;margin:0 auto;padding:0 18px}
+.hero{padding:30px 0 14px}
+.eb{font-family:var(--fm);font-size:.64rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--pr);margin-bottom:8px;display:block}
+h1{font-size:1.85rem;font-weight:800;letter-spacing:-.028em;line-height:1.1;margin-bottom:8px}
+.hero p{color:var(--tm);font-size:.88rem;max-width:62ch;margin-bottom:17px}
+.sb{display:flex;align-items:center;gap:10px;background:var(--sf);border:1.5px solid var(--bd);
+ border-radius:var(--r);padding:12px 16px;max-width:540px;transition:border-color .2s}
+.sb:focus-within{border-color:var(--pr)}
+.sb svg{flex-shrink:0;color:var(--tm)}
+.sb input{border:0;outline:0;background:transparent;font-family:var(--fd);font-size:.89rem;color:var(--tx);width:100%}
+.sbx{border:0;background:var(--sf2);color:var(--tm);width:24px;height:24px;border-radius:50%;cursor:pointer;flex-shrink:0;font-size:.9rem;line-height:1;display:none}
+.sbx.on{display:block}
+.filters{margin-top:11px;display:flex;gap:6px;flex-wrap:wrap}
+.filters.sub{margin-top:7px;padding-left:2px}
+.chip{font-size:.73rem;font-weight:600;padding:6px 11px;border-radius:999px;background:var(--sf);
+ border:1px solid var(--bd);color:var(--tx);cursor:pointer;transition:all .16s}
+.chip:hover{border-color:var(--pr)}
+.chip.on{background:var(--pr);border-color:transparent;color:#fff}
+.chip.sm{font-size:.68rem;padding:5px 9px}
+.chip.sub.on{background:var(--ac);color:#fff}
+.chip .n{opacity:.55;font-family:var(--fm);font-size:.65rem;margin-left:4px}
 
+/* ---------- Quick filter row: category rail + Filters button ---------- */
+.quickrow{margin-top:11px;display:flex;gap:8px;align-items:center}
+.catrail{flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+ -webkit-overflow-scrolling:touch;padding-bottom:2px}
+.catrail::-webkit-scrollbar{display:none}
+.catrail .chip{flex-shrink:0;white-space:nowrap}
+.filterbtn{position:relative;flex-shrink:0;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);
+ padding:7px 14px;border-radius:999px;font-family:var(--fd);font-size:.76rem;font-weight:700;cursor:pointer;
+ display:flex;align-items:center;gap:6px;transition:border-color .16s}
+.filterbtn:hover{border-color:var(--pr)}
+.filterbtn.active{border-color:var(--pr);color:var(--pr)}
+.fbadge{background:var(--pr);color:#fff;font-family:var(--fm);font-size:.63rem;font-weight:700;
+ min-width:16px;height:16px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* ---------- Active filter summary pills ---------- */
+.activepills{margin-top:8px;display:none;gap:6px;flex-wrap:wrap;align-items:center}
+.activepills.show{display:flex}
+.pill{font-size:.7rem;font-weight:600;padding:5px 9px;border-radius:999px;background:var(--act);
+ color:var(--tx);cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent}
+.pill b{font-weight:700;opacity:.6;font-size:.85rem}
+.pill.clearall{background:transparent;border-color:var(--bd);color:var(--tm)}
+
+/* ---------- Filter sheet sections ---------- */
+.fsection{margin-bottom:20px}
+.fsection h4{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+ color:var(--tm);margin-bottom:9px}
+
+.bar{margin:20px 0 12px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.bar h2{font-size:1.06rem;font-weight:800}
+.bar span{font-size:.74rem;color:var(--tm)}
+
+/* ---------- GRID (default) ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(226px,1fr));gap:15px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;
+ display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s,border-color .2s;animation:rise .4s ease backwards;cursor:pointer}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(var(--sh),.13);border-color:var(--prt)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.med{height:180px;position:relative;display:flex;align-items:center;justify-content:center;
+ background:#fff;padding:12px;border-bottom:1px solid var(--bd)}
+.med img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .25s}
+.card:hover .med img{transform:scale(1.05)}
+.noimg{color:#c9c9c9;font-size:2rem;font-weight:800;font-family:var(--fm)}
+.card.out .med{filter:grayscale(1);opacity:.45}
+.bg{position:absolute;font-size:.57rem;font-weight:700;letter-spacing:.04em;padding:4px 8px;border-radius:999px;text-transform:uppercase;z-index:2}
+.bg.tl{top:8px;left:8px}.bg.tr{top:8px;right:8px}
+.bg.ft{background:var(--ac);color:#fff}
+.bg.ht{background:#fff;color:var(--pr);border:1px solid var(--prt)}
+.bg.oos{background:#B4433B;color:#fff}
+.bg.ct{background:#fff;color:var(--tm);border:1px solid var(--bd);font-family:var(--fm)}
+.bd_{padding:13px;display:flex;flex-direction:column;gap:5px;flex:1}
+.nm{font-size:.9rem;font-weight:700;line-height:1.3}
+.ds{font-size:.74rem;color:var(--tm);line-height:1.42}
+.br{font-family:var(--fm);font-size:.59rem;font-weight:500;color:var(--tm);opacity:.8}
+.cd{font-family:var(--fm);font-size:.59rem;font-weight:600;color:var(--pr)}
+.sp{display:flex;gap:5px;flex-wrap:wrap;background:var(--sf2);border-radius:var(--rs);padding:6px 8px;
+ font-family:var(--fm);font-size:.65rem;font-weight:600;line-height:1.5}
+.sp .dt{color:var(--tm)}
+.refnote{font-size:.59rem;color:var(--tm);font-style:italic}
+.vcount{font-family:var(--fm);font-size:.66rem;font-weight:600;color:var(--ac);background:var(--act);
+ border-radius:999px;padding:3px 8px;align-self:flex-start}
+.szbtn{background:none;border:0;color:var(--pr);font-family:var(--fd);font-size:.69rem;font-weight:700;cursor:pointer;padding:2px 0;text-align:left}
+.szlist{display:none;flex-direction:column;gap:2px;background:var(--sf2);border-radius:var(--rs);padding:8px 10px;font-family:var(--fm);font-size:.64rem;line-height:1.6}
+.szlist.open{display:flex}
+.pw{margin-top:auto;padding-top:3px}
+.pc{font-family:var(--fm);font-size:.95rem;font-weight:600}
+.pn{font-size:.62rem;color:var(--tm);margin-left:4px}
+.ph{font-size:.75rem;color:var(--tm);font-style:italic}
+.cta{margin-top:8px;width:100%;border:0;border-radius:var(--rs);padding:9px 12px;font-family:var(--fd);
+ font-weight:700;font-size:.76rem;background:var(--pr);color:#fff;cursor:pointer;transition:background .2s}
+.cta:hover{background:var(--prh)}
+.cta.dis{background:var(--sf2);color:var(--tm);cursor:default}
+
+/* ---------- TABLE view — dense, no photos, for comparing prices fast ---------- */
+#tableHead{display:none}
+body.v-table #tableHead{display:grid;grid-template-columns:2.4fr 1.1fr .8fr .8fr;gap:10px;
+ padding:9px 14px;background:var(--sf2);border:1px solid var(--bd);border-bottom:0;
+ border-radius:var(--r) var(--r) 0 0;font-size:.62rem;font-weight:800;color:var(--tm);
+ text-transform:uppercase;letter-spacing:.06em}
+body.v-table #tableHead span:nth-child(3),body.v-table #tableHead span:nth-child(4){text-align:right}
+body.v-table .grid{grid-template-columns:1fr;gap:0;border:1px solid var(--bd);border-top:0;
+ border-radius:0 0 var(--r) var(--r);overflow:hidden;background:var(--sf)}
+.trow{display:grid;grid-template-columns:2.4fr 1.1fr .8fr .8fr;gap:10px;padding:7px 14px;
+ border-bottom:1px solid var(--bd);cursor:pointer;align-items:baseline;font-size:.79rem}
+.trow:last-child{border-bottom:0}
+.trow:hover{background:var(--sf2)}
+.trow.out{opacity:.5}
+.tnm{font-weight:600;line-height:1.35}
+.tcode{font-family:var(--fm);font-size:.62rem;font-weight:500;color:var(--tm);font-style:normal;margin-left:5px;white-space:nowrap}
+.tbr{display:block;font-size:.63rem;font-weight:500;color:var(--tm);font-style:normal;margin-top:1px}
+.tdit{color:var(--tm);opacity:.5;font-style:normal;padding-left:3px}
+.tsz{color:var(--tm);font-size:.75rem}
+.tpr,.tmr{font-family:var(--fm);font-weight:600;text-align:right;white-space:nowrap}
+.tmr{font-weight:400;color:var(--tm);font-size:.72rem}
+.tdim{color:var(--tm);opacity:.55;font-weight:400}
+
+/* ---------- LIST view ---------- */
+body.v-list .grid{grid-template-columns:1fr;gap:9px}
+body.v-list .card{flex-direction:row;align-items:stretch}
+body.v-list .med{height:auto;width:150px;flex-shrink:0;border-bottom:0;border-right:1px solid var(--bd);padding:10px}
+body.v-list .bd_{padding:13px 16px;display:grid;
+ grid-template-columns:minmax(220px,2.2fr) minmax(150px,1.6fr) minmax(110px,.9fr) 150px;
+ gap:14px;align-items:center}
+body.v-list .nm{grid-column:1;font-size:.94rem}
+body.v-list .ds{grid-column:1;grid-row:2;margin-top:-8px}
+body.v-list .sp{grid-column:2;grid-row:1/3;align-self:center;margin:0}
+body.v-list .vcount{grid-column:2;grid-row:3;justify-self:start}
+body.v-list .szbtn,body.v-list .szlist,body.v-list .refnote{display:none}
+body.v-list .br{grid-column:1;grid-row:3;margin-top:-6px}
+body.v-list .pw{grid-column:3;grid-row:1/4;align-self:center;margin:0;padding:0;text-align:right}
+body.v-list .cta{grid-column:4;grid-row:1/4;align-self:center;margin:0;width:100%}
+body.v-list .card:hover{transform:none;box-shadow:0 4px 14px rgba(var(--sh),.1)}
+
+/* ---------- COMPACT view ---------- */
+body.v-compact .grid{grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:10px}
+body.v-compact .med{height:118px;padding:8px}
+body.v-compact .ds,body.v-compact .sp,body.v-compact .szbtn,body.v-compact .szlist,
+body.v-compact .cta,body.v-compact .refnote,body.v-compact .vcount{display:none}
+body.v-compact .bd_{padding:9px 10px 11px;gap:2px}
+body.v-compact .nm{font-size:.76rem;line-height:1.25}
+body.v-compact .br{font-size:.55rem}
+body.v-compact .pc{font-size:.8rem}
+body.v-compact .ph{font-size:.66rem}
+
+.empty{padding:48px 20px;text-align:center;color:var(--tm)}
+.empty strong{display:block;font-size:1rem;color:var(--tx);margin-bottom:6px}
+
+/* ---------- PRODUCT DETAIL SHEET ---------- */
+.ov{position:fixed;inset:0;z-index:200;background:rgba(6,12,18,.72);display:none;animation:fd .2s}
+.ov.open{display:block}
+@keyframes fd{from{opacity:0}to{opacity:1}}
+.sheet{position:absolute;right:0;top:0;height:100%;width:min(560px,100%);background:var(--bg);
+ overflow-y:auto;animation:slide .26s cubic-bezier(.2,.7,.3,1);box-shadow:-8px 0 40px rgba(0,0,0,.3)}
+@keyframes slide{from{transform:translateX(40px);opacity:.6}to{transform:none;opacity:1}}
+.shead{position:sticky;top:0;background:var(--sf);border-bottom:1px solid var(--bd);padding:12px 16px;
+ display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:5}
+.shead strong{font-size:.9rem;font-weight:800;line-height:1.25}
+.sx{border:0;background:var(--sf2);color:var(--tx);width:32px;height:32px;border-radius:50%;font-size:1.15rem;cursor:pointer;flex-shrink:0;line-height:1}
+.sbody{padding:16px}
+.hero-img{background:#fff;border:1px solid var(--bd);border-radius:var(--r);height:280px;
+ display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-in}
+.hero-img img{max-width:100%;max-height:100%;object-fit:contain}
+.thumbs{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+.thumbs button{width:56px;height:56px;border-radius:8px;border:1.5px solid var(--bd);background:#fff;
+ padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.thumbs button.on{border-color:var(--pr)}
+.thumbs img{max-width:100%;max-height:100%;object-fit:contain}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 4px}
+.tag{font-family:var(--fm);font-size:.63rem;font-weight:600;padding:4px 9px;border-radius:999px;
+ background:var(--sf2);color:var(--tm)}
+.tag.pri{background:var(--prt);color:var(--pr)}
+.tag.alias{background:var(--act);color:var(--ac);font-style:italic}
+.sheet h3{font-size:1.12rem;font-weight:800;line-height:1.25;margin:8px 0 6px}
+.sdesc{font-size:.83rem;color:var(--tm);line-height:1.55;margin-bottom:6px}
+.snote{font-size:.75rem;background:var(--act);color:var(--tx);border-radius:var(--rs);padding:9px 11px;margin-top:9px;line-height:1.5}
+.vt{margin-top:18px;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;background:var(--sf)}
+.vt .vh{display:grid;grid-template-columns:1.5fr .9fr .9fr .6fr;gap:6px;padding:9px 12px;
+ background:var(--sf2);font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tm)}
+.vt .vr{display:grid;grid-template-columns:1.5fr .9fr .9fr .6fr;gap:6px;padding:10px 12px;
+ border-top:1px solid var(--bd);font-size:.79rem;align-items:center}
+.vt .vr:nth-child(even){background:rgba(var(--sh),.02)}
+.vsize{font-weight:600}
+.vprice{font-family:var(--fm);font-weight:600;color:var(--pr)}
+.vmrp{font-family:var(--fm);color:var(--tm);text-decoration:line-through;font-size:.73rem}
+.vmoq{font-family:var(--fm);font-size:.7rem;color:var(--tm);text-align:right}
+.vt .vh span:last-child,.vt .vr span:last-child{text-align:right}
+.sizesplain{margin-top:16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;
+ font-family:var(--fm);font-size:.74rem;line-height:1.75}
+.sactions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.sactions button{flex:1;min-width:140px;border:0;border-radius:var(--rs);padding:12px;font-family:var(--fd);
+ font-weight:700;font-size:.8rem;cursor:pointer;background:var(--pr);color:#fff}
+.sactions button.alt{background:var(--sf2);color:var(--tx);border:1px solid var(--bd)}
+/* Enquiry is the primary action — own row, full width. Share + Copy share
+   the row beneath it. */
+.sactions #waBtn{flex:1 1 100%}
+.related{margin-top:24px}
+.related h4{font-size:.8rem;font-weight:800;margin-bottom:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--tm)}
+.rrow{display:flex;gap:9px;overflow-x:auto;padding-bottom:6px}
+.rcard{flex:0 0 118px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);cursor:pointer;overflow:hidden}
+.rcard .rimg{height:80px;background:#fff;display:flex;align-items:center;justify-content:center;padding:7px}
+.rcard img{max-width:100%;max-height:100%;object-fit:contain}
+.rcard span{display:block;padding:7px 8px;font-size:.66rem;font-weight:600;line-height:1.3}
+
+.lb{position:fixed;inset:0;z-index:300;background:rgba(6,12,18,.94);display:none;align-items:center;
+ justify-content:center;padding:24px;animation:fd .2s;cursor:zoom-out}
+.lb.open{display:flex}
+.lbi{max-width:900px;width:100%;text-align:center;cursor:default}
+.lb img{max-width:100%;max-height:74vh;object-fit:contain;background:#fff;border-radius:12px;padding:20px}
+.lbc{margin-top:15px;color:#fff}
+.lbc strong{display:block;font-size:1.05rem;font-weight:700;margin-bottom:4px}
+.lbc span{font-size:.79rem;opacity:.7}
+.lbx{position:absolute;top:16px;right:20px;background:rgba(255,255,255,.15);border:0;color:#fff;
+ width:40px;height:40px;border-radius:50%;font-size:1.3rem;cursor:pointer;line-height:1}
+
+.lg{margin-top:30px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:17px;display:flex;gap:13px}
+.lgi{width:36px;height:36px;border-radius:10px;background:var(--prt);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.05rem}
+.lg h3{font-size:.87rem;font-weight:800;margin-bottom:5px}
+.lg p{font-size:.78rem;color:var(--tm);line-height:1.55}
+.lg .ex{margin-top:8px;font-family:var(--fm);font-size:.72rem;background:var(--sf2);display:inline-block;padding:5px 9px;border-radius:8px;color:var(--tx)}
+.note{margin-top:13px;border:1.5px dashed var(--bd);border-radius:var(--r);padding:15px;font-size:.77rem;color:var(--tm);line-height:1.6}
+.note strong{color:var(--tx)}
+footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-size:.73rem}
+
+/* ---------- first-visit hint + help sheet ---------- */
+.hintstrip{display:flex;align-items:flex-start;gap:10px;margin-top:10px;
+ background:var(--act);border:1px solid var(--ac);border-radius:var(--rs);
+ padding:10px 12px;font-size:.78rem;line-height:1.5;color:var(--tx)}
+.hintstrip strong{font-weight:800}
+.hintstrip button{margin-left:auto;flex-shrink:0;border:0;background:transparent;
+ color:var(--tm);font-size:1.15rem;line-height:1;cursor:pointer;padding:0 2px}
+.hq{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd)}
+.hq:last-child{border-bottom:0}
+.hqi{width:32px;height:32px;border-radius:9px;background:var(--sf2);flex-shrink:0;
+ display:flex;align-items:center;justify-content:center;font-size:1rem}
+.hq h4{font-size:.85rem;font-weight:800;margin-bottom:5px}
+.hq p{font-size:.78rem;color:var(--tm);line-height:1.6;margin-bottom:6px}
+.hq p:last-child{margin-bottom:0}
+.hq b{color:var(--tx);font-weight:700}
+
+/* ---------- PDF options dialog ---------- */
+.pdfscope{font-size:.78rem;color:var(--tm);line-height:1.5;background:var(--sf2);
+ border-radius:var(--rs);padding:9px 11px;margin-bottom:16px}
+.pdfscope b{color:var(--tx)}
+.og{margin-bottom:16px}
+.ol{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
+ color:var(--tm);margin-bottom:7px}
+.orow{display:flex;gap:6px;background:var(--sf2);padding:3px;border-radius:999px}
+.orow button{flex:1;border:0;background:transparent;padding:9px 10px;border-radius:999px;
+ font-family:var(--fd);font-size:.78rem;font-weight:700;color:var(--tm);cursor:pointer;transition:all .18s}
+.orow button.on{background:var(--pr);color:#fff}
+.oh{font-size:.71rem;color:var(--tm);line-height:1.5;margin-top:7px}
+.oh2{color:var(--tm);font-weight:400;font-size:.68rem}
+.ck{display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:600;
+ padding:7px 0;cursor:pointer}
+.ck input{width:17px;height:17px;accent-color:var(--pr);cursor:pointer}
+.pwarn{background:#FFF6E5;border:1px solid #F0DDB0;border-radius:var(--rs);
+ padding:10px 12px;font-size:.75rem;line-height:1.5;color:#7A5B18;margin-bottom:14px}
+
+/* ---------- PDF EXPORT SHEET ---------- */
+/* Hidden on screen; only rendered into during printing. Note the print rules
+   below use display:none on siblings, NOT visibility:hidden — visibility
+   leaves the element occupying its full layout height, which is what used to
+   emit dozens of blank pages after the real content. */
+#pdfsheet{display:none}
+.pcover{background:var(--pr);color:#fff;padding:64px 44px 54px;text-align:center}
+.pcover h2{font-size:2.4rem;font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+.pcover .sub{font-size:1rem;opacity:.92;margin-bottom:22px}
+.pcover .meta{font-family:var(--fm);font-size:.74rem;opacity:.85;line-height:1.7}
+.pcover .wa{margin-top:22px;font-size:.82rem;font-weight:700}
+
+/* Each group is its own table element; its thead carries the group title, so the
+   title AND the column headers repeat automatically on every page the group
+   spans. This is how the running header works — Chrome repeats thead across
+   page breaks, but has no support for CSS @page margin boxes. */
+.ptbl{width:100%;border-collapse:collapse;margin-bottom:18px}
+.ptbl thead{display:table-header-group}
+.ptbl tr{break-inside:avoid;page-break-inside:avoid}
+.ptitle th{background:var(--pr);color:#fff;text-align:left;padding:8px 10px;
+ font-size:.86rem;font-weight:800;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ptitle th .cnt{float:right;font-family:var(--fm);font-size:.68rem;font-weight:600;opacity:.85}
+.phead th{background:#EFEFEF;border-bottom:1px solid #CFCFCF;text-align:left;
+ padding:5px 10px;font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:#444;
+ -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.psub td{padding:11px 10px 3px;font-size:.7rem;font-weight:800;color:var(--pr);
+ text-transform:uppercase;letter-spacing:.05em}
+.ptbl td{padding:4px 10px;font-size:.75rem;border-bottom:1px solid #EDEDED;vertical-align:top}
+.ptbl td.num{font-family:var(--fm);text-align:right;white-space:nowrap}
+.ptbl td.dim{color:#999}
+.ptbl .pn2{font-weight:600;color:#111}
+.ptbl .pcode{font-family:var(--fm);font-size:.62rem;color:#999}
+.ptbl .cont{color:#AAA;font-weight:400}
+.ptbl .zebra{background:#FAFAFA;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ptbl td.th{width:42px;padding:3px 4px 3px 10px}
+.ptbl td.th img{width:34px;height:34px;object-fit:contain;display:block}
+.ptbl th.thh{width:42px}
+
+/* Showcase layout — photo-led, for customers */
+.psec{break-after:avoid;page-break-after:avoid;background:var(--pr);color:#fff;
+ padding:9px 14px;font-weight:800;font-size:1rem;margin:0 0 14px;
+ display:flex;justify-content:space-between;align-items:baseline;
+ -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.psec span{font-family:var(--fm);font-size:.68rem;font-weight:600;opacity:.85}
+.psubh{break-after:avoid;page-break-after:avoid;font-size:.72rem;font-weight:800;
+ color:var(--pr);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px}
+.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:22px}
+.pgrid.g3{grid-template-columns:repeat(3,1fr);gap:13px}
+.pitem{break-inside:avoid;page-break-inside:avoid}
+.pimg{height:200px;background:#fff;border:1px solid #E3E3E3;border-radius:6px;
+ display:flex;align-items:center;justify-content:center;padding:9px;margin-bottom:7px}
+.g3 .pimg{height:150px}
+.pimg img{max-width:100%;max-height:100%;object-fit:contain}
+.pname{font-size:.84rem;font-weight:700;line-height:1.28;color:#111}
+.g3 .pname{font-size:.76rem}
+.pbrand{font-family:var(--fm);font-size:.6rem;color:#888;margin-top:2px}
+.pspec{font-size:.68rem;color:#555;margin-top:3px;line-height:1.42}
+.psizes{margin-top:5px;font-size:.68rem;line-height:1.55;color:#333}
+.psizes b{font-family:var(--fm);font-weight:600}
+.pnone{color:#AAA;font-style:italic;font-size:.68rem;margin-top:4px}
+.pgap{margin-top:22px;padding:9px 12px;border:1px dashed #CCC;border-radius:6px;
+ font-size:.68rem;color:#777;line-height:1.5}
+@media print{
+  @page{size:A4;margin:12mm 11mm}
+  /* PDF layout is tuned to A4 and must not follow the reader's screen setting. */
+  html{font-size:16px!important}
+  html,body{background:#fff!important;padding:0!important;margin:0!important}
+  /* display:none removes the layout box entirely — visibility:hidden did not,
+     and that was the blank-page bug. */
+  body > *{display:none!important}
+  #pdfsheet{display:block!important}
+  .pcover{break-after:page;page-break-after:always}
+  a{text-decoration:none;color:inherit}
+}
+@media(max-width:900px){
+  body.v-list .bd_{grid-template-columns:1fr;gap:6px}
+  body.v-list .sp,body.v-list .pw,body.v-list .cta,body.v-list .vcount{grid-column:1;grid-row:auto;text-align:left}
+}
+@media(max-width:560px){
+  h1{font-size:1.4rem}
+  body.v-list .med{width:104px}
+  .sheet{width:100%}
+  .hero-img{height:220px}
+  .vt .vh,.vt .vr{grid-template-columns:1.3fr .8fr .8fr .55fr;font-size:.74rem;padding:9px}
+  #tableHead,.trow{grid-template-columns:1.9fr .9fr .8fr}
+  #tableHead span:nth-child(4),.trow .tmr{display:none}
+}
+</style></head><body data-theme="sky" class="v-grid">
+<header><div class="hin">
+ <div class="brandbox"><div class="mark">PM</div>
+  <div><div class="bn">Patel Marketing</div><div class="bs">Wholesale Kitchenware</div></div></div>
+ <div class="headerctl">
+  <button class="gearbtn" id="helpBtn" aria-label="How to use this catalogue" title="How to use this catalogue">
+   <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/>
+    <line x1="12" y1="17" x2="12.01" y2="17"/>
+   </svg>
+  </button>
+  <button class="gearbtn" id="pdfBtn" aria-label="Save as PDF" title="Save as PDF">
+   <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+   </svg>
+  </button>
+  <button class="gearbtn" id="settingsBtn" aria-label="Menu" title="View & theme">
+   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <line x1="3" y1="12" x2="21" y2="12"/>
+    <line x1="3" y1="18" x2="21" y2="18"/>
+   </svg>
+  </button>
+ </div>
+</div></header>
+
+<main>
+ <section class="hero">
+  <span class="eb" id="eb">Loading catalogue…</span>
+  <h1>Everything we stock, in one place.</h1>
+  <p>Search by product or by brand — or both. Type "kadhai" for every kadhai we carry across all brands, "Paxton" for the full Paxton range, or "Paxton tawa" to narrow to one.</p>
+  <div class="sb">
+   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+   <input id="q" type="text" placeholder="Try 'kadhai', 'tawa', 'Paxton', 'triply', 'appam', 'pickle set'…" autocomplete="off">
+   <button class="sbx" id="qx" title="Clear">×</button>
+  </div>
+  <div class="hintstrip" id="hintStrip" style="display:none">
+   <span>👋 <strong>New here?</strong> Search by whatever you call it — "kadhai" finds Vadachatti, "appam" finds Paniyarakal. Tap <strong>?</strong> at the top for the full guide.</span>
+   <button id="hintX" aria-label="Dismiss">×</button>
+  </div>
+  <div class="quickrow">
+   <div class="catrail" id="catrail"></div>
+   <button class="filterbtn" id="filterBtn">Filters<span class="fbadge" id="fbadge" style="display:none">0</span></button>
+  </div>
+  <div class="activepills" id="activepills"></div>
+ </section>
+ <div class="bar"><h2 id="bh">All products</h2><span id="bc"></span></div>
+ <div id="tableHead"><span>Product</span><span>Size</span><span>Rate</span><span>MRP</span></div>
+ <div class="grid" id="g"></div>
+ <div class="empty" id="em" style="display:none"><strong>Nothing matches that.</strong>Try a shorter word — "pickle", "pourer", "mug", "dabbi".</div>
+
+ <div class="lg"><div class="lgi">📖</div><div>
+  <h3>Reading the hotel-size codes</h3>
+  <p>Suppliers write these as a short code. Every hotel pan is spelt out in full on its card:</p>
+  <span class="ex">37F &ndash; 50 / 9 Kg</span>
+  <p style="margin-top:8px"><strong>37</strong> = number of pits (how many appams at once)<br>
+   <strong>F</strong> = flat base &nbsp;·&nbsp; <strong>K</strong> = kuzhi, the rounded bump base<br>
+   <strong>50</strong> = width across each pit, in millimetres<br>
+   <strong>9 Kg</strong> = weight of the pan itself</p>
+  <p style="margin-top:8px">Regular appam and paniyaram pans are measured differently &mdash; those show the width of the whole pan and the thickness of the metal.</p>
+ </div></div>
+ <div class="note">
+  <strong>Tap any product</strong> to open its full card — every size it comes in, the rate, the MRP and the minimum order quantity, plus more photos where we have them.
+  <br><br><strong>Save as PDF</strong> exports exactly what is on screen — if a category or brand filter is on, only those products go into the PDF, laid out as a printed catalogue.
+  <br><br><strong>Hotel-size photos:</strong> the supplier's own images for 20K, 30F, 37F, 37K, 61F, 61K and 91K are wrong in their catalogue, so every hotel pan currently shows the verified 27F photo, marked as a reference image.
+ </div>
+</main>
+
+<div class="ov" id="hov"><div class="sheet" id="hsheet" onclick="event.stopPropagation()">
+  <div class="shead"><strong>How to use this catalogue</strong><button class="sx" id="hxb">×</button></div>
+  <div class="sbody">
+    <div class="hq"><div class="hqi">🔎</div><div>
+      <h4>Search by whatever you call it</h4>
+      <p>Type the local name or the catalogue name — both work. <b>kadhai</b> finds Vadachatti, <b>appam</b> finds Paniyarakal, <b>kiwi tawa</b> finds Addakal.</p>
+      <p>Brand names work too. <b>Paxton</b> shows the whole Paxton range; <b>Paxton tawa</b> narrows it to tawas. You can also search a product code like <b>MZ-157</b>.</p>
+    </div></div>
+
+    <div class="hq"><div class="hqi">🎚️</div><div>
+      <h4>Narrowing things down</h4>
+      <p>The row of chips under the search box jumps straight to a category. <b>Filters</b> opens the full set — category, brand and type together. The number on the Filters button tells you how many are active.</p>
+    </div></div>
+
+    <div class="hq"><div class="hqi">📦</div><div>
+      <h4>Opening a product</h4>
+      <p>Tap any product to see every size with its own rate, MRP where the supplier prints one, and all its photos. Tap a photo to enlarge it.</p>
+      <p><b>Enquire on WhatsApp</b> sends us the product and its sizes directly. <b>Share product</b> gives you a link you can send to anyone — it opens as a proper product card in WhatsApp.</p>
+    </div></div>
+
+    <div class="hq"><div class="hqi">⬇️</div><div>
+      <h4>Saving a PDF</h4>
+      <p>The download button at the top exports <b>whatever is on screen right now</b> — so filter to one brand or category first if that's all you need.</p>
+      <p><b>Price list</b> puts every size on its own line, best for checking rates. <b>Showcase</b> uses large photos, better for sending to a customer. You can group by category or by brand, and turn prices, MRP and thumbnails on or off.</p>
+    </div></div>
+
+    <div class="hq"><div class="hqi">📖</div><div>
+      <h4>Hotel-size codes</h4>
+      <p>Codes like <b>37F — 50 / 9 Kg</b> mean 37 pits, flat base, each pit 50 mm across, pan weighs 9 kg. <b>K</b> instead of <b>F</b> means kuzhi — the rounded bump base. Every hotel pan spells this out in full on its card.</p>
+    </div></div>
+
+    <div class="hq"><div class="hqi">💬</div><div>
+      <h4>Prices and ordering</h4>
+      <p>Rates shown include GST. Some brands are still being priced up — those show a dash for now. Ordering happens over WhatsApp, not on this site.</p>
+    </div></div>
+  </div>
+</div></div>
+
+<div class="ov" id="pov"><div class="sheet" id="psheet" onclick="event.stopPropagation()">
+  <div class="shead"><strong>Save as PDF</strong><button class="sx" id="pxb">×</button></div>
+  <div class="sbody">
+    <p class="pdfscope" id="pdfScope"></p>
+
+    <div class="og"><div class="ol">Layout</div>
+      <div class="orow" id="optLayout">
+        <button data-v="table">Price list</button>
+        <button class="on" data-v="showcase">Showcase</button>
+      </div>
+      <p class="oh" id="layoutHint">One line per size. Compact, for office use and price checking.</p>
+    </div>
+
+    <div class="og"><div class="ol">Group by</div>
+      <div class="orow" id="optGroup">
+        <button class="on" data-v="cat">Category</button>
+        <button data-v="brand">Brand</button>
+      </div>
+      <p class="oh" id="groupHint">Category first, then brand within it.</p>
+    </div>
+
+    <div class="og"><div class="ol">Include</div>
+      <label class="ck"><input type="checkbox" id="optPrice" checked> Prices</label>
+      <label class="ck" id="rowMrp"><input type="checkbox" id="optMrp"> MRP <span class="oh2">(Mazda only)</span></label>
+      <label class="ck" id="rowThumb"><input type="checkbox" id="optThumb"> Thumbnails <span class="oh2">(small photo per product)</span></label>
+    </div>
+
+    <div class="pwarn" id="pdfWarn" style="display:none"></div>
+
+    <div class="sactions">
+      <button id="pdfGo">Generate PDF</button>
+    </div>
+    <p class="oh" style="margin-top:10px">Opens your browser's print dialog — choose <strong>Save as PDF</strong> as the destination. Turn on "Headers and footers" there if you want page numbers.</p>
+  </div>
+</div></div>
+
+<div id="pdfsheet"></div>
+
+<div class="ov" id="fov"><div class="sheet" id="fsheet" onclick="event.stopPropagation()">
+ <div class="shead"><strong>Filters</strong><button class="sx" id="fxb">×</button></div>
+ <div class="sbody">
+  <div class="fsection"><h4>Category</h4><div class="filters" id="cf"></div></div>
+  <div class="fsection" id="subwrap" style="display:none"><h4>Type</h4><div class="filters" id="sf"></div></div>
+  <div class="fsection"><h4>Brand</h4><div class="filters" id="bf"></div></div>
+  <div class="sactions">
+   <button class="alt" id="clearFiltersBtn">Clear all</button>
+   <button id="applyFiltersBtn">Show results</button>
+  </div>
+ </div>
+</div></div>
+
+
+<div class="ov" id="sov"><div class="sheet" id="ssheet" onclick="event.stopPropagation()">
+ <div class="shead"><strong>Settings</strong><button class="sx" id="sxbtn">×</button></div>
+ <div class="sbody">
+  <div class="fsection">
+   <h4>Text size</h4>
+   <div class="sw wide" id="fsw">
+     <button data-f="s" style="font-size:.72rem">Small</button>
+     <button class="on" data-f="m" style="font-size:.82rem">Standard</button>
+     <button data-f="l" style="font-size:.94rem">Large</button>
+     <button data-f="xl" style="font-size:1.06rem">Largest</button>
+   </div>
+   <p class="hint">Makes everything on the page bigger, not just the product names. Printed PDFs are unaffected.</p>
+  </div>
+  <div class="fsection">
+   <h4>View</h4>
+   <div class="sw wide" id="vsw">
+     <button class="on" data-v="grid">Grid</button>
+     <button data-v="list">List</button>
+     <button data-v="compact">Compact</button>
+     <button data-v="table">Price list</button>
+   </div>
+   <p class="hint">Price list drops the photos and gives every size its own line with its own rate — the same layout as the Price list PDF.</p>
+  </div>
+  <div class="fsection">
+   <h4>Theme</h4>
+   <div class="sw wide" id="tsw">
+     <button class="on" data-t="sky">Sky</button>
+     <button data-t="copper">Copper</button>
+     <button data-t="emerald">Emerald</button>
+     <button data-t="charcoal">Dark</button>
+   </div>
+  </div>
+ </div>
+</div></div>
+
+<div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
+
+<div class="lb" id="lb"><button class="lbx" id="lbx">×</button>
+ <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
+ <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
+
+<footer>Patel Marketing — wholesale kitchenware · catalogue draft</footer>
+
+<script>
+let P=[];
+let fc='All',fs='All',fb='All',q='';
+const g=document.getElementById('g'),em=document.getElementById('em');
+// Images load from the local /images/ folder by default. Once photos are
+// uploaded to the Supabase Storage bucket (see supabase/README.md), flip
+// this one line to serve from there instead — nothing else in the page
+// needs to change, filenames are identical in both places.
+const IMAGE_SOURCE = 'local'; // 'local' | 'supabase'
+const SUPABASE_IMAGE_BASE = 'https://vcrzauuxvgpsbforiszz.supabase.co/storage/v1/object/public/catalog-images';
+const IMG=n=>IMAGE_SOURCE==='supabase' ? `${SUPABASE_IMAGE_BASE}/${n}.jpg` : `images/${n}.jpg`;
+
+/* ---------- sharing ---------- */
+// Patel Marketing's WhatsApp Business number, digits only with country code.
+// Every "Enquire" tap opens a chat with THIS number. Change in one place only.
+const WA_NUMBER='917892967505';
+const SITE='https://patelmarketing-catalog.vercel.app';
+// slugOf() must stay byte-identical to the copy in api/p.js. If the two ever
+// disagree, every shared product link 404s. Verified unique across all 454
+// products; it is derived from brand + name, so it stays stable as long as
+// product names do (and names are fixed by supplier price list, so they do).
+const slugOf=p=>{const k=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  return k(p.brand)+'-'+k(p.name);};
+const shareUrl=p=>`${SITE}/p/${slugOf(p)}`;
+// The message that lands in Raj's WhatsApp. The trailing link is what makes
+// the rich product card render underneath it.
+function waMessage(p){
+  const L=[];
+  L.push("Hi! 👋 I'm interested in this product:","");
+  L.push(`📦 *${p.brand}* — ${p.name}`);
+  if(p.code)L.push(`🔖 Code: ${p.code}`);
+  if(p.cat)L.push(`📂 ${p.cat}`);
+  if(p.variants&&p.variants.length){
+    L.push("","📏 *Sizes:*");
+    p.variants.forEach(v=>L.push(`  • ${v.size}${v.price!=null?` — ₹${v.price}`:''}`));
+  }else if(p.sizes&&p.sizes.length){
+    L.push("",`📏 *Sizes:* ${p.sizes.join(', ')}`);
+  }
+  L.push("",`🔗 ${shareUrl(p)}`,"","✨ Please share availability and delivery details.");
+  return L.join('\n');
+}
+
+/* ---------- search helpers ---------- */
+/* Each key maps to alternative *phrases*. They are matched whole, not split
+   into words — otherwise "dh" → "double handle" would match anything merely
+   containing "handle". */
+const SYN={wh:['white'],bk:['black'],ss:['stainless steel'],rd:['round'],sq:['square'],
+ sp:['salt pepper','salt & pepper'],pm:['potato masher'],fp:['frying pan'],
+ ltr:['litre'],pcs:['pieces'],pc:['piece'],cera:['cera','ceramic'],
+ tadka:['ogarala','vagaria','tadka'],
+ // Surya cast iron — the names customers actually use, mapped both ways.
+ kiwi:['addakal'],'kiwi tawa':['addakal'],addakal:['kiwi tawa'],adakal:['addakal','kiwi tawa'],
+ appam:['paniyarakal','appakal'],paniyarakal:['appam'],paniyaram:['paniyarakal','appam'],
+ appacity:['appakal'],appakal:['appacity','appam'],
+ dh:['double handle'],kadhai:['vadachatti'],kadai:['vadachatti','kadai'],
+ vadachatti:['kadhai','kadai'],kuzhi:['bump base','kuzhi'],
+ uttapam:['uttapakal'],uttapakal:['uttapam'],soppu:['miniature toys']};
+function hay(p){
+  if(p._h) return p._h;
+  const v=(p.variants||[]).map(x=>x.size).join(' ');
+  p._h=(p.name+' '+p.brand+' '+p.cat+' '+p.sub+' '+(p.desc||'')+' '+(p.spec||'')+' '+(p.code||'')+' '+(p.alias||'')+' '+v+' '+
+   (p.sizes||[]).join(' ')+(p.hotel?` ${p.hotel.pits} pits ${p.hotel.base} ${p.hotel.dia} ${p.hotel.kg}`:'')).toLowerCase();
+  return p._h;
+}
+function match(p){
+  if(fc!=='All'&&p.cat!==fc)return false;
+  if(fs!=='All'&&p.sub!==fs)return false;
+  if(fb!=='All'&&p.brand!==fb)return false;
+  if(!q)return true;
+  const h=hay(p), ql=q.toLowerCase().trim();
+  // Tokens of 1–2 characters match on a word boundary rather than anywhere in
+  // the text — otherwise "dh" hits every "kadhai" and the result is noise.
+  const has=t=>t.length<=2
+    ? new RegExp('(^|[^a-z0-9])'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'([^a-z0-9]|$)').test(h)
+    : h.includes(t);
+  const hit=t=>has(t)||(SYN[t]||[]).some(has);
+  // whole-phrase synonym first ("kiwi tawa" → addakal), else token by token
+  if(SYN[ql]&&SYN[ql].some(has))return true;
+  return ql.split(/\s+/).filter(Boolean).every(hit);
+}
+function cnt(k,v,scope){return (scope||P).filter(p=>p[k]===v).length}
+
+/* ---------- filter ordering ----------
+   Categories are ordered by what the business actually leads with, not
+   alphabetically — otherwise "Accessories & Spares" lands first and the
+   cookware ranges get buried. Anything not listed here falls into the
+   middle block, sorted alphabetically. Edit these two lists to reorder
+   the filters; nothing else needs changing.                            */
+const CAT_FIRST=[
+  'Cast Iron',            // Paxton flagship
+  'Triply',
+  'Triply Honeycomb',
+  'Stainless Steel',
+  'Hard Anodised',
+  'Aluminium & Non-Stick',
+  'Appam & Paniyaram',
+  'Steamers & Puttu',
+  'Murukku & Snack Makers',
+  'Hotel Size',
+];
+const CAT_LAST=[
+  'Accessories & Spares',  // spares are the last thing anyone browses for
+];
+const BRAND_FIRST=['Surya','Paxton CI'];   // own brands lead
+
+function orderBy(vals,first,last){
+  const rank=v=>{
+    const f=first.indexOf(v); if(f>-1) return [0,f,''];
+    const l=last.indexOf(v);  if(l>-1) return [2,l,''];
+    return [1,0,v.toLowerCase()];
+  };
+  return [...vals].sort((a,b)=>{
+    const ra=rank(a),rb=rank(b);
+    return ra[0]-rb[0] || ra[1]-rb[1] || ra[2].localeCompare(rb[2]);
+  });
+}
+
+/* One chip-row renderer used everywhere (rail, sheet) so every facet behaves
+   identically — this is what makes selection state reliable: whichever chip
+   row changes, the whole row is redrawn from fc/fs/fb, so the clicked chip
+   always ends up with .on applied, never left showing just a stale hover.
+   `compact` controls size only; the accent colour is tied to the sub-category
+   row via `key`, so the same selection never renders in two different colours
+   depending on which row it appears in. */
+function chipsHTML(vals,key,cur,scope,allLabel,compact){
+  const cls='chip'+(compact?' sm':'')+(key==='sub'?' sub':'');
+  return `<span class="${cls}${cur==='All'?' on':''}" data-v="All">${allLabel}</span>`+
+    vals.map(v=>`<span class="${cls}${cur===v?' on':''}" data-v="${v}">${v}${compact?'':`<span class="n">${cnt(key,v,scope)}</span>`}</span>`).join('');
+}
+function bindChips(el,onPick){
+  el.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>onPick(c.dataset.v)));
+}
+function afterFilterChange(){ rebuildFilters(); render(); }
+
+function rebuildFilters(){
+  const catVals=orderBy([...new Set(P.map(p=>p.cat))].filter(Boolean),CAT_FIRST,CAT_LAST);
+  const pickCat=v=>{fc=v;fs='All';afterFilterChange();};
+
+  const railEl=document.getElementById('catrail');
+  railEl.innerHTML=chipsHTML(catVals,'cat',fc,P,'All',true);
+  bindChips(railEl,pickCat);
+
+  const cfEl=document.getElementById('cf');
+  cfEl.innerHTML=chipsHTML(catVals,'cat',fc,P,'All categories',false);
+  bindChips(cfEl,pickCat);
+
+  const subwrap=document.getElementById('subwrap');
+  const sfEl=document.getElementById('sf');
+  if(fc==='All'){
+    subwrap.style.display='none'; sfEl.innerHTML='';
+  }else{
+    const scope=P.filter(p=>p.cat===fc);
+    const subVals=[...new Set(scope.map(p=>p.sub))].filter(Boolean).sort();
+    if(subVals.length<2){
+      subwrap.style.display='none'; sfEl.innerHTML=''; fs='All';
+    }else{
+      subwrap.style.display='';
+      sfEl.innerHTML=chipsHTML(subVals,'sub',fs,scope,'All types',false);
+      bindChips(sfEl,v=>{fs=v;afterFilterChange();});
+    }
+  }
+
+  const brandVals=orderBy([...new Set(P.map(p=>p.brand))].filter(Boolean),BRAND_FIRST,[]);
+  const bfEl=document.getElementById('bf');
+  bfEl.innerHTML=chipsHTML(brandVals,'brand',fb,P,'All brands',false);
+  bindChips(bfEl,v=>{fb=v;afterFilterChange();});
+
+  updateFilterSummary();
+}
+
+function updateFilterSummary(){
+  const active=[];
+  if(fc!=='All') active.push({label:fc, clear:()=>{fc='All';fs='All';afterFilterChange();}});
+  if(fs!=='All') active.push({label:fs, clear:()=>{fs='All';afterFilterChange();}});
+  if(fb!=='All') active.push({label:fb, clear:()=>{fb='All';afterFilterChange();}});
+
+  const badge=document.getElementById('fbadge');
+  const btn=document.getElementById('filterBtn');
+  if(active.length){ badge.style.display=''; badge.textContent=active.length; btn.classList.add('active'); }
+  else { badge.style.display='none'; btn.classList.remove('active'); }
+
+  const wrap=document.getElementById('activepills');
+  if(!active.length){ wrap.classList.remove('show'); wrap.innerHTML=''; return; }
+  wrap.classList.add('show');
+  wrap.innerHTML=active.map((a,i)=>`<span class="pill" data-i="${i}">${a.label} <b>×</b></span>`).join('')+
+    `<span class="pill clearall" id="clearAllPill">Clear all</span>`;
+  wrap.querySelectorAll('.pill:not(.clearall)').forEach((el,i)=>el.addEventListener('click',()=>active[i].clear()));
+  document.getElementById('clearAllPill').addEventListener('click',()=>{fc='All';fs='All';fb='All';afterFilterChange();});
+}
+
+/* ---------- card ---------- */
+function priceLine(p){
+  if(p.variants&&p.variants.length){
+    const ps=p.variants.map(v=>v.price).filter(x=>x!=null);
+    if(!ps.length)return `<span class="ph">Enquire for pricing</span>`;
+    const lo=Math.min(...ps),hi=Math.max(...ps);
+    return lo===hi?`<span class="pc">₹${lo}</span><span class="pn">incl. GST</span>`
+      :`<span class="pc">₹${lo}–${hi}</span><span class="pn">incl. GST</span>`;
+  }
+  return p.price!=null?`<span class="pc">₹${p.price}</span><span class="pn">incl. GST</span>`
+    :`<span class="ph">Enquire for pricing</span>`;
+}
+function specHtml(p){
+  if(p.hotel){const h=p.hotel;
+    return `<div class="sp"><span>${h.pits} pits</span><span class="dt">·</span><span>each pit ${h.dia} mm wide</span><span class="dt">·</span><span>${h.base} base</span><span class="dt">·</span><span>approx ${h.kg} kg</span></div>`
+      +(h.ref?'<div class="refnote">Photo shown is the 27F pan — reference only</div>':'');}
+  return p.spec?`<div class="sp">${p.spec}</div>`:'';
+}
+function card(p,i){
+  const b=[];
+  if(p.stock==='out')b.push('<span class="bg tr oos">Out of stock</span>');
+  else if(p.feat)b.push('<span class="bg tr ft">Featured</span>');
+  if(p.hotel)b.push('<span class="bg tl ht">🏨 Hotel size</span>');
+  else if((p.imgs||[]).length>1)b.push(`<span class="bg tl ct">${p.imgs.length} photos</span>`);
+  const nv=(p.variants||[]).length;
+  const vc=nv>1?`<span class="vcount">${nv} sizes &amp; options</span>`:'';
+  const sz=(!nv&&p.sizes&&p.sizes.length)
+    ?`<button class="szbtn" data-sz="${i}">▸ ${p.sizes.length} sizes &amp; weights</button>
+      <div class="szlist" id="sz${i}">${p.sizes.map(s=>`<span>${s}</span>`).join('')}</div>`:'';
+  const cta=p.stock==='out'?'<button class="cta dis">Currently unavailable</button>'
+    :'<button class="cta" data-open="'+i+'">View sizes &amp; rates</button>';
+  const im=p.img?`<img src="${IMG(p.img)}" alt="${p.name}" loading="lazy">`:`<span class="noimg">—</span>`;
+  return `<div class="card ${p.stock==='out'?'out':''}" data-open="${i}" style="animation-delay:${Math.min(i,14)*.028}s">
+   <div class="med">${b.join('')}${im}</div>
+   <div class="bd_"><div class="nm">${p.name}</div>
+    ${p.desc?`<div class="ds">${p.desc}</div>`:''}
+    ${specHtml(p)}${vc}${sz}
+    <span class="br">${p.brand}${p.code?' · <span class="cd">'+p.code+'</span>':''}</span>
+    <div class="pw">${priceLine(p)}</div>${cta}</div></div>`;
+}
+
+let VIEW=[];
+/* One row per size for the price-list view. The product name and code print
+   on the first line only; further sizes carry a ditto mark so the eye groups
+   them. Identical logic to pdfRows() in the PDF builder. */
+function priceRows(p,i){
+  const vs=(p.variants&&p.variants.length)
+    ? p.variants.map(v=>({size:v.size,price:v.price,mrp:v.mrp}))
+    : ((p.sizes&&p.sizes.length)
+        ? p.sizes.map(z=>({size:z,price:null,mrp:null}))
+        : [{size:null,price:p.price!=null?p.price:null,mrp:null}]);
+  return vs.map((v,ri)=>`<div class="trow${p.stock==='out'?' out':''}" data-open="${i}">
+    <span class="tnm">${ri===0
+       ? p.name+(p.code?` <em class="tcode">${p.code}</em>`:'')+`<em class="tbr">${p.brand}</em>`
+       : '<em class="tdit">\u2033</em>'}</span>
+    <span class="tsz">${v.size||'\u2014'}</span>
+    <span class="tpr${v.price==null?' tdim':''}">${v.price!=null?'\u20b9'+v.price:'\u2014'}</span>
+    <span class="tmr${v.mrp==null?' tdim':''}">${v.mrp!=null?'\u20b9'+v.mrp:'\u2014'}</span>
+  </div>`).join('');
+}
+function render(){
+  VIEW=P.filter(match);
+  // The price-list view is a real table, not cards laid out to look like one:
+  // every size gets its own line with its own rate, matching the Price list PDF.
+  // Cards stay one-per-product in every other view.
+  g.innerHTML = document.body.classList.contains('v-table')
+    ? VIEW.map(priceRows).join('')
+    : VIEW.map(card).join('');
+  em.style.display=VIEW.length?'none':'block';
+  document.getElementById('bc').textContent=VIEW.length+' of '+P.length+' shown';
+  document.getElementById('bh').textContent=
+    fs!=='All'?fs:(fc!=='All'?fc:(fb!=='All'?fb:(q?'Search results':'All products')));
+  document.getElementById('qx').classList.toggle('on',!!q);
+  g.querySelectorAll('[data-open]').forEach(el=>el.addEventListener('click',e=>{
+    e.stopPropagation();openSheet(VIEW[+el.dataset.open]);}));
+  g.querySelectorAll('.szbtn').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
+    const el=document.getElementById('sz'+b.dataset.sz);
+    const open=el.classList.toggle('open');
+    b.textContent=(open?'▾ ':'▸ ')+b.textContent.slice(2);}));
+}
+
+/* ---------- detail sheet ---------- */
+const ov=document.getElementById('ov'),sheet=document.getElementById('sheet');
+let CUR=null;
+function openSheet(p){
+  if(!p)return;
+  CUR=p;
+  const imgs=(p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[]));
+  const vt=(p.variants&&p.variants.length)?`
+    <div class="vt">
+      <div class="vh"><span>Size / option</span><span>Rate</span><span>MRP</span><span>MOQ</span></div>
+      ${p.variants.map(v=>`<div class="vr">
+        <span class="vsize">${v.size}</span>
+        <span class="vprice">${v.price!=null?'₹'+v.price:'—'}</span>
+        <span class="vmrp">${v.mrp!=null?'₹'+v.mrp:''}</span>
+        <span class="vmoq">${v.moq?v.moq+' pc':'—'}</span></div>`).join('')}
+    </div>
+    <p style="font-size:.7rem;color:var(--tm);margin-top:7px;line-height:1.5">
+      Rate is per piece including GST${p.gst?' at '+p.gst+'%':''}. MRP is the printed maximum retail price.
+      MOQ is the minimum order quantity where the supplier sets one.</p>`
+    : (p.sizes&&p.sizes.length? `<div class="sizesplain">${p.sizes.map(s=>`<div>${s}</div>`).join('')}</div>`:'');
+
+  const rel=P.filter(x=>x!==p&&x.sub===p.sub&&x.brand===p.brand).slice(0,10);
+  const relHtml=rel.length?`<div class="related"><h4>More ${p.sub.toLowerCase()}</h4><div class="rrow">
+     ${rel.map(r=>`<div class="rcard" data-rel="${P.indexOf(r)}">
+       <div class="rimg">${r.img?`<img src="${IMG(r.img)}" loading="lazy" alt="">`:'—'}</div>
+       <span>${r.name}</span></div>`).join('')}</div></div>`:'';
+
+  sheet.innerHTML=`
+   <div class="shead"><strong>${p.name}</strong><button class="sx" id="sxb">×</button></div>
+   <div class="sbody">
+     <div class="hero-img" id="heroimg">${imgs.length?`<img id="hi" src="${IMG(imgs[0])}" alt="${p.name}">`:'<span class="noimg">No photo yet</span>'}</div>
+     ${imgs.length>1?`<div class="thumbs" id="thumbs">${imgs.map((n,i)=>
+        `<button class="${i?'':'on'}" data-i="${i}" data-n="${n}"><img src="${IMG(n)}" alt="" loading="lazy"></button>`).join('')}</div>`:''}
+     <div class="meta">
+       <span class="tag pri">${p.brand}</span>
+       <span class="tag">${p.cat}</span>
+       ${p.sub?`<span class="tag">${p.sub}</span>`:''}
+       ${p.alias?`<span class="tag alias">also called ${p.alias}</span>`:''}
+       ${p.code?`<span class="tag">${p.code}</span>`:''}
+       ${p.gst?`<span class="tag">GST ${p.gst}%</span>`:''}
+     </div>
+     <h3>${p.name}</h3>
+     ${p.desc?`<p class="sdesc">${p.desc}</p>`:''}
+     ${p.hotel?specHtml(p):(p.spec?`<div class="sp">${p.spec}</div>`:'')}
+     ${p.note?`<div class="snote">ℹ️ ${p.note}</div>`:''}
+     ${vt}
+     <div class="sactions">
+       <button id="waBtn">Enquire on WhatsApp</button>
+       <button class="alt" id="shBtn">Share product</button>
+       <button class="alt" id="cpBtn">Copy details</button>
+     </div>
+     ${relHtml}
+   </div>`;
+  ov.classList.add('open');document.body.style.overflow='hidden';
+  sheet.scrollTop=0;
+  // Reflect the open product in the address bar, so the browser's own share
+  // and copy-link give a working product link too. replaceState, not pushState:
+  // we don't want every related-product tap stacking up the back button.
+  try{history.replaceState(null,'','?p='+slugOf(p))}catch(e){}
+  document.getElementById('sxb').onclick=closeSheet;
+  const hi=document.getElementById('hi');
+  if(hi){document.getElementById('heroimg').onclick=()=>lbOpen(hi.src,p.name,p.brand+' · '+p.sub);}
+  const th=document.getElementById('thumbs');
+  if(th)th.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    th.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');document.getElementById('hi').src=IMG(b.dataset.n);});
+  sheet.querySelectorAll('[data-rel]').forEach(c=>c.onclick=()=>openSheet(P[+c.dataset.rel]));
+  document.getElementById('waBtn').onclick=()=>{
+    window.open(`https://wa.me/${WA_NUMBER}?text=`+encodeURIComponent(waMessage(p)),'_blank');};
+  document.getElementById('shBtn').onclick=async()=>{
+    const b=document.getElementById('shBtn'),url=shareUrl(p);
+    // Native share sheet on phones (WhatsApp, SMS, Mail all appear here).
+    if(navigator.share){
+      try{await navigator.share({title:`${p.name} — ${p.brand}`,url});return}
+      catch(e){if(e&&e.name==='AbortError')return}
+    }
+    try{await navigator.clipboard.writeText(url);b.textContent='Link copied ✓';}
+    catch(e){b.textContent=url;}
+    setTimeout(()=>b.textContent='Share product',1800);};
+  document.getElementById('cpBtn').onclick=()=>{
+    const lines=[p.name,p.brand+' · '+p.cat+(p.code?' · '+p.code:'')];
+    (p.variants||[]).forEach(v=>lines.push(`  ${v.size} — ₹${v.price} incl GST${v.mrp?` (MRP ₹${v.mrp})`:''}${v.moq?` · MOQ ${v.moq}`:''}`));
+    navigator.clipboard.writeText(lines.join('\n')).then(()=>{
+      const b=document.getElementById('cpBtn');b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy details',1600);});};
+}
+function closeSheet(){ov.classList.remove('open');document.body.style.overflow='';CUR=null;
+  try{history.replaceState(null,'',location.pathname)}catch(e){}}
+ov.addEventListener('click',closeSheet);
+
+/* ---------- lightbox ---------- */
+const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg'),
+      lbn=document.getElementById('lbn'),lbb=document.getElementById('lbb');
+function lbOpen(src,n,b){lbimg.src=src;lbn.textContent=n;lbb.textContent=b;lb.classList.add('open')}
+function closeLb(){lb.classList.remove('open')}
+lb.addEventListener('click',closeLb);
+document.getElementById('lbx').addEventListener('click',closeLb);
+
+/* ---------- filter sheet ---------- */
+const fov=document.getElementById('fov');
+function openFilterSheet(){fov.classList.add('open');document.body.style.overflow='hidden'}
+function closeFilterSheet(){fov.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('filterBtn').addEventListener('click',openFilterSheet);
+document.getElementById('fxb').addEventListener('click',closeFilterSheet);
+fov.addEventListener('click',closeFilterSheet);
+document.getElementById('applyFiltersBtn').addEventListener('click',closeFilterSheet);
+document.getElementById('clearFiltersBtn').addEventListener('click',()=>{
+  fc='All';fs='All';fb='All';afterFilterChange();});
+
+/* ---------- settings sheet (view, theme, export) ---------- */
+const sov=document.getElementById('sov');
+function openSettings(){sov.classList.add('open');document.body.style.overflow='hidden'}
+function closeSettings(){sov.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('settingsBtn').addEventListener('click',openSettings);
+document.getElementById('sxbtn').addEventListener('click',closeSettings);
+sov.addEventListener('click',closeSettings);
+
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
+  if(lb.classList.contains('open'))closeLb();
+  else if(document.getElementById('hov').classList.contains('open'))closeHelp();
+  else if(document.getElementById('pov').classList.contains('open'))closePdfSheet();
+  else if(fov.classList.contains('open'))closeFilterSheet();
+  else if(sov.classList.contains('open'))closeSettings();
+  else if(ov.classList.contains('open'))closeSheet();});
+
+/* ---------- PDF export ---------- */
+/* Two layouts share one grouping engine.
+     table    — one row per size/variant. Office + price checking.
+     showcase — photo-led cards, sizes listed inside. Customer-facing.
+   Grouping is Brand > Category > Sub, or Category > Brand > Sub. Sections are
+   ordered with the same orderBy()/CAT_FIRST/BRAND_FIRST used by the on-screen
+   filters, so the PDF reads in the same order as the site.
+   Scope is always whatever match() currently passes — filters and search
+   included. Products with no price still print, with a dash, because the
+   missing prices are a data gap being filled in, not a reason to hide rows. */
+/* Defaults for someone who has never exported before: Showcase, because a
+   first-time visitor is far more likely to be a customer wanting to see the
+   products than an office user checking rates. Once they generate a PDF, the
+   settings they used are remembered and become their default next time.
+   thumb applies to the price list only. Showcase always carries photos —
+   that is what makes it a showcase, so there is no toggle for it. */
+const PDF_PREF_KEY='pm_pdf_prefs_v1';
+const PDFO={layout:'showcase',group:'cat',price:true,mrp:false,thumb:false};
+try{
+  const saved=JSON.parse(localStorage.getItem(PDF_PREF_KEY)||'null');
+  if(saved&&typeof saved==='object'){
+    if(saved.layout==='table'||saved.layout==='showcase')PDFO.layout=saved.layout;
+    if(saved.group==='cat'||saved.group==='brand')PDFO.group=saved.group;
+    ['price','mrp','thumb'].forEach(k=>{if(typeof saved[k]==='boolean')PDFO[k]=saved[k]});
+  }
+}catch(e){}
+function savePdfPrefs(){
+  try{localStorage.setItem(PDF_PREF_KEY,JSON.stringify(PDFO))}catch(e){}
+}
+
+function pdfRows(p){
+  // One entry per printable line. Products with no variants still yield one
+  // line so nothing silently vanishes from the price list.
+  if(p.variants&&p.variants.length) return p.variants.map(v=>({
+    size:v.size, price:v.price, mrp:v.mrp}));
+  if(p.sizes&&p.sizes.length) return p.sizes.map(s=>({size:s,price:null,mrp:null}));
+  return [{size:null,price:p.price!=null?p.price:null,mrp:null}];
+}
+function money(v){return v==null?null:'\u20b9'+v}
+
+// Build Map(section -> Map(subsection -> products[])) honouring the toggle.
+function pdfGroups(list){
+  const A=PDFO.group==='brand'?'brand':'cat', B=PDFO.group==='brand'?'cat':'brand';
+  const out=new Map();
+  list.forEach(p=>{
+    const a=p[A]||'Other', b=p[B]||'Other';
+    if(!out.has(a))out.set(a,new Map());
+    const m=out.get(a);
+    if(!m.has(b))m.set(b,[]);
+    m.get(b).push(p);
+  });
+  const first=A==='brand'?BRAND_FIRST:CAT_FIRST, last=A==='brand'?[]:CAT_LAST;
+  const keys=orderBy([...out.keys()],first,last);
+  return keys.map(k=>{
+    const inner=out.get(k);
+    const bFirst=B==='brand'?BRAND_FIRST:CAT_FIRST, bLast=B==='brand'?[]:CAT_LAST;
+    const bKeys=orderBy([...inner.keys()],bFirst,bLast);
+    return [k, bKeys.map(bk=>[bk, inner.get(bk)])];
+  });
+}
+
+function pdfScopeLabel(){
+  if(q) return 'Search: '+q;
+  const bits=[];
+  if(fb!=='All')bits.push(fb);
+  if(fc!=='All')bits.push(fc);
+  if(fs!=='All')bits.push(fs);
+  return bits.length?bits.join(' \u00b7 '):'Complete Range';
+}
+
+function pdfCover(list){
+  const rows=list.reduce((n,p)=>n+pdfRows(p).length,0);
+  const priced=list.filter(p=>(p.variants||[]).some(v=>v.price!=null)||p.price!=null).length;
+  const d=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  return `<div class="pcover"><h2>Patel Marketing</h2>
+    <div class="sub">Wholesale Kitchenware \u2014 ${pdfScopeLabel()}</div>
+    <div class="meta">${list.length} products \u00b7 ${rows} sizes<br>
+      ${priced} of ${list.length} products have pricing<br>${d}</div>
+    <div class="wa">WhatsApp ${WA_NUMBER.replace(/^91/,'+91 ')}</div></div>`;
+}
+
+function pdfTable(groups){
+  const showP=PDFO.price, showM=PDFO.price&&PDFO.mrp, thumb=PDFO.thumb;
+  const cols=2+(thumb?1:0)+(showP?1:0)+(showM?1:0);
+  let h='';
+  groups.forEach(([sec,subs])=>{
+    const n=subs.reduce((a,[,ps])=>a+ps.length,0);
+    h+=`<table class="ptbl"><thead>
+      <tr class="ptitle"><th colspan="${cols}">${sec}<span class="cnt">${n} products</span></th></tr>
+      <tr class="phead">${thumb?'<th class="thh"></th>':''}<th>Product</th><th>Size</th>${showP?'<th>Rate</th>':''}${showM?'<th>MRP</th>':''}</tr>
+      </thead><tbody>`;
+    subs.forEach(([sub,ps])=>{
+      h+=`<tr class="psub"><td colspan="${cols}">${sub}</td></tr>`;
+      ps.forEach((p,pi)=>{
+        const rows=pdfRows(p), z=pi%2?' zebra':'';
+        rows.forEach((r,ri)=>{
+          // Thumbnail and name print on the product's first line only; further
+          // sizes carry a ditto mark so the eye groups them together.
+          const thumbCell=thumb
+            ? `<td class="th">${ri===0&&p.img?`<img src="${IMG(p.img)}" alt="">`:''}</td>` : '';
+          const nameCell=ri===0
+            ? `<span class="pn2">${p.name}</span>${p.code?` <span class="pcode">${p.code}</span>`:''}`
+            : `<span class="cont">\u2033</span>`;
+          h+=`<tr class="${z.trim()}">${thumbCell}<td>${nameCell}</td>`
+           + `<td>${r.size||'<span class="dim">\u2014</span>'}</td>`
+           + (showP?`<td class="num${r.price==null?' dim':''}">${money(r.price)||'\u2014'}</td>`:'')
+           + (showM?`<td class="num${r.mrp==null?' dim':''}">${money(r.mrp)||'\u2014'}</td>`:'')
+           + `</tr>`;
+        });
+      });
+    });
+    h+='</tbody></table>';
+  });
+  return h;
+}
+
+function pdfShowcase(groups){
+  const showP=PDFO.price, photo=true; // showcase always shows photos
+  let h='';
+  groups.forEach(([sec,subs])=>{
+    const n=subs.reduce((a,[,ps])=>a+ps.length,0);
+    h+=`<div class="psec">${sec}<span>${n} products</span></div>`;
+    subs.forEach(([sub,ps])=>{
+      h+=`<div class="psubh">${sub}</div><div class="pgrid${photo?'':' g3'}">`;
+      ps.forEach(p=>{
+        const spec=p.hotel
+          ? `${p.hotel.pits} pits \u00b7 each pit ${p.hotel.dia} mm wide \u00b7 ${p.hotel.base} base \u00b7 approx ${p.hotel.kg} kg`
+          : (p.spec||'');
+        const rows=pdfRows(p);
+        let sizes='';
+        if(rows.length===1&&!rows[0].size){
+          sizes=showP&&rows[0].price!=null
+            ? `<div class="psizes"><b>${money(rows[0].price)}</b> incl. GST</div>`
+            : `<div class="pnone">Enquire for pricing</div>`;
+        }else{
+          sizes='<div class="psizes">'+rows.map(r=>
+            showP ? `${r.size} \u2014 <b>${money(r.price)||'\u2014'}</b>` : r.size
+          ).join('<br>')+'</div>';
+        }
+        h+=`<div class="pitem">`
+         + (photo?`<div class="pimg">${p.img?`<img src="${IMG(p.img)}" alt="">`:''}</div>`:'')
+         + `<div class="pname">${p.name}</div>
+            <div class="pbrand">${PDFO.group==='brand'?p.cat:p.brand}${p.code?' \u00b7 '+p.code:''}</div>
+            ${spec?`<div class="pspec">${spec}</div>`:''}${sizes}</div>`;
+      });
+      h+='</div>';
+    });
+  });
+  return h;
+}
+
+function buildPDF(){
+  const list=P.filter(match);
+  const groups=pdfGroups(list);
+  let h=pdfCover(list);
+  h += PDFO.layout==='table' ? pdfTable(groups) : pdfShowcase(groups);
+  const missing=list.filter(p=>!(p.variants||[]).some(v=>v.price!=null)&&p.price==null).length;
+  if(missing) h+=`<div class="pgap">${missing} of ${list.length} products in this export have no pricing yet \u2014 shown with a dash. Pricing is added brand by brand as each supplier price list is transcribed.</div>`;
+  document.getElementById('pdfsheet').innerHTML=h;
+  return list.length;
+}
+
+/* ---------- PDF options dialog ---------- */
+const pov=document.getElementById('pov');
+function pdfRefresh(){
+  const n=P.filter(match).length;
+  const rows=P.filter(match).reduce((a,p)=>a+pdfRows(p).length,0);
+  document.getElementById('pdfScope').innerHTML=
+    `Exporting <b>${n} products</b> (${rows} sizes) \u2014 <b>${pdfScopeLabel()}</b>.<br>`
+    +`Change the filters behind this dialog to narrow it down.`;
+  document.getElementById('layoutHint').textContent = PDFO.layout==='table'
+    ? 'One line per size. Compact, for office use and price checking.'
+    : 'Large photos with sizes listed under each product. For sending to customers.';
+  document.getElementById('groupHint').textContent = PDFO.group==='cat'
+    ? 'Category first, then brand within it.'
+    : 'Brand first, then category within it \u2014 e.g. all Mazda salt & pepper together.';
+  // Thumbnails only mean anything in the price list; MRP only means anything
+  // when prices are on. Hide what does not apply rather than leaving a dead
+  // control that silently does nothing.
+  const isTable=PDFO.layout==='table';
+  document.getElementById('rowThumb').style.display=isTable?'flex':'none';
+  const mrpBox=document.getElementById('optMrp');
+  mrpBox.disabled=!PDFO.price;
+  document.getElementById('rowMrp').style.opacity=PDFO.price?'1':'.45';
+
+  const w=document.getElementById('pdfWarn');
+  const imgCount = (!isTable) ? n : (PDFO.thumb?n:0);
+  if(imgCount>200){
+    w.style.display='block';
+    w.innerHTML=`<strong>${imgCount} photos</strong> will load before the print dialog opens. On a phone this can take a while \u2014 filter to a brand or category first if you can.`;
+  }else w.style.display='none';
+}
+function syncPdfControls(){
+  document.querySelectorAll('#optLayout button').forEach(b=>b.classList.toggle('on',b.dataset.v===PDFO.layout));
+  document.querySelectorAll('#optGroup button').forEach(b=>b.classList.toggle('on',b.dataset.v===PDFO.group));
+  document.getElementById('optPrice').checked=PDFO.price;
+  document.getElementById('optMrp').checked=PDFO.mrp;
+  document.getElementById('optThumb').checked=PDFO.thumb;
+}
+function openPdfSheet(){syncPdfControls();pdfRefresh();pov.classList.add('open');document.body.style.overflow='hidden'}
+function closePdfSheet(){pov.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('pdfBtn').addEventListener('click',openPdfSheet);
+document.getElementById('pxb').addEventListener('click',closePdfSheet);
+pov.addEventListener('click',closePdfSheet);
+document.querySelectorAll('#optLayout button').forEach(b=>b.onclick=()=>{
+  PDFO.layout=b.dataset.v;
+  document.querySelectorAll('#optLayout button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');pdfRefresh();});
+document.querySelectorAll('#optGroup button').forEach(b=>b.onclick=()=>{
+  PDFO.group=b.dataset.v;
+  document.querySelectorAll('#optGroup button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');pdfRefresh();});
+document.getElementById('optPrice').onchange=e=>{PDFO.price=e.target.checked;pdfRefresh()};
+document.getElementById('optMrp').onchange=e=>{PDFO.mrp=e.target.checked;pdfRefresh()};
+document.getElementById('optThumb').onchange=e=>{PDFO.thumb=e.target.checked;pdfRefresh()};
+document.getElementById('pdfGo').addEventListener('click',()=>{
+  const btn=document.getElementById('pdfGo');
+  btn.textContent='Preparing\u2026';btn.disabled=true;
+  savePdfPrefs();
+  buildPDF();
+  const imgs=[...document.querySelectorAll('#pdfsheet img')];
+  Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=r;i.onerror=r})))
+    .then(()=>setTimeout(()=>{
+      window.print();
+      btn.textContent='Generate PDF';btn.disabled=false;
+      closePdfSheet();
+    },250));
+});
+
+/* ---------- help sheet + first-visit hint ---------- */
+/* "Seen it" is remembered in localStorage — no login needed. It is per browser,
+   so the same person on phone and laptop sees the hint once on each, and
+   private windows always show it. That is an acceptable trade for not asking
+   anyone to sign in. If storage is blocked entirely we just show the hint. */
+const HINT_KEY='pm_hint_seen_v1';
+const hov=document.getElementById('hov');
+function openHelp(){hov.classList.add('open');document.body.style.overflow='hidden'}
+function closeHelp(){hov.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('helpBtn').addEventListener('click',openHelp);
+document.getElementById('hxb').addEventListener('click',closeHelp);
+hov.addEventListener('click',closeHelp);
+
+(function(){
+  let seen=false;
+  try{seen=localStorage.getItem(HINT_KEY)==='1'}catch(e){}
+  if(seen)return;
+  const strip=document.getElementById('hintStrip');
+  strip.style.display='flex';
+  document.getElementById('hintX').addEventListener('click',()=>{
+    strip.style.display='none';
+    try{localStorage.setItem(HINT_KEY,'1')}catch(e){}
+  });
+})();
+
+/* ---------- controls ---------- */
+let qt;
+document.getElementById('q').addEventListener('input',e=>{
+  clearTimeout(qt);const v=e.target.value.trim();qt=setTimeout(()=>{q=v;render()},140)});
+document.getElementById('qx').addEventListener('click',()=>{
+  document.getElementById('q').value='';q='';render()});
+document.querySelectorAll('#tsw button').forEach(b=>b.addEventListener('click',()=>{
+  document.body.dataset.theme=b.dataset.t;
+  try{localStorage.setItem('pm_theme',b.dataset.t)}catch(e){}
+  document.querySelectorAll('#tsw button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}));
+document.querySelectorAll('#fsw button').forEach(b=>b.addEventListener('click',()=>{
+  applyFontSize(b.dataset.f);
+  try{localStorage.setItem('pm_fontsize',b.dataset.f)}catch(e){}}));
+function applyFontSize(f){
+  if(f==='m')document.documentElement.removeAttribute('data-fs');
+  else document.documentElement.dataset.fs=f;
+  document.querySelectorAll('#fsw button').forEach(x=>x.classList.toggle('on',x.dataset.f===f));
+}
+document.querySelectorAll('#vsw button').forEach(b=>b.addEventListener('click',()=>{
+  document.body.className=document.body.className.replace(/v-\w+/g,'').trim()+' v-'+b.dataset.v;
+  try{localStorage.setItem('pm_view',b.dataset.v)}catch(e){}
+  document.querySelectorAll('#vsw button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  // The other views are the same cards restyled by CSS, but the price list is
+  // built by a different renderer (one row per size), so the grid has to be
+  // rebuilt whenever we move into or out of it.
+  if(P.length)render();}));
+try{
+  const f=localStorage.getItem('pm_fontsize');
+  if(f&&['s','m','l','xl'].includes(f))applyFontSize(f);
+  const t=localStorage.getItem('pm_theme');
+  if(t){document.body.dataset.theme=t;
+    document.querySelectorAll('#tsw button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));}
+  let v=localStorage.getItem('pm_view');
+  // 'gallery' was removed as a view option — fall back cleanly for anyone
+  // who saved that preference on an earlier version of the page.
+  if(v && !['grid','list','compact','table'].includes(v)) v='grid';
+  if(v){document.body.className='v-'+v;
+    document.querySelectorAll('#vsw button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));}
+}catch(e){}
+
+fetch('data.json').then(r=>r.json()).then(d=>{P=d;
+  const brands=new Set(P.map(p=>p.brand)).size;
+  const variants=P.reduce((s,p)=>s+((p.variants||[]).length||1),0);
+  document.getElementById('eb').textContent=
+    `${P.length} products · ${variants} sizes · ${brands} brands · real supplier photos`;
+  rebuildFilters();render();
+  // Arriving from a shared link (/?p=slug, or "View in full catalogue" on a
+  // /p/[slug] page): open that product's sheet straight away.
+  const want=new URLSearchParams(location.search).get('p');
+  if(want){
+    const hit=P.find(x=>slugOf(x)===want.toLowerCase())
+           ||P.find(x=>(x.code||'').toLowerCase()===want.toLowerCase());
+    if(hit)openSheet(hit);
+  }
+}).catch(()=>{g.innerHTML='<div class="empty"><strong>Could not load data.json</strong>Serve this folder over http, not by double-clicking index.html</div>';});
+</script></body></html>
