@@ -7,7 +7,7 @@ window.PM_CONFIG = {
   /* ---- business ---------------------------------------------------- */
   firm: 'Patel Marketing',
   tagline: 'Wholesale Kitchenware',
-  whatsapp: '919999999999',        // << your business number, country code, no +
+  whatsapp: '917892967505',        // << your business number, country code, no +
   site: 'https://patelmarketing-catalog.vercel.app',
 
   /* Where product photos live. Two options — no code change either way.
