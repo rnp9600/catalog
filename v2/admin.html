@@ -126,7 +126,7 @@ function draw(){
   $('#list').innerHTML = L.slice(0, shown).map(p => {
     const i = P.indexOf(p);
     return `<div class="rowitem" data-i="${i}">
-      <img loading="lazy" src="${(window.PM_CONFIG.imageBase||'../images/')+esc(p.img)}.jpg" onerror="this.style.opacity=.12">
+      <img loading="lazy" src="../images/${esc(p.img)}.jpg" onerror="this.style.opacity=.12">
       <div class="t"><div class="n">${esc(p.name)}</div>
         <div class="s">${esc(p.brand)}${p.code?' · '+esc(p.code):''} · ${esc(p.cat)}</div></div>
       <div class="p">${p.price!=null?money(p.price):'—'}</div>
