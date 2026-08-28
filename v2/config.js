@@ -31,10 +31,10 @@ window.PM_CONFIG = {
     supabaseAnonKey: '',           // anon/publishable key ONLY — never the service key
     // Used when mode is 'local'. Digits only, with country code.
     allowlist: [
-      // '919876543210',
+       '918880050050',
     ],
     admins: [
-      // '919999999999',
+       '919686754026',
     ],
     noAccessMessage:
       'This number is not on our customer list yet. Send us a WhatsApp and we will add you.',
