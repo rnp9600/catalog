@@ -407,6 +407,123 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
   #tableHead,.trow{grid-template-columns:1.9fr .9fr .8fr}
   #tableHead span:nth-child(4),.trow .tmr{display:none}
 }
+
+/* ================= v2 additions ================= */
+/* festive strip */
+.fest{margin:16px 0 2px;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;background:var(--sf)}
+.festh{display:flex;align-items:center;gap:10px;padding:12px 15px;
+ background:linear-gradient(100deg,var(--act),var(--sf));border-bottom:1px solid var(--bd)}
+.festh .fdot{width:9px;height:9px;border-radius:50%;background:var(--ac);flex-shrink:0;animation:fpulse 2.1s infinite}
+@keyframes fpulse{0%{box-shadow:0 0 0 0 rgba(18,165,148,.45)}70%{box-shadow:0 0 0 11px rgba(18,165,148,0)}100%{box-shadow:0 0 0 0 rgba(18,165,148,0)}}
+.festh b{font-size:.92rem;font-weight:800;letter-spacing:-.01em;display:block}
+.festh small{display:block;color:var(--tm);font-size:.71rem;margin-top:2px}
+.festh .fcd{margin-left:auto;font-family:var(--fm);font-size:.63rem;color:var(--pr);background:var(--sf);
+ border:1px solid var(--prt);padding:5px 9px;border-radius:999px;white-space:nowrap}
+.festrail{display:flex;gap:12px;overflow-x:auto;padding:14px 15px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.festrail::-webkit-scrollbar{display:none}
+.festrail>.card{flex:0 0 168px;scroll-snap-align:start;opacity:1!important;transform:none!important}
+.festrail .med{height:128px}
+.festrail .ds,.festrail .sp,.festrail .szbtn,.festrail .szlist,.festrail .refnote{display:none}
+.bg.fst{background:var(--ac);color:#fff}
+
+/* motion */
+body.m-off *,body.m-off *::before,body.m-off *::after{animation:none!important;transition:none!important}
+header{transition:box-shadow .25s}
+header.stuck{box-shadow:0 6px 20px rgba(var(--sh),.10)}
+.chip,.pbtn,.cta,.sw button{transition:transform .13s,background .2s,border-color .2s,color .2s}
+.chip:active,.pbtn:active,.sw button:active{transform:scale(.95)}
+.card:active{transform:scale(.99)}
+.med img{opacity:0;transition:opacity .38s ease}
+.med img.ready,body.m-off .med img{opacity:1}
+.reveal{opacity:0;transform:translateY(10px)}
+.reveal.in{opacity:1;transform:translateY(0);
+ transition:opacity .42s cubic-bezier(.2,.7,.3,1),transform .42s cubic-bezier(.2,.7,.3,1)}
+body.m-off .reveal{opacity:1;transform:none}
+.dots{display:flex;gap:5px;justify-content:center;margin:8px 0 0}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--bd);transition:all .22s;cursor:pointer}
+.dots i.on{background:var(--pr);width:17px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+/* ---------- v2: pricing, sign-in, gallery ---------- */
+.pdp{font-family:var(--fm);font-size:1.02rem;font-weight:600;color:var(--tx)}
+.plab{font-family:var(--fm);font-size:.58rem;font-weight:600;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--tm);margin-right:5px}
+.pmrp{font-family:var(--fm);font-size:.78rem;color:var(--tm)}
+.pmrp.cut{text-decoration:line-through;opacity:.75}
+.poff{display:inline-block;font-size:.6rem;font-weight:800;letter-spacing:.03em;
+ background:var(--act);color:var(--ac);padding:3px 7px;border-radius:999px;margin-left:6px;
+ border:1px solid color-mix(in srgb,var(--ac) 35%,transparent)}
+.psave{font-size:.64rem;color:var(--tm);margin-top:3px}
+.signlink{display:inline-flex;align-items:center;gap:5px;background:none;border:0;padding:4px 0;
+ font-size:.72rem;font-weight:700;color:var(--pr);cursor:pointer;text-align:left}
+.signlink svg{width:13px;height:13px}
+.signlink:hover{text-decoration:underline}
+
+/* profile button in the header */
+#whoBtn{position:relative}
+#whoBtn.in::after{content:'';position:absolute;top:5px;right:5px;width:7px;height:7px;
+ border-radius:50%;background:var(--ac);border:1.5px solid var(--sf)}
+
+/* sign-in panel */
+.sgn{max-width:380px;margin:0 auto;padding:4px 0 8px}
+.sgn h4{font-size:1.05rem;font-weight:800;margin-bottom:6px}
+.sgn p{font-size:.82rem;color:var(--tm);line-height:1.55;margin-bottom:16px}
+.sgnrow{display:flex;margin-bottom:10px}
+.sgnrow span{font-family:var(--fm);font-size:.88rem;padding:13px 11px;border:1.5px solid var(--bd);
+ border-right:0;border-radius:var(--rs) 0 0 var(--rs);background:var(--sf2);color:var(--tm)}
+.sgnrow input{flex:1;min-width:0;padding:13px 12px;border:1.5px solid var(--bd);border-left:0;
+ border-radius:0 var(--rs) var(--rs) 0;background:var(--sf);font-family:var(--fm);
+ letter-spacing:.08em;color:var(--tx);font-size:.95rem}
+.sgnbtn{width:100%;padding:13px;border:0;border-radius:var(--rs);background:var(--pr);color:#fff;
+ font-weight:700;font-size:.9rem;font-family:var(--fd)}
+.sgnbtn.ghost{background:transparent;color:var(--tm);font-weight:600;font-size:.82rem;margin-top:4px}
+.sgnmsg{font-size:.8rem;margin-top:12px;padding:11px 13px;border-radius:var(--rs);
+ background:var(--act);color:var(--tx);line-height:1.55;display:none}
+.sgnmsg.on{display:block}
+.sgnmsg a{color:var(--pr);font-weight:700}
+.who{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--bd)}
+.whoav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--pr),var(--ac));
+ color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0}
+.who b{display:block;font-size:.86rem}
+.who small{color:var(--tm);font-size:.72rem;font-family:var(--fm)}
+
+/* retail controls */
+.rtl{display:flex;align-items:center;gap:10px;margin-top:10px}
+.rtl input[type=number]{width:78px;padding:9px 10px;border:1.5px solid var(--bd);border-radius:var(--rs);
+ background:var(--sf);font-family:var(--fm);font-size:.88rem;color:var(--tx)}
+.rtl label{font-size:.8rem;color:var(--tm)}
+.tgl2{position:relative;width:46px;height:27px;flex-shrink:0}
+.tgl2 input{opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.tgl2 i{position:absolute;inset:0;background:var(--bd);border-radius:999px;transition:.18s;pointer-events:none}
+.tgl2 i::after{content:'';position:absolute;top:3px;left:3px;width:21px;height:21px;background:#fff;
+ border-radius:50%;transition:.18s}
+.tgl2 input:checked+i{background:var(--ac)}
+.tgl2 input:checked+i::after{transform:translateX(19px)}
+.rbanner{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:150;
+ background:var(--ac);color:#fff;padding:9px 16px;border-radius:999px;font-size:.75rem;font-weight:700;
+ box-shadow:0 8px 24px rgba(0,0,0,.2);display:none;align-items:center;gap:9px}
+.rbanner.on{display:flex}
+.rbanner button{background:rgba(255,255,255,.22);border:0;color:#fff;border-radius:999px;
+ padding:4px 10px;font-size:.68rem;font-weight:700;font-family:var(--fd)}
+
+/* swipeable hero photo */
+.hero-img{position:relative;overflow:hidden;touch-action:pan-y}
+.hero-img img{will-change:transform,opacity}
+.hero-img img.slideL{animation:slideL .3s cubic-bezier(.2,.7,.3,1)}
+.hero-img img.slideR{animation:slideR .3s cubic-bezier(.2,.7,.3,1)}
+@keyframes slideL{from{transform:translateX(34px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideR{from{transform:translateX(-34px);opacity:0}to{transform:translateX(0);opacity:1}}
+.gdots{display:flex;gap:6px;justify-content:center;margin:9px 0 2px}
+.gdots i{width:6px;height:6px;border-radius:50%;background:var(--bd);transition:all .22s;cursor:pointer}
+.gdots i.on{background:var(--pr);width:18px;border-radius:3px}
+.gnav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;
+ border:1px solid var(--bd);background:var(--sf);color:var(--tx);font-size:1.1rem;line-height:1;
+ display:flex;align-items:center;justify-content:center;opacity:.86;z-index:3}
+.gnav.pv{left:8px}.gnav.nx{right:8px}
+.gnav:hover{opacity:1;border-color:var(--pr);color:var(--pr)}
+body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
+
 </style></head><body data-theme="sky" class="v-grid">
 <header><div class="hin">
  <div class="brandbox"><div class="mark">PM</div>
@@ -426,7 +543,7 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
     <line x1="12" y1="15" x2="12" y2="3"/>
    </svg>
   </button>
-  <button class="gearbtn" id="settingsBtn" aria-label="Menu" title="View & theme">
+  <button class="gearbtn" id="whoBtn" aria-label="Sign in" title="Sign in"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></button><button class="gearbtn" id="settingsBtn" aria-label="Menu" title="View & theme">
    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <line x1="3" y1="6" x2="21" y2="6"/>
     <line x1="3" y1="12" x2="21" y2="12"/>
@@ -456,6 +573,7 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
   </div>
   <div class="activepills" id="activepills"></div>
  </section>
+ <div id="fest"></div>
  <div class="bar"><h2 id="bh">All products</h2><span id="bc"></span></div>
  <div id="tableHead"><span>Product</span><span>Size</span><span>Rate</span><span>MRP</span></div>
  <div class="grid" id="g"></div>
@@ -611,6 +729,7 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
 
 <footer>Patel Marketing — wholesale kitchenware · catalogue draft</footer>
 
+<script src="config.js"></script>
 <script>
 let P=[];
 let fc='All',fs='All',fb='All',q='';
@@ -621,7 +740,7 @@ const g=document.getElementById('g'),em=document.getElementById('em');
 // needs to change, filenames are identical in both places.
 const IMAGE_SOURCE = 'local'; // 'local' | 'supabase'
 const SUPABASE_IMAGE_BASE = 'https://vcrzauuxvgpsbforiszz.supabase.co/storage/v1/object/public/catalog-images';
-const IMG=n=>IMAGE_SOURCE==='supabase' ? `${SUPABASE_IMAGE_BASE}/${n}.jpg` : `images/${n}.jpg`;
+const IMG=n=>IMAGE_SOURCE==='supabase' ? `${SUPABASE_IMAGE_BASE}/${n}.jpg` : `../images/${n}.jpg`;
 
 /* ---------- sharing ---------- */
 // Patel Marketing's WhatsApp Business number, digits only with country code.
@@ -676,6 +795,7 @@ function hay(p){
   return p._h;
 }
 function match(p){
+  if(p.hidden) return false;
   if(fc!=='All'&&p.cat!==fc)return false;
   if(fs!=='All'&&p.sub!==fs)return false;
   if(fb!=='All'&&p.brand!==fb)return false;
@@ -1269,11 +1389,11 @@ document.getElementById('qx').addEventListener('click',()=>{
   document.getElementById('q').value='';q='';render()});
 document.querySelectorAll('#tsw button').forEach(b=>b.addEventListener('click',()=>{
   document.body.dataset.theme=b.dataset.t;
-  try{localStorage.setItem('pm_theme',b.dataset.t)}catch(e){}
+  try{localStorage.setItem('v2_pm_theme',b.dataset.t)}catch(e){}
   document.querySelectorAll('#tsw button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}));
 document.querySelectorAll('#fsw button').forEach(b=>b.addEventListener('click',()=>{
   applyFontSize(b.dataset.f);
-  try{localStorage.setItem('pm_fontsize',b.dataset.f)}catch(e){}}));
+  try{localStorage.setItem('v2_pm_fontsize',b.dataset.f)}catch(e){}}));
 function applyFontSize(f){
   if(f==='m')document.documentElement.removeAttribute('data-fs');
   else document.documentElement.dataset.fs=f;
@@ -1281,19 +1401,19 @@ function applyFontSize(f){
 }
 document.querySelectorAll('#vsw button').forEach(b=>b.addEventListener('click',()=>{
   document.body.className=document.body.className.replace(/v-\w+/g,'').trim()+' v-'+b.dataset.v;
-  try{localStorage.setItem('pm_view',b.dataset.v)}catch(e){}
+  try{localStorage.setItem('v2_pm_view',b.dataset.v)}catch(e){}
   document.querySelectorAll('#vsw button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
   // The other views are the same cards restyled by CSS, but the price list is
   // built by a different renderer (one row per size), so the grid has to be
   // rebuilt whenever we move into or out of it.
   if(P.length)render();}));
 try{
-  const f=localStorage.getItem('pm_fontsize');
+  const f=localStorage.getItem('v2_pm_fontsize');
   if(f&&['s','m','l','xl'].includes(f))applyFontSize(f);
-  const t=localStorage.getItem('pm_theme');
-  if(t){document.body.dataset.theme=t;
+  const t=localStorage.getItem('v2_pm_theme');
+  if(t&&['sky','copper','emerald','charcoal'].indexOf(t)>=0){document.body.dataset.theme=t;
     document.querySelectorAll('#tsw button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));}
-  let v=localStorage.getItem('pm_view');
+  let v=localStorage.getItem('v2_pm_view');
   // 'gallery' was removed as a view option — fall back cleanly for anyone
   // who saved that preference on an earlier version of the page.
   if(v && !['grid','list','compact','table'].includes(v)) v='grid';
@@ -1301,7 +1421,7 @@ try{
     document.querySelectorAll('#vsw button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));}
 }catch(e){}
 
-fetch('data.json').then(r=>r.json()).then(d=>{P=d;
+fetch('../data.json').then(r=>r.json()).then(d=>{P=d;
   const brands=new Set(P.map(p=>p.brand)).size;
   const variants=P.reduce((s,p)=>s+((p.variants||[]).length||1),0);
   document.getElementById('eb').textContent=
@@ -1316,4 +1436,375 @@ fetch('data.json').then(r=>r.json()).then(d=>{P=d;
     if(hit)openSheet(hit);
   }
 }).catch(()=>{g.innerHTML='<div class="empty"><strong>Could not load data.json</strong>Serve this folder over http, not by double-clicking index.html</div>';});
+
+/* ================= v2 additions ================= */
+const CFG = window.PM_CONFIG || {};
+const F   = CFG.festive || {enabled:false};
+
+function motionOff(){
+  return CFG.motion==='off' || window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+}
+function festiveLive(){
+  if(!F.enabled) return false;
+  const now=new Date();
+  if(F.from  && now < new Date(F.from +'T00:00:00')) return false;
+  if(F.until && now > new Date(F.until+'T23:59:59')) return false;
+  return true;
+}
+function isFestive(p){
+  if(!festiveLive()) return false;
+  const m=F.match||{};
+  if((m.codes ||[]).indexOf(p.code )>=0) return true;
+  if((m.subs  ||[]).indexOf(p.sub  )>=0) return true;
+  if((m.brands||[]).indexOf(p.brand)>=0) return true;
+  const t=((p.name||'')+' '+(p.alias||'')+' '+(p.sub||'')).toLowerCase();
+  return (m.words||[]).some(w=>t.indexOf(w.toLowerCase())>=0);
+}
+function daysLeft(){
+  if(!F.until) return null;
+  const d=Math.ceil((new Date(F.until+'T00:00:00')-new Date())/86400000);
+  return d>0?d:null;
+}
+function mkFestive(){
+  const box=document.getElementById('fest');
+  if(!box) return;
+  if(!festiveLive()){ box.innerHTML=''; return; }
+  const picks=P.filter(isFestive);
+  if(!picks.length){ box.innerHTML=''; return; }
+  const d=daysLeft();
+  box.innerHTML='<div class="fest"><div class="festh"><span class="fdot"></span>'+
+    '<div><b>'+(F.title||'Trending now')+'</b><small>'+(F.note||'')+'</small></div>'+
+    (d?'<span class="fcd">'+d+' days to go</span>':'')+'</div>'+
+    '<div class="festrail">'+picks.map(card).join('')+'</div></div>';
+  const rail=box.querySelector('.festrail');
+  rail.querySelectorAll('[data-open]').forEach(function(el,ix){
+    el.addEventListener('click',function(e){ e.stopPropagation(); openSheet(picks[ix]); });
+  });
+  rail.querySelectorAll('.med img').forEach(markReady);
+}
+function markReady(im){
+  if(im.complete) im.classList.add('ready');
+  else im.addEventListener('load',function(){im.classList.add('ready')},{once:true});
+  im.addEventListener('error',function(){im.classList.add('ready')},{once:true});
+}
+let _io=null;
+function revealCards(){
+  const cards=g.querySelectorAll('.card:not(.reveal)');
+  cards.forEach(c=>c.classList.add('reveal'));
+  g.querySelectorAll('.med img').forEach(markReady);
+  if(motionOff()){ g.querySelectorAll('.reveal').forEach(c=>c.classList.add('in')); return; }
+  if(_io) _io.disconnect();
+  _io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e,n){
+      if(e.isIntersecting){
+        setTimeout(function(){e.target.classList.add('in')}, Math.min(n,8)*35);
+        _io.unobserve(e.target);
+      }});
+  },{rootMargin:'120px'});
+  g.querySelectorAll('.reveal:not(.in)').forEach(c=>_io.observe(c));
+}
+
+/* wrap render() so every redraw refreshes the strip and the reveals */
+const _render=render;
+render=function(){
+  _render.apply(null,arguments);
+  try{ revealCards(); }catch(e){}
+};
+
+/* header shadow on scroll */
+(function(){
+  const hdr=document.querySelector('header');
+  if(!hdr) return;
+  window.addEventListener('scroll',function(){
+    hdr.classList.toggle('stuck', window.scrollY>36);
+  },{passive:true});
+})();
+
+if(CFG.motion==='off') document.body.classList.add('m-off');
+
+/* build the strip once the data has landed */
+(function(){
+  let tries=0;
+  const t=setInterval(function(){
+    if(P && P.length){ clearInterval(t); mkFestive(); revealCards(); }
+    else if(++tries>60) clearInterval(t);
+  },120);
+})();
+
+
+/* ================= v2: sign-in, dealer price, retail discount ================= */
+const AUTH = (CFG.auth||{admins:[],customers:[]});
+const dg = s => (s||'').replace(/\D/g,'');
+let SESS   = JSON.parse(localStorage.getItem('v2_pm_session')||'null');
+let RETAIL = JSON.parse(localStorage.getItem('v2_pm_retail')||'null') || {on:false, off:10};
+async function sha(txt){
+  const b=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+async function lookup(phone){
+  const hsh = await sha((CFG.salt||'')+':'+phone);
+  const a=(AUTH.admins||[]).find(r=>r.h===hsh);
+  if(a) return {ok:true, admin:true,  name:a.n, tail:a.t};
+  const c=(AUTH.customers||[]).find(r=>r.h===hsh);
+  if(c) return {ok:true, admin:false, name:c.n, tail:c.t};
+  return null;
+}
+const signedIn = () => !!(SESS && SESS.ok);
+const saveSess = () => localStorage.setItem('v2_pm_session', JSON.stringify(SESS));
+const saveRtl  = () => localStorage.setItem('v2_pm_retail',  JSON.stringify(RETAIL));
+
+const rupee = n => '₹' + Number(n).toLocaleString('en-IN');
+function span(nums){ const a=nums.filter(x=>x!=null); if(!a.length)return null;
+  const lo=Math.min(...a),hi=Math.max(...a); return {lo,hi,one:lo===hi}; }
+function fmt(r){ return r.one ? rupee(r.lo) : rupee(r.lo)+'–'+r.hi.toLocaleString('en-IN'); }
+function dpOf(p){ return span((p.variants&&p.variants.length)?p.variants.map(v=>v.price):[p.price]); }
+function mrpOf(p){
+  const raw=(p.variants&&p.variants.length)?p.variants.map(v=>v.mrp):[p.mrp];
+  const r=span(raw);
+  if(r) return r;
+  const d=dpOf(p);                       // no printed MRP: fall back to 2.25x
+  return d?{lo:Math.round(d.lo*2.25),hi:Math.round(d.hi*2.25),one:d.one,est:true}:null;
+}
+const disc = v => Math.round(v * (1 - (RETAIL.off||0)/100));
+
+/* the one place that decides what a price looks like */
+function priceLine(p){
+  const dp=dpOf(p), mrp=mrpOf(p);
+  if(!dp && !mrp) return '<span class="ph">Enquire for pricing</span>';
+
+  /* retail mode: MRP struck, discounted price beside it, discount as a chip */
+  if(signedIn() && RETAIL.on && mrp){
+    const now={lo:disc(mrp.lo),hi:disc(mrp.hi),one:mrp.one};
+    return '<span class="pmrp cut">'+fmt(mrp)+'</span> '+
+           '<span class="pdp">'+fmt(now)+'</span>'+
+           '<span class="poff">'+(RETAIL.off||0)+'% OFF</span>';
+  }
+  /* signed in, own view: dealer price plus MRP, nothing struck */
+  if(signedIn() && dp){
+    return '<span class="plab">DP</span><span class="pdp">'+fmt(dp)+'</span>'+
+           '<span class="pn">incl. GST</span>'+
+           (mrp?'<br><span class="plab">MRP</span><span class="pmrp">'+fmt(mrp)+'</span>':'');
+  }
+  /* guest: MRP only, with a way in */
+  if(mrp){
+    return '<span class="plab">MRP</span><span class="pdp">'+fmt(mrp)+'</span>'+
+      '<br><button class="signlink" data-sign="1">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">'+
+      '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>'+
+      'Sign in for dealer price</button>';
+  }
+  return '<span class="ph">Enquire for pricing</span>';
+}
+
+/* clicking "Sign in for dealer price" anywhere opens the panel */
+document.addEventListener('click', function(e){
+  const b=e.target.closest('[data-sign]');
+  if(b){ e.preventDefault(); e.stopPropagation(); openSignIn(); }
+}, true);
+
+/* ---------- sign-in panel, reusing the site's own sheet ---------- */
+function signOverlay(){
+  let ov2=document.getElementById('sgnOv');
+  if(!ov2){
+    ov2=document.createElement('div');
+    ov2.className='ov'; ov2.id='sgnOv';
+    ov2.innerHTML='<div class="sheet" id="sgnSheet" onclick="event.stopPropagation()"></div>';
+    document.body.appendChild(ov2);
+    ov2.addEventListener('click', closeSignIn);
+  }
+  return ov2;
+}
+function openSignIn(){
+  const ov2=signOverlay();
+  document.getElementById('sgnSheet').innerHTML = signedIn() ? accountHtml() : signInHtml();
+  ov2.classList.add('open'); document.body.style.overflow='hidden';
+  wireSignIn();
+  const f=document.getElementById('sgnPh'); if(f) setTimeout(()=>f.focus(),120);
+}
+function signInHtml(){
+  return '<div class="shead"><strong>Sign in</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<h4>See your dealer price</h4>'+
+   '<p>Enter the phone number you order from. Everything in the catalogue stays '+
+   'open either way — signing in only shows your rates instead of MRP.</p>'+
+   '<div class="sgnrow"><span>+91</span><input id="sgnPh" type="tel" inputmode="numeric" '+
+   'maxlength="10" placeholder="98765 43210" autocomplete="tel-national"></div>'+
+   '<button class="sgnbtn" id="sgnGo">Continue</button>'+
+   '<button class="sgnbtn ghost" id="sgnSkip">Keep browsing as guest</button>'+
+   '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
+}
+function accountHtml(){
+  const nm=SESS.name||'Signed in', tail=SESS.tail||'';
+  return '<div class="shead"><strong>Your account</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
+   '<div><b>'+nm+'</b><small>'+tail+(SESS.admin?' · admin':'')+'</small></div></div>'+
+   '<div class="fsection" style="border:0;padding-top:14px">'+
+   '<h4 style="font-size:.95rem">Retail mode</h4>'+
+   '<p style="margin-bottom:8px">Turn this on when you are showing the catalogue to a walk-in '+
+   'customer. Prices switch to MRP with your discount applied. Your dealer price is hidden.</p>'+
+   '<div class="rtl"><span class="tgl2"><input type="checkbox" id="rtlOn"'+(RETAIL.on?' checked':'')+
+   '><i></i></span><label for="rtlOff">Discount on MRP</label>'+
+   '<input type="number" id="rtlOff" min="0" max="90" value="'+(RETAIL.off||0)+'"><label>%</label></div>'+
+   '</div>'+
+   (SESS.admin?'<a class="sgnbtn" style="display:block;text-align:center;text-decoration:none;'+
+     'margin-top:16px" href="admin.html">Open admin panel</a>':'')+
+   '<button class="sgnbtn ghost" id="sgnOut">Sign out</button>'+
+   '</div></div>';
+}
+function wireSignIn(){
+  const x=document.getElementById('sgnX');
+  if(x) x.onclick=closeSignIn;
+  const go=document.getElementById('sgnGo');
+  if(go) go.onclick=async function(){
+    const raw=dg(document.getElementById('sgnPh').value);
+    const msg=document.getElementById('sgnMsg');
+    if(raw.length<10){ msg.innerHTML='Enter all 10 digits of your number.'; msg.classList.add('on'); return; }
+    const ph='91'+raw.slice(-10);
+    go.disabled=true; go.textContent='Checking…';
+    let hit=null;
+    try{ hit=await lookup(ph); }catch(e){}
+    go.disabled=false; go.textContent='Continue';
+    if(!hit){
+      msg.innerHTML=(AUTH.noAccessMessage||'This number is not on our customer list yet.')+
+        ' <a href="https://wa.me/'+(CFG.whatsapp||'')+'?text='+
+        encodeURIComponent('Please give me dealer price access for +'+ph)+'">Message us on WhatsApp</a>';
+      msg.classList.add('on'); return;
+    }
+    SESS={ok:true, admin:hit.admin, name:hit.name, tail:hit.tail}; saveSess();
+    closeSignIn(); markWho(); render(); if(CUR) openSheet(CUR);
+    toastMsg(hit.admin?'Signed in as admin':'Signed in — showing your dealer price');
+  };
+  const skip=document.getElementById('sgnSkip');
+  if(skip) skip.onclick=closeSignIn;
+  const out=document.getElementById('sgnOut');
+  if(out) out.onclick=function(){
+    SESS=null; RETAIL.on=false; saveSess(); saveRtl();
+    closeSignIn(); markWho(); render(); if(CUR) openSheet(CUR);
+  };
+  const on=document.getElementById('rtlOn'), off=document.getElementById('rtlOff');
+  if(on) on.onchange=function(){ RETAIL.on=on.checked; saveRtl(); markWho(); render();
+    if(CUR) openSheet(CUR); retailBanner(); };
+  if(off) off.oninput=function(){ RETAIL.off=Math.max(0,Math.min(90,+off.value||0)); saveRtl();
+    render(); if(CUR) openSheet(CUR); retailBanner(); };
+}
+function closeSignIn(){
+  const ov2=document.getElementById('sgnOv');
+  if(ov2) ov2.classList.remove('open');
+  if(!document.getElementById('ov').classList.contains('open')) document.body.style.overflow='';
+}
+function markWho(){
+  const b=document.getElementById('whoBtn');
+  if(b) b.classList.toggle('in', signedIn());
+}
+function toastMsg(m){
+  const d=document.createElement('div'); d.textContent=m;
+  d.style.cssText='position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:400;'+
+    'background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:.82rem;font-weight:600';
+  document.body.appendChild(d); setTimeout(()=>d.remove(),2200);
+}
+function retailBanner(){
+  let b=document.getElementById('rbanner');
+  if(!b){ b=document.createElement('div'); b.id='rbanner'; b.className='rbanner';
+    document.body.appendChild(b); }
+  if(signedIn() && RETAIL.on){
+    b.innerHTML='Retail mode · '+(RETAIL.off||0)+'% off MRP <button id="rbOff">Turn off</button>';
+    b.classList.add('on');
+    document.getElementById('rbOff').onclick=function(){
+      RETAIL.on=false; saveRtl(); render(); if(CUR) openSheet(CUR); retailBanner(); };
+  } else b.classList.remove('on');
+}
+document.getElementById('whoBtn').addEventListener('click', openSignIn);
+
+/* ---------- the sheet's size table has to follow the same rules ---------- */
+function repriceSheet(){
+  if(!CUR) return;
+  const vt=sheet.querySelector('.vt');
+  if(vt){
+    const head=vt.querySelector('.vh');
+    if(head){
+      const cells=head.querySelectorAll('span');
+      if(cells[1]) cells[1].textContent = (signedIn()&&RETAIL.on)?'Your price'
+                                        : (signedIn()?'DP':'MRP');
+      if(cells[2]) cells[2].textContent = (signedIn()&&RETAIL.on)?'MRP'
+                                        : (signedIn()?'MRP':'');
+    }
+    vt.querySelectorAll('.vr').forEach(function(row,i){
+      const v=(CUR.variants||[])[i]; if(!v) return;
+      const pc=row.querySelector('.vprice'), mc=row.querySelector('.vmrp');
+      const mrpv = v.mrp!=null ? v.mrp : (v.price!=null?Math.round(v.price*2.25):null);
+      if(signedIn() && RETAIL.on){
+        if(pc) pc.innerHTML = mrpv!=null ? '<b>'+rupee(disc(mrpv))+'</b>' : '—';
+        if(mc) mc.innerHTML = mrpv!=null ? '<span class="pmrp cut">'+rupee(mrpv)+'</span>' : '';
+      } else if(signedIn()){
+        if(pc) pc.innerHTML = v.price!=null ? rupee(v.price) : '—';
+        if(mc) mc.innerHTML = v.mrp!=null ? rupee(v.mrp) : '';
+      } else {
+        if(pc) pc.innerHTML = mrpv!=null ? rupee(mrpv) : '—';
+        if(mc) mc.innerHTML = '';
+      }
+    });
+    const note=vt.nextElementSibling;
+    if(note && note.tagName==='P'){
+      note.innerHTML = (signedIn()&&RETAIL.on)
+        ? 'Prices shown are MRP less '+(RETAIL.off||0)+'%. Tap the person icon to turn retail mode off.'
+        : (signedIn()
+          ? 'DP is your dealer price per piece including GST'+(CUR.gst?' at '+CUR.gst+'%':'')+
+            '. MRP is the printed maximum retail price. MOQ is the minimum order quantity where the supplier sets one.'
+          : 'Prices shown are MRP. <button class="signlink" data-sign="1">Sign in to see your dealer price</button>');
+    }
+  }
+}
+
+/* ---------- swipeable hero photo with dots ---------- */
+function enhanceGallery(){
+  const wrap=document.getElementById('heroimg');
+  const hi=document.getElementById('hi');
+  const thumbs=document.getElementById('thumbs');
+  if(!wrap||!hi||!CUR) return;
+  const imgs=(CUR.imgs&&CUR.imgs.length?CUR.imgs:(CUR.img?[CUR.img]:[]));
+  if(imgs.length<2) return;
+  let ix=0;
+  const dots=document.createElement('div');
+  dots.className='gdots';
+  dots.innerHTML=imgs.map((_,i)=>'<i class="'+(i?'':'on')+'"></i>').join('');
+  (thumbs||wrap).insertAdjacentElement(thumbs?'beforebegin':'afterend', dots);
+
+  function show(n, dir){
+    ix=(n+imgs.length)%imgs.length;
+    hi.classList.remove('slideL','slideR');
+    void hi.offsetWidth;
+    hi.src=IMG(imgs[ix]);
+    if(!(CFG.motion==='off')) hi.classList.add(dir>0?'slideL':'slideR');
+    [].forEach.call(dots.children,(d,i)=>d.classList.toggle('on',i===ix));
+    if(thumbs) [].forEach.call(thumbs.children,(b,i)=>b.classList.toggle('on',i===ix));
+  }
+  [].forEach.call(dots.children,(d,i)=>d.onclick=()=>show(i, i>ix?1:-1));
+
+  const prev=document.createElement('button'); prev.className='gnav pv'; prev.innerHTML='‹';
+  const next=document.createElement('button'); next.className='gnav nx'; next.innerHTML='›';
+  prev.onclick=e=>{e.stopPropagation();show(ix-1,-1)};
+  next.onclick=e=>{e.stopPropagation();show(ix+1,1)};
+  wrap.appendChild(prev); wrap.appendChild(next);
+
+  let x0=null,y0=null;
+  wrap.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  wrap.addEventListener('touchend',function(e){
+    if(x0===null)return;
+    const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dx)>42 && Math.abs(dx)>Math.abs(dy)) show(ix+(dx<0?1:-1), dx<0?1:-1);
+    x0=null;
+  },{passive:true});
+  if(thumbs) [].forEach.call(thumbs.children,(b,i)=>b.addEventListener('click',()=>show(i,i>ix?1:-1)));
+}
+
+/* wrap openSheet so every open gets the new pricing and gallery */
+const _openSheet = openSheet;
+openSheet = function(p){
+  _openSheet(p);
+  try{ repriceSheet(); enhanceGallery(); }catch(e){}
+};
+
+markWho(); retailBanner();
+
 </script></body></html>
