@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Catalogue admin — Patel Marketing</title>
-<link rel="icon" href="../assets/logo-patel-marketing.svg">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#10161C;--mute:#6B7885;--paper:#F4F6F5;--card:#fff;--line:#DDE3E2;--line2:#EDF1F0;
-  --brass:#B07A2B;--steel:#3E5871;--ok:#2E7D5B;--warn:#B4433B;
-  --fd:'Archivo',sans-serif;--fb:'IBM Plex Sans',sans-serif;--fm:'IBM Plex Mono',monospace}
+:root{--ink:#0D2137;--mute:#5B7690;--paper:#F2F8FD;--card:#FFF;--line:#D6E6F2;--line2:#E8F3FC;
+  --brass:#12A594;--steel:#2F6FA8;--ok:#12A594;--warn:#B4433B;
+  --fd:'Inter',-apple-system,sans-serif;--fb:'Inter',-apple-system,sans-serif;--fm:'IBM Plex Mono',monospace}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--fb);background:var(--paper);color:var(--ink);line-height:1.45;padding-bottom:90px}
 button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
@@ -22,8 +22,9 @@ header img{height:30px}header b{font-family:var(--fd);font-size:.95rem}
 .bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .bar input{flex:1;min-width:180px;padding:10px 12px;border:1.5px solid var(--line);
   border-radius:8px;background:var(--card)}
-.btn{padding:10px 14px;border:0;border-radius:8px;background:var(--ink);color:#fff;font-weight:600;font-size:.85rem}
-.btn.g{background:var(--ok)}.btn.o{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
+.btn{padding:10px 14px;border:0;border-radius:9px;background:var(--steel);color:#fff;font-weight:700;font-size:.85rem}
+.btn.g{background:var(--ok)}
+.mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--steel),var(--brass));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.85rem;flex-shrink:0}.btn.o{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
 .btn.r{background:var(--warn)}
 .stat{font-family:var(--fm);font-size:.72rem;color:var(--mute);margin-bottom:10px}
 .rowitem{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
@@ -66,7 +67,7 @@ textarea.f{min-height:62px;resize:vertical}
 </head>
 <body>
 <header>
-  <img src="../assets/logo-patel-marketing.svg" alt="">
+  <div class="mark">PM</div>
   <b>Catalogue admin</b><span class="tag">DRAFT</span>
   <span style="flex:1"></span>
   <a class="btn o" href="index.html" style="text-decoration:none">View catalogue</a>
