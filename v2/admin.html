@@ -247,9 +247,26 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js"></script>
+<script src="config.js?v=6"></script>
 <script>
-const C=window.PM_CONFIG||{}, $=s=>document.querySelector(s);
+(function(){
+  const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
+    site:'https://patelmarketing-catalog.vercel.app',
+    auth:{admins:[{n:'Raj',p:'919686754024'},{n:'Admin 2',p:'918800353840'}],
+      customers:[{n:'Customer 1',p:'919448666177'},{n:'Customer 2',p:'918880050050'},
+        {n:'Customer 3',p:'918431625230'},{n:'Customer 4',p:'919448471795'},
+        {n:'Customer 5',p:'919448463254'},{n:'Customer 6',p:'918800353843'},
+        {n:'Customer 7',p:'919686754026'}]}};
+  const K=window.PM_CONFIG||{};
+  const usable=x=>(x||[]).filter(r=>r&&typeof r.p==='string'&&r.p.replace(/\D/g,'').length>=10);
+  const M=Object.assign({},D,K);
+  M.auth=Object.assign({},D.auth,K.auth||{});
+  M.auth.admins    = usable(M.auth.admins).length    ? usable(M.auth.admins)    : D.auth.admins;
+  M.auth.customers = usable(M.auth.customers).length ? usable(M.auth.customers) : D.auth.customers;
+  if(!M.whatsapp||M.whatsapp.replace(/\D/g,'').length<10) M.whatsapp=D.whatsapp;
+  window.PM_CONFIG=M;
+})();
+const C=window.PM_CONFIG, $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=n=>'₹'+Number(n).toLocaleString('en-IN');
 const IMG=n=>'../images/'+n+'.jpg';

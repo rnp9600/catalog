@@ -15,7 +15,7 @@ window.PM_CONFIG = {
   auth: {
     admins: [
       { n:'Raj',     p:'919686754024' },
-      { n:'Admin 2', p:'8800353840' },
+      { n:'Admin 2', p:'918800353840' },
       /* Third admin: add it here as another line, or from the admin panel.
          I have not invented a number — a made-up one could belong to a real
          person who would then be able to edit the catalogue. */
@@ -27,7 +27,7 @@ window.PM_CONFIG = {
       { n:'Customer 4', p:'919448471795' },
       { n:'Customer 5', p:'919448463254' },
       { n:'Customer 6', p:'918800353843' },
-      { n:'Customer 7', p:'9686754026' },
+      { n:'Customer 7', p:'919686754026' },
     ],
     noAccessMessage: 'We do not recognise that number yet.',
   },
