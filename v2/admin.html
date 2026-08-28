@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalogue admin — Patel Marketing</title>
+<link rel="icon" href="../assets/logo-patel-marketing.svg">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#10161C;--mute:#6B7885;--paper:#F4F6F5;--card:#fff;--line:#DDE3E2;--line2:#EDF1F0;
+  --brass:#B07A2B;--steel:#3E5871;--ok:#2E7D5B;--warn:#B4433B;
+  --fd:'Archivo',sans-serif;--fb:'IBM Plex Sans',sans-serif;--fm:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--paper);color:var(--ink);line-height:1.45;padding-bottom:90px}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:2.5px solid var(--brass);outline-offset:2px}
+header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);
+  padding:10px 14px;display:flex;align-items:center;gap:10px}
+header img{height:30px}header b{font-family:var(--fd);font-size:.95rem}
+.tag{font-family:var(--fm);font-size:.62rem;background:var(--brass);color:#fff;padding:2px 7px;border-radius:5px}
+.wrap{max-width:900px;margin:0 auto;padding:14px}
+.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.bar input{flex:1;min-width:180px;padding:10px 12px;border:1.5px solid var(--line);
+  border-radius:8px;background:var(--card)}
+.btn{padding:10px 14px;border:0;border-radius:8px;background:var(--ink);color:#fff;font-weight:600;font-size:.85rem}
+.btn.g{background:var(--ok)}.btn.o{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
+.btn.r{background:var(--warn)}
+.stat{font-family:var(--fm);font-size:.72rem;color:var(--mute);margin-bottom:10px}
+.rowitem{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;padding:9px 11px;margin-bottom:7px}
+.rowitem img{width:42px;height:42px;object-fit:contain;background:#fff;border:1px solid var(--line2);
+  border-radius:6px;flex-shrink:0}
+.rowitem .t{flex:1;min-width:0}
+.rowitem .n{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rowitem .s{font-family:var(--fm);font-size:.66rem;color:var(--mute)}
+.rowitem .p{font-family:var(--fm);font-size:.8rem;font-weight:600;white-space:nowrap}
+.edit{position:fixed;inset:0;background:rgba(10,16,20,.55);z-index:50;display:none}
+.edit.on{display:block}
+.ein{position:absolute;inset:auto 0 0 0;max-height:94vh;overflow-y:auto;background:var(--card);
+  border-radius:16px 16px 0 0;padding:0 0 22px}
+@media(min-width:820px){.ein{max-width:640px;margin:0 auto;border-radius:16px;top:50%;bottom:auto;
+  transform:translateY(-50%);max-height:88vh}}
+.ehead{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--line);
+  padding:12px 15px;display:flex;gap:10px;align-items:center;z-index:2}
+.ehead b{flex:1;font-family:var(--fd)}
+.x{border:0;background:var(--paper);width:31px;height:31px;border-radius:50%;font-size:1.1rem}
+.fields{padding:14px 15px;display:grid;gap:11px}
+label{font-size:.74rem;font-weight:600;color:var(--mute);display:block;margin-bottom:4px;
+  text-transform:uppercase;letter-spacing:.06em}
+input.f,select.f,textarea.f{width:100%;padding:9px 11px;border:1.5px solid var(--line);
+  border-radius:8px;background:var(--paper);font-size:.88rem}
+textarea.f{min-height:62px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.vrow{display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:6px;margin-bottom:6px;align-items:center}
+.vrow input{padding:8px 9px;border:1.5px solid var(--line);border-radius:7px;background:var(--paper);
+  font-family:var(--fm);font-size:.8rem}
+.del{border:0;background:#F6DEDC;color:#8C2F28;border-radius:7px;width:32px;height:32px;font-size:1rem}
+.foot{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
+  padding:11px 14px;display:flex;gap:8px;z-index:30}
+.foot .btn{flex:1}
+.note{background:#FFF7E6;border:1px solid #F0DEB4;border-radius:9px;padding:11px 13px;
+  font-size:.79rem;color:#6B4A14;margin-bottom:12px;line-height:1.55}
+.note b{display:block;margin-bottom:3px}
+</style>
+</head>
+<body>
+<header>
+  <img src="../assets/logo-patel-marketing.svg" alt="">
+  <b>Catalogue admin</b><span class="tag">DRAFT</span>
+  <span style="flex:1"></span>
+  <a class="btn o" href="index.html" style="text-decoration:none">View catalogue</a>
+</header>
+
+<div class="wrap">
+  <div class="note">
+    <b>Changes stay on this phone until you export.</b>
+    Edit as much as you like, then press <b>Download data.json</b> and upload that one file to
+    GitHub. The site updates when Vercel finishes deploying.
+  </div>
+
+  <div class="bar">
+    <input id="q" placeholder="Search name, brand or code…">
+    <button class="btn g" id="add">+ New product</button>
+  </div>
+  <div class="stat" id="stat"></div>
+  <div id="list"></div>
+  <button class="btn o" id="more" style="width:100%;margin-top:10px;display:none">Show more</button>
+</div>
+
+<div class="foot">
+  <button class="btn o" id="revert">Discard changes</button>
+  <button class="btn" id="save">Download data.json</button>
+</div>
+
+<div class="edit" id="edit"><div class="ein" id="ein"></div></div>
+
+<script src="config.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let P = [], ORIG = '', shown = 40, q = '', dirty = false;
+
+const DRAFT = 'pm_admin_draft';
+const money = n => '₹' + Number(n).toLocaleString('en-IN');
+
+async function boot(){
+  const s = localStorage.getItem(DRAFT);
+  const r = await fetch('../data.json', { cache:'no-cache' });
+  ORIG = JSON.stringify(await r.clone().json());
+  P = s ? JSON.parse(s) : JSON.parse(ORIG);
+  dirty = !!s;
+  draw();
+}
+function filtered(){
+  if (!q) return P;
+  const t = q.toLowerCase();
+  return P.filter(p => [p.name,p.brand,p.code,p.cat,p.sub].filter(Boolean)
+    .join(' ').toLowerCase().includes(t));
+}
+function draw(){
+  const L = filtered();
+  $('#stat').textContent = `${L.length} shown · ${P.length} products · ` +
+    `${P.filter(p=>p.price!=null).length} priced` + (dirty ? ' · unsaved changes' : '');
+  $('#list').innerHTML = L.slice(0, shown).map(p => {
+    const i = P.indexOf(p);
+    return `<div class="rowitem" data-i="${i}">
+      <img loading="lazy" src="${(window.PM_CONFIG.imageBase||'../images/')+esc(p.img)}.jpg" onerror="this.style.opacity=.12">
+      <div class="t"><div class="n">${esc(p.name)}</div>
+        <div class="s">${esc(p.brand)}${p.code?' · '+esc(p.code):''} · ${esc(p.cat)}</div></div>
+      <div class="p">${p.price!=null?money(p.price):'—'}</div>
+    </div>`;
+  }).join('');
+  $('#more').style.display = L.length > shown ? 'block' : 'none';
+}
+$('#q').oninput = e => { q = e.target.value.trim(); shown = 40; draw(); };
+$('#more').onclick = () => { shown += 40; draw(); };
+$('#list').onclick = e => {
+  const r = e.target.closest('.rowitem'); if (r) openEdit(+r.dataset.i);
+};
+$('#add').onclick = () => {
+  P.unshift({ img:'', imgs:[], name:'', brand:'', cat:'', sub:'', desc:'', spec:'',
+    code:'', gst:18, note:null, price:null, mrp:null, variants:[], stock:'active',
+    hotel:null, feat:false, sizes:[], alias:null, hsn:null });
+  touch(); openEdit(0);
+};
+
+function openEdit(i){
+  const p = P[i];
+  const brands = [...new Set(P.map(x=>x.brand).filter(Boolean))].sort();
+  const cats = [...new Set(P.map(x=>x.cat).filter(Boolean))].sort();
+  $('#ein').innerHTML = `
+   <div class="ehead"><b>${p.name ? 'Edit product' : 'New product'}</b>
+     <button class="btn r" id="eDel">Delete</button>
+     <button class="x" id="eX">×</button></div>
+   <div class="fields">
+     <div><label>Name — exactly as printed on the supplier list</label>
+       <input class="f" id="fName" value="${esc(p.name)}"></div>
+     <div class="two">
+       <div><label>Brand</label><input class="f" id="fBrand" list="dlB" value="${esc(p.brand)}">
+         <datalist id="dlB">${brands.map(b=>`<option value="${esc(b)}">`).join('')}</datalist></div>
+       <div><label>Code</label><input class="f" id="fCode" value="${esc(p.code||'')}"></div>
+     </div>
+     <div class="two">
+       <div><label>Category</label><input class="f" id="fCat" list="dlC" value="${esc(p.cat)}">
+         <datalist id="dlC">${cats.map(b=>`<option value="${esc(b)}">`).join('')}</datalist></div>
+       <div><label>Sub-group</label><input class="f" id="fSub" value="${esc(p.sub||'')}"></div>
+     </div>
+     <div><label>Description</label><textarea class="f" id="fDesc">${esc(p.desc||'')}</textarea></div>
+     <div class="two">
+       <div><label>Rate ${'\u20B9'}</label><input class="f" id="fPrice" type="number" value="${p.price??''}"></div>
+       <div><label>MRP ${'\u20B9'}</label><input class="f" id="fMrp" type="number" value="${p.mrp??''}"></div>
+     </div>
+     <div class="three">
+       <div><label>GST %</label><input class="f" id="fGst" type="number" value="${p.gst??18}"></div>
+       <div><label>HSN</label><input class="f" id="fHsn" value="${esc(p.hsn||'')}"></div>
+       <div><label>Stock</label><select class="f" id="fStock">
+         <option value="active"${p.stock!=='out'?' selected':''}>In stock</option>
+         <option value="out"${p.stock==='out'?' selected':''}>Out of stock</option></select></div>
+     </div>
+     <div><label>Pack / spec line</label><input class="f" id="fSpec" value="${esc(p.spec||'')}"></div>
+     <div><label>Other names customers use (helps search)</label>
+       <input class="f" id="fAlias" value="${esc(p.alias||'')}"></div>
+     <div><label>Main image — folder/file without .jpg</label>
+       <input class="f" id="fImg" value="${esc(p.img)}" placeholder="paxton-alu/pxa_modak_mould_flat"></div>
+     <div><label>Extra images — one per line</label>
+       <textarea class="f" id="fImgs">${esc((p.imgs||[]).join('\n'))}</textarea></div>
+     <div><label>Sizes and rates</label><div id="vlist"></div>
+       <button class="btn o" id="vAdd" style="margin-top:4px">+ Add size</button></div>
+     <div><label>Note shown on the product</label>
+       <input class="f" id="fNote" value="${esc(p.note||'')}"></div>
+     <button class="btn g" id="eSave" style="margin-top:6px">Done</button>
+   </div>`;
+
+  let vs = JSON.parse(JSON.stringify(p.variants || []));
+  const drawV = () => {
+    $('#vlist').innerHTML = vs.map((v,ix)=>`<div class="vrow">
+      <input placeholder="Size" value="${esc(v.size||'')}" data-k="size" data-ix="${ix}">
+      <input placeholder="Rate" type="number" value="${v.price??''}" data-k="price" data-ix="${ix}">
+      <input placeholder="MRP" type="number" value="${v.mrp??''}" data-k="mrp" data-ix="${ix}">
+      <button class="del" data-del="${ix}">×</button></div>`).join('');
+    $('#vlist').oninput = e => {
+      const t = e.target; if (!t.dataset.k) return;
+      const v = vs[+t.dataset.ix];
+      v[t.dataset.k] = t.dataset.k === 'size' ? t.value : (t.value === '' ? null : +t.value);
+    };
+    $('#vlist').onclick = e => {
+      const d = e.target.dataset.del; if (d === undefined) return;
+      vs.splice(+d,1); drawV();
+    };
+  };
+  drawV();
+  $('#vAdd').onclick = () => { vs.push({size:'',rate:null,price:null,mrp:null,moq:null}); drawV(); };
+
+  $('#eX').onclick = closeEdit;
+  $('#eDel').onclick = () => {
+    if (!confirm('Delete this product from the catalogue?')) return;
+    P.splice(i,1); touch(); closeEdit();
+  };
+  $('#eSave').onclick = () => {
+    const num = id => { const v = $(id).value; return v === '' ? null : +v; };
+    Object.assign(p, {
+      name:$('#fName').value.trim(), brand:$('#fBrand').value.trim(),
+      code:$('#fCode').value.trim()||null, cat:$('#fCat').value.trim(),
+      sub:$('#fSub').value.trim(), desc:$('#fDesc').value.trim(),
+      price:num('#fPrice'), mrp:num('#fMrp'), gst:num('#fGst'),
+      hsn:$('#fHsn').value.trim()||null, stock:$('#fStock').value,
+      spec:$('#fSpec').value.trim(), alias:$('#fAlias').value.trim()||null,
+      note:$('#fNote').value.trim()||null, img:$('#fImg').value.trim(),
+      imgs:$('#fImgs').value.split('\n').map(s=>s.trim()).filter(Boolean),
+      variants: vs.filter(v=>v.size||v.price!=null),
+    });
+    if (!p.imgs.length && p.img) p.imgs = [p.img];
+    touch(); closeEdit();
+  };
+  $('#edit').classList.add('on'); document.body.style.overflow='hidden';
+}
+function closeEdit(){ $('#edit').classList.remove('on'); document.body.style.overflow=''; draw(); }
+function touch(){ dirty = true; localStorage.setItem(DRAFT, JSON.stringify(P)); draw(); }
+
+$('#save').onclick = () => {
+  const clean = P.map(p => { const c = {...p}; delete c._h; return c; });
+  const blob = new Blob([JSON.stringify(clean, null, 1)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'data.json'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+};
+$('#revert').onclick = () => {
+  if (!confirm('Throw away every change made on this phone since the last download?')) return;
+  localStorage.removeItem(DRAFT); location.reload();
+};
+$('#edit').onclick = e => { if (e.target.id === 'edit') closeEdit(); };
+boot();
+</script>
+</body>
+</html>
