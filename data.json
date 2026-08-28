@@ -85,7 +85,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-vadachatti"
  },
  {
   "sr": 2,
@@ -136,7 +137,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-addakal-kiwi-tawa"
  },
  {
   "sr": 3,
@@ -221,7 +223,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-edge-dosa-plate"
  },
  {
   "sr": 4,
@@ -268,7 +271,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-without-edge-dosa-plate"
  },
  {
   "sr": 5,
@@ -303,7 +307,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-handle-dosa-plate-11"
  },
  {
   "sr": 6,
@@ -338,7 +343,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-double-handle-dosa-plate-12-dh"
  },
  {
   "sr": 7,
@@ -372,7 +378,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-square-dosa-plate-12-sq"
  },
  {
   "sr": 8,
@@ -405,7 +412,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-king-dosa-plate-12"
  },
  {
   "sr": 9,
@@ -447,7 +455,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-appakal-8-9-appacity"
  },
  {
   "sr": 10,
@@ -480,7 +489,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-handle-appakal-9-appacity"
  },
  {
   "sr": 11,
@@ -513,7 +523,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-appakal-lid"
  },
  {
   "sr": 12,
@@ -546,7 +557,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-4-in-1-mini-appakal-appacity"
  },
  {
   "sr": 13,
@@ -583,7 +595,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-paniyarakal-7-pits-appam"
  },
  {
   "sr": 14,
@@ -618,7 +631,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-paniyarakal-9-pits-appam"
  },
  {
   "sr": 15,
@@ -655,7 +669,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-paniyarakal-12-pits-appam"
  },
  {
   "sr": 16,
@@ -701,7 +716,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-paniyarakal-14-pits-appam"
  },
  {
   "sr": 17,
@@ -734,7 +750,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-paniyarakal-37-pits-appam"
  },
  {
   "sr": 18,
@@ -803,7 +820,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-chapathi-press-regular-mica"
  },
  {
   "sr": 19,
@@ -872,7 +890,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-chapathi-press-regular-ss"
  },
  {
   "sr": 20,
@@ -905,7 +924,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-chapathi-press-premium-ss-no-8"
  },
  {
   "sr": 21,
@@ -938,7 +958,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-chapathi-press-premium-mica-no-8"
  },
  {
   "sr": 22,
@@ -971,7 +992,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-kadai-lid"
  },
  {
   "sr": 23,
@@ -1004,7 +1026,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-bowl-lid"
  },
  {
   "sr": 24,
@@ -1037,7 +1060,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-deep-kadai"
  },
  {
   "sr": 25,
@@ -1070,7 +1094,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-square-bowl-lid-sq"
  },
  {
   "sr": 26,
@@ -1108,7 +1133,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-flat-kadai"
  },
  {
   "sr": 27,
@@ -1141,7 +1167,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-handle-grill-pan"
  },
  {
   "sr": 28,
@@ -1174,7 +1201,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-grill-pan"
  },
  {
   "sr": 29,
@@ -1207,7 +1235,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-serving-mini-grill-pan"
  },
  {
   "sr": 30,
@@ -1240,7 +1269,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-grill-plate"
  },
  {
   "sr": 31,
@@ -1273,7 +1303,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-fry-pan"
  },
  {
   "sr": 32,
@@ -1306,7 +1337,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-tadka-pan"
  },
  {
   "sr": 33,
@@ -1339,7 +1371,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-sauce-pan"
  },
  {
   "sr": 34,
@@ -1372,7 +1405,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-skillet-12"
  },
  {
   "sr": 35,
@@ -1405,7 +1439,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-skillet-10"
  },
  {
   "sr": 36,
@@ -1438,7 +1473,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-skillet-6"
  },
  {
   "sr": 37,
@@ -1472,7 +1508,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-tawa-pan"
  },
  {
   "sr": 38,
@@ -1505,7 +1542,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-phulka-pan"
  },
  {
   "sr": 39,
@@ -1538,7 +1576,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-fish-fry-pan"
  },
  {
   "sr": 40,
@@ -1571,7 +1610,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-round-serveware"
  },
  {
   "sr": 41,
@@ -1605,7 +1645,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-handle-rectangle-pan"
  },
  {
   "sr": 42,
@@ -1638,7 +1679,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-rectangle-serveware"
  },
  {
   "sr": 43,
@@ -1671,7 +1713,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-serving-bowl"
  },
  {
   "sr": 44,
@@ -1705,7 +1748,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-mortar-pestle"
  },
  {
   "sr": 45,
@@ -1741,7 +1785,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-briyani-pot"
  },
  {
   "sr": 46,
@@ -1775,7 +1820,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-2-in-1-briyani-pot"
  },
  {
   "sr": 47,
@@ -1810,7 +1856,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-mini-uttapakal"
  },
  {
   "sr": 48,
@@ -1847,7 +1894,8 @@
   "sizes": [],
   "hotel": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "surya-miniature-toys"
  },
  {
   "img": "mazda/mz001",
@@ -1901,7 +1949,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-oil-dispenser"
  },
  {
   "img": "mazda/mz002",
@@ -1949,7 +1998,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-crystal-oil-pourer-with-handle"
  },
  {
   "img": "mazda/mz003",
@@ -2003,7 +2053,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-crystal-oil-pourer"
  },
  {
   "img": "mazda/mz004",
@@ -2057,7 +2108,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-slim-oil-pourer"
  },
  {
   "img": "mazda/mz005",
@@ -2099,7 +2151,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-dream-pourer"
  },
  {
   "img": "mazda/mz006",
@@ -2131,7 +2184,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-dream-pourer-with-handle"
  },
  {
   "img": "mazda/mz007",
@@ -2196,7 +2250,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-beauty-oil-pourer"
  },
  {
   "img": "mazda/mz008",
@@ -2252,7 +2307,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-penguin-oil-pourer"
  },
  {
   "img": "mazda/mz009",
@@ -2306,7 +2362,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-duckling-pourer"
  },
  {
   "img": "mazda/mz010",
@@ -2359,7 +2416,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-pure-pourer"
  },
  {
   "img": "mazda/mz011",
@@ -2415,7 +2473,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-easy-pourer"
  },
  {
   "img": "mazda/mz012",
@@ -2470,7 +2529,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-real-pourer"
  },
  {
   "img": "mazda/mz013",
@@ -2517,7 +2577,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-taj-pickle-set-cera-black-clay"
  },
  {
   "img": "mazda/mz014",
@@ -2567,7 +2628,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-taj-pickle-set-gold-rose-gold"
  },
  {
   "img": "mazda/mz015",
@@ -2613,7 +2675,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-king-pickle-set-cera-black"
  },
  {
   "img": "mazda/mz016",
@@ -2659,7 +2722,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-queen-pickle-set-cera-black"
  },
  {
   "img": "mazda/mz017",
@@ -2705,7 +2769,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-queen-pickle-set-gold-rose-gold"
  },
  {
   "img": "mazda/mz018",
@@ -2751,7 +2816,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-oval-pickle-set"
  },
  {
   "img": "mazda/mz019",
@@ -2797,7 +2863,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-royal-pickle-set"
  },
  {
   "img": "mazda/mz020",
@@ -2843,7 +2910,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-femina-pickle-set"
  },
  {
   "img": "mazda/mz021",
@@ -2889,7 +2957,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-opel-pickle-set"
  },
  {
   "img": "mazda/mz022",
@@ -2936,7 +3005,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-astro-mukhwas-pickle-set"
  },
  {
   "img": "mazda/mz023",
@@ -2982,7 +3052,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-multi-purpose-server-cera-black"
  },
  {
   "img": "mazda/mz024",
@@ -3021,7 +3092,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-posh"
  },
  {
   "img": "mazda/mz025",
@@ -3067,7 +3139,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-auris"
  },
  {
   "img": "mazda/mz026",
@@ -3113,7 +3186,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-oscar"
  },
  {
   "img": "mazda/mz027",
@@ -3146,7 +3220,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-aron-with-stand"
  },
  {
   "img": "mazda/mz028",
@@ -3178,7 +3253,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-samrat"
  },
  {
   "img": "mazda/mz029",
@@ -3217,7 +3293,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-dawat"
  },
  {
   "img": "mazda/mz030",
@@ -3263,7 +3340,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-ideal"
  },
  {
   "img": "mazda/mz031",
@@ -3309,7 +3387,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-status"
  },
  {
   "img": "mazda/mz032",
@@ -3341,7 +3420,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-tower"
  },
  {
   "img": "mazda/mz033",
@@ -3387,7 +3467,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-minar"
  },
  {
   "img": "mazda/mz034",
@@ -3419,7 +3500,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-d-tone"
  },
  {
   "img": "mazda/mz035",
@@ -3451,7 +3533,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-topido"
  },
  {
   "img": "mazda/mz036",
@@ -3483,7 +3566,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-diamond"
  },
  {
   "img": "mazda/mz037",
@@ -3529,7 +3613,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-swiss-round"
  },
  {
   "img": "mazda/mz038",
@@ -3561,7 +3646,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-swiss-round-gold-rosegold-cap"
  },
  {
   "img": "mazda/mz039",
@@ -3607,7 +3693,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-swiss-sixer"
  },
  {
   "img": "mazda/mz040",
@@ -3639,7 +3726,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-swiss-sixer-gold-rosegold-cap"
  },
  {
   "img": "mazda/mz041",
@@ -3685,7 +3773,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-swiss-square"
  },
  {
   "img": "mazda/mz042",
@@ -3717,7 +3806,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-swiss-square-gold-rosegold-cap"
  },
  {
   "img": "mazda/mz043",
@@ -3763,7 +3853,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-trident"
  },
  {
   "img": "mazda/mz044",
@@ -3795,7 +3886,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-trident-gold-rose-gold"
  },
  {
   "img": "mazda/mz045",
@@ -3834,7 +3926,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-telon"
  },
  {
   "img": "mazda/mz046",
@@ -3866,7 +3959,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-telon-gold-rose-gold"
  },
  {
   "img": "mazda/mz047",
@@ -3898,7 +3992,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-laxima"
  },
  {
   "img": "mazda/mz048",
@@ -3951,7 +4046,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-wazir"
  },
  {
   "img": "mazda/mz049",
@@ -3983,7 +4079,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-legrand"
  },
  {
   "img": "mazda/mz050",
@@ -4015,7 +4112,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-s-p-swiss-chilly-flakes"
  },
  {
   "img": "mazda/mz051",
@@ -4047,7 +4145,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-airport-chilli-oregano-set"
  },
  {
   "img": "mazda/mz052",
@@ -4079,7 +4178,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-s-p-popular-chilly-flakes"
  },
  {
   "img": "mazda/mz053",
@@ -4112,7 +4212,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-oval"
  },
  {
   "img": "mazda/mz054",
@@ -4145,7 +4246,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-bullet"
  },
  {
   "img": "mazda/mz055",
@@ -4177,7 +4279,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-dola"
  },
  {
   "img": "mazda/mz056",
@@ -4223,7 +4326,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-taplu"
  },
  {
   "img": "mazda/mz057",
@@ -4255,7 +4359,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-skyline"
  },
  {
   "img": "mazda/mz058",
@@ -4301,7 +4406,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-stand"
  },
  {
   "img": "mazda/mz059",
@@ -4333,7 +4439,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-dtone-with-swiss-stand"
  },
  {
   "img": "mazda/mz060",
@@ -4365,7 +4472,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-swiss-minar-with-swiss-stand"
  },
  {
   "img": "mazda/mz061",
@@ -4397,7 +4505,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-cera-minar-with-cera-stand"
  },
  {
   "img": "mazda/mz062",
@@ -4429,7 +4538,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-swiss-round-with-swiss-stand"
  },
  {
   "img": "mazda/mz063",
@@ -4461,7 +4571,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-salt-pepper-laxima-with-swiss-stand"
  },
  {
   "img": "mazda/mz064",
@@ -4493,7 +4604,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-elegant"
  },
  {
   "img": "mazda/mz065",
@@ -4525,7 +4637,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-square-box"
  },
  {
   "img": "mazda/mz066",
@@ -4557,7 +4670,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-expo"
  },
  {
   "img": "mazda/mz067",
@@ -4589,7 +4703,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-np-shape"
  },
  {
   "img": "mazda/mz068",
@@ -4621,7 +4736,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-np-color"
  },
  {
   "img": "mazda/mz069",
@@ -4653,7 +4769,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-spn"
  },
  {
   "img": "mazda/mz070",
@@ -4692,7 +4809,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-mg-shape"
  },
  {
   "img": "mazda/mz071",
@@ -4725,7 +4843,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-zigzag"
  },
  {
   "img": "mazda/mz072",
@@ -4757,7 +4876,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-star"
  },
  {
   "img": "mazda/mz073",
@@ -4790,7 +4910,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-flower"
  },
  {
   "img": "mazda/mz074",
@@ -4822,7 +4943,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-mayur"
  },
  {
   "img": "mazda/mz075",
@@ -4868,7 +4990,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-royal"
  },
  {
   "img": "mazda/mz076",
@@ -4900,7 +5023,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-royal-gold-rose-gold"
  },
  {
   "img": "mazda/mz077",
@@ -4946,7 +5070,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-square"
  },
  {
   "img": "mazda/mz078",
@@ -4978,7 +5103,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-square-gold-rose-gold"
  },
  {
   "img": "mazda/mz079",
@@ -5024,7 +5150,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-grand-cutlery-napkin-holder"
  },
  {
   "img": "mazda/mz080",
@@ -5070,7 +5197,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-basket-multi-holder"
  },
  {
   "img": "mazda/mz081",
@@ -5123,7 +5251,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-swan-cutlery-holder"
  },
  {
   "img": "mazda/mz082",
@@ -5170,7 +5299,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-legend-cutlery-napkin-holder-s-s-black"
  },
  {
   "img": "mazda/mz083",
@@ -5218,7 +5348,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-classic"
  },
  {
   "img": "mazda/mz084",
@@ -5264,7 +5395,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-napkin-stand-carron"
  },
  {
   "img": "mazda/mz085",
@@ -5310,7 +5442,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-topsy-cutlery-holder"
  },
  {
   "img": "mazda/mz086",
@@ -5343,7 +5476,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-rubaz-napkin-toothpick-and-salt-pepper-stand"
  },
  {
   "img": "mazda/mz087",
@@ -5375,7 +5509,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-topaz-napkin-toothpick-and-salt-pepper-stand"
  },
  {
   "img": "mazda/mz088",
@@ -5414,7 +5549,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-budvase"
  },
  {
   "img": "mazda/mz089",
@@ -5460,7 +5596,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-elite-budvase"
  },
  {
   "img": "mazda/mz090",
@@ -5492,7 +5629,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-straw-holder"
  },
  {
   "img": "mazda/mz091",
@@ -5524,7 +5662,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-toothpick-holder"
  },
  {
   "img": "mazda/mz092",
@@ -5571,7 +5710,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ash-tray"
  },
  {
   "img": "mazda/mz093",
@@ -5611,7 +5751,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-coctail-shaker-deluxe"
  },
  {
   "img": "mazda/mz094",
@@ -5650,7 +5791,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ice-bucket-matt"
  },
  {
   "img": "mazda/mz095",
@@ -5689,7 +5831,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ice-bucket-ribbed-double-line"
  },
  {
   "img": "mazda/mz096",
@@ -5722,7 +5865,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-dilrooba-ogarala"
  },
  {
   "img": "mazda/mz097",
@@ -5803,7 +5947,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-plain-ogarala"
  },
  {
   "img": "mazda/mz098",
@@ -5857,7 +6002,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ombi-ogarala"
  },
  {
   "img": "mazda/mz099",
@@ -5925,7 +6071,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-tea-ogarala"
  },
  {
   "img": "mazda/mz100",
@@ -5992,7 +6139,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-deluxe-tea-ogarala"
  },
  {
   "img": "mazda/mz101",
@@ -6038,7 +6186,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-popular-pipe-ogarala"
  },
  {
   "img": "mazda/mz102",
@@ -6084,7 +6233,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-strong-tea-deluxe-ogarala"
  },
  {
   "img": "mazda/mz103",
@@ -6116,7 +6266,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-little-king-baby-set"
  },
  {
   "img": "mazda/mz104",
@@ -6148,7 +6299,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-little-bhim-baby-set"
  },
  {
   "img": "mazda/mz105",
@@ -6194,7 +6346,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-baby-sipper-bottle"
  },
  {
   "img": "mazda/mz106",
@@ -6226,7 +6379,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-smiley-baby-sipper-bottle"
  },
  {
   "img": "mazda/mz107",
@@ -6273,7 +6427,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-zam-zam-plain-glass"
  },
  {
   "img": "mazda/mz108",
@@ -6319,7 +6474,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-zam-zam-color-glass"
  },
  {
   "img": "mazda/mz109",
@@ -6372,7 +6528,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ss-mug-classic-6-pcs-box"
  },
  {
   "img": "mazda/mz110",
@@ -6425,7 +6582,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ss-mug-cuttee-6-pcs-box"
  },
  {
   "img": "mazda/mz111",
@@ -6471,7 +6629,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ss-mug-lovely-6-pcs-box"
  },
  {
   "img": "mazda/mz112",
@@ -6524,7 +6683,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ss-mug-opium-6-pcs-box"
  },
  {
   "img": "mazda/mz113",
@@ -6570,7 +6730,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ss-mug-oyster-6-pcs-box"
  },
  {
   "img": "mazda/mz114",
@@ -6616,7 +6777,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ss-mug-coffee-with-black-handle-6-pcs-box"
  },
  {
   "img": "mazda/mz115",
@@ -6684,7 +6846,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-ss-mug-with-handle-1-6"
  },
  {
   "img": "mazda/mz116",
@@ -6716,7 +6879,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-s-s-mug-dolphin-color-single-piece"
  },
  {
   "img": "mazda/mz117",
@@ -6769,7 +6933,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-popular-mug"
  },
  {
   "img": "mazda/mz118",
@@ -6815,7 +6980,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-s-s-color-mug-6-pcs-set"
  },
  {
   "img": "mazda/mz119",
@@ -6868,7 +7034,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-milan-lota"
  },
  {
   "img": "mazda/mz120",
@@ -6922,7 +7089,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepot-delta-ss-copper-bottom"
  },
  {
   "img": "mazda/mz121",
@@ -6975,7 +7143,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepot-dona-ss-copper-bottom"
  },
  {
   "img": "mazda/mz122",
@@ -7028,7 +7197,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepot-lovely-ss-copper-bottom"
  },
  {
   "img": "mazda/mz123",
@@ -7081,7 +7251,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepot-delsu-ss-copper-bottom"
  },
  {
   "img": "mazda/mz124",
@@ -7135,7 +7306,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepot-golu"
  },
  {
   "img": "mazda/mz125",
@@ -7175,7 +7347,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepot-leher"
  },
  {
   "img": "mazda/mz126",
@@ -7214,7 +7387,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepot-sumo"
  },
  {
   "img": "mazda/mz127",
@@ -7253,7 +7427,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepot-sumo-designer"
  },
  {
   "img": "mazda/mz128",
@@ -7293,7 +7468,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepot-divine"
  },
  {
   "img": "mazda/mz129",
@@ -7326,7 +7502,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gheepto-tripto-seethru"
  },
  {
   "img": "mazda/mz130",
@@ -7372,7 +7549,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-degchi-pot-baby"
  },
  {
   "img": "mazda/mz131",
@@ -7425,7 +7603,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-degchi-handi"
  },
  {
   "img": "mazda/mz132",
@@ -7506,7 +7685,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-degchi-handi-hammer-without-box"
  },
  {
   "img": "mazda/mz133",
@@ -7559,7 +7739,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-kitchen-tool-holder-round-square"
  },
  {
   "img": "mazda/mz134",
@@ -7599,7 +7780,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-kitchen-tool-holder-damroo"
  },
  {
   "img": "mazda/mz135",
@@ -7681,7 +7863,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-spoon-set-leaves-hole"
  },
  {
   "img": "mazda/mz136",
@@ -7762,7 +7945,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-spoon-set-round-hole"
  },
  {
   "img": "mazda/mz137",
@@ -7816,7 +8000,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-scoop"
  },
  {
   "img": "mazda/mz138",
@@ -7855,7 +8040,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-jointless-polpat-heavy"
  },
  {
   "img": "mazda/mz139",
@@ -7894,7 +8080,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-s-s-urja-polpat"
  },
  {
   "img": "mazda/mz140",
@@ -7934,7 +8121,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-vita-saver"
  },
  {
   "img": "mazda/mz141",
@@ -8001,7 +8189,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-coffee-warmer-heavy-hammer"
  },
  {
   "img": "mazda/mz142",
@@ -8055,7 +8244,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-popular-coffee-warmer"
  },
  {
   "img": "mazda/mz143",
@@ -8108,7 +8298,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-popular-coffee-warmer-hammer"
  },
  {
   "img": "mazda/mz144",
@@ -8161,7 +8352,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-chimta-1-dz-box"
  },
  {
   "img": "mazda/mz145",
@@ -8235,7 +8427,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-sugam-barni"
  },
  {
   "img": "mazda/mz146",
@@ -8267,7 +8460,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-coconut-scrapper"
  },
  {
   "img": "mazda/mz147",
@@ -8300,7 +8494,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-orange-juicer"
  },
  {
   "img": "mazda/mz148",
@@ -8333,7 +8528,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-juicer-deep"
  },
  {
   "img": "mazda/mz149",
@@ -8365,7 +8561,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-juicer-square"
  },
  {
   "img": "mazda/mz150",
@@ -8405,7 +8602,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-paneer-maker-square"
  },
  {
   "img": "mazda/mz151",
@@ -8465,7 +8663,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-pawa-strainer-with-steel-handle"
  },
  {
   "img": "mazda/mz152",
@@ -8539,7 +8738,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-rice-strainer"
  },
  {
   "img": "mazda/mz153",
@@ -8585,7 +8785,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-steel-vagaria"
  },
  {
   "img": "mazda/mz154",
@@ -8631,7 +8832,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-masala-dabba-belly-plain"
  },
  {
   "img": "mazda/mz155",
@@ -8677,7 +8879,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-masala-dabba-belly-see-thru"
  },
  {
   "img": "mazda/mz156",
@@ -8724,7 +8927,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-masala-dabba-flower"
  },
  {
   "img": "mazda/mz157",
@@ -8763,7 +8967,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-sink-strainer"
  },
  {
   "img": "mazda/mz158",
@@ -8795,7 +9000,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-flower-sink-strainer"
  },
  {
   "img": "mazda/mz159",
@@ -8834,7 +9040,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-soap-dish-square"
  },
  {
   "img": "mazda/mz160",
@@ -8866,7 +9073,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-smarty-tea-sugar-canister-set"
  },
  {
   "img": "mazda/mz161",
@@ -8912,7 +9120,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-f-pot"
  },
  {
   "img": "mazda/mz162",
@@ -8951,7 +9160,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-crystal-jar-golden-silver"
  },
  {
   "img": "mazda/mz163",
@@ -8997,7 +9207,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-berry-canister"
  },
  {
   "img": "mazda/mz164",
@@ -9030,7 +9241,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-tom-tea-sugar-cera-black"
  },
  {
   "img": "mazda/mz165",
@@ -9063,7 +9275,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-smarty-gold-tea-sugar"
  },
  {
   "img": "mazda/mz166",
@@ -9110,7 +9323,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-aar-par-see-thru-canister"
  },
  {
   "img": "mazda/mz167",
@@ -9142,7 +9356,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-rangoli-tea-sugar-set-glossy-lid"
  },
  {
   "img": "mazda/mz168",
@@ -9188,7 +9403,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-rangoli-gift-dabba-red-blue"
  },
  {
   "img": "mazda/mz169",
@@ -9220,7 +9436,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-mukhwas-dabbi"
  },
  {
   "img": "mazda/mz170",
@@ -9287,7 +9504,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-fit-right-dabbi"
  },
  {
   "img": "mazda/mz171",
@@ -9354,7 +9572,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-steel-cover-dabbi"
  },
  {
   "img": "mazda/mz172",
@@ -9407,7 +9626,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-dhaniya-fridge-dabba"
  },
  {
   "img": "mazda/mz173",
@@ -9453,7 +9673,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-dhaniya-dabba-square"
  },
  {
   "img": "mazda/mz174",
@@ -9499,7 +9720,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-khamni-dabbi"
  },
  {
   "img": "mazda/mz175",
@@ -9566,7 +9788,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-fit-lock-dabbi"
  },
  {
   "img": "mazda/mz176",
@@ -9612,7 +9835,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-thread-dabbi"
  },
  {
   "img": "mazda/mz177",
@@ -9658,7 +9882,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-see-through-dabbi"
  },
  {
   "img": "mazda/mz178",
@@ -9726,7 +9951,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-soft-touch-dabbi"
  },
  {
   "img": "mazda/mz179",
@@ -9772,7 +9998,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-matki-see-thru-dabbi"
  },
  {
   "img": "mazda/mz180",
@@ -9804,7 +10031,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gas-trolley-full-plate-heavy"
  },
  {
   "img": "mazda/mz181",
@@ -9836,11 +10064,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-gas-trolley-wire"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "DRY FRUIT SET",
   "brand": "Mazda",
   "cat": "Gas Trolley & Gift Sets",
@@ -9880,11 +10111,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-dry-fruit-set"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "Taj pot with cover & spoon",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -9910,11 +10144,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-taj-pot-with-cover-spoon"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "King pot with cover & spoon",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -9940,11 +10177,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-king-pot-with-cover-spoon"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "Queen pot with cover & spoon",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -9970,11 +10210,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-queen-pot-with-cover-spoon"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "Oval pot with cover & spoon",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10000,11 +10243,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-oval-pot-with-cover-spoon"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "Royal pot with cover & spoon",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10030,11 +10276,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-royal-pot-with-cover-spoon"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "Femina pot with cover & spoon",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10060,11 +10309,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-femina-pot-with-cover-spoon"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "Opel pot with cover & spoon",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10090,11 +10342,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-opel-pot-with-cover-spoon"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "COVER - Oil dispenser",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10127,11 +10382,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-cover-oil-dispenser"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "COVER - Fit right dabbi",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10192,11 +10450,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-cover-fit-right-dabbi"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "THREAD BUSH - Salt & pepper",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10229,11 +10490,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-thread-bush-salt-pepper"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "VACCUM - Coconut scrapper",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10259,11 +10523,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-vaccum-coconut-scrapper"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "NOZAL - Crystal/Slim pourer",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10303,11 +10570,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-nozal-crystal-slim-pourer"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "WHITE RING - Crystal/Slim pourer",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10347,11 +10617,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-white-ring-crystal-slim-pourer"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "COVER - Easy pourer",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10384,11 +10657,14 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-cover-easy-pourer"
  },
  {
-  "img": null,
-  "imgs": [],
+  "img": "_placeholder",
+  "imgs": [
+   "_placeholder"
+  ],
   "name": "NIPPLE - Baby sipper",
   "brand": "Mazda",
   "cat": "Accessories & Spares",
@@ -10421,7 +10697,8 @@
   "sizes": [],
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "mazda-nipple-baby-sipper"
  },
  {
   "img": "paxton-ci/px_dosa_tawa",
@@ -10449,7 +10726,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-dosa-tawa"
  },
  {
   "img": "paxton-ci/px_appam_pan",
@@ -10477,7 +10755,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-appam-pan"
  },
  {
   "img": "paxton-ci/px_sq_grill",
@@ -10503,7 +10782,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-2-in-1-square-grill-pan"
  },
  {
   "img": "paxton-ci/px_rd_grill",
@@ -10529,7 +10809,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-2-in-1-round-grill-pan"
  },
  {
   "img": "paxton-ci/px_fry_pan",
@@ -10555,7 +10836,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-fry-pan"
  },
  {
   "img": "paxton-ci/px_kadhai",
@@ -10583,7 +10865,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-kadhai"
  },
  {
   "img": "paxton-ci/px_deep_kadhai",
@@ -10609,7 +10892,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-deep-kadhai"
  },
  {
   "img": "paxton-ci/px_roti_concave",
@@ -10635,7 +10919,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-roti-tawa-concave"
  },
  {
   "img": "paxton-ci/px_flat_roti",
@@ -10661,7 +10946,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-flat-roti-tawa"
  },
  {
   "img": "paxton-ci/px_oven_skillet",
@@ -10687,7 +10973,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-oven-skillet"
  },
  {
   "img": "paxton-ci/px_fish_fry",
@@ -10713,7 +11000,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-fish-fry-pan"
  },
  {
   "img": "paxton-ci/px_grilled_pan",
@@ -10739,7 +11027,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-grilled-pan"
  },
  {
   "img": "paxton-ci/px_sh_dosa_tawa",
@@ -10765,7 +11054,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-single-handle-dosa-tawa"
  },
  {
   "img": "paxton-ci/px_cassrole",
@@ -10791,7 +11081,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "paxton-ci-cast-iron-casserole"
  },
  {
   "img": "india-gold/ha_deep_kadai",
@@ -10815,7 +11106,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-deep-kadai"
  },
  {
   "img": "india-gold/ha_deep_tasra",
@@ -10839,7 +11131,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-deep-tasra"
  },
  {
   "img": "india-gold/ha_shallow_kadai",
@@ -10863,7 +11156,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-shallow-kadai"
  },
  {
   "img": "india-gold/ha_fry_pan",
@@ -10887,7 +11181,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-fry-pan"
  },
  {
   "img": "india-gold/ha_taper_fry",
@@ -10911,7 +11206,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-taper-fry-pan"
  },
  {
   "img": "india-gold/ha_deep_fry",
@@ -10935,7 +11231,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-deep-fry-pan"
  },
  {
   "img": "india-gold/ha_saute",
@@ -10959,7 +11256,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-saute-pan"
  },
  {
   "img": "india-gold/ha_lip_sauce",
@@ -10983,7 +11281,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-lip-sauce-pan"
  },
  {
   "img": "india-gold/ha_boil_pan",
@@ -11007,7 +11306,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-boil-pan"
  },
  {
   "img": "india-gold/ha_tope",
@@ -11031,7 +11331,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-tope"
  },
  {
   "img": "india-gold/ha_langri",
@@ -11055,7 +11356,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-langri"
  },
  {
   "img": "india-gold/ha_uruli",
@@ -11079,7 +11381,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-uruli"
  },
  {
   "img": "india-gold/ha_roti_tawa",
@@ -11103,7 +11406,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-roti-tawa"
  },
  {
   "img": "india-gold/ha_dosa_tawa",
@@ -11127,7 +11431,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-dosa-tawa"
  },
  {
   "img": "india-gold/ha_tadka",
@@ -11151,7 +11456,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-tadka-pan"
  },
  {
   "img": "india-gold/ha_idli",
@@ -11175,7 +11481,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-idli-cooker"
  },
  {
   "img": "india-gold/ha_handi",
@@ -11199,7 +11506,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-cook-serve-handi"
  },
  {
   "img": "india-gold/ha_gravy",
@@ -11223,7 +11531,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-gravy-pot"
  },
  {
   "img": "india-gold/ha_stew",
@@ -11247,7 +11556,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-stew-pan"
  },
  {
   "img": "india-gold/tp_kadhai",
@@ -11280,7 +11590,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-triply-kadhai"
  },
  {
   "img": "india-gold/tp_tasra",
@@ -11311,7 +11622,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-triply-tasra"
  },
  {
   "img": "india-gold/tp_tope",
@@ -11345,7 +11657,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-triply-tope"
  },
  {
   "img": "india-gold/tp_stew",
@@ -11376,7 +11689,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-triply-stew-pan"
  },
  {
   "img": "india-gold/tp_frypan",
@@ -11405,7 +11719,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-triply-fry-pan"
  },
  {
   "img": "india-gold/tp_deep_frypan",
@@ -11433,7 +11748,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-triply-deep-frypan"
  },
  {
   "img": "india-gold/tp_saucepan",
@@ -11462,7 +11778,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-triply-sauce-pan"
  },
  {
   "img": "india-gold/tp_tawa",
@@ -11489,7 +11806,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-triply-roti-tawa"
  },
  {
   "img": "india-gold/hc_kadhai",
@@ -11519,7 +11837,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-honeycomb-triply-kadhai"
  },
  {
   "img": "india-gold/hc_frypan",
@@ -11547,7 +11866,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-honeycomb-triply-frypan"
  },
  {
   "img": "india-gold/hc_roti_tawa",
@@ -11574,7 +11894,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-honeycomb-roti-tawa"
  },
  {
   "img": "india-gold/ss_kadhai",
@@ -11598,7 +11919,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-sandwich-bottom-kadhai"
  },
  {
   "img": "india-gold/ss_saucepan",
@@ -11622,7 +11944,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-sandwich-bottom-sauce-pan"
  },
  {
   "img": "india-gold/ss_deep_frypan",
@@ -11646,7 +11969,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-sandwich-bottom-deep-frypan"
  },
  {
   "img": "india-gold/ss_frypan",
@@ -11670,7 +11994,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-sandwich-bottom-frypan"
  },
  {
   "img": "india-gold/ss_stew",
@@ -11694,7 +12019,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-sandwich-bottom-stew-pan"
  },
  {
   "img": "india-gold/ss_tope",
@@ -11718,7 +12044,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "india-gold-sandwich-bottom-tope"
  },
  {
   "img": "ns-priyam/pri_appam_cute",
@@ -11742,7 +12069,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-appam-pan-cute"
  },
  {
   "img": "ns-priyam/pri_appam_230_3",
@@ -11766,7 +12094,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-appam-pan-230-3mm"
  },
  {
   "img": "ns-priyam/pri_appam_230_5",
@@ -11790,7 +12119,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-appam-pan-230-5mm"
  },
  {
   "img": "ns-priyam/pri_appam_sleek",
@@ -11814,7 +12144,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-appam-pan-sleek"
  },
  {
   "img": "ns-priyam/pri_uthappam",
@@ -11838,7 +12169,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-uthappam-tawa"
  },
  {
   "img": "ns-priyam/pri_7k50",
@@ -11862,7 +12194,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-paniyaram-pan-7k-50"
  },
  {
   "img": "ns-priyam/pri_7k52",
@@ -11886,7 +12219,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-paniyaram-pan-7xw"
  },
  {
   "img": "ns-priyam/pri_7k65",
@@ -11910,7 +12244,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-paniyaram-pan-7k-65"
  },
  {
   "img": "ns-priyam/pri_9k50",
@@ -11934,7 +12269,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-paniyaram-pan-9k-50"
  },
  {
   "img": "ns-priyam/pri_9k52",
@@ -11958,7 +12294,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-paniyaram-pan-9xw"
  },
  {
   "img": "ns-priyam/pri_9k60",
@@ -11982,7 +12319,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-paniyaram-pan-9k-60"
  },
  {
   "img": "ns-priyam/pri_12k50",
@@ -12006,7 +12344,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-paniyaram-pan-12-sleek"
  },
  {
   "img": "ns-priyam/pri_7kind",
@@ -12030,7 +12369,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-paniyaram-pan-7k-induction"
  },
  {
   "img": "ns-priyam/pri_pathri_tawa",
@@ -12054,7 +12394,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-pathri-rotti-tawa"
  },
  {
   "img": "ns-priyam/pri_smart_uruli",
@@ -12078,7 +12419,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-smart-uruli-glass-lid"
  },
  {
   "img": "ns-priyam/pri_smart_gift_x2",
@@ -12102,7 +12444,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-smart-gift-pack-x2"
  },
  {
   "img": "ns-priyam/pri_smart_gift_o2",
@@ -12126,7 +12469,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-smart-gift-pack-o2"
  },
  {
   "img": "ns-priyam/pri_achu_murukku",
@@ -12150,7 +12494,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-achu-murukku-maker"
  },
  {
   "img": "ns-priyam/pri_al_nut",
@@ -12174,7 +12519,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-stand-murukku-maker-al-nut"
  },
  {
   "img": "ns-priyam/pri_jumbo_nut",
@@ -12198,7 +12544,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-stand-murukku-maker-jumbo-nut"
  },
  {
   "img": "ns-priyam/pri_ss_puttu_maker",
@@ -12222,7 +12569,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-s-s-puttu-maker-big"
  },
  {
   "img": "ns-priyam/pri_alu_kudam_s",
@@ -12246,7 +12594,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-aluminium-puttu-kudam-small"
  },
  {
   "img": "ns-priyam/pri_alu_kudam_b",
@@ -12270,7 +12619,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-aluminium-puttu-kudam-big"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12300,7 +12650,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-27f-45"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12330,7 +12681,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-20k-50"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12360,7 +12712,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-30f-55"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12390,7 +12743,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-37f-50"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12420,7 +12774,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-37k-50"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12450,7 +12805,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-61f-55"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12480,7 +12836,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-61k-50"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12510,7 +12867,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-91k-50"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12540,7 +12898,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-49k-55-sq"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12570,7 +12929,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-49f-55-sq"
  },
  {
   "img": "ns-priyam/hot_27f45",
@@ -12600,7 +12960,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "ns-priyam-big-paniyaram-pan-100f-55-sq"
  },
  {
   "img": "vyan/vy_tawa",
@@ -12624,7 +12985,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "vyan-non-stick-tawa"
  },
  {
   "img": "vyan/vy_concave_tawa",
@@ -12648,7 +13010,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "vyan-concave-tawa"
  },
  {
   "img": "vyan/vy_appam_deep",
@@ -12672,7 +13035,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "vyan-appam-deep"
  },
  {
   "img": "vyan/vy_appam_ribless",
@@ -12696,7 +13060,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "vyan-appam-pan-ribless"
  },
  {
   "img": "vyan/vy_briyani_pot",
@@ -12720,7 +13085,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "vyan-non-stick-biryani-pot"
  },
  {
   "img": "vyan/vy_chirattai",
@@ -12744,7 +13110,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "vyan-chirattai-puttu-steel"
  },
  {
   "img": "lepel/lep_regular",
@@ -12768,7 +13135,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "lepel-regular-series-stainless-steel"
  },
  {
   "img": "lepel/lep_gold",
@@ -12792,7 +13160,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "lepel-regular-series-gold-pvd"
  },
  {
   "img": "lepel/lep_rosegold",
@@ -12816,7 +13185,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "lepel-regular-series-rose-gold-pvd"
  },
  {
   "img": "elephant/el_colander",
@@ -12840,7 +13210,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-colander-basket"
  },
  {
   "img": "elephant/el_soup_wire",
@@ -12864,7 +13235,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-king-soup-strainer"
  },
  {
   "img": "elephant/el_tea_strainer",
@@ -12888,7 +13260,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-deluxe-tea-strainer"
  },
  {
   "img": "elephant/el_china_cap",
@@ -12912,7 +13285,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-soup-time-conical"
  },
  {
   "img": "elephant/el_mesh_strainer",
@@ -12936,7 +13310,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-pipe-handle-tea-strainer"
  },
  {
   "img": "elephant/el_soup_strainer",
@@ -12960,7 +13335,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-classic-soup-strainer"
  },
  {
   "img": "elephant/el_strainer_red",
@@ -12984,7 +13360,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-perforated-conical-pipe-handle"
  },
  {
   "img": "elephant/el_tea_infuser",
@@ -13008,7 +13385,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-s-s-tea-infuser"
  },
  {
   "img": "elephant/el_conical_strainer",
@@ -13032,7 +13410,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-tea-time-conical"
  },
  {
   "img": "elephant/el_strainer_handle",
@@ -13056,7 +13435,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-premio-tea-strainer"
  },
  {
   "img": "elephant/el_fry_basket",
@@ -13080,7 +13460,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-chip-basket"
  },
  {
   "img": "elephant/el_food_cover",
@@ -13104,7 +13485,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-net-cover"
  },
  {
   "img": "elephant/el_steamer_stand",
@@ -13128,7 +13510,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-multi-purpose-basket"
  },
  {
   "img": "elephant/el_flat_lid",
@@ -13152,7 +13535,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-dish-cover"
  },
  {
   "img": "elephant/el_small_strainer",
@@ -13176,7 +13560,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-ss-cup-tea-strainer"
  },
  {
   "img": "elephant/el_strainer_ring",
@@ -13200,7 +13585,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-inox-soup-strainer"
  },
  {
   "img": "elephant/el_strainer_red2",
@@ -13224,7 +13610,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-deep-fry-strainer"
  },
  {
   "img": "elephant/el_double_tea",
@@ -13248,7 +13635,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-ss-sangita-tea-strainer"
  },
  {
   "img": "elephant/el_tongs",
@@ -13272,7 +13660,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "elephant-utility-tong"
  },
  {
   "img": "senso/sn_juicer_deluxe",
@@ -13296,7 +13685,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-fruit-veg-juicer-deluxe"
  },
  {
   "img": "senso/sn_juicer_regular",
@@ -13320,7 +13710,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-fruit-veg-juicer-regular"
  },
  {
   "img": "senso/sn_chop_newbig",
@@ -13344,7 +13735,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-new-big-onion-veg-chopper-premium"
  },
  {
   "img": "senso/sn_cut_popular_ss",
@@ -13368,7 +13760,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-s-s-chilly-cutter-popular"
  },
  {
   "img": "senso/sn_peel_classic",
@@ -13393,7 +13786,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-peeling-knife-classic-popular"
  },
  {
   "img": "senso/sn_peel_aalap_deluxe",
@@ -13418,7 +13812,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-peeling-knife-blister-pack-aalap-deluxe"
  },
  {
   "img": "senso/sn_peel_aalap_sumo",
@@ -13443,7 +13838,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-peeling-knife-tangler-pack-aalap-sumo"
  },
  {
   "img": "senso/sn_food_plate",
@@ -13467,7 +13863,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-food-plate-stylo"
  },
  {
   "img": "senso/sn_rejoice_jug",
@@ -13491,7 +13888,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-jug-rejoice"
  },
  {
   "img": "senso/sn_bondr_jugset",
@@ -13515,7 +13913,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-jug-6-glass-set-bondr"
  },
  {
   "img": "senso/sn_mocktail_jug",
@@ -13539,7 +13938,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-jug-mocktail"
  },
  {
   "img": "senso/sn_vitara_jugset",
@@ -13563,7 +13963,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-jug-glass-set-vitara"
  },
  {
   "img": "senso/sn_bamboo_jug",
@@ -13587,7 +13988,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-jug-bamboo"
  },
  {
   "img": "senso/sn_linear_jug",
@@ -13611,7 +14013,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-jug-linear"
  },
  {
   "img": "senso/sn_clear_glass",
@@ -13635,7 +14038,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-glass-clear"
  },
  {
   "img": "senso/sn_transo_glass",
@@ -13659,7 +14063,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-glass-transo"
  },
  {
   "img": "senso/sn_swift_glass",
@@ -13683,7 +14088,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-glass-swift"
  },
  {
   "img": "senso/sn_cheers_glass",
@@ -13707,7 +14113,8 @@
   "note": null,
   "alias": null,
   "hsn": null,
-  "mrp": null
+  "mrp": null,
+  "slug": "senso-glass-cheers"
  },
  {
   "img": "senso/sn_p03_1",
@@ -13739,7 +14146,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-velocity-mop-plastic-spinner"
  },
  {
   "img": "senso/sn_p03_2",
@@ -13771,7 +14179,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-velocity-mop-steel-spinner"
  },
  {
   "img": "senso/sn_p03_3",
@@ -13803,7 +14212,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-rider-mop-plastic-spinner"
  },
  {
   "img": "senso/sn_p03_4",
@@ -13835,7 +14245,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-rider-mop-steel-spinner"
  },
  {
   "img": "senso/sn_p03_5",
@@ -13867,7 +14278,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-prolite-mop-plastic-spinner"
  },
  {
   "img": "senso/sn_p04_1",
@@ -13899,7 +14311,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-prolite-mop-steel-spinner"
  },
  {
   "img": "senso/sn_p04_2",
@@ -13931,7 +14344,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-metrox-mop-plastic-spinner"
  },
  {
   "img": "senso/sn_p04_3",
@@ -13963,7 +14377,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-metrox-mop-steel-spinner"
  },
  {
   "img": "senso/sn_p04_4",
@@ -13995,7 +14410,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-salsa-mop-plastic-spinner"
  },
  {
   "img": "senso/sn_p04_5",
@@ -14027,7 +14443,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-salsa-mop-steel-spinner"
  },
  {
   "img": "senso/sn_p05_1",
@@ -14059,7 +14476,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-urban-mop-plastic"
  },
  {
   "img": "senso/sn_p05_2",
@@ -14091,7 +14509,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-urban-mop-steel"
  },
  {
   "img": "senso/sn_p05_3",
@@ -14123,7 +14542,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-cleaning-mop-set"
  },
  {
   "img": "senso/sn_p05_4",
@@ -14155,7 +14575,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-prolite-cleaning-mop-set"
  },
  {
   "img": "senso/sn_p05_5",
@@ -14187,7 +14608,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-refill-mop"
  },
  {
   "img": "senso/sn_p06_1",
@@ -14219,7 +14641,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-trio-lunch-box"
  },
  {
   "img": "senso/sn_p06_2",
@@ -14251,7 +14674,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-glory-steel-lunch-box"
  },
  {
   "img": "senso/sn_p06_3",
@@ -14283,7 +14707,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96170013"
+  "hsn": "96170013",
+  "slug": "senso-supreme-three-compartment"
  },
  {
   "img": "senso/sn_p06_4",
@@ -14315,7 +14740,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96170013"
+  "hsn": "96170013",
+  "slug": "senso-tommy-2-compartment"
  },
  {
   "img": "senso/sn_p06_5",
@@ -14347,7 +14773,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96170013"
+  "hsn": "96170013",
+  "slug": "senso-bonnie-insulated-lunch-box"
  },
  {
   "img": "senso/sn_p07_1",
@@ -14379,7 +14806,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96170013"
+  "hsn": "96170013",
+  "slug": "senso-sonett-insulated-lunch-box"
  },
  {
   "img": "senso/sn_p07_2",
@@ -14411,7 +14839,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96170013"
+  "hsn": "96170013",
+  "slug": "senso-david-insulated-lunch-box"
  },
  {
   "img": "senso/sn_p07_3",
@@ -14443,7 +14872,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-apolo-s-s-round-container"
  },
  {
   "img": "senso/sn_p07_4",
@@ -14475,7 +14905,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-tiny-lunch-container"
  },
  {
   "img": "senso/sn_p07_5",
@@ -14507,7 +14938,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-foodie-tiffin-box"
  },
  {
   "img": "senso/sn_p08_1",
@@ -14539,7 +14971,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-champs-lunch-box"
  },
  {
   "img": "senso/sn_p08_2",
@@ -14571,7 +15004,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-ontto-lunch-box"
  },
  {
   "img": "senso/sn_p08_3",
@@ -14603,7 +15037,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-cookie-lunch-box"
  },
  {
   "img": "senso/sn_p08_4",
@@ -14635,7 +15070,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-splittr-lunch-box"
  },
  {
   "img": "senso/sn_p08_5",
@@ -14667,7 +15103,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-canvas-lunch-box"
  },
  {
   "img": "senso/sn_p09_1",
@@ -14699,7 +15136,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-twist-lunch-box"
  },
  {
   "img": "senso/sn_p09_2",
@@ -14731,7 +15169,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-se-kids-lunch-box"
  },
  {
   "img": "senso/sn_p10_1",
@@ -14763,7 +15202,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-carrot-fruit-veg-juicer"
  },
  {
   "img": "senso/sn_juicer_pride",
@@ -14796,7 +15236,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-pride-fruit-veg-juicer"
  },
  {
   "img": "senso/sn_juicer_pride_strainer",
@@ -14829,7 +15270,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-pride-fruit-veg-juicer-ms245"
  },
  {
   "img": "senso/sn_juicer_pride_waste",
@@ -14862,7 +15304,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-pride-fruit-veg-juicer-ms244"
  },
  {
   "img": "senso/sn_juicer_pride_full",
@@ -14895,7 +15338,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-pride-fruit-veg-juicer-ms248"
  },
  {
   "img": "senso/sn_juicer_radiant",
@@ -14928,7 +15372,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-radiant-fruit-veg-juicer"
  },
  {
   "img": "senso/sn_juicer_radiant_str",
@@ -14961,7 +15406,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-radiant-fruit-veg-juicer-ms247"
  },
  {
   "img": "senso/sn_p11_3",
@@ -14993,7 +15439,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-citrus-fruit-veg-juicer"
  },
  {
   "img": "senso/sn_push_bigboss",
@@ -15026,7 +15473,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-big-boss-push-chopper"
  },
  {
   "img": "senso/sn_p12_2",
@@ -15058,7 +15506,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-twirl-push-chopper"
  },
  {
   "img": "senso/sn_p12_3",
@@ -15090,7 +15539,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-aline-push-chopper"
  },
  {
   "img": "senso/sn_push_wonder",
@@ -15123,7 +15573,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-wonder-push-chopper"
  },
  {
   "img": "senso/sn_p12_5",
@@ -15155,7 +15606,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-aether-push-chopper"
  },
  {
   "img": "senso/sn_p13_1",
@@ -15187,7 +15639,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-orbit-push-chopper"
  },
  {
   "img": "senso/sn_p13_2",
@@ -15219,7 +15672,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-victoria-square-chopper"
  },
  {
   "img": "senso/sn_p13_3",
@@ -15251,7 +15705,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-bentto-square-chopper"
  },
  {
   "img": "senso/sn_crush_bigquick",
@@ -15284,7 +15739,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-big-quick-crusher-2-in-1"
  },
  {
   "img": "senso/sn_crush_quick",
@@ -15317,7 +15773,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-quick-crusher"
  },
  {
   "img": "senso/sn_p14_1",
@@ -15349,7 +15806,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-oo-n-juicy-21n-1"
  },
  {
   "img": "senso/sn_p15_1",
@@ -15381,7 +15839,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-smiley-maggi-and-soup-bowl"
  },
  {
   "img": "senso/sn_p15_2",
@@ -15413,7 +15872,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-moody-cup"
  },
  {
   "img": "senso/sn_mug_bigstar",
@@ -15446,7 +15906,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-big-star-mug"
  },
  {
   "img": "senso/sn_mug_brave",
@@ -15479,7 +15940,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-brave-beautifu-mug"
  },
  {
   "img": "senso/sn_mug_oscar",
@@ -15512,7 +15974,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-cn-mug"
  },
  {
   "img": "senso/sn_mug_teatime",
@@ -15545,7 +16008,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-tea-time-mug"
  },
  {
   "img": "senso/sn_p16_2",
@@ -15577,7 +16041,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-inspo-mug-6-pcs-set"
  },
  {
   "img": "senso/sn_p16_3",
@@ -15609,7 +16074,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-drink-wink-mug"
  },
  {
   "img": "senso/sn_p16_4",
@@ -15641,7 +16107,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-ember-mug"
  },
  {
   "img": "senso/sn_p16_5",
@@ -15673,7 +16140,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-legend-mug"
  },
  {
   "img": "senso/sn_p17_1",
@@ -15705,7 +16173,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-rejoice-jug"
  },
  {
   "img": "senso/sn_p17_2",
@@ -15737,7 +16206,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-bondr-jug-glass-6-pcs-set"
  },
  {
   "img": "senso/sn_p17_3",
@@ -15769,7 +16239,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-mocktail-jug"
  },
  {
   "img": "senso/sn_p17_4",
@@ -15801,7 +16272,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-vitara-jug-glass-6-pcs-set"
  },
  {
   "img": "senso/sn_p17_5",
@@ -15833,7 +16305,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-bamboo-jug"
  },
  {
   "img": "senso/sn_p18_1",
@@ -15865,7 +16338,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-linear-jug"
  },
  {
   "img": "senso/sn_p18_2",
@@ -15897,7 +16371,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-clear-glass"
  },
  {
   "img": "senso/sn_p18_3",
@@ -15929,7 +16404,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-transo-glass"
  },
  {
   "img": "senso/sn_p18_4",
@@ -15961,7 +16437,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-swift-glass"
  },
  {
   "img": "senso/sn_p18_5",
@@ -15993,7 +16470,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-cheers-glass"
  },
  {
   "img": "senso/sn_p19_1",
@@ -16025,7 +16503,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-moment-glass"
  },
  {
   "img": "senso/sn_p19_2",
@@ -16057,7 +16536,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-frosty-glass"
  },
  {
   "img": "senso/sn_p20_1",
@@ -16089,7 +16569,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-marco-s-s-gas-lighter"
  },
  {
   "img": "senso/sn_p20_2",
@@ -16121,7 +16602,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-prince-s-s-gas-lighter"
  },
  {
   "img": "senso/sn_p20_3",
@@ -16153,7 +16635,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-captain-gas-lighter"
  },
  {
   "img": "senso/sn_p20_4",
@@ -16185,7 +16668,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-chief-gas-lighter"
  },
  {
   "img": "senso/sn_p20_5",
@@ -16217,7 +16701,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-ae-fire-gas-lighter"
  },
  {
   "img": "senso/sn_p21_1",
@@ -16249,7 +16734,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-primo-gas-lighter"
  },
  {
   "img": "senso/sn_p21_2",
@@ -16281,7 +16767,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-brio-gas-lighter"
  },
  {
   "img": "senso/sn_p21_3",
@@ -16313,7 +16800,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-master-gas-lighter"
  },
  {
   "img": "senso/sn_p21_4",
@@ -16345,7 +16833,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-gems-gas-lighter"
  },
  {
   "img": "senso/sn_p21_5",
@@ -16377,7 +16866,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-avia-gas-lighter"
  },
  {
   "img": "senso/sn_p22_1",
@@ -16409,7 +16899,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-majestic-gas-lighter"
  },
  {
   "img": "senso/sn_p22_2",
@@ -16441,7 +16932,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96138090"
+  "hsn": "96138090",
+  "slug": "senso-deluxe-gas-lighter-mls"
  },
  {
   "img": "senso/sn_chop_premium",
@@ -16474,7 +16966,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-premium-s-s-onion-veg-chopper"
  },
  {
   "img": "senso/sn_chop_prime",
@@ -16507,7 +17000,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-prime-onion-veg-cutter"
  },
  {
   "img": "senso/sn_cut_supernency",
@@ -16540,7 +17034,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-ee-nency-s-s-chily-cutter"
  },
  {
   "img": "senso/sn_cut_extraheavy",
@@ -16573,7 +17068,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-extra-heavy-s-s-chilly-cutter"
  },
  {
   "img": "senso/sn_cut_elite",
@@ -16606,7 +17102,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-elite-lid-s-s-chilly-cutter"
  },
  {
   "img": "senso/sn_cut_quick",
@@ -16639,7 +17136,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-quick-lid-s-s-chilly-cutter"
  },
  {
   "img": "senso/sn_cut_sporty",
@@ -16672,7 +17170,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-sporty-s-s-chilly-cutter"
  },
  {
   "img": "senso/sn_cut_keen",
@@ -16705,7 +17204,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-keen-s-s-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_veta",
@@ -16738,7 +17238,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-veta-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_deluxe",
@@ -16771,7 +17272,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-deluxe-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_deluxesp",
@@ -16804,7 +17306,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-deluxe-sp-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_newdeluxe",
@@ -16837,7 +17340,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-new-deluxe-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_popular",
@@ -16870,7 +17374,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-popular-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_transparent",
@@ -16903,7 +17408,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-bear-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_joy",
@@ -16936,7 +17442,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-joy-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_superio",
@@ -16969,7 +17476,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-superio-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_valery",
@@ -17002,7 +17510,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-valery-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_pc_roundripper",
@@ -17035,7 +17544,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-ras-ripper-plastic-chilly-cutter"
  },
  {
   "img": "senso/sn_p27_1",
@@ -17067,7 +17577,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-stanley-chilly-dry-fruits"
  },
  {
   "img": "senso/sn_p27_2",
@@ -17099,7 +17610,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-handy-chilly-dry-fruits"
  },
  {
   "img": "senso/sn_lemon_deluxe_op",
@@ -17132,7 +17644,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-deluxe-lemon-squeezer-opener"
  },
  {
   "img": "senso/sn_lemon_regular_op",
@@ -17165,7 +17678,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-regular-lemon-squeezer-opener"
  },
  {
   "img": "senso/sn_lemon_deluxe",
@@ -17198,7 +17712,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-deluxe-lemon-squeezer"
  },
  {
   "img": "senso/sn_lemon_regular",
@@ -17231,7 +17746,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-regular-lemon-squeezer"
  },
  {
   "img": "senso/sn_lemon_econency",
@@ -17264,7 +17780,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-eco-nency-lemon-squeezer"
  },
  {
   "img": "senso/sn_lemon_extraheavy",
@@ -17297,7 +17814,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-extra-heavy-lemon-squeezer-opener"
  },
  {
   "img": "senso/sn_lemon_ultra",
@@ -17330,7 +17848,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-ultra-lemon-squeezer-opener"
  },
  {
   "img": "senso/sn_p29_3",
@@ -17362,7 +17881,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-speedup-lemon-squeezer-opener"
  },
  {
   "img": "senso/sn_p29_4",
@@ -17394,7 +17914,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "76151030"
+  "hsn": "76151030",
+  "slug": "senso-lemon-squeezer-aluminum"
  },
  {
   "img": "senso/sn_p30_1",
@@ -17426,7 +17947,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82089090"
+  "hsn": "82089090",
+  "slug": "senso-facet-7-in-1-slicer-grater"
  },
  {
   "img": "senso/sn_p30_2",
@@ -17458,7 +17980,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82055190"
+  "hsn": "82055190",
+  "slug": "senso-jemie-5-1n-1-slicer-grater"
  },
  {
   "img": "senso/sn_p30_3",
@@ -17490,7 +18013,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82089090"
+  "hsn": "82089090",
+  "slug": "senso-benz-4i1n-1-slicer-grater"
  },
  {
   "img": "senso/sn_p30_4",
@@ -17522,7 +18046,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-slicer"
  },
  {
   "img": "senso/sn_p30_5",
@@ -17554,7 +18079,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-slim-slicer"
  },
  {
   "img": "senso/sn_p31_1",
@@ -17586,7 +18112,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-waves-cut-peel"
  },
  {
   "img": "senso/sn_p31_2",
@@ -17618,7 +18145,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82055190"
+  "hsn": "82055190",
+  "slug": "senso-nutty-dry-fruit-slicer"
  },
  {
   "img": "senso/sn_p31_3",
@@ -17650,7 +18178,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82055190"
+  "hsn": "82055190",
+  "slug": "senso-gravity-cheese-grater"
  },
  {
   "img": "senso/sn_p31_4",
@@ -17682,7 +18211,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82055190"
+  "hsn": "82055190",
+  "slug": "senso-clever-veg-grater"
  },
  {
   "img": "senso/sn_p31_5",
@@ -17714,7 +18244,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-viva-cheese-grater"
  },
  {
   "img": "senso/sn_p32_1",
@@ -17746,7 +18277,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-saggo-cheese-grater"
  },
  {
   "img": "senso/sn_p32_2",
@@ -17778,7 +18310,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82159900"
+  "hsn": "82159900",
+  "slug": "senso-i-cheese-grater"
  },
  {
   "img": "senso/sn_p32_3",
@@ -17810,7 +18343,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82159900"
+  "hsn": "82159900",
+  "slug": "senso-is-vegetable-grater"
  },
  {
   "img": "senso/sn_slicer_3in1",
@@ -17843,7 +18377,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82055190"
+  "hsn": "82055190",
+  "slug": "senso-slicer-ms221"
  },
  {
   "img": "senso/sn_slicer_4in1",
@@ -17876,7 +18411,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82055190"
+  "hsn": "82055190",
+  "slug": "senso-slicer-ms222"
  },
  {
   "img": "senso/sn_pizza_cutter",
@@ -17909,7 +18445,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82055190"
+  "hsn": "82055190",
+  "slug": "senso-pizza-cut-pizza-cutter"
  },
  {
   "img": "senso/sn_p33_2",
@@ -17941,7 +18478,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-apple-slicer"
  },
  {
   "img": "senso/sn_p33_3",
@@ -17973,7 +18511,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82059020"
+  "hsn": "82059020",
+  "slug": "senso-coco-opener"
  },
  {
   "img": "senso/sn_p33_4",
@@ -18005,7 +18544,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82159900"
+  "hsn": "82159900",
+  "slug": "senso-co-potato-masher"
  },
  {
   "img": "senso/sn_p33_5",
@@ -18037,7 +18577,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-imperia-tray-3pcs-set"
  },
  {
   "img": "senso/sn_p34_1",
@@ -18069,7 +18610,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-veggies-chopping-board"
  },
  {
   "img": "senso/sn_p34_2",
@@ -18101,7 +18643,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-cuttnext-chopping-board"
  },
  {
   "img": "senso/sn_spice_ora",
@@ -18134,7 +18677,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-ora-spice-box"
  },
  {
   "img": "senso/sn_basket_veggiewash",
@@ -18167,7 +18711,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-la-wash-basket"
  },
  {
   "img": "senso/sn_p34_5",
@@ -18199,7 +18744,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-opal-serving-bowl"
  },
  {
   "img": "senso/sn_p35_1",
@@ -18231,7 +18777,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-opal-serving-bowl-ms398"
  },
  {
   "img": "senso/sn_p35_2",
@@ -18263,7 +18810,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-opal-serving-bowl-ms399"
  },
  {
   "img": "senso/sn_p35_3",
@@ -18295,7 +18843,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-minoltta-serving-bowl-3-pcs-set"
  },
  {
   "img": "senso/sn_p35_4",
@@ -18327,7 +18876,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-frozi-ice-cream-scoop"
  },
  {
   "img": "senso/sn_p35_5",
@@ -18359,7 +18909,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-mr-scoop-ice-cream-scoop-s-s"
  },
  {
   "img": "senso/sn_p36_1",
@@ -18391,7 +18942,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-icepop-ice-cream-scoop-s-s"
  },
  {
   "img": "senso/sn_p36_2",
@@ -18423,7 +18975,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82100000"
+  "hsn": "82100000",
+  "slug": "senso-zip-kitchen-press"
  },
  {
   "img": "senso/sn_p36_3",
@@ -18455,7 +19008,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-flip-salt-pepper-box"
  },
  {
   "img": "senso/sn_p36_4",
@@ -18487,7 +19041,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-glacier-spice-rack-2-pcs-set"
  },
  {
   "img": "senso/sn_p36_5",
@@ -18519,7 +19074,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-polar-spice-rack-3-pcs-set"
  },
  {
   "img": "senso/sn_p37_1",
@@ -18551,7 +19107,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-nora-soap-case"
  },
  {
   "img": "senso/sn_p37_2",
@@ -18583,7 +19140,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-lily-soap-case"
  },
  {
   "img": "senso/sn_p37_3",
@@ -18615,7 +19173,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-flora-soap-case"
  },
  {
   "img": "senso/sn_p37_4",
@@ -18647,7 +19206,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-diana-soap-case"
  },
  {
   "img": "senso/sn_p37_5",
@@ -18679,7 +19239,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-hygenie-soap-dispenser"
  },
  {
   "img": "senso/sn_p38_1",
@@ -18711,7 +19272,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-ocean-multi-purpose-holder"
  },
  {
   "img": "senso/sn_p38_2",
@@ -18743,7 +19305,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-finger-chipser"
  },
  {
   "img": "senso/sn_p38_3",
@@ -18775,7 +19338,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-snap-chipser"
  },
  {
   "img": "senso/sn_p38_4",
@@ -18807,7 +19371,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-freddy-chipser-2-in-1"
  },
  {
   "img": "senso/sn_p38_5",
@@ -18839,7 +19404,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-base-fix-matka-stand"
  },
  {
   "img": "senso/sn_p39_1",
@@ -18871,7 +19437,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-cure-soap-dispenser"
  },
  {
   "img": "senso/sn_p39_2",
@@ -18903,7 +19470,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-pen-holder"
  },
  {
   "img": "senso/sn_gas_trolley",
@@ -18936,7 +19504,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-gas-trolley"
  },
  {
   "img": "senso/sn_p40_1",
@@ -18968,7 +19537,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-daisy-tea-strainer"
  },
  {
   "img": "senso/sn_tea_strainer_fresh",
@@ -19001,7 +19571,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-fresh-time-tea-strainer"
  },
  {
   "img": "senso/sn_mixi_handy",
@@ -19034,7 +19605,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-handy-mixi-s-s"
  },
  {
   "img": "senso/sn_blender_regular",
@@ -19067,7 +19639,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-regular-power-free"
  },
  {
   "img": "senso/sn_blender_nency",
@@ -19100,7 +19673,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-nency-power-free"
  },
  {
   "img": "senso/sn_p41_1",
@@ -19132,7 +19706,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-baby-bottle"
  },
  {
   "img": "senso/sn_p41_2",
@@ -19164,7 +19739,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-feeding-bottle"
  },
  {
   "img": "senso/sn_p41_3",
@@ -19196,7 +19772,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-ae-feeding-bottle"
  },
  {
   "img": "senso/sn_shaker_fitox",
@@ -19229,7 +19806,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-fitox-shaker-bottle"
  },
  {
   "img": "senso/sn_p41_5",
@@ -19261,7 +19839,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-smiley-sipper-bottle"
  },
  {
   "img": "senso/sn_p42_1",
@@ -19293,7 +19872,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-panda-sipper-bottle"
  },
  {
   "img": "senso/sn_p43_1",
@@ -19325,7 +19905,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82152000"
+  "hsn": "82152000",
+  "slug": "senso-exclusive-tea-spoon"
  },
  {
   "img": "senso/sn_p43_2",
@@ -19357,7 +19938,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82152000"
+  "hsn": "82152000",
+  "slug": "senso-exclusive-baby-spoon"
  },
  {
   "img": "senso/sn_p43_3",
@@ -19389,7 +19971,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82152000"
+  "hsn": "82152000",
+  "slug": "senso-exclusive-baby-fork"
  },
  {
   "img": "senso/sn_p43_4",
@@ -19421,7 +20004,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82152000"
+  "hsn": "82152000",
+  "slug": "senso-exclusive-soup-spoon"
  },
  {
   "img": "senso/sn_p44_1",
@@ -19453,7 +20037,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82111000"
+  "hsn": "82111000",
+  "slug": "senso-optra-tomato-knife"
  },
  {
   "img": "senso/sn_p44_2",
@@ -19485,7 +20070,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82111000"
+  "hsn": "82111000",
+  "slug": "senso-optra-paring-knife"
  },
  {
   "img": "senso/sn_p44_3",
@@ -19517,7 +20103,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82111000"
+  "hsn": "82111000",
+  "slug": "senso-optra-vegetable-knife"
  },
  {
   "img": "senso/sn_p45_1",
@@ -19549,7 +20136,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-eb-chopping-knife"
  },
  {
   "img": "senso/sn_p45_2",
@@ -19581,7 +20169,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-milta-knife"
  },
  {
   "img": "senso/sn_p45_3",
@@ -19613,7 +20202,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-oliva-knife"
  },
  {
   "img": "senso/sn_p45_4",
@@ -19645,7 +20235,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-spale-knife"
  },
  {
   "img": "senso/sn_p45_5",
@@ -19677,7 +20268,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-aloe-plain-knife-8-inch"
  },
  {
   "img": "senso/sn_p46_1",
@@ -19709,7 +20301,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-aloe-laser-knife-8-inch"
  },
  {
   "img": "senso/sn_p46_2",
@@ -19741,7 +20334,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-stella-plain-knife-10-inch"
  },
  {
   "img": "senso/sn_p46_3",
@@ -19773,7 +20367,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-milo-plain-knife-11-inch"
  },
  {
   "img": "senso/sn_knife_plain_easycut",
@@ -19806,7 +20401,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-easy-cut-plain-knife"
  },
  {
   "img": "senso/sn_knife_laser_easycut",
@@ -19839,7 +20435,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-easy-cut-laser-knife"
  },
  {
   "img": "senso/sn_p47_1",
@@ -19871,7 +20468,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-amada-plain-knife"
  },
  {
   "img": "senso/sn_p47_2",
@@ -19903,7 +20501,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-amada-laser-knife"
  },
  {
   "img": "senso/sn_p47_3",
@@ -19935,7 +20534,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-donna-plain-knife"
  },
  {
   "img": "senso/sn_p47_4",
@@ -19967,7 +20567,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-donna-laser-knife"
  },
  {
   "img": "senso/sn_knife_plain_janta",
@@ -20000,7 +20601,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-janta-plain-knife"
  },
  {
   "img": "senso/sn_knife_laser_janta",
@@ -20033,7 +20635,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-janta-laser-knife"
  },
  {
   "img": "senso/sn_knife_plain_reg",
@@ -20066,7 +20669,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-regular-plain-knife"
  },
  {
   "img": "senso/sn_knife_laser_reg",
@@ -20099,7 +20703,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-regular-laser-knife"
  },
  {
   "img": "senso/sn_knife_plain_sumo",
@@ -20132,7 +20737,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-sumo-plain-knife"
  },
  {
   "img": "senso/sn_knife_laser_sumo",
@@ -20165,7 +20771,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-sumo-laser-knife"
  },
  {
   "img": "senso/sn_knife_plain_exc",
@@ -20198,7 +20805,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-excellent-plain-knife"
  },
  {
   "img": "senso/sn_knife_laser_exc",
@@ -20231,7 +20839,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-excellent-laser-knife"
  },
  {
   "img": "senso/sn_knife_plain_ring",
@@ -20264,7 +20873,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-ring-plain-knife"
  },
  {
   "img": "senso/sn_knife_laser_ring",
@@ -20297,7 +20907,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-ring-laser-knife"
  },
  {
   "img": "senso/sn_p49_5",
@@ -20329,7 +20940,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-fiona-plain-knife"
  },
  {
   "img": "senso/sn_p50_1",
@@ -20361,7 +20973,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-fiona-laser-knife"
  },
  {
   "img": "senso/sn_knife_exc_10pc",
@@ -20394,7 +21007,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-excellent-plain-knife-10-pcs-pack"
  },
  {
   "img": "senso/sn_knife_exc_laser_10pc",
@@ -20427,7 +21041,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-excellent-laser-knife-10-pcs-pack"
  },
  {
   "img": "senso/sn_knife_janta_5pc",
@@ -20460,7 +21075,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-janta-plain-knife-5-pcs-pack"
  },
  {
   "img": "senso/sn_knife_laser_janta_5pc",
@@ -20493,7 +21109,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-janta-laser-knife-5-pcs-pack"
  },
  {
   "img": "senso/sn_p51_1",
@@ -20525,7 +21142,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-deoto-peeler"
  },
  {
   "img": "senso/sn_p51_2",
@@ -20557,7 +21175,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239990"
+  "hsn": "73239990",
+  "slug": "senso-hyper-21n-1-peeler-with-grater"
  },
  {
   "img": "senso/sn_p51_3",
@@ -20589,7 +21208,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-york-peeler"
  },
  {
   "img": "senso/sn_p51_4",
@@ -20621,7 +21241,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-magic-peeler"
  },
  {
   "img": "senso/sn_p51_5",
@@ -20653,7 +21274,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82059020"
+  "hsn": "82059020",
+  "slug": "senso-ginger-grater-peeler"
  },
  {
   "img": "senso/sn_p52_1",
@@ -20685,7 +21307,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-easy-cut-peeling-knife"
  },
  {
   "img": "senso/sn_peel_deluxe1pc",
@@ -20718,7 +21341,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-deluxe-peeling-knife"
  },
  {
   "img": "senso/sn_peel_standard",
@@ -20751,7 +21375,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-ea-dard-peeling-knife"
  },
  {
   "img": "senso/sn_p52_4",
@@ -20783,7 +21408,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-sumo-peeling-knife"
  },
  {
   "img": "senso/sn_peel_lancet",
@@ -20816,7 +21442,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-lancet-peeling-knife"
  },
  {
   "img": "senso/sn_peel_zebra",
@@ -20849,7 +21476,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-zebra-peeling-knife"
  },
  {
   "img": "senso/sn_peel_janta",
@@ -20882,7 +21510,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-regular-janta-peeling-knife"
  },
  {
   "img": "senso/sn_peel_ring",
@@ -20915,7 +21544,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-ring-peeling-knife"
  },
  {
   "img": "senso/sn_peel_deluxe_tangler",
@@ -20948,7 +21578,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-deluxe-peeling-knife-ms209"
  },
  {
   "img": "senso/sn_peel_black_tangler",
@@ -20981,7 +21612,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-deluxe-peeling-knife-ms210"
  },
  {
   "img": "senso/sn_peel_excellent",
@@ -21014,7 +21646,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-excellent-peeling-knife"
  },
  {
   "img": "senso/sn_knife_set_3pc_deluxe",
@@ -21047,7 +21680,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-deluxe-peeling-knife-3-pcs-set"
  },
  {
   "img": "senso/sn_peel_lancet_5pc",
@@ -21080,7 +21714,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-lancet-peeling-knife-5-pcs-pack"
  },
  {
   "img": "senso/sn_knife_set_3pc_reg",
@@ -21113,7 +21748,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "82119200"
+  "hsn": "82119200",
+  "slug": "senso-regular-peeling-knife-3-pcs-set"
  },
  {
   "img": "senso/sn_wiper_dewdrop",
@@ -21146,7 +21782,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-dew-drop-wiper"
  },
  {
   "img": "senso/sn_p55_2",
@@ -21178,7 +21815,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-360-rotatable-wiper"
  },
  {
   "img": "senso/sn_p55_3",
@@ -21210,7 +21848,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-flexi-wiper"
  },
  {
   "img": "senso/sn_p55_4",
@@ -21242,7 +21881,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-long-last-wiper"
  },
  {
   "img": "senso/sn_p55_5",
@@ -21274,7 +21914,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-homie-floor-wiper-16-inch-long"
  },
  {
   "img": "senso/sn_p56_1",
@@ -21306,7 +21947,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-godox-floor-wiper"
  },
  {
   "img": "senso/sn_p56_2",
@@ -21338,7 +21980,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-tidy-flat-mop-set"
  },
  {
   "img": "senso/sn_p56_3",
@@ -21370,7 +22013,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-volcano-toilet-brush"
  },
  {
   "img": "senso/sn_p56_4",
@@ -21402,7 +22046,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-flash-toilet-brush"
  },
  {
   "img": "senso/sn_p56_5",
@@ -21434,7 +22079,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-thunder-tiles-brush"
  },
  {
   "img": "senso/sn_p57_1",
@@ -21466,7 +22112,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-spifex-carpet-brush"
  },
  {
   "img": "senso/sn_p57_2",
@@ -21498,7 +22145,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-leon-cloth-brush"
  },
  {
   "img": "senso/sn_p57_3",
@@ -21530,7 +22178,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-umbrella-sink-brush"
  },
  {
   "img": "senso/sn_p57_4",
@@ -21562,7 +22211,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-ruby-dust-less-broom"
  },
  {
   "img": "senso/sn_p57_5",
@@ -21594,7 +22244,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-emerald-broom"
  },
  {
   "img": "senso/sn_p58_1",
@@ -21626,7 +22277,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-sapphire-extendable-broom"
  },
  {
   "img": "senso/sn_p58_2",
@@ -21658,7 +22310,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "96039000"
+  "hsn": "96039000",
+  "slug": "senso-safee-dust-pan"
  },
  {
   "img": "senso/sn_p59_1",
@@ -21690,7 +22343,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-alpha-pencil-box"
  },
  {
   "img": "senso/sn_p59_2",
@@ -21722,7 +22376,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-beta-pencil-box"
  },
  {
   "img": "senso/sn_p59_3",
@@ -21754,7 +22409,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-gamma-pencil-box"
  },
  {
   "img": "senso/sn_p60_1",
@@ -21786,7 +22442,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-smart-butterfly-clothes-drying-rack"
  },
  {
   "img": "senso/sn_p60_2",
@@ -21818,7 +22475,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-windfly-clothes-drying-rack"
  },
  {
   "img": "senso/sn_p60_3",
@@ -21850,7 +22508,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "73239390"
+  "hsn": "73239390",
+  "slug": "senso-tower-clothes-drying-rack"
  },
  {
   "img": "senso/sn_p61_1",
@@ -21882,7 +22541,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-fiesta-combo-set"
  },
  {
   "img": "senso/sn_p61_2",
@@ -21914,7 +22574,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-pressfit-storage-container"
  },
  {
   "img": "senso/sn_p61_3",
@@ -21946,7 +22607,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-ellone-3-pcs-container-set"
  },
  {
   "img": "senso/sn_p61_4",
@@ -21978,7 +22640,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-carnival-dry-fruit-tray"
  },
  {
   "img": "senso/sn_p61_5",
@@ -22010,7 +22673,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-crysta-dry-fruit-tray"
  },
  {
   "img": "senso/sn_p62_1",
@@ -22042,7 +22706,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-phantom-dry-fruit-tray"
  },
  {
   "img": "senso/sn_p62_2",
@@ -22074,7 +22739,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-regal-serving-bowl"
  },
  {
   "img": "senso/sn_p62_3",
@@ -22106,7 +22772,8 @@
   "feat": false,
   "sizes": [],
   "alias": null,
-  "hsn": "39241090"
+  "hsn": "39241090",
+  "slug": "senso-twin-serving-bowl"
  },
  {
   "img": "paxton-alu/pxa_samosa_mould_fancy_open",
@@ -22140,7 +22807,8 @@
   "feat": true,
   "sizes": [],
   "alias": "gujiya mould, karanji mould, ghughra, sanza",
-  "hsn": null
+  "hsn": null,
+  "slug": "paxton-alu-aluminium-samosa-mould-fancy-gujiya-karanji"
  },
  {
   "img": "paxton-alu/pxa_modak_mould_open",
@@ -22189,7 +22857,8 @@
   "feat": true,
   "sizes": [],
   "alias": "modak, ukadiche modak, ganesh modak",
-  "hsn": null
+  "hsn": null,
+  "slug": "paxton-alu-aluminium-modak-mould"
  },
  {
   "img": "paxton-kw/pxk_modak_mould_open",
@@ -22230,7 +22899,8 @@
   "feat": false,
   "sizes": [],
   "alias": "modak, ukadiche modak",
-  "hsn": null
+  "hsn": null,
+  "slug": "paxton-kw-plastic-modak-mould"
  },
  {
   "img": "paxton-kw/pxk_sansa_jumbo",
@@ -22264,7 +22934,8 @@
   "feat": true,
   "sizes": [],
   "alias": "sansa, samosa maker, gujiya, karanji, ghughra",
-  "hsn": null
+  "hsn": null,
+  "slug": "paxton-kw-plastic-samosa-gujiya-maker-jumbo"
  },
  {
   "img": "paxton-kw/pxk_sansa_jumbo",
@@ -22296,7 +22967,8 @@
   "feat": false,
   "sizes": [],
   "alias": "sansa, samosa maker, gujiya, karanji, ghughra",
-  "hsn": null
+  "hsn": null,
+  "slug": "paxton-kw-plastic-samosa-gujiya-maker-royal"
  },
  {
   "img": "paxton-kw/pxk_sansa_jumbo",
@@ -22328,6 +23000,7 @@
   "feat": false,
   "sizes": [],
   "alias": "sansa, samosa maker, gujiya, karanji, ghughra",
-  "hsn": null
+  "hsn": null,
+  "slug": "paxton-kw-plastic-samosa-gujiya-maker-triangle"
  }
 ]

@@ -114,3 +114,64 @@ Options:
 
 Also worth deleting: `ns-priyam/Untitled folder/.emptyFolderPlaceholder` is
 stray junk in the bucket.
+
+---
+
+## Supabase — what I set up on 28 Aug
+
+**Applied already, nothing for you to run:**
+
+- `catalog.allowlist` — who may see rates. Empty right now.
+- `catalog.events` — view / share / enquire logging.
+- `catalog.product_stats` — a view: most viewed, most shared, most enquired.
+
+They went into the existing `catalog` schema, not `public`, so they sit
+beside your products tables and collide with nothing.
+
+`v2/config.js` now has the project URL and the **publishable** key, and the
+client is pointed at the `catalog` schema.
+
+### Two things I found that you should know
+
+**1. Keeping Supabase in step with GitHub — solved, one command.**
+
+`data.json` stays the single source of truth. The database now pulls from it
+instead of being maintained separately. After Vercel finishes deploying a
+push, open the Supabase SQL editor and run:
+
+```sql
+select * from catalog.sync_from_site();
+```
+
+It reads `https://patelmarketing-catalog.vercel.app/data.json`, then updates
+products, variants, brands and categories to match. It returns the product
+count, variant count, and how many were added. Safety catch: if the file
+comes back with fewer than 50 products it refuses to run, so a broken deploy
+cannot empty your tables.
+
+Nothing to paste, nothing to export, no second list to maintain.
+
+If you would rather not remember even that, enable `pg_cron` once under
+Database > Extensions and schedule it nightly — the line is in
+`SUPABASE_SETUP.sql`.
+
+**Run it for the first time after your first upload.** Until the new
+`data.json` is live on Vercel, the tables still hold the old 454 products.
+
+**2. Sign-in is wired but still on `local` mode.** Phone OTP needs an SMS
+provider connected inside Supabase (MSG91 suits Indian numbers) and that costs
+per message. Until then `auth.mode` stays `'local'` and the allowlist in
+`config.js` is what works. When SMS is live: set `mode: 'supabase'`, then add
+your customers to `catalog.allowlist` instead of `config.js`.
+
+Analytics already works either way — the events table logs even in local mode.
+
+### Security notes from the database linter
+
+Two pre-existing warnings, neither from my changes, both worth fixing when
+convenient:
+
+- `public.rls_auto_enable()` is a SECURITY DEFINER function that anyone can
+  call over the API without signing in. Revoke execute from `anon` unless it
+  is deliberate.
+- The `pg_trgm` extension sits in the `public` schema; it belongs elsewhere.
