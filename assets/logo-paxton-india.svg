@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 150" width="540" height="150" role="img" aria-label="Paxton India">
+  <defs>
+    <linearGradient id="pxIron" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A3540"/>
+      <stop offset="1" stop-color="#0E141A"/>
+    </linearGradient>
+    <linearGradient id="pxHeat" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#C4551F"/>
+      <stop offset="0.5" stop-color="#D98324"/>
+      <stop offset="1" stop-color="#E8B04B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- mark: cast vessel viewed from above, three rivets for the three material lines -->
+  <g transform="translate(14,16)">
+    <circle cx="59" cy="59" r="57" fill="url(#pxIron)"/>
+    <circle cx="59" cy="59" r="45" fill="none" stroke="url(#pxHeat)" stroke-width="3"/>
+    <!-- rivets: CI · Alu · KW -->
+    <circle cx="59" cy="8" r="7" fill="url(#pxHeat)"/>
+    <circle cx="15" cy="84" r="7" fill="url(#pxHeat)"/>
+    <circle cx="103" cy="84" r="7" fill="url(#pxHeat)"/>
+    <!-- P counterform cut from the vessel -->
+    <path d="M40 30 h26 a21 21 0 0 1 0 42 h-12 v18 h-14 z m14 14 v14 h12 a7 7 0 0 0 0-14 z"
+          fill="#F6F2EA"/>
+  </g>
+
+  <g>
+    <text x="150" y="72" font-family="Archivo, 'Arial Black', Helvetica, sans-serif"
+          font-size="50" font-weight="800" letter-spacing="-1.4" fill="#12181E">PAXTON</text>
+    <text x="152" y="107" font-family="'IBM Plex Mono', ui-monospace, monospace"
+          font-size="19" font-weight="600" letter-spacing="9.5" fill="#C4551F">INDIA</text>
+  </g>
+  <g font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10.5"
+     letter-spacing="1.2" fill="#6B7885">
+    <text x="300" y="107">CAST IRON · ALUMINIUM · STEEL</text>
+    <text x="300" y="122">TRIPLY · BRASS · WOODEN</text>
+  </g>
+</svg>
