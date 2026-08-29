@@ -53,12 +53,18 @@
   // the button would sit on "Sending…" forever with nothing to tell the
   // reader. settle() guarantees an answer: always an object, never a throw,
   // never longer than TIMEOUT_MS.
+  // Takes a function, not a promise. If `sb.auth` is not the shape we expect
+  // (a mismatched library build, say), calling the method throws
+  // *synchronously* — and had we been handed the already-created promise, the
+  // throw would happen while evaluating the argument, before this try block,
+  // leaving the caller's await to reject and the button stuck. Starting the
+  // call in here means a synchronous throw is caught too.
   const TIMEOUT_MS = 30000;
-  async function settle(promise, what) {
+  async function settle(start, what) {
     let timer;
     try {
       return await Promise.race([
-        promise,
+        Promise.resolve().then(start),
         new Promise((_, reject) => {
           timer = setTimeout(
             () => reject(new Error(what + ' took too long. Please try again.')),
@@ -77,11 +83,11 @@
 
   async function sendOtp(phoneDigits) {
     if (!sb) return { error: { message: 'Sign-in could not load — check your connection and reload the page.' } };
-    return settle(sb.auth.signInWithOtp({ phone: toE164(phoneDigits) }), 'Sending the code');
+    return settle(() => sb.auth.signInWithOtp({ phone: toE164(phoneDigits) }), 'Sending the code');
   }
   async function verifyOtp(phoneDigits, code) {
     if (!sb) return { error: { message: 'Sign-in could not load — check your connection and reload the page.' } };
-    return settle(sb.auth.verifyOtp({ phone: toE164(phoneDigits), token: dg(code), type: 'sms' }), 'Checking the code');
+    return settle(() => sb.auth.verifyOtp({ phone: toE164(phoneDigits), token: dg(code), type: 'sms' }), 'Checking the code');
   }
   async function currentSession() {
     if (!sb) return null;
@@ -106,5 +112,26 @@
     return m || 'Something went wrong — please try again.';
   }
 
-  window.PMAuth = { sb, dg, toE164, sendOtp, verifyOtp, currentSession, myAllowlistRow, signOut, friendlyAuthError };
+  // Printed on the sign-in screen. Remote debugging is impossible here — the
+  // live site is not reachable from where this gets written — so the page has
+  // to be able to say for itself which build it is running and how far the
+  // Supabase wiring got.
+  const BUILD = 9;
+  function diagnostics() {
+    return {
+      build: BUILD,
+      lib: typeof window.supabase !== 'undefined' && !!window.supabase.createClient,
+      client: !!sb,
+      auth: !!(sb && sb.auth && typeof sb.auth.signInWithOtp === 'function'),
+    };
+  }
+  function diagLine() {
+    const d = diagnostics();
+    return 'build ' + d.build +
+      ' · library ' + (d.lib ? 'ok' : 'MISSING') +
+      ' · client ' + (d.client ? 'ok' : 'FAILED') +
+      ' · auth ' + (d.auth ? 'ok' : 'MISSING');
+  }
+
+  window.PMAuth = { sb, dg, toE164, sendOtp, verifyOtp, currentSession, myAllowlistRow, signOut, friendlyAuthError, diagnostics, diagLine, BUILD };
 })();

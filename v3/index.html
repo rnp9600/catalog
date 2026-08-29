@@ -778,11 +778,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · v3 (testing) · build 8</footer>
+<footer>Patel Marketing — wholesale kitchenware · v3 (testing) · build 9</footer>
 
-<script src="config.js?v=8"></script>
+<script src="config.js?v=9"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=8"></script>
+<script src="supabase-auth.js?v=9"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -2015,7 +2015,15 @@ function signInHtml(){
    'margin:-4px 0 10px 2px;min-height:15px"></div>'+
    '<button class="sgnbtn" id="sgnGo">Send code</button>'+
    '<button class="sgnbtn ghost" id="sgnSkip">Keep browsing as guest</button>'+
-   '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
+   '<div class="sgnmsg" id="sgnMsg"></div>'+
+   /* Self-diagnostic. This screen cannot be inspected remotely, so it states
+      which build it is and whether the Supabase library, client and auth
+      wiring are present. "library MISSING" means the CDN script did not load;
+      "client FAILED" means createClient threw. */
+   '<div style="font-family:var(--fm);font-size:.6rem;color:var(--tm);margin-top:14px;'+
+   'line-height:1.6;opacity:.85" id="sgnDiag">'+
+   (window.PMAuth && PMAuth.diagLine ? PMAuth.diagLine() : 'build ? · auth script did not load')+
+   '</div></div></div>';
 }
 function otpHtml(phoneDigits){
   const last=dg(phoneDigits).slice(-10);
@@ -2069,10 +2077,33 @@ function wireSignIn(){
         'Type the 10-digit number — you can include 91 in front if you prefer.';
       msg.classList.add('on'); return; }
     go.disabled=true; go.textContent='Sending…';
-    const {error}=await PMAuth.sendOtp(raw);
+    // Belt and braces. PMAuth has its own 30s ceiling, but this watchdog lives
+    // in the page itself, so the button still comes back even if an older
+    // cached copy of supabase-auth.js (without that ceiling) is what actually
+    // loaded — which is exactly the state that made this look unfixable.
+    let done=false;
+    const watchdog=setTimeout(function(){
+      if(done) return;
+      go.disabled=false; go.textContent='Send code';
+      msg.innerHTML='No answer after 25 seconds.<br>'+
+        (window.PMAuth&&PMAuth.diagLine?PMAuth.diagLine():'auth script did not load');
+      msg.classList.add('on');
+    },25000);
+    let error=null;
+    try{
+      const r=await PMAuth.sendOtp(raw);
+      error=r&&r.error;
+    }catch(e){
+      error={message:(e&&e.message)||'Something went wrong.'};
+    }
+    if(done) return;           // watchdog already reported; don't fight it
+    done=true; clearTimeout(watchdog);
     go.disabled=false; go.textContent='Send code';
     if(error){
-      msg.innerHTML=PMAuth.friendlyAuthError(error); msg.classList.add('on'); return;
+      msg.innerHTML=PMAuth.friendlyAuthError(error)+
+        '<br><span style="opacity:.7;font-size:.9em">'+
+        (window.PMAuth&&PMAuth.diagLine?PMAuth.diagLine():'')+'</span>';
+      msg.classList.add('on'); return;
     }
     PENDING_PHONE=raw;
     document.getElementById('sgnSheet').innerHTML=otpHtml(raw);
