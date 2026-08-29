@@ -226,9 +226,10 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
   <!-- PUBLISH -->
   <section class="panel" id="p-publish">
-    <div class="note"><b>Nothing is live until you upload.</b>
-      Changes are saved on this phone as you work. Download the files below and
-      upload them to GitHub — Vercel redeploys on its own in about a minute.</div>
+    <div class="note"><b>Product edits save to the database as you make them.</b>
+      The catalogue website itself is still the static file below, though — nothing
+      customers see changes until you download it and upload it to GitHub. Vercel
+      redeploys on its own in about a minute.</div>
     <div id="pubSummary"></div>
     <div class="fg"><button class="btn" id="dlData" style="width:100%">Download data.json</button>
       <div class="hint">Every product change. Goes in the repo root, replacing the old one.</div></div>
@@ -236,9 +237,10 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
       <div class="hint">Photos in the repo that no product points at any more. Safe to delete to save space.</div></div>
     <div id="orph"></div>
     <div class="fg" style="margin-top:22px">
-      <label>After Vercel finishes</label>
-      <div class="hint">Run this once in the Supabase SQL editor so the database matches. It
-        also removes rows for products you deleted.</div>
+      <label>If the database ever looks out of step</label>
+      <div class="hint">Product saves and deletes write to the database immediately, but if one
+        ever fails (a dropped connection, mostly), run this once in the Supabase SQL editor
+        to bring it back in line with the live site.</div>
       <code class="blk">select * from catalog.sync_from_site();</code>
     </div>
     <div class="fg" style="margin-top:22px">
@@ -548,11 +550,20 @@ function edit(i){
   $('#addV').onclick=function(){vs.push({size:'',rate:null,price:null,mrp:null,moq:null,unit:'Piece'});drawV()};
 
   $('#xb').onclick=closeSheet;
-  $('#delP').onclick=function(){
+  $('#delP').onclick=async function(){
     if(!confirm('Delete "'+(p.name||'this product')+'" from the catalogue?\n\nHiding it is usually safer.')) return;
+    const del=$('#delP'); del.disabled=true; del.textContent='Deleting…';
+    if(p.slug){
+      const {error}=await PMAuth.sb.rpc('admin_delete_product',{p_slug:p.slug});
+      if(error){
+        del.disabled=false; del.textContent='Delete';
+        alert('Could not delete from the database — '+error.message+
+          '\n\nRemoved here only; run sync_from_site() after publishing to catch it up, or try again.');
+      }
+    }
     P.splice(i,1); touch(); closeSheet();
   };
-  $('#saveP').onclick=function(){
+  $('#saveP').onclick=async function(){
     const num=id=>{const v=$(id).value;return v===''?null:+v};
     const name=$('#fName').value.trim(), brand=$('#fBrand').value.trim();
     if(!name||!brand){alert('Name and brand are both required.');return}
@@ -570,6 +581,13 @@ function edit(i){
       variants:vs.filter(v=>v.size||v.price!=null||v.mrp!=null),
     });
     if(!p.slug) p.slug=mkSlug(p);
+    const sv=$('#saveP'); sv.disabled=true; sv.textContent='Saving…';
+    const {error}=await PMAuth.sb.rpc('admin_upsert_product',{payload:p});
+    sv.disabled=false; sv.textContent='Done';
+    if(error){
+      alert('Saved here, but the database write failed — '+error.message+
+        '\n\nKeep going; run sync_from_site() after you publish to catch it up.');
+    }
     touch(); closeSheet();
   };
   ov.classList.add('open'); document.body.style.overflow='hidden'; sheet.scrollTop=0;
