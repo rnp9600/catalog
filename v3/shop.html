@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Your Customers — Patel Marketing</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--r:14px;--rs:9px;--fd:'Inter',-apple-system,sans-serif;--fm:'IBM Plex Mono',monospace}
+[data-theme="sky"]{--bg:#F2F8FD;--sf:#FFF;--sf2:#E8F3FC;--pr:#2F6FA8;--prh:#245880;--prt:#B7DCF7;
+ --ac:#12A594;--act:#CFF5F0;--tx:#0D2137;--tm:#5B7690;--bd:#D6E6F2;--sh:15,60,100}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fd);background:var(--bg);color:var(--tx);line-height:1.45;padding-bottom:40px}
+button,input,select,textarea{font-family:var(--fd);color:inherit}
+button{cursor:pointer}
+header{position:sticky;top:0;z-index:40;background:var(--sf);border-bottom:1px solid var(--bd)}
+.hin{display:flex;align-items:center;gap:10px;padding:10px 14px;max-width:760px;margin:0 auto}
+.mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--pr),var(--ac));
+ display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.85rem;flex-shrink:0}
+.hin b{font-size:.98rem;font-weight:800;letter-spacing:-.02em}
+.hin .who{font-family:var(--fm);font-size:.62rem;color:var(--tm)}
+.sp{flex:1}
+.ibtn{border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:999px;
+ padding:7px 12px;font-size:.72rem;font-weight:700;text-decoration:none;display:inline-block}
+.tabs{display:flex;gap:4px;padding:0 14px 9px;max-width:760px;margin:0 auto;overflow-x:auto}
+.tab{flex:0 0 auto;border:0;background:var(--sf2);color:var(--tm);border-radius:999px;
+ padding:7px 14px;font-size:.76rem;font-weight:700;white-space:nowrap}
+.tab.on{background:var(--pr);color:#fff}
+main{max-width:760px;margin:0 auto;padding:14px}
+.panel{display:none}.panel.on{display:block}
+.note{background:var(--act);border-radius:var(--rs);padding:12px 14px;font-size:.79rem;
+ line-height:1.6;margin-bottom:14px}
+.note b{display:block;margin-bottom:3px}
+.bar{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+.bar input{flex:1;min-width:140px;padding:10px 13px;border:1.5px solid var(--bd);border-radius:var(--rs);
+ background:var(--sf);font-size:.88rem}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:.66rem;font-weight:700;color:var(--tm);text-transform:uppercase;
+ letter-spacing:.07em;margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bd);
+ border-radius:var(--rs);background:var(--sf);font-size:.88rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{padding:10px 14px;border:0;border-radius:var(--rs);background:var(--pr);color:#fff;
+ font-weight:700;font-size:.83rem}
+.btn.g{background:var(--ac)}
+.btn.o{background:var(--sf);color:var(--tx);border:1.5px solid var(--bd)}
+.btn.r{background:#B4433B;color:#fff}
+.btn:disabled{opacity:.45}
+.item{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--bd);
+ border-radius:var(--rs);padding:9px 11px;margin-bottom:7px}
+.item .t{flex:1;min-width:0}
+.item .n{font-size:.85rem;font-weight:700}
+.item .s{font-family:var(--fm);font-size:.68rem;color:var(--tm);margin-top:2px}
+.empty{padding:36px 16px;text-align:center;color:var(--tm);font-size:.85rem}
+.gate{max-width:340px;margin:70px auto;text-align:center}
+.gate .mark{margin:0 auto 18px}
+.gate h1{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.gate p{font-size:.84rem;color:var(--tm);margin-bottom:18px;line-height:1.55}
+.gate .row{display:flex;margin-bottom:10px}
+.gate .row span{font-family:var(--fm);padding:13px 11px;border:1.5px solid var(--bd);border-right:0;
+ border-radius:var(--rs) 0 0 var(--rs);background:var(--sf2);color:var(--tm);font-size:.88rem}
+.gate .row input{flex:1;min-width:0;padding:13px 12px;border:1.5px solid var(--bd);border-left:0;
+ border-radius:0 var(--rs) var(--rs) 0;background:var(--sf);font-family:var(--fm);
+ letter-spacing:.08em;font-size:.95rem}
+.gate .msg{font-size:.8rem;color:#B4433B;margin-top:11px;display:none}
+.gate .msg.on{display:block}
+</style>
+</head>
+<body data-theme="sky">
+
+<div id="gate" class="gate">
+  <div class="mark">PM</div>
+  <div id="gStepPhone">
+    <h1>Shop sign in</h1>
+    <p>For shop owners only. Enter your phone number — we'll text you a one-time code.</p>
+    <div class="row"><span>+91</span><input id="gp" type="tel" inputmode="numeric" maxlength="15"
+      placeholder="98765 43210" autocomplete="off"></div>
+    <div id="gEcho" style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--tm);margin:-4px 0 10px;min-height:15px"></div>
+    <button class="btn" id="gb" style="width:100%">Send code</button>
+  </div>
+  <div id="gStepOtp" style="display:none">
+    <h1>Enter code</h1>
+    <p id="gOtpTo">Sent by SMS. It can take a minute to arrive.</p>
+    <div class="row"><span>#</span><input id="gCode" type="tel" inputmode="numeric" maxlength="6"
+      placeholder="6-digit code" autocomplete="one-time-code"></div>
+    <button class="btn" id="gv" style="width:100%">Verify &amp; sign in</button>
+    <p style="margin-top:14px"><button class="ibtn" id="gBack" style="border:0;background:transparent">Use a different number</button></p>
+  </div>
+  <div class="msg" id="gm"></div>
+  <p style="margin-top:22px"><a class="ibtn" href="index.html">Back to catalogue</a></p>
+</div>
+
+<div id="app" style="display:none">
+<header>
+  <div class="hin">
+    <div class="mark">PM</div>
+    <div><b>Your Customers</b><div class="who" id="whoLine"></div></div>
+    <div class="sp"></div>
+    <a class="ibtn" href="index.html">Catalogue</a>
+    <button class="ibtn" id="outBtn">Sign out</button>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-t="custs">Customers</button>
+    <button class="tab" data-t="offers">Offers &amp; status</button>
+  </div>
+</header>
+
+<main>
+  <section class="panel on" id="p-custs">
+    <div class="note"><b>This list is yours, not Patel Marketing's.</b>
+      Your customers see the catalogue with the status and offers you set below — they can't order
+      online, only see what's in stock and come to your shop.</div>
+    <div class="bar">
+      <input id="cName" placeholder="Customer name">
+      <input id="cPhone" inputmode="numeric" maxlength="15" placeholder="10-digit number" style="flex:0 0 160px">
+      <button class="btn g" id="cAdd">Add</button>
+    </div>
+    <div id="custList"></div>
+  </section>
+
+  <section class="panel" id="p-offers">
+    <div class="note"><b>Set what your customers see.</b>
+      Pick a product, mark it in stock / arriving / kept aside, and add a price if you're offering
+      something special. Only your own customers see this.</div>
+    <div class="fg"><label>Product</label>
+      <input id="fProduct" list="dProducts" placeholder="Search by name, brand or code…">
+      <datalist id="dProducts"></datalist>
+      <div id="productHint" style="font-size:.7rem;color:var(--tm);margin-top:4px"></div>
+    </div>
+    <div class="two">
+      <div class="fg"><label>Status</label>
+        <select id="fStatus"><option value="in_stock">In stock</option><option value="arriving">Arriving</option><option value="held">Kept aside</option></select>
+      </div>
+      <div class="fg"><label>Offer price (₹, optional)</label><input id="fPrice" type="number" min="0"></div>
+    </div>
+    <div class="fg"><label>Note (optional)</label><input id="fNote" placeholder="e.g. 'kept aside for you until Friday'"></div>
+    <button class="btn g" id="offerGo" style="width:100%">Save</button>
+    <h4 style="font-size:.8rem;margin:20px 0 8px;font-weight:800">Your current offers</h4>
+    <div id="offerList"></div>
+  </section>
+</main>
+</div>
+
+<script src="config.js?v=7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-auth.js?v=1"></script>
+<script>
+(function(){
+  const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s'};
+  const K=window.PM_CONFIG||{};
+  const M=Object.assign({},D,K);
+  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
+  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
+  window.PM_CONFIG=M;
+})();
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=n=>n==null?'':'₹'+Number(n).toLocaleString('en-IN');
+let ME=null, P=[], PENDING_PHONE=null;
+const STATUS_LABEL={in_stock:'In stock',arriving:'Arriving',held:'Kept aside'};
+
+/* ---------------- gate ---------------- */
+$('#gp').oninput=function(){
+  const d=($('#gp').value||'').replace(/\D/g,'');
+  $('#gEcho').textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10) : (d.length?d.length+' of 10 digits':'');
+};
+$('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
+$('#gb').onclick=async function(){
+  const raw=($('#gp').value||'').replace(/\D/g,'');
+  const m=$('#gm'); m.classList.remove('on');
+  if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
+    '. Type the 10-digit number — 91 in front is fine too.'; m.classList.add('on'); return; }
+  const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
+  const {error}=await PMAuth.sendOtp(raw);
+  gb.disabled=false; gb.textContent='Send code';
+  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  PENDING_PHONE=raw;
+  $('#gOtpTo').textContent='Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
+  $('#gStepPhone').style.display='none'; $('#gStepOtp').style.display='block';
+  $('#gCode').focus();
+};
+$('#gBack').onclick=function(){
+  PENDING_PHONE=null; $('#gm').classList.remove('on');
+  $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
+  $('#gp').focus();
+};
+$('#gCode').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gv').click()} };
+$('#gv').onclick=async function(){
+  const code=($('#gCode').value||'').replace(/\D/g,'');
+  const m=$('#gm'); m.classList.remove('on');
+  if(code.length<4){ m.textContent='Enter the code as texted to you.'; m.classList.add('on'); return; }
+  const gv=$('#gv'); gv.disabled=true; gv.textContent='Verifying…';
+  const {error}=await PMAuth.verifyOtp(PENDING_PHONE, code);
+  gv.disabled=false; gv.textContent='Verify & sign in';
+  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  PENDING_PHONE=null;
+  const row=await PMAuth.myAllowlistRow();
+  if(!row || row.role!=='shop_owner'){
+    await PMAuth.signOut();
+    m.textContent='That number signed in, but this screen is for shop owners only.';
+    m.classList.add('on');
+    $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
+    return;
+  }
+  start(row);
+};
+(async function(){
+  const sess=await PMAuth.currentSession();
+  if(!sess) return;
+  const row=await PMAuth.myAllowlistRow();
+  if(row && row.role==='shop_owner') start(row); else await PMAuth.signOut();
+})();
+$('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+
+async function start(row){
+  ME=row;
+  $('#gate').style.display='none'; $('#app').style.display='block';
+  $('#whoLine').textContent=(row.shop||row.name||'your shop');
+  const r=await fetch('../data.json',{cache:'no-cache'});
+  P=await r.json();
+  $('#dProducts').innerHTML=P.map(p=>'<option value="'+esc(p.name)+(p.code?' — '+esc(p.code):'')+'">').join('');
+  await loadCustomers(); await loadOffers();
+}
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  $('#p-'+b.dataset.t).classList.add('on');
+  window.scrollTo(0,0);
+});
+
+/* ---------------- customers ---------------- */
+async function loadCustomers(){
+  const {data,error}=await PMAuth.sb.from('allowlist').select('*')
+    .eq('owner_phone', ME.phone).eq('role','end_customer').order('added_at');
+  if(error){ $('#custList').innerHTML='<div class="empty">Could not load — '+esc(error.message)+'</div>'; return; }
+  $('#custList').innerHTML = (data&&data.length) ? data.map(c=>
+    '<div class="item"><div class="t"><div class="n">'+esc(c.name||'(unnamed)')+'</div>'+
+    '<div class="s">+'+esc(c.phone)+'</div></div>'+
+    '<button class="ibtn" data-rm="'+esc(c.phone)+'">Remove</button></div>').join('')
+    : '<div class="empty">No customers added yet.</div>';
+  $('#custList').onclick=async function(e){
+    const b=e.target.closest('[data-rm]'); if(!b) return;
+    if(!confirm('Remove this customer? They will no longer be able to sign in through your shop.')) return;
+    const {error}=await PMAuth.sb.rpc('shop_delete_end_customer',{p_phone:b.dataset.rm});
+    if(error){ alert('Could not remove — '+error.message); return; }
+    await loadCustomers();
+  };
+}
+$('#cAdd').onclick=async function(){
+  const n=$('#cName').value.trim(), raw=($('#cPhone').value||'').replace(/\D/g,'');
+  if(!n){alert('Give the customer a name.');return}
+  if(raw.length<10){alert('That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
+    '. Type the 10-digit number.');return}
+  const ph='91'+raw.slice(-10);
+  const {error}=await PMAuth.sb.rpc('shop_upsert_end_customer',{p_phone:ph,p_name:n});
+  if(error){ alert('Could not add — '+error.message); return; }
+  $('#cName').value='';$('#cPhone').value='';
+  await loadCustomers();
+};
+
+/* ---------------- offers ---------------- */
+function findProduct(text){
+  const t=(text||'').split(' — ')[0].trim().toLowerCase();
+  return P.find(p=>p.name.toLowerCase()===t) ||
+    P.find(p=>(p.name+' — '+(p.code||'')).toLowerCase()===text.trim().toLowerCase());
+}
+$('#fProduct').oninput=function(){
+  const p=findProduct(this.value);
+  $('#productHint').textContent = p ? (p.brand+' · '+p.cat+(p.code?' · '+p.code:'')) : '';
+};
+$('#offerGo').onclick=async function(){
+  const p=findProduct($('#fProduct').value);
+  if(!p){ alert('Pick a real product from the list — start typing its name.'); return; }
+  const payload={
+    shop_phone: ME.phone, product_slug: p.slug, status: $('#fStatus').value,
+    note: $('#fNote').value.trim()||null,
+    price_offer: $('#fPrice').value?+$('#fPrice').value:null,
+    updated_at: new Date().toISOString(),
+  };
+  const go=$('#offerGo'); go.disabled=true; go.textContent='Saving…';
+  const {error}=await PMAuth.sb.from('shop_offers').upsert(payload,{onConflict:'shop_phone,product_slug'});
+  go.disabled=false; go.textContent='Save';
+  if(error){ alert('Could not save — '+error.message); return; }
+  $('#fProduct').value=''; $('#fNote').value=''; $('#fPrice').value=''; $('#productHint').textContent='';
+  await loadOffers();
+};
+async function loadOffers(){
+  const {data,error}=await PMAuth.sb.from('shop_offers').select('*').eq('shop_phone', ME.phone).order('updated_at',{ascending:false});
+  if(error){ $('#offerList').innerHTML='<div class="empty">Could not load — '+esc(error.message)+'</div>'; return; }
+  $('#offerList').innerHTML = (data&&data.length) ? data.map(o=>{
+    const p=P.find(x=>x.slug===o.product_slug);
+    return '<div class="item"><div class="t"><div class="n">'+(p?esc(p.name):o.product_slug)+'</div>'+
+      '<div class="s">'+(STATUS_LABEL[o.status]||o.status)+
+      (o.price_offer!=null?' · '+money(o.price_offer):'')+(o.note?' · '+esc(o.note):'')+'</div></div>'+
+      '<button class="ibtn" data-rm="'+o.id+'">Remove</button></div>';
+  }).join('') : '<div class="empty">No offers set yet.</div>';
+  $('#offerList').onclick=async function(e){
+    const b=e.target.closest('[data-rm]'); if(!b) return;
+    const {error}=await PMAuth.sb.from('shop_offers').delete().eq('id',+b.dataset.rm);
+    if(error){ alert('Could not remove — '+error.message); return; }
+    await loadOffers();
+  };
+}
+</script>
+</body>
+</html>

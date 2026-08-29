@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin — Patel Marketing</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--r:14px;--rs:9px;--fd:'Inter',-apple-system,sans-serif;--fm:'IBM Plex Mono',monospace}
+[data-theme="sky"]{--bg:#F2F8FD;--sf:#FFF;--sf2:#E8F3FC;--pr:#2F6FA8;--prh:#245880;--prt:#B7DCF7;
+ --ac:#12A594;--act:#CFF5F0;--tx:#0D2137;--tm:#5B7690;--bd:#D6E6F2;--sh:15,60,100}
+[data-theme="charcoal"]{--bg:#14181C;--sf:#1D2328;--sf2:#262D34;--pr:#5AA9E0;--prh:#4691C4;--prt:#2C4557;
+ --ac:#E0A458;--act:#3A2F20;--tx:#E8EDF2;--tm:#93A3B2;--bd:#2E363E;--sh:0,0,0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fd);background:var(--bg);color:var(--tx);line-height:1.45;padding-bottom:96px}
+button,input,select,textarea{font-family:var(--fd);color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2.5px solid var(--pr);outline-offset:2px}
+.warn{background:#B4433B;color:#fff}
+header{position:sticky;top:0;z-index:40;background:var(--sf);border-bottom:1px solid var(--bd)}
+.hin{display:flex;align-items:center;gap:10px;padding:10px 14px;max-width:1000px;margin:0 auto}
+.mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--pr),var(--ac));
+ display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.85rem;flex-shrink:0}
+.hin b{font-size:.98rem;font-weight:800;letter-spacing:-.02em}
+.hin .who{font-family:var(--fm);font-size:.62rem;color:var(--tm)}
+.sp{flex:1}
+.ibtn{border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:999px;
+ padding:7px 12px;font-size:.72rem;font-weight:700;text-decoration:none;display:inline-block}
+.ibtn:hover{border-color:var(--pr);color:var(--pr)}
+.tabs{display:flex;gap:4px;padding:0 14px 9px;max-width:1000px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:0;background:var(--sf2);color:var(--tm);border-radius:999px;
+ padding:7px 14px;font-size:.76rem;font-weight:700;white-space:nowrap}
+.tab.on{background:var(--pr);color:#fff}
+main{max-width:1000px;margin:0 auto;padding:14px}
+.panel{display:none}.panel.on{display:block}
+.bar{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+.bar input.s{flex:1;min-width:170px;padding:10px 13px;border:1.5px solid var(--bd);border-radius:var(--rs);
+ background:var(--sf);font-size:.88rem}
+.btn{padding:10px 14px;border:0;border-radius:var(--rs);background:var(--pr);color:#fff;
+ font-weight:700;font-size:.83rem}
+.btn.g{background:var(--ac)}
+.btn.o{background:var(--sf);color:var(--tx);border:1.5px solid var(--bd)}
+.btn.r{background:#B4433B;color:#fff}
+.btn:disabled{opacity:.45}
+.fl{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
+.fl button{border:1px solid var(--bd);background:var(--sf);border-radius:999px;padding:5px 11px;
+ font-size:.71rem;font-weight:600;color:var(--tx)}
+.fl button.on{background:var(--pr);border-color:transparent;color:#fff}
+.fl button b{font-family:var(--fm);font-weight:500;opacity:.6;margin-left:4px;font-size:.65rem}
+.stat{font-family:var(--fm);font-size:.68rem;color:var(--tm);margin-bottom:9px}
+.item{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--bd);
+ border-radius:var(--rs);padding:9px 11px;margin-bottom:7px}
+.item.hid{opacity:.5}
+.item img{width:44px;height:44px;object-fit:contain;background:#fff;border:1px solid var(--bd);
+ border-radius:7px;flex-shrink:0}
+.item .t{flex:1;min-width:0}
+.item .n{font-size:.85rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .s{font-family:var(--fm);font-size:.64rem;color:var(--tm);margin-top:2px}
+.item .p{font-family:var(--fm);font-size:.78rem;font-weight:600;white-space:nowrap;text-align:right}
+.flag{display:inline-block;font-size:.55rem;font-weight:800;padding:2px 6px;border-radius:4px;
+ margin-left:5px;letter-spacing:.04em;vertical-align:middle}
+.flag.h{background:var(--sf2);color:var(--tm)}
+.flag.o{background:#F6DEDC;color:#8C2F28}
+.flag.f{background:var(--act);color:var(--ac)}
+.ov{position:fixed;inset:0;z-index:60;background:rgba(6,12,18,.72);display:none}
+.ov.open{display:block}
+.sheet{position:absolute;right:0;top:0;height:100%;width:min(620px,100%);background:var(--bg);
+ overflow-y:auto;box-shadow:-8px 0 30px rgba(0,0,0,.2)}
+.shead{position:sticky;top:0;background:var(--sf);border-bottom:1px solid var(--bd);
+ padding:12px 15px;display:flex;align-items:center;gap:9px;z-index:3}
+.shead strong{flex:1;font-size:.93rem;font-weight:800}
+.sx{border:0;background:var(--sf2);width:32px;height:32px;border-radius:50%;font-size:1.2rem;
+ line-height:1;color:var(--tx)}
+.sbody{padding:14px 15px 30px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:.66rem;font-weight:700;color:var(--tm);text-transform:uppercase;
+ letter-spacing:.07em;margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bd);
+ border-radius:var(--rs);background:var(--sf);font-size:.88rem}
+.fg textarea{min-height:66px;resize:vertical;font-family:var(--fd)}
+.fg .hint{font-size:.7rem;color:var(--tm);margin-top:4px;line-height:1.5}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;
+ border-bottom:1px solid var(--bd)}
+.sw:last-child{border:0}
+.sw .lab{font-size:.85rem;font-weight:600}
+.sw .lab small{display:block;font-weight:400;color:var(--tm);font-size:.71rem;margin-top:2px;line-height:1.45}
+.tg{position:relative;width:46px;height:27px;flex-shrink:0}
+.tg input{opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.tg i{position:absolute;inset:0;background:var(--bd);border-radius:999px;transition:.18s;pointer-events:none}
+.tg i::after{content:'';position:absolute;top:3px;left:3px;width:21px;height:21px;background:#fff;
+ border-radius:50%;transition:.18s}
+.tg input:checked+i{background:var(--ac)}
+.tg input:checked+i::after{transform:translateX(19px)}
+.tg.danger input:checked+i{background:#B4433B}
+.vrow{display:grid;grid-template-columns:1.1fr .7fr .7fr .5fr .8fr auto;gap:6px;margin-bottom:6px;align-items:center}
+.vrow input,.vrow select{padding:8px 9px;border:1.5px solid var(--bd);border-radius:7px;background:var(--sf);
+ font-family:var(--fm);font-size:.79rem;min-width:0}
+.mini{border:0;background:var(--sf2);color:var(--tx);border-radius:7px;width:31px;height:31px;
+ font-size:.95rem;line-height:1;flex-shrink:0}
+.mini.del{background:#F6DEDC;color:#8C2F28}
+.photo{display:flex;align-items:center;gap:9px;background:var(--sf);border:1px solid var(--bd);
+ border-radius:var(--rs);padding:7px 9px;margin-bottom:6px}
+.photo img{width:46px;height:46px;object-fit:contain;background:#fff;border:1px solid var(--bd);
+ border-radius:6px;flex-shrink:0}
+.photo code{flex:1;font-family:var(--fm);font-size:.65rem;color:var(--tm);word-break:break-all}
+.photo .main{font-size:.55rem;font-weight:800;background:var(--act);color:var(--ac);
+ padding:2px 6px;border-radius:4px;letter-spacing:.04em}
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--sf);
+ border-top:1px solid var(--bd);padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+ display:flex;gap:8px;align-items:center}
+.foot .n{font-family:var(--fm);font-size:.66rem;color:var(--tm);flex:1}
+.foot .n b{color:var(--ac)}
+.gate{max-width:340px;margin:70px auto;text-align:center}
+.gate .mark{margin:0 auto 18px}
+.gate h1{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.gate p{font-size:.84rem;color:var(--tm);margin-bottom:18px;line-height:1.55}
+.gate .row{display:flex;margin-bottom:10px}
+.gate .row span{font-family:var(--fm);padding:13px 11px;border:1.5px solid var(--bd);border-right:0;
+ border-radius:var(--rs) 0 0 var(--rs);background:var(--sf2);color:var(--tm);font-size:.88rem}
+.gate .row input{flex:1;min-width:0;padding:13px 12px;border:1.5px solid var(--bd);border-left:0;
+ border-radius:0 var(--rs) var(--rs) 0;background:var(--sf);font-family:var(--fm);
+ letter-spacing:.08em;font-size:.95rem}
+.gate .msg{font-size:.8rem;color:#B4433B;margin-top:11px;display:none}
+.gate .msg.on{display:block}
+.note{background:var(--act);border-radius:var(--rs);padding:12px 14px;font-size:.79rem;
+ line-height:1.6;margin-bottom:14px}
+.note b{display:block;margin-bottom:3px}
+.empty{padding:44px 16px;text-align:center;color:var(--tm);font-size:.85rem}
+.tt{width:100%;border-collapse:collapse;font-size:.8rem}
+.tt td{padding:9px 6px;border-bottom:1px solid var(--bd)}
+.tt td:last-child{text-align:right;width:1%;white-space:nowrap}
+.tt .nm{font-weight:600}
+.tt .ph{font-family:var(--fm);font-size:.68rem;color:var(--tm)}
+code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11px 12px;
+ font-family:var(--fm);font-size:.68rem;word-break:break-all;line-height:1.6;margin-top:8px}
+</style>
+</head>
+<body data-theme="sky">
+
+<div id="gate" class="gate">
+  <div class="mark">PM</div>
+  <div id="gStepPhone">
+    <h1>Admin sign in</h1>
+    <p>Enter your admin phone number — we will text you a one-time code. Only numbers
+      marked as admin in the allowlist can open this page.</p>
+    <div class="row"><span>+91</span><input id="gp" type="tel" inputmode="numeric" maxlength="15"
+      placeholder="98765 43210" autocomplete="off"></div>
+    <div id="gEcho" style="font-family:var(--fm);font-size:.7rem;color:var(--tm);margin:-4px 0 10px;min-height:15px"></div>
+    <button class="btn" id="gb" style="width:100%">Send code</button>
+  </div>
+  <div id="gStepOtp" style="display:none">
+    <h1>Enter code</h1>
+    <p id="gOtpTo">Sent by SMS. It can take a minute to arrive.</p>
+    <div class="row"><span>#</span><input id="gCode" type="tel" inputmode="numeric" maxlength="6"
+      placeholder="6-digit code" autocomplete="one-time-code"></div>
+    <button class="btn" id="gv" style="width:100%">Verify &amp; sign in</button>
+    <p style="margin-top:14px"><button class="ibtn" id="gBack" style="border:0;background:transparent">Use a different number</button></p>
+  </div>
+  <div class="msg" id="gm"></div>
+  <p style="margin-top:22px"><a class="ibtn" href="index.html">Back to catalogue</a></p>
+</div>
+
+<div id="app" style="display:none">
+<header>
+  <div class="hin">
+    <div class="mark">PM</div>
+    <div><b>Admin</b><div class="who" id="whoLine"></div></div>
+    <div class="sp"></div>
+    <a class="ibtn" href="index.html">Catalogue</a>
+    <button class="ibtn" id="outBtn">Sign out</button>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-t="products">Products</button>
+    <button class="tab" data-t="taxonomy">Brands &amp; categories</button>
+    <button class="tab" data-t="customers">Customers</button>
+    <button class="tab" data-t="publish">Publish</button>
+  </div>
+</header>
+
+<main>
+  <!-- PRODUCTS -->
+  <section class="panel on" id="p-products">
+    <div class="bar">
+      <input class="s" id="q" placeholder="Search name, code, brand…">
+      <button class="btn g" id="addBtn">+ New</button>
+    </div>
+    <div class="fl" id="quick"></div>
+    <div class="stat" id="stat"></div>
+    <div id="list"></div>
+    <button class="btn o" id="more" style="width:100%;margin-top:10px;display:none">Show more</button>
+  </section>
+
+  <!-- TAXONOMY -->
+  <section class="panel" id="p-taxonomy">
+    <div class="note"><b>Renaming changes every product at once.</b>
+      Rename a brand or category here and every product using it is updated. To
+      remove one, move its products to another name first.</div>
+    <div class="bar">
+      <select class="s" id="taxKind">
+        <option value="brand">Brands</option>
+        <option value="cat">Categories</option>
+        <option value="sub">Sub-groups</option>
+      </select>
+      <button class="btn g" id="taxAdd">+ Add</button>
+    </div>
+    <div id="taxList"></div>
+  </section>
+
+  <!-- CUSTOMERS -->
+  <section class="panel" id="p-customers">
+    <div class="note"><b>This list saves straight to the database.</b>
+      Adding a number here lets them sign in with an OTP texted to that phone —
+      nothing to download or upload.</div>
+    <div class="bar">
+      <input class="s" id="cName" placeholder="Name">
+      <input class="s" id="cShop" placeholder="Shop (optional)">
+      <input class="s" id="cPhone" inputmode="numeric" maxlength="15" placeholder="10-digit number" style="flex:0 0 160px">
+      <select class="s" id="cRole" style="flex:0 0 130px">
+        <option value="dealer" selected>Dealer</option>
+        <option value="shop_owner">Shop owner</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button class="btn g" id="cAdd">Add</button>
+    </div>
+    <div class="stat" id="cStat"></div>
+    <table class="tt"><tbody id="cList"></tbody></table>
+  </section>
+
+  <!-- PUBLISH -->
+  <section class="panel" id="p-publish">
+    <div class="note"><b>Product edits save to the database as you make them.</b>
+      The catalogue website itself is still the static file below, though — nothing
+      customers see changes until you download it and upload it to GitHub. Vercel
+      redeploys on its own in about a minute.</div>
+    <div id="pubSummary"></div>
+    <div class="fg"><button class="btn" id="dlData" style="width:100%">Download data.json</button>
+      <div class="hint">Every product change. Goes in the repo root, replacing the old one.</div></div>
+    <div class="fg"><button class="btn o" id="dlOrphans" style="width:100%">List unused photo files</button>
+      <div class="hint">Photos in the repo that no product points at any more. Safe to delete to save space.</div></div>
+    <div id="orph"></div>
+    <div class="fg" style="margin-top:22px">
+      <label>If the database ever looks out of step</label>
+      <div class="hint">Product saves and deletes write to the database immediately, but if one
+        ever fails (a dropped connection, mostly), run this once in the Supabase SQL editor
+        to bring it back in line with the live site.</div>
+      <code class="blk">select * from catalog.sync_from_site();</code>
+    </div>
+    <div class="fg" style="margin-top:22px">
+      <button class="btn r" id="resetBtn" style="width:100%">Discard all unsaved changes</button>
+      <div class="hint">Throws away everything since your last download and reloads the live file.</div>
+    </div>
+  </section>
+</main>
+
+<div class="foot">
+  <span class="n" id="footNote"></span>
+  <button class="btn o" id="goPublish">Publish</button>
+</div>
+</div>
+
+<div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
+
+<script src="config.js?v=7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-auth.js?v=1"></script>
+<script>
+(function(){
+  const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
+    site:'https://patelmarketing-catalog.vercel.app',
+    supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s',
+    auth:{ noAccessMessage:'We do not recognise that number yet.' }};
+  const K=window.PM_CONFIG||{};
+  const M=Object.assign({},D,K);
+  M.auth=Object.assign({},D.auth,K.auth||{});
+  if(!M.whatsapp||M.whatsapp.replace(/\D/g,'').length<10) M.whatsapp=D.whatsapp;
+  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
+  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
+  window.PM_CONFIG=M;
+})();
+const C=window.PM_CONFIG, $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=n=>'₹'+Number(n).toLocaleString('en-IN');
+const IMG=n=>'../images/'+n+'.jpg';
+const DRAFT='v3_admin_draft';
+
+let P=[], LIVE='', shown=40, q='', quick='all', dirty=false;
+// Customers live in catalog.allowlist now, not config.js — this panel reads
+// and writes the table directly, so there is no local draft to publish.
+let CUSTOMERS=[];
+
+const last10=s=>String(s||'').replace(/\D/g,'').slice(-10);
+const UNITS=['Piece','Dozen','Box','Gross','Kg','Tag'];
+let PENDING_PHONE=null;
+
+/* ---------------- gate ---------------- */
+$('#gp').oninput=function(){
+  const d=($('#gp').value||'').replace(/\D/g,'');
+  $('#gEcho').textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10)
+                          : (d.length? d.length+' of 10 digits':'');
+};
+$('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
+$('#gb').onclick=async function(){
+  const raw=($('#gp').value||'').replace(/\D/g,'');
+  const m=$('#gm'); m.classList.remove('on');
+  if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
+    '. Type the 10-digit number — 91 in front is fine too.'; m.classList.add('on'); return; }
+  const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
+  const {error}=await PMAuth.sendOtp(raw);
+  gb.disabled=false; gb.textContent='Send code';
+  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  PENDING_PHONE=raw;
+  $('#gOtpTo').textContent='Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
+  $('#gStepPhone').style.display='none'; $('#gStepOtp').style.display='block';
+  $('#gCode').focus();
+};
+$('#gBack').onclick=function(){
+  PENDING_PHONE=null; $('#gm').classList.remove('on');
+  $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
+  $('#gp').focus();
+};
+$('#gCode').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gv').click()} };
+$('#gv').onclick=async function(){
+  const code=($('#gCode').value||'').replace(/\D/g,'');
+  const m=$('#gm'); m.classList.remove('on');
+  if(code.length<4){ m.textContent='Enter the code as texted to you.'; m.classList.add('on'); return; }
+  const gv=$('#gv'); gv.disabled=true; gv.textContent='Verifying…';
+  const {error}=await PMAuth.verifyOtp(PENDING_PHONE, code);
+  gv.disabled=false; gv.textContent='Verify & sign in';
+  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  PENDING_PHONE=null;
+  const row=await PMAuth.myAllowlistRow();
+  if(!row||!row.is_admin){
+    await PMAuth.signOut();
+    m.textContent='That number signed in, but it is not on the admin list.'; m.classList.add('on');
+    $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
+    return;
+  }
+  start(row);
+};
+(async function(){
+  const sess=await PMAuth.currentSession();
+  if(!sess) return;
+  const row=await PMAuth.myAllowlistRow();
+  if(row&&row.is_admin) start(row); else await PMAuth.signOut();
+})();
+$('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+
+async function start(a){
+  $('#gate').style.display='none'; $('#app').style.display='block';
+  $('#whoLine').textContent=(a.name||'admin');
+  await load();
+}
+
+/* ---------------- data ---------------- */
+async function load(){
+  const r=await fetch('../data.json',{cache:'no-cache'});
+  const live=await r.json();
+  LIVE=JSON.stringify(live);
+  const d=localStorage.getItem(DRAFT);
+  P = d ? JSON.parse(d) : JSON.parse(LIVE);
+  dirty = !!d;
+  draw(); drawTax(); footer();
+  await loadAllowlist();
+}
+function touch(){ dirty=true; localStorage.setItem(DRAFT,JSON.stringify(P)); draw(); footer(); }
+function footer(){
+  const n=changeCount();
+  $('#footNote').innerHTML = dirty
+    ? '<b>'+n+' unsaved change'+(n===1?'':'s')+'</b> — not live yet'
+    : 'Everything matches the live catalogue';
+}
+function changeCount(){
+  let n=0;
+  try{
+    const live=JSON.parse(LIVE), byS={};
+    live.forEach(p=>byS[p.slug||p.name]=JSON.stringify(p));
+    P.forEach(p=>{ const k=p.slug||p.name; if(byS[k]!==JSON.stringify(p)) n++; delete byS[k]; });
+    n+=Object.keys(byS).length;
+  }catch(e){}
+  return n;
+}
+
+/* ---------------- tabs ---------------- */
+document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  $('#p-'+b.dataset.t).classList.add('on');
+  if(b.dataset.t==='publish') drawPublish();
+  window.scrollTo(0,0);
+});
+$('#goPublish').onclick=()=>document.querySelector('.tab[data-t="publish"]').click();
+
+/* ---------------- products list ---------------- */
+const QUICK=[
+  ['all','Everything',()=>true],
+  ['hidden','Hidden',p=>!!p.hidden],
+  ['out','Out of stock',p=>p.stock==='out'],
+  ['feat','Featured',p=>!!p.feat],
+  ['noprice','No rate',p=>p.price==null&&!(p.variants||[]).some(v=>v.price!=null)],
+  ['nophoto','No photo',p=>!p.img||p.img==='_placeholder'],
+];
+function filtered(){
+  const f=QUICK.find(x=>x[0]===quick)[2];
+  const t=q.toLowerCase();
+  return P.filter(p=>f(p) && (!t ||
+    [p.name,p.brand,p.code,p.cat,p.sub].filter(Boolean).join(' ').toLowerCase().includes(t)));
+}
+function draw(){
+  $('#quick').innerHTML=QUICK.map(([k,l,f])=>
+    '<button class="'+(quick===k?'on':'')+'" data-q="'+k+'">'+l+'<b>'+P.filter(f).length+'</b></button>').join('');
+  $('#quick').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+    quick=b.dataset.q;shown=40;draw();};
+  const L=filtered();
+  $('#stat').textContent=L.length+' shown · '+P.length+' products · '+
+    P.filter(p=>p.price!=null||(p.variants||[]).some(v=>v.price!=null)).length+' with rates';
+  $('#list').innerHTML=L.slice(0,shown).map(p=>{
+    const i=P.indexOf(p);
+    const rate=(p.variants||[]).map(v=>v.price).filter(x=>x!=null);
+    const shownRate=rate.length?(Math.min(...rate)===Math.max(...rate)?money(rate[0]):money(Math.min(...rate))+'+')
+      :(p.price!=null?money(p.price):'—');
+    return '<div class="item '+(p.hidden?'hid':'')+'" data-i="'+i+'">'+
+      '<img loading="lazy" src="'+IMG(p.img||'_placeholder')+'" onerror="this.style.opacity=.15">'+
+      '<div class="t"><div class="n">'+esc(p.name)+
+        (p.hidden?'<span class="flag h">HIDDEN</span>':'')+
+        (p.stock==='out'?'<span class="flag o">OUT</span>':'')+
+        (p.feat?'<span class="flag f">NEW</span>':'')+'</div>'+
+        '<div class="s">'+esc(p.brand)+(p.code?' · '+esc(p.code):'')+' · '+esc(p.cat)+
+        ' · '+((p.imgs||[]).length||(p.img?1:0))+' photo'+(((p.imgs||[]).length||1)===1?'':'s')+'</div></div>'+
+      '<div class="p">'+shownRate+'</div></div>';
+  }).join('') || '<div class="empty">Nothing matches.</div>';
+  $('#more').style.display=L.length>shown?'block':'none';
+}
+$('#q').oninput=e=>{q=e.target.value.trim();shown=40;draw()};
+$('#more').onclick=()=>{shown+=40;draw()};
+$('#list').onclick=e=>{const r=e.target.closest('.item');if(r)edit(+r.dataset.i)};
+$('#addBtn').onclick=function(){
+  P.unshift({slug:'',img:'',imgs:[],name:'',brand:'',cat:'',sub:'',desc:'',spec:'',code:null,
+    gst:18,hsn:null,note:null,price:null,mrp:null,variants:[],sizes:[],alias:null,
+    stock:'active',hidden:false,feat:true,hotel:null});
+  touch(); edit(0);
+};
+
+/* ---------------- edit sheet ---------------- */
+const ov=$('#ov'), sheet=$('#sheet');
+function closeSheet(){ov.classList.remove('open');document.body.style.overflow=''}
+ov.onclick=closeSheet;
+function uniq(k){return [...new Set(P.map(p=>p[k]).filter(Boolean))].sort()}
+
+function edit(i){
+  const p=P[i];
+  let imgs=(p.imgs&&p.imgs.length)?p.imgs.slice():(p.img?[p.img]:[]);
+  let vs=JSON.parse(JSON.stringify(p.variants||[]));
+  vs.forEach(v=>{ if(!v.unit) v.unit='Piece'; });
+
+  sheet.innerHTML=
+   '<div class="shead"><strong>'+(p.name?'Edit product':'New product')+'</strong>'+
+   '<button class="btn r" id="delP">Delete</button><button class="sx" id="xb">×</button></div>'+
+   '<div class="sbody">'+
+    '<div class="sw"><div class="lab">Hidden from the catalogue'+
+      '<small>Nobody sees it. Use this instead of deleting when a line may come back.</small></div>'+
+      '<span class="tg danger"><input type="checkbox" id="fHidden"'+(p.hidden?' checked':'')+'><i></i></span></div>'+
+    '<div class="sw"><div class="lab">Out of stock'+
+      '<small>Still listed, shown greyed with an Out of stock badge.</small></div>'+
+      '<span class="tg danger"><input type="checkbox" id="fOut"'+(p.stock==='out'?' checked':'')+'><i></i></span></div>'+
+    '<div class="sw"><div class="lab">Mark as new'+
+      '<small>Shows a badge on the card.</small></div>'+
+      '<span class="tg"><input type="checkbox" id="fFeat"'+(p.feat?' checked':'')+'><i></i></span></div>'+
+
+    '<div class="fg" style="margin-top:16px"><label>Name — exactly as the supplier prints it</label>'+
+      '<input id="fName" value="'+esc(p.name)+'"><div class="hint">Never tidy or reword a supplier name.</div></div>'+
+    '<div class="two">'+
+      '<div class="fg"><label>Brand</label><input id="fBrand" list="dB" value="'+esc(p.brand)+'">'+
+        '<datalist id="dB">'+uniq('brand').map(b=>'<option value="'+esc(b)+'">').join('')+'</datalist></div>'+
+      '<div class="fg"><label>Code</label><input id="fCode" value="'+esc(p.code||'')+'"></div></div>'+
+    '<div class="two">'+
+      '<div class="fg"><label>Category</label><input id="fCat" list="dC" value="'+esc(p.cat)+'">'+
+        '<datalist id="dC">'+uniq('cat').map(b=>'<option value="'+esc(b)+'">').join('')+'</datalist></div>'+
+      '<div class="fg"><label>Sub-group</label><input id="fSub" list="dS" value="'+esc(p.sub||'')+'">'+
+        '<datalist id="dS">'+uniq('sub').map(b=>'<option value="'+esc(b)+'">').join('')+'</datalist></div></div>'+
+    '<div class="fg"><label>Description</label><textarea id="fDesc">'+esc(p.desc||'')+'</textarea></div>'+
+    '<div class="fg"><label>Also called (helps search)</label><input id="fAlias" value="'+esc(p.alias||'')+'"></div>'+
+    '<div class="fg"><label>Pack / spec line</label><input id="fSpec" value="'+esc(p.spec||'')+'"></div>'+
+    '<div class="three">'+
+      '<div class="fg"><label>GST %</label><input id="fGst" type="number" value="'+(p.gst??18)+'"></div>'+
+      '<div class="fg"><label>HSN</label><input id="fHsn" value="'+esc(p.hsn||'')+'"></div>'+
+      '<div class="fg"><label>Note</label><input id="fNote" value="'+esc(p.note||'')+'"></div></div>'+
+
+    '<h4 style="font-size:.85rem;margin:18px 0 8px">Photos</h4>'+
+    '<div id="pl"></div>'+
+    '<div class="bar" style="margin-top:8px"><input class="s" id="newImg" placeholder="folder/file — no .jpg">'+
+      '<button class="btn o" id="addImg">Add</button></div>'+
+    '<div class="hint" style="font-size:.7rem;color:var(--tm)">First photo is the main one. '+
+      'Upload the file to <code>images/&lt;folder&gt;/</code> in GitHub with the same name.</div>'+
+
+    '<h4 style="font-size:.85rem;margin:18px 0 8px">Sizes and rates</h4>'+
+    '<div id="vl"></div>'+
+    '<button class="btn o" id="addV" style="margin-top:6px">+ Add size</button>'+
+    '<div class="two" style="margin-top:12px">'+
+      '<div class="fg"><label>Single rate (no sizes)</label><input id="fPrice" type="number" value="'+(p.price??'')+'"></div>'+
+      '<div class="fg"><label>Single MRP</label><input id="fMrp" type="number" value="'+(p.mrp??'')+'"></div></div>'+
+
+    '<button class="btn g" id="saveP" style="width:100%;margin-top:18px">Done</button>'+
+   '</div>';
+
+  function drawImgs(){
+    $('#pl').innerHTML = imgs.length ? imgs.map((n,ix)=>
+      '<div class="photo"><img src="'+IMG(n)+'" onerror="this.style.opacity=.15">'+
+      '<code>'+esc(n)+'</code>'+(ix===0?'<span class="main">MAIN</span>':'')+
+      '<button class="mini" data-up="'+ix+'" '+(ix===0?'disabled':'')+'>↑</button>'+
+      '<button class="mini" data-dn="'+ix+'" '+(ix===imgs.length-1?'disabled':'')+'>↓</button>'+
+      '<button class="mini del" data-rm="'+ix+'">×</button></div>').join('')
+      : '<div class="hint">No photos. The catalogue will show a placeholder tile.</div>';
+    $('#pl').onclick=function(e){
+      const b=e.target.closest('button'); if(!b) return;
+      if(b.dataset.up!==undefined){const i2=+b.dataset.up;[imgs[i2-1],imgs[i2]]=[imgs[i2],imgs[i2-1]]}
+      if(b.dataset.dn!==undefined){const i2=+b.dataset.dn;[imgs[i2+1],imgs[i2]]=[imgs[i2],imgs[i2+1]]}
+      if(b.dataset.rm!==undefined){imgs.splice(+b.dataset.rm,1)}
+      drawImgs();
+    };
+  }
+  drawImgs();
+  $('#addImg').onclick=function(){
+    const v=$('#newImg').value.trim().replace(/\.jpg$/i,'');
+    if(v && imgs.indexOf(v)<0){imgs.push(v);$('#newImg').value='';drawImgs()}
+  };
+
+  function drawV(){
+    $('#vl').innerHTML = vs.length ? ('<div class="vrow" style="font-size:.6rem;color:var(--tm);'+
+      'text-transform:uppercase;letter-spacing:.07em"><span>Size</span><span>DP</span><span>MRP</span>'+
+      '<span>MOQ</span><span>Unit</span><span></span></div>') + vs.map((v,ix)=>
+      '<div class="vrow">'+
+      '<input placeholder="Size" value="'+esc(v.size||'')+'" data-k="size" data-i="'+ix+'">'+
+      '<input placeholder="DP" type="number" value="'+(v.price??'')+'" data-k="price" data-i="'+ix+'">'+
+      '<input placeholder="MRP" type="number" value="'+(v.mrp??'')+'" data-k="mrp" data-i="'+ix+'">'+
+      '<input placeholder="MOQ" type="number" value="'+(v.moq??'')+'" data-k="moq" data-i="'+ix+'">'+
+      '<select data-k="unit" data-i="'+ix+'">'+UNITS.map(u=>
+        '<option value="'+u+'"'+((v.unit||'Piece')===u?' selected':'')+'>'+u+'</option>').join('')+'</select>'+
+      '<button class="mini del" data-rm="'+ix+'">×</button></div>').join('') : '';
+    $('#vl').oninput=function(e){
+      const t=e.target; if(!t.dataset.k) return;
+      const v=vs[+t.dataset.i];
+      v[t.dataset.k] = (t.dataset.k==='size'||t.dataset.k==='unit') ? t.value : (t.value===''?null:+t.value);
+    };
+    $('#vl').onclick=function(e){
+      const b=e.target.closest('button[data-rm]'); if(!b) return;
+      vs.splice(+b.dataset.rm,1); drawV();
+    };
+  }
+  drawV();
+  $('#addV').onclick=function(){vs.push({size:'',rate:null,price:null,mrp:null,moq:null,unit:'Piece'});drawV()};
+
+  $('#xb').onclick=closeSheet;
+  $('#delP').onclick=async function(){
+    if(!confirm('Delete "'+(p.name||'this product')+'" from the catalogue?\n\nHiding it is usually safer.')) return;
+    const del=$('#delP'); del.disabled=true; del.textContent='Deleting…';
+    if(p.slug){
+      const {error}=await PMAuth.sb.rpc('admin_delete_product',{p_slug:p.slug});
+      if(error){
+        del.disabled=false; del.textContent='Delete';
+        alert('Could not delete from the database — '+error.message+
+          '\n\nRemoved here only; run sync_from_site() after publishing to catch it up, or try again.');
+      }
+    }
+    P.splice(i,1); touch(); closeSheet();
+  };
+  $('#saveP').onclick=async function(){
+    const num=id=>{const v=$(id).value;return v===''?null:+v};
+    const name=$('#fName').value.trim(), brand=$('#fBrand').value.trim();
+    if(!name||!brand){alert('Name and brand are both required.');return}
+    Object.assign(p,{
+      name:name, brand:brand,
+      code:$('#fCode').value.trim()||null,
+      cat:$('#fCat').value.trim(), sub:$('#fSub').value.trim(),
+      desc:$('#fDesc').value.trim(), alias:$('#fAlias').value.trim()||null,
+      spec:$('#fSpec').value.trim(), gst:num('#fGst'),
+      hsn:$('#fHsn').value.trim()||null, note:$('#fNote').value.trim()||null,
+      price:num('#fPrice'), mrp:num('#fMrp'),
+      hidden:$('#fHidden').checked, feat:$('#fFeat').checked,
+      stock:$('#fOut').checked?'out':'active',
+      imgs:imgs.slice(), img:imgs[0]||'_placeholder',
+      variants:vs.filter(v=>v.size||v.price!=null||v.mrp!=null),
+    });
+    if(!p.slug) p.slug=mkSlug(p);
+    const sv=$('#saveP'); sv.disabled=true; sv.textContent='Saving…';
+    const {error}=await PMAuth.sb.rpc('admin_upsert_product',{payload:p});
+    sv.disabled=false; sv.textContent='Done';
+    if(error){
+      alert('Saved here, but the database write failed — '+error.message+
+        '\n\nKeep going; run sync_from_site() after you publish to catch it up.');
+    }
+    touch(); closeSheet();
+  };
+  ov.classList.add('open'); document.body.style.overflow='hidden'; sheet.scrollTop=0;
+}
+function mkSlug(p){
+  let b=(p.brand+'-'+p.name).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  let s=b, n=2;
+  while(P.some(x=>x!==p&&x.slug===s)) s=b+'-'+(n++);
+  return s;
+}
+
+/* ---------------- taxonomy ---------------- */
+$('#taxKind').onchange=drawTax;
+function drawTax(){
+  const k=$('#taxKind').value;
+  const counts={};
+  P.forEach(p=>{const v=p[k]; if(v) counts[v]=(counts[v]||0)+1});
+  const keys=Object.keys(counts).sort();
+  $('#taxList').innerHTML = keys.length ? keys.map(v=>
+    '<div class="item"><div class="t"><div class="n">'+esc(v)+'</div>'+
+    '<div class="s">'+counts[v]+' product'+(counts[v]===1?'':'s')+'</div></div>'+
+    '<button class="ibtn" data-ren="'+esc(v)+'">Rename</button></div>').join('')
+    : '<div class="empty">None yet.</div>';
+  $('#taxList').onclick=function(e){
+    const b=e.target.closest('[data-ren]'); if(!b) return;
+    const old=b.dataset.ren;
+    const nn=prompt('Rename "'+old+'" to:', old);
+    if(!nn||nn===old) return;
+    P.forEach(p=>{ if(p[k]===old) p[k]=nn.trim(); });
+    touch(); drawTax();
+  };
+}
+$('#taxAdd').onclick=function(){
+  const k=$('#taxKind').value;
+  const v=prompt('New '+(k==='brand'?'brand':k==='cat'?'category':'sub-group')+' name:');
+  if(!v) return;
+  alert('"'+v.trim()+'" is ready to use.\n\nIt appears in the list once a product uses it — '+
+        'open any product and type it into the '+(k==='brand'?'Brand':k==='cat'?'Category':'Sub-group')+' box.');
+};
+
+/* ---------------- customers (catalog.allowlist, live) ---------------- */
+async function loadAllowlist(){
+  // End customers are a shop owner's own list, not ours to browse here — see
+  // V3-AMENDMENTS.md. Admin RLS access to those rows still exists in the
+  // database for support, this panel just doesn't surface them.
+  const {data,error}=await PMAuth.sb.from('allowlist').select('*').neq('role','end_customer').order('added_at');
+  if(error){ $('#cStat').textContent='Could not load the customer list — '+error.message; return; }
+  CUSTOMERS=data||[];
+  drawCust();
+}
+const ROLE_LABEL={admin:'ADMIN',shop_owner:'SHOP OWNER',end_customer:'END CUSTOMER',dealer:''};
+function drawCust(){
+  const dealers=CUSTOMERS.filter(c=>c.role==='dealer'), shops=CUSTOMERS.filter(c=>c.role==='shop_owner'),
+    admins=CUSTOMERS.filter(c=>c.is_admin);
+  $('#cStat').textContent=dealers.length+' dealers · '+shops.length+' shop owners · '+admins.length+' admins';
+  $('#cList').innerHTML = CUSTOMERS.length ? CUSTOMERS.map(c=>
+    '<tr><td><div class="nm">'+esc(c.name||'(unnamed)')+
+      (ROLE_LABEL[c.role]?'<span class="flag f">'+ROLE_LABEL[c.role]+'</span>':'')+'</div>'+
+      '<div class="ph">'+(c.shop?esc(c.shop)+' · ':'')+'+'+esc(c.phone||'')+'</div></td>'+
+      '<td><button class="ibtn" data-rm="'+esc(c.phone)+'">Remove</button></td></tr>').join('')
+    : '<tr><td class="empty">No one yet.</td></tr>';
+  $('#cList').onclick=async function(e){
+    const b=e.target.closest('[data-rm]'); if(!b) return;
+    const phone=b.dataset.rm, row=CUSTOMERS.find(c=>c.phone===phone);
+    if(!confirm('Remove '+(row&&row.name||phone)+'? They will lose access to dealer prices and sign-in.')) return;
+    const {error}=await PMAuth.sb.rpc('admin_delete_customer',{p_phone:phone});
+    if(error){ alert('Could not remove — '+error.message); return; }
+    await loadAllowlist();
+  };
+}
+$('#cAdd').onclick=async function(){
+  const n=$('#cName').value.trim(), shop=$('#cShop').value.trim(), role=$('#cRole').value;
+  const raw=($('#cPhone').value||'').replace(/\D/g,'');
+  if(!n){alert('Give the customer a name so you can recognise them later.');return}
+  if(raw.length<10){alert('That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
+    '. Type the 10-digit number — 91 in front is fine too.');return}
+  const ph='91'+raw.slice(-10);
+  if(CUSTOMERS.some(c=>last10(c.phone)===last10(ph))){alert('That number is already on the list.');return}
+  const {error}=await PMAuth.sb.rpc('admin_upsert_customer',
+    {p_phone:ph,p_name:n,p_shop:shop||null,p_role:role});
+  if(error){ alert('Could not add — '+error.message); return; }
+  $('#cName').value='';$('#cShop').value='';$('#cPhone').value='';$('#cRole').value='dealer';
+  await loadAllowlist();
+};
+
+/* ---------------- publish ---------------- */
+function drawPublish(){
+  const n=changeCount();
+  $('#pubSummary').innerHTML = n
+    ? '<div class="note" style="background:var(--act)"><b>'+n+' change'+(n===1?'':'s')+' waiting</b>'+
+      'data.json has product changes.</div>'
+    : '<div class="note"><b>Nothing to publish</b>Everything here matches the live catalogue.</div>';
+}
+function dl(name, text, type){
+  const b=new Blob([text],{type:type||'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+}
+$('#dlData').onclick=function(){
+  const clean=P.map(p=>{const c=Object.assign({},p); delete c._h; return c});
+  dl('data.json', JSON.stringify(clean,null,1), 'application/json');
+};
+$('#dlOrphans').onclick=async function(){
+  const used=new Set();
+  P.forEach(p=>{ if(p.img)used.add(p.img); (p.imgs||[]).forEach(i=>used.add(i)); });
+  let live=[];
+  try{ live=JSON.parse(LIVE); }catch(e){}
+  const before=new Set();
+  live.forEach(p=>{ if(p.img)before.add(p.img); (p.imgs||[]).forEach(i=>before.add(i)); });
+  const gone=[...before].filter(x=>!used.has(x)&&x!=='_placeholder');
+  $('#orph').innerHTML = gone.length
+    ? '<code class="blk">'+gone.map(esc).join('<br>')+'</code>'+
+      '<div class="hint">'+gone.length+' file'+(gone.length===1?'':'s')+' no product points at any more. '+
+      'Delete them from <code>images/</code> in GitHub, and from the Supabase bucket, to save space. '+
+      'Leaving them costs nothing but clutter.</div>'
+    : '<div class="hint">No unused photos.</div>';
+};
+$('#resetBtn').onclick=function(){
+  if(!confirm('Throw away every change made on this phone since your last download?')) return;
+  localStorage.removeItem(DRAFT); location.reload();
+};
+</script>
+</body>
+</html>
