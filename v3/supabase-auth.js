@@ -17,10 +17,32 @@
   const dg = s => String(s || '').replace(/\D/g, '');
   const toE164 = digits => '+91' + dg(digits).slice(-10);
 
+  // By default supabase-js serialises auth calls with a Web Lock
+  // (navigator.locks), shared across every tab on the same origin. On a phone
+  // with many tabs open, a backgrounded tab can be suspended while holding
+  // that lock — and then every auth call in this tab waits on it forever:
+  // no network request is ever made, no error is raised, the button just sits
+  // there. That matches the failure seen on /v3/ exactly.
+  //
+  // This page only ever has one client doing auth, so cross-tab coordination
+  // buys us nothing. Queue calls in-page instead: same ordering guarantee,
+  // no dependency on a lock another tab might be sitting on.
+  let chain = Promise.resolve();
+  function inPageLock(_name, _acquireTimeout, fn) {
+    const run = chain.then(fn, fn);
+    chain = run.then(() => {}, () => {}); // never let a failure break the queue
+    return run;
+  }
+
   let sb = null;
   try {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { storageKey: 'v3_sb_auth', persistSession: true, autoRefreshToken: true }
+      auth: {
+        storageKey: 'v3_sb_auth',
+        persistSession: true,
+        autoRefreshToken: true,
+        lock: inPageLock,
+      }
     });
   } catch (e) { /* CDN script failed to load — PMAuth degrades to signed-out */ }
 
