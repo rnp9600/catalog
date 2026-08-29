@@ -96,8 +96,8 @@ main{max-width:1000px;margin:0 auto;padding:14px}
 .tg input:checked+i{background:var(--ac)}
 .tg input:checked+i::after{transform:translateX(19px)}
 .tg.danger input:checked+i{background:#B4433B}
-.vrow{display:grid;grid-template-columns:1.25fr .8fr .8fr .6fr auto;gap:6px;margin-bottom:6px;align-items:center}
-.vrow input{padding:8px 9px;border:1.5px solid var(--bd);border-radius:7px;background:var(--sf);
+.vrow{display:grid;grid-template-columns:1.1fr .7fr .7fr .5fr .8fr auto;gap:6px;margin-bottom:6px;align-items:center}
+.vrow input,.vrow select{padding:8px 9px;border:1.5px solid var(--bd);border-radius:7px;background:var(--sf);
  font-family:var(--fm);font-size:.79rem;min-width:0}
 .mini{border:0;background:var(--sf2);color:var(--tx);border-radius:7px;width:31px;height:31px;
  font-size:.95rem;line-height:1;flex-shrink:0}
@@ -286,6 +286,7 @@ let P=[], LIVE='', shown=40, q='', quick='all', dirty=false;
 let CUSTOMERS=[];
 
 const last10=s=>String(s||'').replace(/\D/g,'').slice(-10);
+const UNITS=['Piece','Dozen','Box','Gross','Kg','Tag'];
 let PENDING_PHONE=null;
 
 /* ---------------- gate ---------------- */
@@ -447,6 +448,7 @@ function edit(i){
   const p=P[i];
   let imgs=(p.imgs&&p.imgs.length)?p.imgs.slice():(p.img?[p.img]:[]);
   let vs=JSON.parse(JSON.stringify(p.variants||[]));
+  vs.forEach(v=>{ if(!v.unit) v.unit='Piece'; });
 
   sheet.innerHTML=
    '<div class="shead"><strong>'+(p.name?'Edit product':'New product')+'</strong>'+
@@ -523,17 +525,19 @@ function edit(i){
   function drawV(){
     $('#vl').innerHTML = vs.length ? ('<div class="vrow" style="font-size:.6rem;color:var(--tm);'+
       'text-transform:uppercase;letter-spacing:.07em"><span>Size</span><span>DP</span><span>MRP</span>'+
-      '<span>MOQ</span><span></span></div>') + vs.map((v,ix)=>
+      '<span>MOQ</span><span>Unit</span><span></span></div>') + vs.map((v,ix)=>
       '<div class="vrow">'+
       '<input placeholder="Size" value="'+esc(v.size||'')+'" data-k="size" data-i="'+ix+'">'+
       '<input placeholder="DP" type="number" value="'+(v.price??'')+'" data-k="price" data-i="'+ix+'">'+
       '<input placeholder="MRP" type="number" value="'+(v.mrp??'')+'" data-k="mrp" data-i="'+ix+'">'+
       '<input placeholder="MOQ" type="number" value="'+(v.moq??'')+'" data-k="moq" data-i="'+ix+'">'+
+      '<select data-k="unit" data-i="'+ix+'">'+UNITS.map(u=>
+        '<option value="'+u+'"'+((v.unit||'Piece')===u?' selected':'')+'>'+u+'</option>').join('')+'</select>'+
       '<button class="mini del" data-rm="'+ix+'">×</button></div>').join('') : '';
     $('#vl').oninput=function(e){
       const t=e.target; if(!t.dataset.k) return;
       const v=vs[+t.dataset.i];
-      v[t.dataset.k] = t.dataset.k==='size' ? t.value : (t.value===''?null:+t.value);
+      v[t.dataset.k] = (t.dataset.k==='size'||t.dataset.k==='unit') ? t.value : (t.value===''?null:+t.value);
     };
     $('#vl').onclick=function(e){
       const b=e.target.closest('button[data-rm]'); if(!b) return;
@@ -541,7 +545,7 @@ function edit(i){
     };
   }
   drawV();
-  $('#addV').onclick=function(){vs.push({size:'',rate:null,price:null,mrp:null,moq:null});drawV()};
+  $('#addV').onclick=function(){vs.push({size:'',rate:null,price:null,mrp:null,moq:null,unit:'Piece'});drawV()};
 
   $('#xb').onclick=closeSheet;
   $('#delP').onclick=function(){
