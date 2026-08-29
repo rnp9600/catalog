@@ -1671,12 +1671,16 @@ function openSignIn(){
 }
 function menuSignHtml(){
   if(signedIn()){
+    const adm = SESS.admin
+      ? '<a class="sgnbtn" href="admin.html" style="display:block;text-align:center;'+
+        'text-decoration:none;margin-top:10px;background:var(--ac)">Open admin panel</a>'
+      : '';
     return '<div class="who"><div class="whoav">'+
       ((SESS.name||'PM').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
       '<div><b>'+(SESS.name||'Signed in')+'</b><small>'+(SESS.tail||'')+
       (SESS.admin?' · admin':'')+'</small></div></div>'+
       '<button class="sgnbtn" id="menuAcct" style="margin-top:10px">Your account'+
-      (RETAIL.on?' · showing customer prices':'')+'</button>';
+      (RETAIL.on?' · showing customer prices':'')+'</button>' + adm;
   }
   return '<p style="font-size:.8rem;color:var(--tm);line-height:1.55;margin-bottom:10px">'+
     'Sign in to see if a discount applies to your account, and to place an order.</p>'+
