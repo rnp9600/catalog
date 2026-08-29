@@ -556,6 +556,20 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  background:var(--sf);font-family:var(--fd);font-size:.88rem;color:var(--tx)}
 .oempty{padding:30px 10px;text-align:center;color:var(--tm);font-size:.83rem}
 
+/* ---------- v3: end-customer mode ---------- */
+.campaign{margin:16px 0 2px;border-radius:var(--r);padding:16px 18px;
+ background:linear-gradient(100deg,var(--pr),var(--ac));color:#fff}
+.campaign b{display:block;font-size:1rem;font-weight:800;letter-spacing:-.01em}
+.campaign span{display:block;font-size:.78rem;opacity:.92;margin-top:4px;line-height:1.5}
+.statuschip{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.03em;
+ padding:3px 8px;border-radius:999px;margin-top:6px;text-transform:uppercase}
+.statuschip.in_stock{background:var(--act);color:var(--ac)}
+.statuschip.arriving{background:#FFF1D6;color:#8A5A10}
+.statuschip.held{background:var(--prt);color:var(--pr)}
+.visitshop{background:var(--sf2);border-radius:var(--r);padding:14px;margin-top:14px;font-size:.82rem;
+ line-height:1.6;color:var(--tx)}
+.visitshop b{display:block;margin-bottom:4px}
+
 </style></head><body data-theme="sky" class="v-grid">
 <header><div class="hin">
  <div class="brandbox"><div class="mark">PM</div>
@@ -605,6 +619,7 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
   </div>
   <div class="activepills" id="activepills"></div>
  </section>
+ <div id="campaignBanner"></div>
  <div id="fest"></div>
  <div class="bar"><h2 id="bh">All products</h2><span id="bc"></span></div>
  <div id="tableHead"><span>Product</span><span>Size</span><span>Rate</span><span>MRP</span></div>
@@ -817,6 +832,7 @@ const IMG=n=>IMAGE_SOURCE==='supabase' ? `${SUPABASE_IMAGE_BASE}/${n}.jpg` : `..
 const UNIT_ABBR={Piece:'pc',Dozen:'dz',Box:'box',Gross:'gr',Kg:'kg',Tag:'tag'};
 const unitAbbr=u=>UNIT_ABBR[u||'Piece']||u||'pc';
 const unitOf=v=>v.unit||'Piece';
+const STATUS_LABEL={in_stock:'In stock',arriving:'Arriving',held:'Kept aside for you'};
 
 /* ---------- sharing ---------- */
 // Patel Marketing's WhatsApp Business number, digits only with country code.
@@ -1021,15 +1037,17 @@ function card(p,i){
     ?`<button class="szbtn" data-sz="${i}">▸ ${p.sizes.length} sizes &amp; weights</button>
       <div class="szlist" id="sz${i}">${p.sizes.map(s=>`<span>${s}</span>`).join('')}</div>`:'';
   const cta=p.stock==='out'?'<button class="cta dis">Currently unavailable</button>'
-    :'<button class="cta" data-open="'+i+'">View sizes &amp; rates</button>';
+    :'<button class="cta" data-open="'+i+'">'+(isEndCustomer()?'See details':'View sizes &amp; rates')+'</button>';
   const im=p.img?`<img src="${IMG(p.img)}" alt="${p.name}" loading="lazy">`:`<span class="noimg">—</span>`;
+  const statusChip=isEndCustomer()&&shopOfferFor(p)&&shopOfferFor(p).status
+    ?`<span class="statuschip ${shopOfferFor(p).status}">${STATUS_LABEL[shopOfferFor(p).status]||shopOfferFor(p).status}</span>`:'';
   return `<div class="card ${p.stock==='out'?'out':''}" data-open="${i}" style="animation-delay:${Math.min(i,14)*.028}s">
    <div class="med">${b.join('')}${im}</div>
    <div class="bd_"><div class="nm">${p.name}</div>
     ${p.desc?`<div class="ds">${p.desc}</div>`:''}
     ${specHtml(p)}${vc}${sz}
     <span class="br">${p.brand}${p.code?' · <span class="cd">'+p.code+'</span>':''}</span>
-    <div class="pw">${priceLine(p)}</div>${cta}</div></div>`;
+    <div class="pw">${priceLine(p)}${statusChip}</div>${cta}</div></div>`;
 }
 
 let VIEW=[];
@@ -1080,20 +1098,21 @@ function openSheet(p){
   if(!p)return;
   CUR=p;
   const imgs=(p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[]));
+  const ec=isEndCustomer();
   const vt=(p.variants&&p.variants.length)?`
     <div class="vt">
-      <div class="vh"><span>Size / option</span><span>Rate</span><span>MRP</span><span>Order</span></div>
+      <div class="vh"><span>Size / option</span><span>Rate</span><span>MRP</span><span>${ec?'':'Order'}</span></div>
       ${p.variants.map(v=>`<div class="vr">
         <span class="vsize">${v.size}${v.moq?'<small class="vmoq">MOQ '+v.moq+'</small>':''}</span>
         <span class="vprice">${v.price!=null?'₹'+v.price+'<b class="vunit">/'+unitAbbr(v.unit)+'</b>':'—'}</span>
         <span class="vmrp">${v.mrp!=null?'₹'+v.mrp:''}</span>
-        <span class="vord"><button class="qbtn" data-qm="${v.size}">−</button><b class="qv" data-qv="${v.size}">0</b><button class="qbtn" data-qp="${v.size}">+</button></span></div>`).join('')}
+        <span class="vord">${ec?'':'<button class="qbtn" data-qm="'+v.size+'">−</button><b class="qv" data-qv="'+v.size+'">0</b><button class="qbtn" data-qp="'+v.size+'">+</button>'}</span></div>`).join('')}
     </div>
     <p style="font-size:.7rem;color:var(--tm);margin-top:7px;line-height:1.5">
       Rate is per unit shown (pc = piece, dz = dozen, gr = gross) including GST${p.gst?' at '+p.gst+'%':''}. MRP is the printed maximum retail price.
-      MOQ is the minimum order quantity where the supplier sets one. Use the + button to add a size to your order.</p>`
+      MOQ is the minimum order quantity where the supplier sets one.${ec?'':' Use the + button to add a size to your order.'}</p>`
     : (p.sizes&&p.sizes.length? `<div class="sizesplain">${p.sizes.map(s=>`<div>${s}</div>`).join('')}</div>`
-      : (p.price!=null?`<div class="singleAdd"><button class="qbtn" data-qm="Standard">−</button>
+      : (p.price!=null&&!ec?`<div class="singleAdd"><button class="qbtn" data-qm="Standard">−</button>
           <b class="qv" data-qv="Standard">0</b><button class="qbtn" data-qp="Standard">+</button>
           <span style="font-size:.78rem;color:var(--tm)">Add to your order</span></div>`:''));
 
@@ -1122,11 +1141,14 @@ function openSheet(p){
      ${p.hotel?specHtml(p):(p.spec?`<div class="sp">${p.spec}</div>`:'')}
      ${p.note?`<div class="snote">ℹ️ ${p.note}</div>`:''}
      ${vt}
-     <div class="sactions">
+     ${ec?`<div class="visitshop"><b>Visit the shop to buy</b>
+       No online ordering here — see what's on offer, then head over.
+       <button class="cta" id="holdBtn" style="margin-top:10px;width:100%">Ask the shop to hold one</button></div>`
+     :`<div class="sactions">
        <button id="waBtn">Enquire on WhatsApp</button>
        <button class="alt" id="shBtn">Share product</button>
        <button class="alt" id="cpBtn">Copy details</button>
-     </div>
+     </div>`}
      ${relHtml}
    </div>`;
   ov.classList.add('open');document.body.style.overflow='hidden';
@@ -1143,9 +1165,16 @@ function openSheet(p){
     th.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
     b.classList.add('on');document.getElementById('hi').src=IMG(b.dataset.n);});
   sheet.querySelectorAll('[data-rel]').forEach(c=>c.onclick=()=>openSheet(P[+c.dataset.rel]));
-  document.getElementById('waBtn').onclick=()=>{
+  const holdBtn=document.getElementById('holdBtn');
+  if(holdBtn) holdBtn.onclick=()=>{
+    const target=(SESS&&SESS.ownerPhone)||WA_NUMBER;
+    const msg='Hi, is "'+p.name+'" available? Could you keep one for me?';
+    window.open(`https://wa.me/${target}?text=`+encodeURIComponent(msg),'_blank');};
+  const waBtn=document.getElementById('waBtn');
+  if(waBtn) waBtn.onclick=()=>{
     window.open(`https://wa.me/${orderTarget()}?text=`+encodeURIComponent(waMessage(p)),'_blank');};
-  document.getElementById('shBtn').onclick=async()=>{
+  const shBtn=document.getElementById('shBtn');
+  if(shBtn) shBtn.onclick=async()=>{
     const b=document.getElementById('shBtn'),url=shareUrl(p);
     // Native share sheet on phones (WhatsApp, SMS, Mail all appear here).
     if(navigator.share){
@@ -1155,7 +1184,8 @@ function openSheet(p){
     try{await navigator.clipboard.writeText(url);b.textContent='Link copied ✓';}
     catch(e){b.textContent=url;}
     setTimeout(()=>b.textContent='Share product',1800);};
-  document.getElementById('cpBtn').onclick=()=>{
+  const cpBtn=document.getElementById('cpBtn');
+  if(cpBtn) cpBtn.onclick=()=>{
     const lines=[p.name,p.brand+' · '+p.cat+(p.code?' · '+p.code:'')];
     (p.variants||[]).forEach(v=>lines.push(`  ${v.size} — ₹${v.price}/${unitAbbr(v.unit)} incl GST${v.mrp?` (MRP ₹${v.mrp})`:''}${v.moq?` · MOQ ${v.moq}`:''}`));
     navigator.clipboard.writeText(lines.join('\n')).then(()=>{
@@ -1627,10 +1657,27 @@ let SESS   = null;
 let PENDING_PHONE = null; // digits awaiting an OTP code, or null
 let RETAIL = JSON.parse(localStorage.getItem('v2_pm_retail')||'null') || {on:false, off:10};
 const signedIn = () => !!(SESS && SESS.ok);
+const isEndCustomer = () => !!(SESS && SESS.role==='end_customer');
 const saveRtl  = () => localStorage.setItem('v2_pm_retail',  JSON.stringify(RETAIL));
+// Populated for end customers only: the shop they're browsing under, and
+// that shop's own status/offer per product slug.
+let SHOP_INFO=null, SHOP_OFFERS={};
+function shopOfferFor(p){ return SHOP_OFFERS[p.slug] || null; }
+async function loadShopContext(){
+  SHOP_INFO=null; SHOP_OFFERS={};
+  if(!isEndCustomer() || !SESS.ownerPhone) return;
+  try{
+    const [{data:shop}, {data:offers}] = await Promise.all([
+      PMAuth.sb.from('allowlist').select('name,shop').eq('phone', SESS.ownerPhone).maybeSingle(),
+      PMAuth.sb.from('shop_offers').select('*').eq('shop_phone', SESS.ownerPhone),
+    ]);
+    SHOP_INFO = shop || null;
+    (offers||[]).forEach(o=>{ SHOP_OFFERS[o.product_slug]=o; });
+  }catch(e){}
+}
 async function refreshSession(){
   const sess = await PMAuth.currentSession();
-  if(!sess){ SESS=null; markWho(); retailBanner(); render(); if(CUR) repriceSheet(); return; }
+  if(!sess){ SESS=null; SHOP_INFO=null; SHOP_OFFERS={}; markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet(); obarRender(); return; }
   const row = await PMAuth.myAllowlistRow();
   if(!row){
     // A verified phone that isn't on the allowlist yet — don't leave it signed in.
@@ -1640,11 +1687,13 @@ async function refreshSession(){
     // role is groundwork for the three-tier auth described in
     // V3-AMENDMENTS.md (dealer / shop_owner / end_customer / admin) — not
     // yet used to change what anyone sees, so a dealer and a shop owner
-    // still get today's identical signed-in view.
+    // still get today's identical signed-in view. end_customer is the one
+    // exception: see loadShopContext()/campaignBanner() below.
     SESS = {ok:true, admin:!!row.is_admin, role:row.role||'dealer', name:row.name||'Signed in',
-      tail: last?'…'+last.slice(-3):'', phone: full, shop: row.shop||''};
+      tail: last?'…'+last.slice(-3):'', phone: full, shop: row.shop||'', ownerPhone: row.owner_phone||null};
   }
-  markWho(); retailBanner(); render(); if(CUR) repriceSheet();
+  if(isEndCustomer()) await loadShopContext();
+  markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet();
   obarRender();
 }
 
@@ -1674,6 +1723,8 @@ function setQty(slug,size,qty){
 function basketCount(){ return BASKET.reduce((n,b)=>n+b.qty,0); }
 function obarRender(){
   const b=document.getElementById('obar'); if(!b) return;
+  // End customers browse, they don't order online — see V3-AMENDMENTS.md.
+  if(isEndCustomer()){ b.classList.remove('on'); return; }
   const n=basketCount();
   document.getElementById('obarTxt').innerHTML = '🧺 <b>'+n+'</b> in your order';
   b.classList.toggle('on', n>0);
@@ -1859,6 +1910,17 @@ function priceLine(p){
   const dp=dpOf(p), mrp=mrpOf(p);
   if(!dp && !mrp) return '<span class="ph">Enquire for pricing</span>';
 
+  /* end customer: MRP (or the shop's own offer price if set), never DP */
+  if(isEndCustomer() && mrp){
+    const offer=shopOfferFor(p);
+    if(offer && offer.price_offer!=null){
+      return '<span class="pmrp cut">'+fmt(mrp)+'</span> '+
+             '<span class="pdp">'+rupee(offer.price_offer)+'</span>'+
+             '<span class="poff">SPECIAL</span>';
+    }
+    return '<span class="plab">Price</span><span class="pdp">'+fmt(mrp)+'</span>';
+  }
+
   /* retail mode: MRP struck, discounted price beside it, discount as a chip */
   if(signedIn() && RETAIL.on && mrp){
     const now={lo:disc(mrp.lo),hi:disc(mrp.hi),one:mrp.one};
@@ -1969,10 +2031,7 @@ function otpHtml(phoneDigits){
 }
 function accountHtml(){
   const nm=SESS.name||'Signed in', tail=SESS.tail||'';
-  return '<div class="shead"><strong>Your account</strong><button class="sx" id="sgnX">×</button></div>'+
-   '<div class="sbody"><div class="sgn">'+
-   '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
-   '<div><b>'+nm+'</b><small>'+tail+(SESS.admin?' · admin':'')+'</small></div></div>'+
+  const retailToggle = isEndCustomer() ? '' :
    '<div class="fsection" style="border:0;padding-top:14px">'+
    '<h4 style="font-size:.95rem">Showing to a customer</h4>'+
    '<p style="margin-bottom:8px">Turn this on when someone is looking over your shoulder. '+
@@ -1980,7 +2039,12 @@ function accountHtml(){
    '<div class="rtl"><span class="tgl2"><input type="checkbox" id="rtlOn"'+(RETAIL.on?' checked':'')+
    '><i></i></span><label for="rtlOff">Discount on MRP</label>'+
    '<input type="number" id="rtlOff" min="0" max="90" value="'+(RETAIL.off||0)+'"><label>%</label></div>'+
-   '</div>'+
+   '</div>';
+  return '<div class="shead"><strong>Your account</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
+   '<div><b>'+nm+'</b><small>'+tail+(SESS.admin?' · admin':'')+'</small></div></div>'+
+   retailToggle+
    (SESS.admin?'<a class="sgnbtn" style="display:block;text-align:center;text-decoration:none;'+
      'margin-top:16px" href="admin.html">Open admin panel</a>':'')+
    '<button class="sgnbtn ghost" id="sgnOut">Sign out</button>'+
@@ -2093,6 +2157,18 @@ function retailBanner(){
       RETAIL.on=false; saveRtl(); render(); if(CUR) openSheet(CUR); retailBanner(); };
   } else b.classList.remove('on');
 }
+// The campaign framing IS the identity of the end-customer screen, not a
+// caption on it — go out, move your body, eat healthy, support your local
+// store, per V3-AMENDMENTS.md.
+function campaignBanner(){
+  const el=document.getElementById('campaignBanner');
+  if(!el) return;
+  if(!isEndCustomer()){ el.innerHTML=''; return; }
+  const shopName=(SHOP_INFO&&(SHOP_INFO.shop||SHOP_INFO.name))||'your local shop';
+  el.innerHTML='<div class="campaign"><b>🏃 Go out. Move your body. Eat healthy.</b>'+
+    '<span>Support your local store — you\'re browsing '+shopName+'\'s range. '+
+    'See what\'s in stock, then head over and pick it up.</span></div>';
+}
 const _wb=document.getElementById('whoBtn'); if(_wb) _wb.addEventListener('click', openSignIn);
 
 /* ---------- the sheet's size table has to follow the same rules ---------- */
@@ -2100,12 +2176,15 @@ function repriceSheet(){
   if(!CUR) return;
   const vt=sheet.querySelector('.vt');
   if(vt){
+    const ec=isEndCustomer();
     const head=vt.querySelector('.vh');
     if(head){
       const cells=head.querySelectorAll('span');
-      if(cells[1]) cells[1].textContent = (signedIn()&&RETAIL.on)?'Your price'
+      if(cells[1]) cells[1].textContent = ec?'Price'
+                                        : (signedIn()&&RETAIL.on)?'Your price'
                                         : (signedIn()?'DP':'MRP');
-      if(cells[2]) cells[2].textContent = (signedIn()&&RETAIL.on)?'MRP'
+      if(cells[2]) cells[2].textContent = ec?''
+                                        : (signedIn()&&RETAIL.on)?'MRP'
                                         : (signedIn()?'MRP':'');
     }
     vt.querySelectorAll('.vr').forEach(function(row,i){
@@ -2113,7 +2192,13 @@ function repriceSheet(){
       const pc=row.querySelector('.vprice'), mc=row.querySelector('.vmrp');
       const mrpv = v.mrp!=null ? v.mrp : (v.price!=null?Math.round(v.price*2.25):null);
       const u='<b class="vunit">/'+unitAbbr(v.unit)+'</b>';
-      if(signedIn() && RETAIL.on){
+      if(ec){
+        // Never DP — the shop's own offer price if they set one, else MRP.
+        const offer=shopOfferFor(CUR);
+        if(pc) pc.innerHTML = (offer&&offer.price_offer!=null) ? '<b>'+rupee(offer.price_offer)+'</b>'+u
+          : (mrpv!=null ? rupee(mrpv)+u : '—');
+        if(mc) mc.innerHTML = '';
+      } else if(signedIn() && RETAIL.on){
         if(pc) pc.innerHTML = mrpv!=null ? '<b>'+rupee(disc(mrpv))+'</b>'+u : '—';
         if(mc) mc.innerHTML = mrpv!=null ? '<span class="pmrp cut">'+rupee(mrpv)+'</span>' : '';
       } else if(signedIn()){
@@ -2126,7 +2211,9 @@ function repriceSheet(){
     });
     const note=vt.nextElementSibling;
     if(note && note.tagName==='P'){
-      note.innerHTML = (signedIn()&&RETAIL.on)
+      note.innerHTML = ec
+        ? 'Prices include GST'+(CUR.gst?' at '+CUR.gst+'%':'')+'. Visit the shop to buy — see the note above for how to reach them.'
+        : (signedIn()&&RETAIL.on)
         ? 'Prices shown are MRP less '+(RETAIL.off||0)+'%. Tap the person icon to turn retail mode off.'
         : (signedIn()
           ? 'DP is your price per piece including GST'+(CUR.gst?' at '+CUR.gst+'%':'')+
