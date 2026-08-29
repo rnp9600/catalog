@@ -636,7 +636,10 @@ $('#taxAdd').onclick=function(){
 
 /* ---------------- customers (catalog.allowlist, live) ---------------- */
 async function loadAllowlist(){
-  const {data,error}=await PMAuth.sb.from('allowlist').select('*').order('added_at');
+  // End customers are a shop owner's own list, not ours to browse here — see
+  // V3-AMENDMENTS.md. Admin RLS access to those rows still exists in the
+  // database for support, this panel just doesn't surface them.
+  const {data,error}=await PMAuth.sb.from('allowlist').select('*').neq('role','end_customer').order('added_at');
   if(error){ $('#cStat').textContent='Could not load the customer list — '+error.message; return; }
   CUSTOMERS=data||[];
   drawCust();
@@ -656,7 +659,7 @@ function drawCust(){
     const b=e.target.closest('[data-rm]'); if(!b) return;
     const phone=b.dataset.rm, row=CUSTOMERS.find(c=>c.phone===phone);
     if(!confirm('Remove '+(row&&row.name||phone)+'? They will lose access to dealer prices and sign-in.')) return;
-    const {error}=await PMAuth.sb.from('allowlist').delete().eq('phone',phone);
+    const {error}=await PMAuth.sb.rpc('admin_delete_customer',{p_phone:phone});
     if(error){ alert('Could not remove — '+error.message); return; }
     await loadAllowlist();
   };
@@ -669,8 +672,8 @@ $('#cAdd').onclick=async function(){
     '. Type the 10-digit number — 91 in front is fine too.');return}
   const ph='91'+raw.slice(-10);
   if(CUSTOMERS.some(c=>last10(c.phone)===last10(ph))){alert('That number is already on the list.');return}
-  const {error}=await PMAuth.sb.from('allowlist').insert(
-    {phone:ph,name:n,shop:shop||null,role:role,is_admin:role==='admin'});
+  const {error}=await PMAuth.sb.rpc('admin_upsert_customer',
+    {p_phone:ph,p_name:n,p_shop:shop||null,p_role:role});
   if(error){ alert('Could not add — '+error.message); return; }
   $('#cName').value='';$('#cShop').value='';$('#cPhone').value='';$('#cRole').value='dealer';
   await loadAllowlist();
