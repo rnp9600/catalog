@@ -1637,8 +1637,12 @@ async function refreshSession(){
     await PMAuth.signOut(); SESS=null;
   } else {
     const full = dg(sess.user && sess.user.phone), last = full.slice(-10);
-    SESS = {ok:true, admin:!!row.is_admin, name:row.name||'Signed in', tail: last?'…'+last.slice(-3):'',
-      phone: full, shop: row.shop||''};
+    // role is groundwork for the three-tier auth described in
+    // V3-AMENDMENTS.md (dealer / shop_owner / end_customer / admin) — not
+    // yet used to change what anyone sees, so a dealer and a shop owner
+    // still get today's identical signed-in view.
+    SESS = {ok:true, admin:!!row.is_admin, role:row.role||'dealer', name:row.name||'Signed in',
+      tail: last?'…'+last.slice(-3):'', phone: full, shop: row.shop||''};
   }
   markWho(); retailBanner(); render(); if(CUR) repriceSheet();
   obarRender();

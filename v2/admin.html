@@ -216,8 +216,14 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
       Adding a number here lets them sign in with an OTP texted to that phone —
       nothing to download or upload.</div>
     <div class="bar">
-      <input class="s" id="cName" placeholder="Name or shop">
+      <input class="s" id="cName" placeholder="Name">
+      <input class="s" id="cShop" placeholder="Shop (optional)">
       <input class="s" id="cPhone" inputmode="numeric" maxlength="15" placeholder="10-digit number" style="flex:0 0 160px">
+      <select class="s" id="cRole" style="flex:0 0 130px">
+        <option value="dealer" selected>Dealer</option>
+        <option value="shop_owner">Shop owner</option>
+        <option value="admin">Admin</option>
+      </select>
       <button class="btn g" id="cAdd">Add</button>
     </div>
     <div class="stat" id="cStat"></div>
@@ -635,13 +641,15 @@ async function loadAllowlist(){
   CUSTOMERS=data||[];
   drawCust();
 }
+const ROLE_LABEL={admin:'ADMIN',shop_owner:'SHOP OWNER',end_customer:'END CUSTOMER',dealer:''};
 function drawCust(){
-  const custs=CUSTOMERS.filter(c=>!c.is_admin), admins=CUSTOMERS.filter(c=>c.is_admin);
-  $('#cStat').textContent=custs.length+' customers can see dealer prices · '+admins.length+' admins';
+  const dealers=CUSTOMERS.filter(c=>c.role==='dealer'), shops=CUSTOMERS.filter(c=>c.role==='shop_owner'),
+    admins=CUSTOMERS.filter(c=>c.is_admin);
+  $('#cStat').textContent=dealers.length+' dealers · '+shops.length+' shop owners · '+admins.length+' admins';
   $('#cList').innerHTML = CUSTOMERS.length ? CUSTOMERS.map(c=>
     '<tr><td><div class="nm">'+esc(c.name||'(unnamed)')+
-      (c.is_admin?'<span class="flag f">ADMIN</span>':'')+'</div>'+
-      '<div class="ph">+'+esc(c.phone||'')+'</div></td>'+
+      (ROLE_LABEL[c.role]?'<span class="flag f">'+ROLE_LABEL[c.role]+'</span>':'')+'</div>'+
+      '<div class="ph">'+(c.shop?esc(c.shop)+' · ':'')+'+'+esc(c.phone||'')+'</div></td>'+
       '<td><button class="ibtn" data-rm="'+esc(c.phone)+'">Remove</button></td></tr>').join('')
     : '<tr><td class="empty">No one yet.</td></tr>';
   $('#cList').onclick=async function(e){
@@ -654,15 +662,17 @@ function drawCust(){
   };
 }
 $('#cAdd').onclick=async function(){
-  const n=$('#cName').value.trim(), raw=($('#cPhone').value||'').replace(/\D/g,'');
+  const n=$('#cName').value.trim(), shop=$('#cShop').value.trim(), role=$('#cRole').value;
+  const raw=($('#cPhone').value||'').replace(/\D/g,'');
   if(!n){alert('Give the customer a name so you can recognise them later.');return}
   if(raw.length<10){alert('That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
     '. Type the 10-digit number — 91 in front is fine too.');return}
   const ph='91'+raw.slice(-10);
   if(CUSTOMERS.some(c=>last10(c.phone)===last10(ph))){alert('That number is already on the list.');return}
-  const {error}=await PMAuth.sb.from('allowlist').insert({phone:ph,name:n,is_admin:false});
+  const {error}=await PMAuth.sb.from('allowlist').insert(
+    {phone:ph,name:n,shop:shop||null,role:role,is_admin:role==='admin'});
   if(error){ alert('Could not add — '+error.message); return; }
-  $('#cName').value='';$('#cPhone').value='';
+  $('#cName').value='';$('#cShop').value='';$('#cPhone').value='';$('#cRole').value='dealer';
   await loadAllowlist();
 };
 
