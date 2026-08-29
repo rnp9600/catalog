@@ -729,34 +729,23 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
 
 <footer>Patel Marketing — wholesale kitchenware · catalogue draft</footer>
 
-<script src="config.js?v=6"></script>
+<script src="config.js?v=7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-auth.js?v=1"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
    Anything config.js provides wins; anything it leaves out falls back to
-   the values here. Entries without a plain `p` number are ignored, so an
-   old hashed config.js can no longer break sign-in.                    */
+   the values here. Sign-in numbers are never part of this fallback — they
+   live in Supabase, behind phone OTP, not in a file the browser can read.*/
 (function(){
   const D={
     firm:'Patel Marketing', tagline:'Wholesale Kitchenware',
     whatsapp:'917892967505',
     site:'https://patelmarketing-catalog.vercel.app',
-    auth:{
-      admins:[
-        {n:'Raj',p:'919686754024'},
-        {n:'Admin 2',p:'918800353840'}
-      ],
-      customers:[
-        {n:'Customer 1',p:'919448666177'},
-        {n:'Customer 2',p:'918880050050'},
-        {n:'Customer 3',p:'918431625230'},
-        {n:'Customer 4',p:'919448471795'},
-        {n:'Customer 5',p:'919448463254'},
-        {n:'Customer 6',p:'918800353843'},
-        {n:'Customer 7',p:'919686754026'}
-      ],
-      noAccessMessage:'We do not recognise that number yet.'
-    },
+    supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s',
+    auth:{ noAccessMessage:'We do not recognise that number yet.' },
     festive:{enabled:true,title:'Ganesh Chaturthi',
       note:'Modak and gujiya moulds — order now for the festival rush',
       from:'2026-08-01',until:'2026-09-24',
@@ -765,13 +754,12 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
     motion:'full'
   };
   const C=window.PM_CONFIG||{};
-  const usable=a=>(a||[]).filter(x=>x&&typeof x.p==='string'&&x.p.replace(/\D/g,'').length>=10);
   const M=Object.assign({},D,C);
   M.auth=Object.assign({},D.auth,C.auth||{});
-  M.auth.admins    = usable(M.auth.admins).length    ? usable(M.auth.admins)    : D.auth.admins;
-  M.auth.customers = usable(M.auth.customers).length ? usable(M.auth.customers) : D.auth.customers;
   M.festive=Object.assign({},D.festive,C.festive||{});
   if(!M.whatsapp || M.whatsapp.replace(/\D/g,'').length<10) M.whatsapp=D.whatsapp;
+  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
+  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
   window.PM_CONFIG=M;
 })();
 
@@ -1582,23 +1570,30 @@ if(CFG.motion==='off') document.body.classList.add('m-off');
 })();
 
 
-/* ================= v2: sign-in, dealer price, retail discount ================= */
-const AUTH = (CFG.auth||{admins:[],customers:[]});
+/* ================= v3: sign-in, dealer price, retail discount ================= */
+const AUTH = (CFG.auth||{});
 const dg = s => (s||'').replace(/\D/g,'');
-let SESS   = JSON.parse(localStorage.getItem('v2_pm_session')||'null');
+// SESS now comes from a real Supabase session plus the caller's own
+// catalog.allowlist row (RLS-restricted to that one row) — never from a
+// number typed in and matched against a list shipped to the browser.
+let SESS   = null;
+let PENDING_PHONE = null; // digits awaiting an OTP code, or null
 let RETAIL = JSON.parse(localStorage.getItem('v2_pm_retail')||'null') || {on:false, off:10};
-function lookup(phone){
-  const last = dg(phone).slice(-10);
-  const hit = list => (list||[]).find(r => dg(r.p||'').slice(-10) === last);
-  const a=hit(AUTH.admins);
-  if(a) return {ok:true, admin:true,  name:a.n, tail:'…'+last.slice(-3)};
-  const c=hit(AUTH.customers);
-  if(c) return {ok:true, admin:false, name:c.n, tail:'…'+last.slice(-3)};
-  return null;
-}
 const signedIn = () => !!(SESS && SESS.ok);
-const saveSess = () => localStorage.setItem('v2_pm_session', JSON.stringify(SESS));
 const saveRtl  = () => localStorage.setItem('v2_pm_retail',  JSON.stringify(RETAIL));
+async function refreshSession(){
+  const sess = await PMAuth.currentSession();
+  if(!sess){ SESS=null; markWho(); retailBanner(); render(); if(CUR) repriceSheet(); return; }
+  const row = await PMAuth.myAllowlistRow();
+  if(!row){
+    // A verified phone that isn't on the allowlist yet — don't leave it signed in.
+    await PMAuth.signOut(); SESS=null;
+  } else {
+    const last = dg(sess.user && sess.user.phone).slice(-10);
+    SESS = {ok:true, admin:!!row.is_admin, name:row.name||'Signed in', tail: last?'…'+last.slice(-3):''};
+  }
+  markWho(); retailBanner(); render(); if(CUR) repriceSheet();
+}
 
 const rupee = n => '₹' + Number(n).toLocaleString('en-IN');
 function span(nums){ const a=nums.filter(x=>x!=null); if(!a.length)return null;
@@ -1663,11 +1658,12 @@ function signOverlay(){
 }
 function openSignIn(){
   const ov2=signOverlay();
-  document.getElementById('sgnSheet').innerHTML = signedIn() ? accountHtml() : signInHtml();
+  document.getElementById('sgnSheet').innerHTML = signedIn() ? accountHtml()
+    : (PENDING_PHONE ? otpHtml(PENDING_PHONE) : signInHtml());
   ov2.classList.add('open'); document.body.style.overflow='hidden';
-  wireSignIn();
+  if(!signedIn() && PENDING_PHONE) wireOtpStep(); else wireSignIn();
   const sv=document.getElementById('sov'); if(sv) sv.classList.remove('open');
-  const f=document.getElementById('sgnPh'); if(f) setTimeout(()=>f.focus(),120);
+  const f=document.getElementById(PENDING_PHONE?'sgnOtp':'sgnPh'); if(f) setTimeout(()=>f.focus(),120);
 }
 function menuSignHtml(){
   if(signedIn()){
@@ -1695,15 +1691,27 @@ function signInHtml(){
   return '<div class="shead"><strong>Sign in</strong><button class="sx" id="sgnX">×</button></div>'+
    '<div class="sbody"><div class="sgn">'+
    '<h4>Sign in to order</h4>'+
-   '<p>Enter the phone number you order from. If we have agreed a discount for '+
-   'you it will show against every product. Everything in the catalogue stays '+
-   'open either way.</p>'+
+   '<p>Enter the phone number you order from — we will text you a one-time code. '+
+   'If we have agreed a discount for you it will show against every product. '+
+   'Everything in the catalogue stays open either way.</p>'+
    '<div class="sgnrow"><span>+91</span><input id="sgnPh" type="tel" inputmode="numeric" '+
    'maxlength="15" placeholder="98765 43210" autocomplete="tel"></div>'+
    '<div id="sgnEcho" style="font-family:var(--fm);font-size:.7rem;color:var(--tm);'+
    'margin:-4px 0 10px 2px;min-height:15px"></div>'+
-   '<button class="sgnbtn" id="sgnGo">Continue</button>'+
+   '<button class="sgnbtn" id="sgnGo">Send code</button>'+
    '<button class="sgnbtn ghost" id="sgnSkip">Keep browsing as guest</button>'+
+   '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
+}
+function otpHtml(phoneDigits){
+  const last=dg(phoneDigits).slice(-10);
+  return '<div class="shead"><strong>Enter code</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<h4>Enter the code we texted you</h4>'+
+   '<p>Sent by SMS to +91 '+last+'. It can take a minute to arrive.</p>'+
+   '<div class="sgnrow"><span>#</span><input id="sgnOtp" type="tel" inputmode="numeric" '+
+   'maxlength="6" placeholder="6-digit code" autocomplete="one-time-code"></div>'+
+   '<button class="sgnbtn" id="sgnVerify">Verify &amp; sign in</button>'+
+   '<button class="sgnbtn ghost" id="sgnBack">Use a different number</button>'+
    '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
 }
 function accountHtml(){
@@ -1743,32 +1751,23 @@ function wireSignIn(){
       msg.innerHTML='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+'. '+
         'Type the 10-digit number — you can include 91 in front if you prefer.';
       msg.classList.add('on'); return; }
-    const ph='91'+raw.slice(-10);
-    go.disabled=true; go.textContent='Checking…';
-    let hit=null;
-    try{ hit=lookup(ph); }catch(e){}
-    go.disabled=false; go.textContent='Continue';
-    if(!hit){
-      const total=(AUTH.admins||[]).length+(AUTH.customers||[]).length;
-      if(!total){
-        msg.innerHTML='Settings did not load, so no numbers are available. '+
-          'Reload the page once — if it keeps happening, config.js is missing from the site.';
-        msg.classList.add('on'); return;
-      }
-      msg.innerHTML=(AUTH.noAccessMessage||'This number is not on our customer list yet.')+
-        ' <a href="https://wa.me/'+WA_NUMBER+'?text='+
-        encodeURIComponent('Hi, please give my number access to order rates. +'+ph)+'">Message us on WhatsApp</a>';
-      msg.classList.add('on'); return;
+    go.disabled=true; go.textContent='Sending…';
+    const {error}=await PMAuth.sendOtp(raw);
+    go.disabled=false; go.textContent='Send code';
+    if(error){
+      msg.innerHTML=PMAuth.friendlyAuthError(error); msg.classList.add('on'); return;
     }
-    SESS={ok:true, admin:hit.admin, name:hit.name, tail:hit.tail}; saveSess();
-    closeSignIn(); markWho(); render(); if(CUR) openSheet(CUR);
-    toastMsg(hit.admin?'Signed in as admin':'Signed in as '+hit.name);
+    PENDING_PHONE=raw;
+    document.getElementById('sgnSheet').innerHTML=otpHtml(raw);
+    wireOtpStep();
+    const f=document.getElementById('sgnOtp'); if(f) setTimeout(()=>f.focus(),120);
   };
   const skip=document.getElementById('sgnSkip');
   if(skip) skip.onclick=closeSignIn;
   const out=document.getElementById('sgnOut');
-  if(out) out.onclick=function(){
-    SESS=null; RETAIL.on=false; saveSess(); saveRtl();
+  if(out) out.onclick=async function(){
+    await PMAuth.signOut();
+    SESS=null; RETAIL.on=false; saveRtl();
     closeSignIn(); markWho(); render(); if(CUR) openSheet(CUR);
   };
   const on=document.getElementById('rtlOn'), off=document.getElementById('rtlOff');
@@ -1776,6 +1775,42 @@ function wireSignIn(){
     if(CUR) openSheet(CUR); retailBanner(); };
   if(off) off.oninput=function(){ RETAIL.off=Math.max(0,Math.min(90,+off.value||0)); saveRtl();
     render(); if(CUR) openSheet(CUR); retailBanner(); };
+}
+function wireOtpStep(){
+  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  const back=document.getElementById('sgnBack');
+  if(back) back.onclick=function(){
+    PENDING_PHONE=null;
+    document.getElementById('sgnSheet').innerHTML=signInHtml();
+    wireSignIn();
+    const f=document.getElementById('sgnPh'); if(f) setTimeout(()=>f.focus(),120);
+  };
+  const inp=document.getElementById('sgnOtp'), go=document.getElementById('sgnVerify');
+  if(inp) inp.onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); go.click(); } };
+  if(go) go.onclick=async function(){
+    const code=dg(document.getElementById('sgnOtp').value);
+    const msg=document.getElementById('sgnMsg');
+    if(code.length<4){
+      msg.innerHTML='Enter the code as texted to you.'; msg.classList.add('on'); return;
+    }
+    go.disabled=true; go.textContent='Verifying…';
+    const {error}=await PMAuth.verifyOtp(PENDING_PHONE, code);
+    go.disabled=false; go.textContent='Verify & sign in';
+    if(error){
+      msg.innerHTML=PMAuth.friendlyAuthError(error); msg.classList.add('on'); return;
+    }
+    const ph=PENDING_PHONE; PENDING_PHONE=null;
+    await refreshSession();
+    if(!signedIn()){
+      msg.innerHTML=(AUTH.noAccessMessage||'This number is not on our customer list yet.')+
+        ' <a href="https://wa.me/'+WA_NUMBER+'?text='+
+        encodeURIComponent('Hi, please give my number access to order rates. +91'+ph.slice(-10))+
+        '">Message us on WhatsApp</a>';
+      msg.classList.add('on'); return;
+    }
+    closeSignIn(); if(CUR) openSheet(CUR);
+    toastMsg(SESS.admin?'Signed in as admin':'Signed in as '+SESS.name);
+  };
 }
 function closeSignIn(){
   const ov2=document.getElementById('sgnOv');
@@ -1896,6 +1931,6 @@ openSheet = function(p){
   try{ repriceSheet(); enhanceGallery(); }catch(e){}
 };
 
-markWho(); retailBanner();
+markWho(); retailBanner(); refreshSession();
 
 </script></body></html>

@@ -1,9 +1,10 @@
 /* Patel Marketing catalogue — v2 settings.
 
-   Numbers are in plain text for now, as you asked. Anyone who opens the page
-   source can read this list, so it holds business numbers only — no notes,
-   no addresses. v3 moves this to Supabase phone OTP and the list stops being
-   public at all. */
+   v3: sign-in numbers no longer live here. They are in Supabase's
+   catalog.allowlist table behind phone OTP — nobody can read the customer
+   list from the page source any more. supabaseAnonKey below is meant to be
+   public: it is the publishable key, restricted by row-level security on
+   the database side, not a secret. */
 
 window.PM_CONFIG = {
 
@@ -12,23 +13,10 @@ window.PM_CONFIG = {
   whatsapp: '917892967505',
   site: 'https://patelmarketing-catalog.vercel.app',
 
+  supabaseUrl: 'https://vcrzauuxvgpsbforiszz.supabase.co',
+  supabaseAnonKey: 'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s',
+
   auth: {
-    admins: [
-      { n:'Raj',     p:'919686754024' },
-      { n:'Admin 2', p:'918800353840' },
-      /* Third admin: add it here as another line, or from the admin panel.
-         I have not invented a number — a made-up one could belong to a real
-         person who would then be able to edit the catalogue. */
-    ],
-    customers: [
-      { n:'Customer 1', p:'919448666177' },
-      { n:'Customer 2', p:'918880050050' },
-      { n:'Customer 3', p:'918431625230' },
-      { n:'Customer 4', p:'919448471795' },
-      { n:'Customer 5', p:'919448463254' },
-      { n:'Customer 6', p:'918800353843' },
-      { n:'Customer 7', p:'919686754026' },
-    ],
     noAccessMessage: 'We do not recognise that number yet.',
   },
 
