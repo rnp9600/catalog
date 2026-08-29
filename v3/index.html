@@ -238,15 +238,16 @@ body.v-compact .ph{font-size:.66rem}
 .sdesc{font-size:.83rem;color:var(--tm);line-height:1.55;margin-bottom:6px}
 .snote{font-size:.75rem;background:var(--act);color:var(--tx);border-radius:var(--rs);padding:9px 11px;margin-top:9px;line-height:1.5}
 .vt{margin-top:18px;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;background:var(--sf)}
-.vt .vh{display:grid;grid-template-columns:1.5fr .9fr .9fr .6fr;gap:6px;padding:9px 12px;
+.vt .vh{display:grid;grid-template-columns:1.4fr .8fr .7fr .9fr;gap:6px;padding:9px 12px;
  background:var(--sf2);font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tm)}
-.vt .vr{display:grid;grid-template-columns:1.5fr .9fr .9fr .6fr;gap:6px;padding:10px 12px;
+.vt .vr{display:grid;grid-template-columns:1.4fr .8fr .7fr .9fr;gap:6px;padding:10px 12px;
  border-top:1px solid var(--bd);font-size:.79rem;align-items:center}
 .vt .vr:nth-child(even){background:rgba(var(--sh),.02)}
 .vsize{font-weight:600}
 .vprice{font-family:var(--fm);font-weight:600;color:var(--pr)}
+.vunit{font-weight:500;color:var(--tm);font-size:.68rem;margin-left:1px}
 .vmrp{font-family:var(--fm);color:var(--tm);text-decoration:line-through;font-size:.73rem}
-.vmoq{font-family:var(--fm);font-size:.7rem;color:var(--tm);text-align:right}
+.vmoq{display:block;font-family:var(--fm);font-size:.6rem;color:var(--tm);font-weight:500;margin-top:2px}
 .vt .vh span:last-child,.vt .vr span:last-child{text-align:right}
 .sizesplain{margin-top:16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;
  font-family:var(--fm);font-size:.74rem;line-height:1.75}
@@ -403,7 +404,7 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
   body.v-list .med{width:104px}
   .sheet{width:100%}
   .hero-img{height:220px}
-  .vt .vh,.vt .vr{grid-template-columns:1.3fr .8fr .8fr .55fr;font-size:.74rem;padding:9px}
+  .vt .vh,.vt .vr{grid-template-columns:1.1fr .65fr .55fr .85fr;font-size:.72rem;padding:9px 7px}
   #tableHead,.trow{grid-template-columns:1.9fr .9fr .8fr}
   #tableHead span:nth-child(4),.trow .tmr{display:none}
 }
@@ -524,6 +525,51 @@ body.m-off .reveal{opacity:1;transform:none}
 .gnav:hover{opacity:1;border-color:var(--pr);color:var(--pr)}
 body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
 
+/* ---------- v3: order pad (basket, stepper, checkout) ---------- */
+.vord{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.qbtn{width:24px;height:24px;border-radius:50%;border:1px solid var(--bd);background:var(--sf);
+ color:var(--tx);font-size:.9rem;line-height:1;cursor:pointer;flex-shrink:0;display:flex;
+ align-items:center;justify-content:center}
+.qbtn:hover{border-color:var(--pr);color:var(--pr)}
+.qbtn:disabled{opacity:.35;cursor:default}
+.qv{font-family:var(--fm);font-size:.78rem;font-weight:700;min-width:16px;text-align:center}
+.singleAdd{display:flex;align-items:center;gap:10px;margin-top:10px}
+.obar{position:fixed;left:16px;bottom:16px;z-index:150;background:var(--tx);color:var(--bg);
+ padding:10px 16px;border-radius:999px;font-size:.78rem;font-weight:700;cursor:pointer;
+ box-shadow:0 8px 24px rgba(0,0,0,.25);display:none;align-items:center;gap:8px;border:0;font-family:var(--fd)}
+.obar.on{display:flex}
+.obar b{font-family:var(--fm)}
+.orow2{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--bd)}
+.orow2:last-child{border-bottom:0}
+.orow2 .oi{flex:1;min-width:0}
+.orow2 .oi b{display:block;font-size:.85rem;font-weight:700;line-height:1.3}
+.orow2 .oi small{display:block;color:var(--tm);font-size:.7rem;font-family:var(--fm);margin-top:2px}
+.orow2 .orm{border:0;background:var(--sf2);color:var(--tm);width:26px;height:26px;border-radius:50%;
+ font-size:1rem;line-height:1;cursor:pointer;flex-shrink:0}
+.ototal{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;
+ border-top:1.5px solid var(--bd);margin-top:6px;font-weight:800;font-size:.95rem}
+.ototal span{font-family:var(--fm)}
+.ofg{margin-bottom:11px}
+.ofg label{display:block;font-size:.68rem;font-weight:700;color:var(--tm);text-transform:uppercase;
+ letter-spacing:.06em;margin-bottom:5px}
+.ofg input{width:100%;padding:11px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);
+ background:var(--sf);font-family:var(--fd);font-size:.88rem;color:var(--tx)}
+.oempty{padding:30px 10px;text-align:center;color:var(--tm);font-size:.83rem}
+
+/* ---------- v3: end-customer mode ---------- */
+.campaign{margin:16px 0 2px;border-radius:var(--r);padding:16px 18px;
+ background:linear-gradient(100deg,var(--pr),var(--ac));color:#fff}
+.campaign b{display:block;font-size:1rem;font-weight:800;letter-spacing:-.01em}
+.campaign span{display:block;font-size:.78rem;opacity:.92;margin-top:4px;line-height:1.5}
+.statuschip{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.03em;
+ padding:3px 8px;border-radius:999px;margin-top:6px;text-transform:uppercase}
+.statuschip.in_stock{background:var(--act);color:var(--ac)}
+.statuschip.arriving{background:#FFF1D6;color:#8A5A10}
+.statuschip.held{background:var(--prt);color:var(--pr)}
+.visitshop{background:var(--sf2);border-radius:var(--r);padding:14px;margin-top:14px;font-size:.82rem;
+ line-height:1.6;color:var(--tx)}
+.visitshop b{display:block;margin-bottom:4px}
+
 </style></head><body data-theme="sky" class="v-grid">
 <header><div class="hin">
  <div class="brandbox"><div class="mark">PM</div>
@@ -573,6 +619,7 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
   </div>
   <div class="activepills" id="activepills"></div>
  </section>
+ <div id="campaignBanner"></div>
  <div id="fest"></div>
  <div class="bar"><h2 id="bh">All products</h2><span id="bc"></span></div>
  <div id="tableHead"><span>Product</span><span>Size</span><span>Rate</span><span>MRP</span></div>
@@ -723,40 +770,33 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
+<div class="ov" id="oov"><div class="sheet" id="osheet" onclick="event.stopPropagation()"></div></div>
+
+<button class="obar" id="obar"><span id="obarTxt"></span></button>
+
 <div class="lb" id="lb"><button class="lbx" id="lbx">×</button>
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · catalogue draft</footer>
+<footer>Patel Marketing — wholesale kitchenware · v3 (testing)</footer>
 
-<script src="config.js?v=6"></script>
+<script src="config.js?v=7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-auth.js?v=1"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
    Anything config.js provides wins; anything it leaves out falls back to
-   the values here. Entries without a plain `p` number are ignored, so an
-   old hashed config.js can no longer break sign-in.                    */
+   the values here. Sign-in numbers are never part of this fallback — they
+   live in Supabase, behind phone OTP, not in a file the browser can read.*/
 (function(){
   const D={
     firm:'Patel Marketing', tagline:'Wholesale Kitchenware',
     whatsapp:'917892967505',
     site:'https://patelmarketing-catalog.vercel.app',
-    auth:{
-      admins:[
-        {n:'Raj',p:'919686754024'},
-        {n:'Admin 2',p:'918800353840'}
-      ],
-      customers:[
-        {n:'Customer 1',p:'919448666177'},
-        {n:'Customer 2',p:'918880050050'},
-        {n:'Customer 3',p:'918431625230'},
-        {n:'Customer 4',p:'919448471795'},
-        {n:'Customer 5',p:'919448463254'},
-        {n:'Customer 6',p:'918800353843'},
-        {n:'Customer 7',p:'919686754026'}
-      ],
-      noAccessMessage:'We do not recognise that number yet.'
-    },
+    supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s',
+    auth:{ noAccessMessage:'We do not recognise that number yet.' },
     festive:{enabled:true,title:'Ganesh Chaturthi',
       note:'Modak and gujiya moulds — order now for the festival rush',
       from:'2026-08-01',until:'2026-09-24',
@@ -765,13 +805,12 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
     motion:'full'
   };
   const C=window.PM_CONFIG||{};
-  const usable=a=>(a||[]).filter(x=>x&&typeof x.p==='string'&&x.p.replace(/\D/g,'').length>=10);
   const M=Object.assign({},D,C);
   M.auth=Object.assign({},D.auth,C.auth||{});
-  M.auth.admins    = usable(M.auth.admins).length    ? usable(M.auth.admins)    : D.auth.admins;
-  M.auth.customers = usable(M.auth.customers).length ? usable(M.auth.customers) : D.auth.customers;
   M.festive=Object.assign({},D.festive,C.festive||{});
   if(!M.whatsapp || M.whatsapp.replace(/\D/g,'').length<10) M.whatsapp=D.whatsapp;
+  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
+  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
   window.PM_CONFIG=M;
 })();
 
@@ -785,6 +824,15 @@ const g=document.getElementById('g'),em=document.getElementById('em');
 const IMAGE_SOURCE = 'local'; // 'local' | 'supabase'
 const SUPABASE_IMAGE_BASE = 'https://vcrzauuxvgpsbforiszz.supabase.co/storage/v1/object/public/catalog-images';
 const IMG=n=>IMAGE_SOURCE==='supabase' ? `${SUPABASE_IMAGE_BASE}/${n}.jpg` : `../images/${n}.jpg`;
+
+/* ---------- unit ---------- */
+// What a basket quantity actually means. Piece is the default for products
+// with no unit set, so old data.json rows (before this field existed) read
+// exactly as they always did.
+const UNIT_ABBR={Piece:'pc',Dozen:'dz',Box:'box',Gross:'gr',Kg:'kg',Tag:'tag'};
+const unitAbbr=u=>UNIT_ABBR[u||'Piece']||u||'pc';
+const unitOf=v=>v.unit||'Piece';
+const STATUS_LABEL={in_stock:'In stock',arriving:'Arriving',held:'Kept aside for you'};
 
 /* ---------- sharing ---------- */
 // Patel Marketing's WhatsApp Business number, digits only with country code.
@@ -989,15 +1037,17 @@ function card(p,i){
     ?`<button class="szbtn" data-sz="${i}">▸ ${p.sizes.length} sizes &amp; weights</button>
       <div class="szlist" id="sz${i}">${p.sizes.map(s=>`<span>${s}</span>`).join('')}</div>`:'';
   const cta=p.stock==='out'?'<button class="cta dis">Currently unavailable</button>'
-    :'<button class="cta" data-open="'+i+'">View sizes &amp; rates</button>';
+    :'<button class="cta" data-open="'+i+'">'+(isEndCustomer()?'See details':'View sizes &amp; rates')+'</button>';
   const im=p.img?`<img src="${IMG(p.img)}" alt="${p.name}" loading="lazy">`:`<span class="noimg">—</span>`;
+  const statusChip=isEndCustomer()&&shopOfferFor(p)&&shopOfferFor(p).status
+    ?`<span class="statuschip ${shopOfferFor(p).status}">${STATUS_LABEL[shopOfferFor(p).status]||shopOfferFor(p).status}</span>`:'';
   return `<div class="card ${p.stock==='out'?'out':''}" data-open="${i}" style="animation-delay:${Math.min(i,14)*.028}s">
    <div class="med">${b.join('')}${im}</div>
    <div class="bd_"><div class="nm">${p.name}</div>
     ${p.desc?`<div class="ds">${p.desc}</div>`:''}
     ${specHtml(p)}${vc}${sz}
     <span class="br">${p.brand}${p.code?' · <span class="cd">'+p.code+'</span>':''}</span>
-    <div class="pw">${priceLine(p)}</div>${cta}</div></div>`;
+    <div class="pw">${priceLine(p)}${statusChip}</div>${cta}</div></div>`;
 }
 
 let VIEW=[];
@@ -1006,16 +1056,16 @@ let VIEW=[];
    them. Identical logic to pdfRows() in the PDF builder. */
 function priceRows(p,i){
   const vs=(p.variants&&p.variants.length)
-    ? p.variants.map(v=>({size:v.size,price:v.price,mrp:v.mrp}))
+    ? p.variants.map(v=>({size:v.size,price:v.price,mrp:v.mrp,unit:v.unit}))
     : ((p.sizes&&p.sizes.length)
-        ? p.sizes.map(z=>({size:z,price:null,mrp:null}))
-        : [{size:null,price:p.price!=null?p.price:null,mrp:null}]);
+        ? p.sizes.map(z=>({size:z,price:null,mrp:null,unit:null}))
+        : [{size:null,price:p.price!=null?p.price:null,mrp:null,unit:null}]);
   return vs.map((v,ri)=>`<div class="trow${p.stock==='out'?' out':''}" data-open="${i}">
     <span class="tnm">${ri===0
        ? p.name+(p.code?` <em class="tcode">${p.code}</em>`:'')+`<em class="tbr">${p.brand}</em>`
        : '<em class="tdit">\u2033</em>'}</span>
     <span class="tsz">${v.size||'\u2014'}</span>
-    <span class="tpr${v.price==null?' tdim':''}">${v.price!=null?'\u20b9'+v.price:'\u2014'}</span>
+    <span class="tpr${v.price==null?' tdim':''}">${v.price!=null?'\u20b9'+v.price+'<b class="vunit">/'+unitAbbr(v.unit)+'</b>':'\u2014'}</span>
     <span class="tmr${v.mrp==null?' tdim':''}">${v.mrp!=null?'\u20b9'+v.mrp:'\u2014'}</span>
   </div>`).join('');
 }
@@ -1048,19 +1098,23 @@ function openSheet(p){
   if(!p)return;
   CUR=p;
   const imgs=(p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[]));
+  const ec=isEndCustomer();
   const vt=(p.variants&&p.variants.length)?`
     <div class="vt">
-      <div class="vh"><span>Size / option</span><span>Rate</span><span>MRP</span><span>MOQ</span></div>
+      <div class="vh"><span>Size / option</span><span>Rate</span><span>MRP</span><span>${ec?'':'Order'}</span></div>
       ${p.variants.map(v=>`<div class="vr">
-        <span class="vsize">${v.size}</span>
-        <span class="vprice">${v.price!=null?'₹'+v.price:'—'}</span>
+        <span class="vsize">${v.size}${v.moq?'<small class="vmoq">MOQ '+v.moq+'</small>':''}</span>
+        <span class="vprice">${v.price!=null?'₹'+v.price+'<b class="vunit">/'+unitAbbr(v.unit)+'</b>':'—'}</span>
         <span class="vmrp">${v.mrp!=null?'₹'+v.mrp:''}</span>
-        <span class="vmoq">${v.moq?v.moq+' pc':'—'}</span></div>`).join('')}
+        <span class="vord">${ec?'':'<button class="qbtn" data-qm="'+v.size+'">−</button><b class="qv" data-qv="'+v.size+'">0</b><button class="qbtn" data-qp="'+v.size+'">+</button>'}</span></div>`).join('')}
     </div>
     <p style="font-size:.7rem;color:var(--tm);margin-top:7px;line-height:1.5">
-      Rate is per piece including GST${p.gst?' at '+p.gst+'%':''}. MRP is the printed maximum retail price.
-      MOQ is the minimum order quantity where the supplier sets one.</p>`
-    : (p.sizes&&p.sizes.length? `<div class="sizesplain">${p.sizes.map(s=>`<div>${s}</div>`).join('')}</div>`:'');
+      Rate is per unit shown (pc = piece, dz = dozen, gr = gross) including GST${p.gst?' at '+p.gst+'%':''}. MRP is the printed maximum retail price.
+      MOQ is the minimum order quantity where the supplier sets one.${ec?'':' Use the + button to add a size to your order.'}</p>`
+    : (p.sizes&&p.sizes.length? `<div class="sizesplain">${p.sizes.map(s=>`<div>${s}</div>`).join('')}</div>`
+      : (p.price!=null&&!ec?`<div class="singleAdd"><button class="qbtn" data-qm="Standard">−</button>
+          <b class="qv" data-qv="Standard">0</b><button class="qbtn" data-qp="Standard">+</button>
+          <span style="font-size:.78rem;color:var(--tm)">Add to your order</span></div>`:''));
 
   const rel=P.filter(x=>x!==p&&x.sub===p.sub&&x.brand===p.brand).slice(0,10);
   const relHtml=rel.length?`<div class="related"><h4>More ${p.sub.toLowerCase()}</h4><div class="rrow">
@@ -1087,11 +1141,14 @@ function openSheet(p){
      ${p.hotel?specHtml(p):(p.spec?`<div class="sp">${p.spec}</div>`:'')}
      ${p.note?`<div class="snote">ℹ️ ${p.note}</div>`:''}
      ${vt}
-     <div class="sactions">
+     ${ec?`<div class="visitshop"><b>Visit the shop to buy</b>
+       No online ordering here — see what's on offer, then head over.
+       <button class="cta" id="holdBtn" style="margin-top:10px;width:100%">Ask the shop to hold one</button></div>`
+     :`<div class="sactions">
        <button id="waBtn">Enquire on WhatsApp</button>
        <button class="alt" id="shBtn">Share product</button>
        <button class="alt" id="cpBtn">Copy details</button>
-     </div>
+     </div>`}
      ${relHtml}
    </div>`;
   ov.classList.add('open');document.body.style.overflow='hidden';
@@ -1108,9 +1165,16 @@ function openSheet(p){
     th.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
     b.classList.add('on');document.getElementById('hi').src=IMG(b.dataset.n);});
   sheet.querySelectorAll('[data-rel]').forEach(c=>c.onclick=()=>openSheet(P[+c.dataset.rel]));
-  document.getElementById('waBtn').onclick=()=>{
-    window.open(`https://wa.me/${WA_NUMBER}?text=`+encodeURIComponent(waMessage(p)),'_blank');};
-  document.getElementById('shBtn').onclick=async()=>{
+  const holdBtn=document.getElementById('holdBtn');
+  if(holdBtn) holdBtn.onclick=()=>{
+    const target=(SESS&&SESS.ownerPhone)||WA_NUMBER;
+    const msg='Hi, is "'+p.name+'" available? Could you keep one for me?';
+    window.open(`https://wa.me/${target}?text=`+encodeURIComponent(msg),'_blank');};
+  const waBtn=document.getElementById('waBtn');
+  if(waBtn) waBtn.onclick=()=>{
+    window.open(`https://wa.me/${orderTarget()}?text=`+encodeURIComponent(waMessage(p)),'_blank');};
+  const shBtn=document.getElementById('shBtn');
+  if(shBtn) shBtn.onclick=async()=>{
     const b=document.getElementById('shBtn'),url=shareUrl(p);
     // Native share sheet on phones (WhatsApp, SMS, Mail all appear here).
     if(navigator.share){
@@ -1120,9 +1184,10 @@ function openSheet(p){
     try{await navigator.clipboard.writeText(url);b.textContent='Link copied ✓';}
     catch(e){b.textContent=url;}
     setTimeout(()=>b.textContent='Share product',1800);};
-  document.getElementById('cpBtn').onclick=()=>{
+  const cpBtn=document.getElementById('cpBtn');
+  if(cpBtn) cpBtn.onclick=()=>{
     const lines=[p.name,p.brand+' · '+p.cat+(p.code?' · '+p.code:'')];
-    (p.variants||[]).forEach(v=>lines.push(`  ${v.size} — ₹${v.price} incl GST${v.mrp?` (MRP ₹${v.mrp})`:''}${v.moq?` · MOQ ${v.moq}`:''}`));
+    (p.variants||[]).forEach(v=>lines.push(`  ${v.size} — ₹${v.price}/${unitAbbr(v.unit)} incl GST${v.mrp?` (MRP ₹${v.mrp})`:''}${v.moq?` · MOQ ${v.moq}`:''}`));
     navigator.clipboard.writeText(lines.join('\n')).then(()=>{
       const b=document.getElementById('cpBtn');b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy details',1600);});};
 }
@@ -1193,7 +1258,7 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
    settings they used are remembered and become their default next time.
    thumb applies to the price list only. Showcase always carries photos —
    that is what makes it a showcase, so there is no toggle for it. */
-const PDF_PREF_KEY='pm_pdf_prefs_v1';
+const PDF_PREF_KEY='v3_pm_pdf_prefs';
 const PDFO={layout:'showcase',group:'cat',price:true,mrp:false,thumb:false};
 try{
   const saved=JSON.parse(localStorage.getItem(PDF_PREF_KEY)||'null');
@@ -1211,9 +1276,9 @@ function pdfRows(p){
   // One entry per printable line. Products with no variants still yield one
   // line so nothing silently vanishes from the price list.
   if(p.variants&&p.variants.length) return p.variants.map(v=>({
-    size:v.size, price:v.price, mrp:v.mrp}));
-  if(p.sizes&&p.sizes.length) return p.sizes.map(s=>({size:s,price:null,mrp:null}));
-  return [{size:null,price:p.price!=null?p.price:null,mrp:null}];
+    size:v.size, price:v.price, mrp:v.mrp, unit:v.unit}));
+  if(p.sizes&&p.sizes.length) return p.sizes.map(s=>({size:s,price:null,mrp:null,unit:null}));
+  return [{size:null,price:p.price!=null?p.price:null,mrp:null,unit:null}];
 }
 function money(v){return v==null?null:'\u20b9'+v}
 
@@ -1282,7 +1347,7 @@ function pdfTable(groups){
             : `<span class="cont">\u2033</span>`;
           h+=`<tr class="${z.trim()}">${thumbCell}<td>${nameCell}</td>`
            + `<td>${r.size||'<span class="dim">\u2014</span>'}</td>`
-           + (showP?`<td class="num${r.price==null?' dim':''}">${money(r.price)||'\u2014'}</td>`:'')
+           + (showP?`<td class="num${r.price==null?' dim':''}">${r.price!=null?money(r.price)+'/'+unitAbbr(r.unit):'\u2014'}</td>`:'')
            + (showM?`<td class="num${r.mrp==null?' dim':''}">${money(r.mrp)||'\u2014'}</td>`:'')
            + `</tr>`;
         });
@@ -1309,11 +1374,11 @@ function pdfShowcase(groups){
         let sizes='';
         if(rows.length===1&&!rows[0].size){
           sizes=showP&&rows[0].price!=null
-            ? `<div class="psizes"><b>${money(rows[0].price)}</b> incl. GST</div>`
+            ? `<div class="psizes"><b>${money(rows[0].price)}</b>/${unitAbbr(rows[0].unit)} incl. GST</div>`
             : `<div class="pnone">Enquire for pricing</div>`;
         }else{
           sizes='<div class="psizes">'+rows.map(r=>
-            showP ? `${r.size} \u2014 <b>${money(r.price)||'\u2014'}</b>` : r.size
+            showP ? `${r.size} \u2014 <b>${r.price!=null?money(r.price)+'/'+unitAbbr(r.unit):'\u2014'}</b>` : r.size
           ).join('<br>')+'</div>';
         }
         h+=`<div class="pitem">`
@@ -1411,7 +1476,7 @@ document.getElementById('pdfGo').addEventListener('click',()=>{
    so the same person on phone and laptop sees the hint once on each, and
    private windows always show it. That is an acceptable trade for not asking
    anyone to sign in. If storage is blocked entirely we just show the hint. */
-const HINT_KEY='pm_hint_seen_v1';
+const HINT_KEY='v3_pm_hint_seen';
 const hov=document.getElementById('hov');
 function openHelp(){hov.classList.add('open');document.body.style.overflow='hidden'}
 function closeHelp(){hov.classList.remove('open');document.body.style.overflow=''}
@@ -1439,11 +1504,11 @@ document.getElementById('qx').addEventListener('click',()=>{
   document.getElementById('q').value='';q='';render()});
 document.querySelectorAll('#tsw button').forEach(b=>b.addEventListener('click',()=>{
   document.body.dataset.theme=b.dataset.t;
-  try{localStorage.setItem('v2_pm_theme',b.dataset.t)}catch(e){}
+  try{localStorage.setItem('v3_pm_theme',b.dataset.t)}catch(e){}
   document.querySelectorAll('#tsw button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}));
 document.querySelectorAll('#fsw button').forEach(b=>b.addEventListener('click',()=>{
   applyFontSize(b.dataset.f);
-  try{localStorage.setItem('v2_pm_fontsize',b.dataset.f)}catch(e){}}));
+  try{localStorage.setItem('v3_pm_fontsize',b.dataset.f)}catch(e){}}));
 function applyFontSize(f){
   if(f==='m')document.documentElement.removeAttribute('data-fs');
   else document.documentElement.dataset.fs=f;
@@ -1451,19 +1516,19 @@ function applyFontSize(f){
 }
 document.querySelectorAll('#vsw button').forEach(b=>b.addEventListener('click',()=>{
   document.body.className=document.body.className.replace(/v-\w+/g,'').trim()+' v-'+b.dataset.v;
-  try{localStorage.setItem('v2_pm_view',b.dataset.v)}catch(e){}
+  try{localStorage.setItem('v3_pm_view',b.dataset.v)}catch(e){}
   document.querySelectorAll('#vsw button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
   // The other views are the same cards restyled by CSS, but the price list is
   // built by a different renderer (one row per size), so the grid has to be
   // rebuilt whenever we move into or out of it.
   if(P.length)render();}));
 try{
-  const f=localStorage.getItem('v2_pm_fontsize');
+  const f=localStorage.getItem('v3_pm_fontsize');
   if(f&&['s','m','l','xl'].includes(f))applyFontSize(f);
-  const t=localStorage.getItem('v2_pm_theme');
+  const t=localStorage.getItem('v3_pm_theme');
   if(t&&['sky','copper','emerald','charcoal'].indexOf(t)>=0){document.body.dataset.theme=t;
     document.querySelectorAll('#tsw button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));}
-  let v=localStorage.getItem('v2_pm_view');
+  let v=localStorage.getItem('v3_pm_view');
   // 'gallery' was removed as a view option — fall back cleanly for anyone
   // who saved that preference on an earlier version of the page.
   if(v && !['grid','list','compact','table'].includes(v)) v='grid';
@@ -1582,25 +1647,251 @@ if(CFG.motion==='off') document.body.classList.add('m-off');
 })();
 
 
-/* ================= v2: sign-in, dealer price, retail discount ================= */
-const AUTH = (CFG.auth||{admins:[],customers:[]});
+/* ================= v3: sign-in, dealer price, retail discount ================= */
+const AUTH = (CFG.auth||{});
 const dg = s => (s||'').replace(/\D/g,'');
-let SESS   = JSON.parse(localStorage.getItem('v2_pm_session')||'null');
-let RETAIL = JSON.parse(localStorage.getItem('v2_pm_retail')||'null') || {on:false, off:10};
-function lookup(phone){
-  const last = dg(phone).slice(-10);
-  const hit = list => (list||[]).find(r => dg(r.p||'').slice(-10) === last);
-  const a=hit(AUTH.admins);
-  if(a) return {ok:true, admin:true,  name:a.n, tail:'…'+last.slice(-3)};
-  const c=hit(AUTH.customers);
-  if(c) return {ok:true, admin:false, name:c.n, tail:'…'+last.slice(-3)};
-  return null;
-}
+// SESS now comes from a real Supabase session plus the caller's own
+// catalog.allowlist row (RLS-restricted to that one row) — never from a
+// number typed in and matched against a list shipped to the browser.
+let SESS   = null;
+let PENDING_PHONE = null; // digits awaiting an OTP code, or null
+let RETAIL = JSON.parse(localStorage.getItem('v3_pm_retail')||'null') || {on:false, off:10};
 const signedIn = () => !!(SESS && SESS.ok);
-const saveSess = () => localStorage.setItem('v2_pm_session', JSON.stringify(SESS));
-const saveRtl  = () => localStorage.setItem('v2_pm_retail',  JSON.stringify(RETAIL));
+const isEndCustomer = () => !!(SESS && SESS.role==='end_customer');
+const saveRtl  = () => localStorage.setItem('v3_pm_retail',  JSON.stringify(RETAIL));
+// Populated for end customers only: the shop they're browsing under, and
+// that shop's own status/offer per product slug.
+let SHOP_INFO=null, SHOP_OFFERS={};
+function shopOfferFor(p){ return SHOP_OFFERS[p.slug] || null; }
+async function loadShopContext(){
+  SHOP_INFO=null; SHOP_OFFERS={};
+  if(!isEndCustomer() || !SESS.ownerPhone) return;
+  try{
+    const [{data:shop}, {data:offers}] = await Promise.all([
+      PMAuth.sb.from('allowlist').select('name,shop').eq('phone', SESS.ownerPhone).maybeSingle(),
+      PMAuth.sb.from('shop_offers').select('*').eq('shop_phone', SESS.ownerPhone),
+    ]);
+    SHOP_INFO = shop || null;
+    (offers||[]).forEach(o=>{ SHOP_OFFERS[o.product_slug]=o; });
+  }catch(e){}
+}
+async function refreshSession(){
+  const sess = await PMAuth.currentSession();
+  if(!sess){ SESS=null; SHOP_INFO=null; SHOP_OFFERS={}; markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet(); obarRender(); return; }
+  const row = await PMAuth.myAllowlistRow();
+  if(!row){
+    // A verified phone that isn't on the allowlist yet — don't leave it signed in.
+    await PMAuth.signOut(); SESS=null;
+  } else {
+    const full = dg(sess.user && sess.user.phone), last = full.slice(-10);
+    // role is groundwork for the three-tier auth described in
+    // V3-AMENDMENTS.md (dealer / shop_owner / end_customer / admin) — not
+    // yet used to change what anyone sees, so a dealer and a shop owner
+    // still get today's identical signed-in view. end_customer is the one
+    // exception: see loadShopContext()/campaignBanner() below.
+    SESS = {ok:true, admin:!!row.is_admin, role:row.role||'dealer', name:row.name||'Signed in',
+      tail: last?'…'+last.slice(-3):'', phone: full, shop: row.shop||'', ownerPhone: row.owner_phone||null};
+  }
+  if(isEndCustomer()) await loadShopContext();
+  markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet();
+  obarRender();
+}
 
 const rupee = n => '₹' + Number(n).toLocaleString('en-IN');
+
+/* ================= v3: order pad — basket, checkout, PDF/WhatsApp ================= */
+// One line per product+size. Kept as {slug,size,qty} only — everything else
+// (name, rate, unit…) is resolved fresh from P at render/send time, so a
+// price edited in the admin panel is never stale in an open basket.
+const BASKET_KEY='v3_pm_basket';
+let BASKET=[]; try{BASKET=JSON.parse(localStorage.getItem(BASKET_KEY)||'[]')}catch(e){BASKET=[]}
+let CURRENT_ORDER_REF=null;
+function saveBasket(){
+  try{localStorage.setItem(BASKET_KEY,JSON.stringify(BASKET))}catch(e){}
+  if(!BASKET.length) CURRENT_ORDER_REF=null;
+  obarRender();
+}
+function findLine(slug,size){ return BASKET.find(b=>b.slug===slug&&b.size===size); }
+function qtyFor(slug,size){ const l=findLine(slug,size); return l?l.qty:0; }
+function setQty(slug,size,qty){
+  const l=findLine(slug,size);
+  if(qty<=0){ if(l) BASKET.splice(BASKET.indexOf(l),1); }
+  else if(l) l.qty=qty;
+  else BASKET.push({slug,size,qty});
+  saveBasket();
+}
+function basketCount(){ return BASKET.reduce((n,b)=>n+b.qty,0); }
+function obarRender(){
+  const b=document.getElementById('obar'); if(!b) return;
+  // End customers browse, they don't order online — see V3-AMENDMENTS.md.
+  if(isEndCustomer()){ b.classList.remove('on'); return; }
+  const n=basketCount();
+  document.getElementById('obarTxt').innerHTML = '🧺 <b>'+n+'</b> in your order';
+  b.classList.toggle('on', n>0);
+}
+function resolveItem(line){
+  const p=P.find(x=>x.slug===line.slug); if(!p) return null;
+  let v;
+  if(p.variants&&p.variants.length){ v=p.variants.find(x=>x.size===line.size); if(!v) return null; }
+  else if(line.size==='Standard'&&p.price!=null){ v={size:'Standard',price:p.price,mrp:p.mrp,unit:'Piece',moq:null}; }
+  else return null;
+  return {slug:p.slug,name:p.name,brand:p.brand,code:p.code,size:v.size,unit:v.unit||'Piece',
+    price:v.price,mrp:v.mrp,moq:v.moq,qty:line.qty};
+}
+function orderItems(){ return BASKET.map(resolveItem).filter(Boolean); }
+const orderShowPrice = () => signedIn();
+function orderUnitPrice(it){
+  if(!signedIn()) return null;
+  if(RETAIL.on){ const m=it.mrp!=null?it.mrp:(it.price!=null?Math.round(it.price*2.25):null); return m!=null?disc(m):null; }
+  return it.price!=null?it.price:null;
+}
+function orderTotal(items){ return items.reduce((s,it)=>{const u=orderUnitPrice(it); return s+(u!=null?u*it.qty:0)},0); }
+function orderTarget(){ return (signedIn() && RETAIL.on && SESS.phone) ? SESS.phone : WA_NUMBER; }
+function nextOrderRef(){
+  const d=new Date(), ds=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+  const key='v3_pm_order_seq_'+ds;
+  let n=1; try{ n=(parseInt(localStorage.getItem(key)||'0',10)||0)+1; localStorage.setItem(key,String(n)); }catch(e){}
+  return 'PM-'+ds+'-'+String(n).padStart(3,'0');
+}
+function orderRef(){ if(!CURRENT_ORDER_REF) CURRENT_ORDER_REF=nextOrderRef(); return CURRENT_ORDER_REF; }
+function waOrderMessage(items, meta, ref){
+  const showP=orderShowPrice(), L=[];
+  L.push('New order — '+ref, '');
+  L.push('Name: '+meta.name, 'Shop: '+meta.shop, 'Phone: +91 '+meta.phone, '');
+  items.forEach(it=>{
+    let line=it.qty+' × '+it.name+(it.size&&it.size!=='Standard'?' ('+it.size+')':'')+' — '+unitAbbr(it.unit);
+    const u=orderUnitPrice(it);
+    if(showP && u!=null) line+=' · ₹'+u+' = ₹'+(u*it.qty);
+    L.push(line);
+  });
+  if(showP) L.push('', 'Grand total: ₹'+orderTotal(items).toLocaleString('en-IN'));
+  L.push('', 'Sent from the Patel Marketing catalogue.');
+  return L.join('\n');
+}
+function orderPdfHtml(items, meta, ref){
+  const showP=orderShowPrice();
+  const rows=items.map((it,i)=>{ const u=orderUnitPrice(it);
+    return `<tr class="${i%2?'zebra':''}">
+      <td class="pn2">${it.name}<div class="pcode">${it.brand}${it.code?' · '+it.code:''}</div></td>
+      <td>${it.size}</td><td>${unitAbbr(it.unit)}</td><td class="num">${it.qty}</td>
+      ${showP?`<td class="num">${u!=null?'₹'+u:'—'}</td><td class="num">${u!=null?'₹'+(u*it.qty):'—'}</td>`:''}
+    </tr>`;
+  }).join('');
+  return `<div class="pcover"><h2>Order Form</h2><div class="sub">${meta.shop||meta.name}</div>
+    <div class="meta">Order ref ${ref}<br>${new Date().toLocaleDateString('en-IN')}<br>${meta.name} · +91 ${meta.phone}</div>
+    <div class="wa">Patel Marketing · Wholesale Kitchenware · WhatsApp ${WA_NUMBER}</div></div>
+    <table class="ptbl">
+      <thead><tr class="ptitle"><th colspan="${showP?6:4}">Items<span class="cnt">${items.length} line${items.length===1?'':'s'}</span></th></tr>
+      <tr class="phead"><th>Product</th><th>Size</th><th>Unit</th><th>Qty</th>${showP?'<th>Rate</th><th>Total</th>':''}</tr></thead>
+      <tbody>${rows}</tbody>
+      ${showP?`<tfoot><tr><td colspan="4" style="padding:8px 10px;text-align:right;font-weight:800">Grand total</td>
+        <td class="num" colspan="2" style="padding:8px 10px;font-weight:800">₹${orderTotal(items).toLocaleString('en-IN')}</td></tr></tfoot>`:''}
+    </table>`;
+}
+function downloadOrderPdf(items, meta, ref){
+  document.getElementById('pdfsheet').innerHTML = orderPdfHtml(items, meta, ref);
+  window.print();
+}
+
+function orderSheetHtml(){
+  const items=orderItems();
+  if(!items.length) return '<div class="shead"><strong>Your order</strong><button class="sx" id="oxb">×</button></div>'+
+    '<div class="sbody"><div class="oempty">Nothing in your order yet. Open a product and use the '+
+    '<b>+</b> next to a size to add it.</div></div>';
+  const showP=orderShowPrice();
+  const rows=items.map((it,idx)=>{
+    const u=orderUnitPrice(it);
+    return '<div class="orow2"><div class="oi"><b>'+it.name+'</b><small>'+
+      (it.size&&it.size!=='Standard'?it.size+' · ':'')+it.qty+' '+unitAbbr(it.unit)+
+      (showP&&u!=null?' · ₹'+u+' = ₹'+(u*it.qty):'')+'</small></div>'+
+      '<button class="orm" data-rm="'+idx+'" aria-label="Remove">×</button></div>';
+  }).join('');
+  const total=showP?'<div class="ototal"><span>Total</span><span>'+rupee(orderTotal(items))+'</span></div>':'';
+  return '<div class="shead"><strong>Your order</strong><button class="sx" id="oxb">×</button></div>'+
+   '<div class="sbody">'+rows+total+
+   (showP?'':'<p class="oh" style="margin-top:8px">Sign in to see rates on your order — you can still send it as a quantity list.</p>')+
+   '<div class="ofg" style="margin-top:18px"><label>Your name</label><input id="ofName" placeholder="Full name"></div>'+
+   '<div class="ofg"><label>Shop</label><input id="ofShop" placeholder="Shop or firm name"></div>'+
+   '<div class="ofg"><label>Phone</label><input id="ofPhone" type="tel" inputmode="numeric" maxlength="15" placeholder="98765 43210"></div>'+
+   '<div class="sactions" style="margin-top:6px">'+
+     '<button id="oSend">Send order on WhatsApp</button>'+
+     '<button class="alt" id="oPdf">Download order PDF</button></div>'+
+   '<p class="oh" style="margin-top:10px">WhatsApp opens with the order listed as text — the PDF is your '+
+   'own copy for your records, it does not attach to the WhatsApp message automatically.</p></div>';
+}
+function readOrderMeta(){
+  const name=(document.getElementById('ofName').value||'').trim();
+  const shop=(document.getElementById('ofShop').value||'').trim();
+  const phone=dg(document.getElementById('ofPhone').value);
+  if(!name||!shop||phone.length<10){
+    alert('Please fill in your name, shop and a 10-digit phone number.');
+    return null;
+  }
+  return {name,shop,phone:phone.slice(-10)};
+}
+function wireOrderSheet(){
+  const x=document.getElementById('oxb'); if(x) x.onclick=closeOrderSheet;
+  const nf=document.getElementById('ofName'), sf=document.getElementById('ofShop'), pf=document.getElementById('ofPhone');
+  if(nf) nf.value = (SESS && SESS.name && SESS.name!=='Signed in') ? SESS.name : '';
+  if(sf) sf.value = (SESS && SESS.shop) || '';
+  if(pf) pf.value = (SESS && SESS.phone) ? SESS.phone.slice(-10) : '';
+  document.querySelectorAll('#osheet [data-rm]').forEach(b=>b.onclick=function(){
+    const it=orderItems()[+this.dataset.rm];
+    if(it) setQty(it.slug, it.size, 0);
+    openOrderSheet();
+  });
+  const send=document.getElementById('oSend');
+  if(send) send.onclick=function(){
+    const meta=readOrderMeta(); if(!meta) return;
+    const items=orderItems(); if(!items.length) return;
+    const ref=orderRef();
+    window.open('https://wa.me/'+orderTarget()+'?text='+encodeURIComponent(waOrderMessage(items,meta,ref)),'_blank');
+    BASKET=[]; CURRENT_ORDER_REF=null; saveBasket();
+    closeOrderSheet();
+    toastMsg('Order sent · '+ref);
+  };
+  const pdf=document.getElementById('oPdf');
+  if(pdf) pdf.onclick=function(){
+    const meta=readOrderMeta(); if(!meta) return;
+    const items=orderItems(); if(!items.length) return;
+    downloadOrderPdf(items, meta, orderRef());
+  };
+}
+function orderOverlay(){ return document.getElementById('oov'); }
+function openOrderSheet(){
+  const ov2=orderOverlay();
+  document.getElementById('osheet').innerHTML=orderSheetHtml();
+  ov2.classList.add('open'); document.body.style.overflow='hidden';
+  wireOrderSheet();
+}
+function closeOrderSheet(){
+  const ov2=orderOverlay(); if(ov2) ov2.classList.remove('open');
+  if(!document.getElementById('ov').classList.contains('open')) document.body.style.overflow='';
+}
+// Wires the +/− steppers rendered inside the product sheet by openSheet().
+function wireOrderStepper(p){
+  const root=sheet;
+  function paint(){
+    root.querySelectorAll('[data-qv]').forEach(el=>{
+      el.textContent = qtyFor(p.slug, el.dataset.qv);
+    });
+    root.querySelectorAll('[data-qm]').forEach(el=>{ el.disabled = qtyFor(p.slug, el.dataset.qm)<=0; });
+  }
+  root.querySelectorAll('[data-qp]').forEach(btn=>btn.onclick=function(e){
+    e.stopPropagation();
+    setQty(p.slug, this.dataset.qp, qtyFor(p.slug, this.dataset.qp)+1);
+    paint();
+  });
+  root.querySelectorAll('[data-qm]').forEach(btn=>btn.onclick=function(e){
+    e.stopPropagation();
+    setQty(p.slug, this.dataset.qm, Math.max(0, qtyFor(p.slug, this.dataset.qm)-1));
+    paint();
+  });
+  paint();
+}
+const _obarBtn=document.getElementById('obar'); if(_obarBtn) _obarBtn.onclick=openOrderSheet;
+const _oov=document.getElementById('oov'); if(_oov) _oov.addEventListener('click', closeOrderSheet);
+obarRender();
 function span(nums){ const a=nums.filter(x=>x!=null); if(!a.length)return null;
   const lo=Math.min(...a),hi=Math.max(...a); return {lo,hi,one:lo===hi}; }
 function fmt(r){ return r.one ? rupee(r.lo) : rupee(r.lo)+'–'+r.hi.toLocaleString('en-IN'); }
@@ -1618,6 +1909,17 @@ const disc = v => Math.round(v * (1 - (RETAIL.off||0)/100));
 function priceLine(p){
   const dp=dpOf(p), mrp=mrpOf(p);
   if(!dp && !mrp) return '<span class="ph">Enquire for pricing</span>';
+
+  /* end customer: MRP (or the shop's own offer price if set), never DP */
+  if(isEndCustomer() && mrp){
+    const offer=shopOfferFor(p);
+    if(offer && offer.price_offer!=null){
+      return '<span class="pmrp cut">'+fmt(mrp)+'</span> '+
+             '<span class="pdp">'+rupee(offer.price_offer)+'</span>'+
+             '<span class="poff">SPECIAL</span>';
+    }
+    return '<span class="plab">Price</span><span class="pdp">'+fmt(mrp)+'</span>';
+  }
 
   /* retail mode: MRP struck, discounted price beside it, discount as a chip */
   if(signedIn() && RETAIL.on && mrp){
@@ -1663,11 +1965,12 @@ function signOverlay(){
 }
 function openSignIn(){
   const ov2=signOverlay();
-  document.getElementById('sgnSheet').innerHTML = signedIn() ? accountHtml() : signInHtml();
+  document.getElementById('sgnSheet').innerHTML = signedIn() ? accountHtml()
+    : (PENDING_PHONE ? otpHtml(PENDING_PHONE) : signInHtml());
   ov2.classList.add('open'); document.body.style.overflow='hidden';
-  wireSignIn();
+  if(!signedIn() && PENDING_PHONE) wireOtpStep(); else wireSignIn();
   const sv=document.getElementById('sov'); if(sv) sv.classList.remove('open');
-  const f=document.getElementById('sgnPh'); if(f) setTimeout(()=>f.focus(),120);
+  const f=document.getElementById(PENDING_PHONE?'sgnOtp':'sgnPh'); if(f) setTimeout(()=>f.focus(),120);
 }
 function menuSignHtml(){
   if(signedIn()){
@@ -1675,12 +1978,20 @@ function menuSignHtml(){
       ? '<a class="sgnbtn" href="admin.html" style="display:block;text-align:center;'+
         'text-decoration:none;margin-top:10px;background:var(--ac)">Open admin panel</a>'
       : '';
+    const trade = (SESS.role==='dealer'||SESS.role==='shop_owner'||SESS.admin)
+      ? '<a class="sgnbtn ghost" href="exchange.html" style="display:block;text-align:center;'+
+        'text-decoration:none;margin-top:4px">Stock exchange</a>'
+      : '';
+    const shop = SESS.role==='shop_owner'
+      ? '<a class="sgnbtn ghost" href="shop.html" style="display:block;text-align:center;'+
+        'text-decoration:none;margin-top:4px">Your customers</a>'
+      : '';
     return '<div class="who"><div class="whoav">'+
       ((SESS.name||'PM').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
       '<div><b>'+(SESS.name||'Signed in')+'</b><small>'+(SESS.tail||'')+
       (SESS.admin?' · admin':'')+'</small></div></div>'+
       '<button class="sgnbtn" id="menuAcct" style="margin-top:10px">Your account'+
-      (RETAIL.on?' · showing customer prices':'')+'</button>' + adm;
+      (RETAIL.on?' · showing customer prices':'')+'</button>' + adm + trade + shop;
   }
   return '<p style="font-size:.8rem;color:var(--tm);line-height:1.55;margin-bottom:10px">'+
     'Sign in to see if a discount applies to your account, and to place an order.</p>'+
@@ -1695,23 +2006,32 @@ function signInHtml(){
   return '<div class="shead"><strong>Sign in</strong><button class="sx" id="sgnX">×</button></div>'+
    '<div class="sbody"><div class="sgn">'+
    '<h4>Sign in to order</h4>'+
-   '<p>Enter the phone number you order from. If we have agreed a discount for '+
-   'you it will show against every product. Everything in the catalogue stays '+
-   'open either way.</p>'+
+   '<p>Enter the phone number you order from — we will text you a one-time code. '+
+   'If we have agreed a discount for you it will show against every product. '+
+   'Everything in the catalogue stays open either way.</p>'+
    '<div class="sgnrow"><span>+91</span><input id="sgnPh" type="tel" inputmode="numeric" '+
    'maxlength="15" placeholder="98765 43210" autocomplete="tel"></div>'+
    '<div id="sgnEcho" style="font-family:var(--fm);font-size:.7rem;color:var(--tm);'+
    'margin:-4px 0 10px 2px;min-height:15px"></div>'+
-   '<button class="sgnbtn" id="sgnGo">Continue</button>'+
+   '<button class="sgnbtn" id="sgnGo">Send code</button>'+
    '<button class="sgnbtn ghost" id="sgnSkip">Keep browsing as guest</button>'+
+   '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
+}
+function otpHtml(phoneDigits){
+  const last=dg(phoneDigits).slice(-10);
+  return '<div class="shead"><strong>Enter code</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<h4>Enter the code we texted you</h4>'+
+   '<p>Sent by SMS to +91 '+last+'. It can take a minute to arrive.</p>'+
+   '<div class="sgnrow"><span>#</span><input id="sgnOtp" type="tel" inputmode="numeric" '+
+   'maxlength="6" placeholder="6-digit code" autocomplete="one-time-code"></div>'+
+   '<button class="sgnbtn" id="sgnVerify">Verify &amp; sign in</button>'+
+   '<button class="sgnbtn ghost" id="sgnBack">Use a different number</button>'+
    '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
 }
 function accountHtml(){
   const nm=SESS.name||'Signed in', tail=SESS.tail||'';
-  return '<div class="shead"><strong>Your account</strong><button class="sx" id="sgnX">×</button></div>'+
-   '<div class="sbody"><div class="sgn">'+
-   '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
-   '<div><b>'+nm+'</b><small>'+tail+(SESS.admin?' · admin':'')+'</small></div></div>'+
+  const retailToggle = isEndCustomer() ? '' :
    '<div class="fsection" style="border:0;padding-top:14px">'+
    '<h4 style="font-size:.95rem">Showing to a customer</h4>'+
    '<p style="margin-bottom:8px">Turn this on when someone is looking over your shoulder. '+
@@ -1719,7 +2039,12 @@ function accountHtml(){
    '<div class="rtl"><span class="tgl2"><input type="checkbox" id="rtlOn"'+(RETAIL.on?' checked':'')+
    '><i></i></span><label for="rtlOff">Discount on MRP</label>'+
    '<input type="number" id="rtlOff" min="0" max="90" value="'+(RETAIL.off||0)+'"><label>%</label></div>'+
-   '</div>'+
+   '</div>';
+  return '<div class="shead"><strong>Your account</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
+   '<div><b>'+nm+'</b><small>'+tail+(SESS.admin?' · admin':'')+'</small></div></div>'+
+   retailToggle+
    (SESS.admin?'<a class="sgnbtn" style="display:block;text-align:center;text-decoration:none;'+
      'margin-top:16px" href="admin.html">Open admin panel</a>':'')+
    '<button class="sgnbtn ghost" id="sgnOut">Sign out</button>'+
@@ -1743,32 +2068,23 @@ function wireSignIn(){
       msg.innerHTML='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+'. '+
         'Type the 10-digit number — you can include 91 in front if you prefer.';
       msg.classList.add('on'); return; }
-    const ph='91'+raw.slice(-10);
-    go.disabled=true; go.textContent='Checking…';
-    let hit=null;
-    try{ hit=lookup(ph); }catch(e){}
-    go.disabled=false; go.textContent='Continue';
-    if(!hit){
-      const total=(AUTH.admins||[]).length+(AUTH.customers||[]).length;
-      if(!total){
-        msg.innerHTML='Settings did not load, so no numbers are available. '+
-          'Reload the page once — if it keeps happening, config.js is missing from the site.';
-        msg.classList.add('on'); return;
-      }
-      msg.innerHTML=(AUTH.noAccessMessage||'This number is not on our customer list yet.')+
-        ' <a href="https://wa.me/'+WA_NUMBER+'?text='+
-        encodeURIComponent('Hi, please give my number access to order rates. +'+ph)+'">Message us on WhatsApp</a>';
-      msg.classList.add('on'); return;
+    go.disabled=true; go.textContent='Sending…';
+    const {error}=await PMAuth.sendOtp(raw);
+    go.disabled=false; go.textContent='Send code';
+    if(error){
+      msg.innerHTML=PMAuth.friendlyAuthError(error); msg.classList.add('on'); return;
     }
-    SESS={ok:true, admin:hit.admin, name:hit.name, tail:hit.tail}; saveSess();
-    closeSignIn(); markWho(); render(); if(CUR) openSheet(CUR);
-    toastMsg(hit.admin?'Signed in as admin':'Signed in as '+hit.name);
+    PENDING_PHONE=raw;
+    document.getElementById('sgnSheet').innerHTML=otpHtml(raw);
+    wireOtpStep();
+    const f=document.getElementById('sgnOtp'); if(f) setTimeout(()=>f.focus(),120);
   };
   const skip=document.getElementById('sgnSkip');
   if(skip) skip.onclick=closeSignIn;
   const out=document.getElementById('sgnOut');
-  if(out) out.onclick=function(){
-    SESS=null; RETAIL.on=false; saveSess(); saveRtl();
+  if(out) out.onclick=async function(){
+    await PMAuth.signOut();
+    SESS=null; RETAIL.on=false; saveRtl();
     closeSignIn(); markWho(); render(); if(CUR) openSheet(CUR);
   };
   const on=document.getElementById('rtlOn'), off=document.getElementById('rtlOff');
@@ -1776,6 +2092,42 @@ function wireSignIn(){
     if(CUR) openSheet(CUR); retailBanner(); };
   if(off) off.oninput=function(){ RETAIL.off=Math.max(0,Math.min(90,+off.value||0)); saveRtl();
     render(); if(CUR) openSheet(CUR); retailBanner(); };
+}
+function wireOtpStep(){
+  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  const back=document.getElementById('sgnBack');
+  if(back) back.onclick=function(){
+    PENDING_PHONE=null;
+    document.getElementById('sgnSheet').innerHTML=signInHtml();
+    wireSignIn();
+    const f=document.getElementById('sgnPh'); if(f) setTimeout(()=>f.focus(),120);
+  };
+  const inp=document.getElementById('sgnOtp'), go=document.getElementById('sgnVerify');
+  if(inp) inp.onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); go.click(); } };
+  if(go) go.onclick=async function(){
+    const code=dg(document.getElementById('sgnOtp').value);
+    const msg=document.getElementById('sgnMsg');
+    if(code.length<4){
+      msg.innerHTML='Enter the code as texted to you.'; msg.classList.add('on'); return;
+    }
+    go.disabled=true; go.textContent='Verifying…';
+    const {error}=await PMAuth.verifyOtp(PENDING_PHONE, code);
+    go.disabled=false; go.textContent='Verify & sign in';
+    if(error){
+      msg.innerHTML=PMAuth.friendlyAuthError(error); msg.classList.add('on'); return;
+    }
+    const ph=PENDING_PHONE; PENDING_PHONE=null;
+    await refreshSession();
+    if(!signedIn()){
+      msg.innerHTML=(AUTH.noAccessMessage||'This number is not on our customer list yet.')+
+        ' <a href="https://wa.me/'+WA_NUMBER+'?text='+
+        encodeURIComponent('Hi, please give my number access to order rates. +91'+ph.slice(-10))+
+        '">Message us on WhatsApp</a>';
+      msg.classList.add('on'); return;
+    }
+    closeSignIn(); if(CUR) openSheet(CUR);
+    toastMsg(SESS.admin?'Signed in as admin':'Signed in as '+SESS.name);
+  };
 }
 function closeSignIn(){
   const ov2=document.getElementById('sgnOv');
@@ -1805,6 +2157,18 @@ function retailBanner(){
       RETAIL.on=false; saveRtl(); render(); if(CUR) openSheet(CUR); retailBanner(); };
   } else b.classList.remove('on');
 }
+// The campaign framing IS the identity of the end-customer screen, not a
+// caption on it — go out, move your body, eat healthy, support your local
+// store, per V3-AMENDMENTS.md.
+function campaignBanner(){
+  const el=document.getElementById('campaignBanner');
+  if(!el) return;
+  if(!isEndCustomer()){ el.innerHTML=''; return; }
+  const shopName=(SHOP_INFO&&(SHOP_INFO.shop||SHOP_INFO.name))||'your local shop';
+  el.innerHTML='<div class="campaign"><b>🏃 Go out. Move your body. Eat healthy.</b>'+
+    '<span>Support your local store — you\'re browsing '+shopName+'\'s range. '+
+    'See what\'s in stock, then head over and pick it up.</span></div>';
+}
 const _wb=document.getElementById('whoBtn'); if(_wb) _wb.addEventListener('click', openSignIn);
 
 /* ---------- the sheet's size table has to follow the same rules ---------- */
@@ -1812,32 +2176,44 @@ function repriceSheet(){
   if(!CUR) return;
   const vt=sheet.querySelector('.vt');
   if(vt){
+    const ec=isEndCustomer();
     const head=vt.querySelector('.vh');
     if(head){
       const cells=head.querySelectorAll('span');
-      if(cells[1]) cells[1].textContent = (signedIn()&&RETAIL.on)?'Your price'
+      if(cells[1]) cells[1].textContent = ec?'Price'
+                                        : (signedIn()&&RETAIL.on)?'Your price'
                                         : (signedIn()?'DP':'MRP');
-      if(cells[2]) cells[2].textContent = (signedIn()&&RETAIL.on)?'MRP'
+      if(cells[2]) cells[2].textContent = ec?''
+                                        : (signedIn()&&RETAIL.on)?'MRP'
                                         : (signedIn()?'MRP':'');
     }
     vt.querySelectorAll('.vr').forEach(function(row,i){
       const v=(CUR.variants||[])[i]; if(!v) return;
       const pc=row.querySelector('.vprice'), mc=row.querySelector('.vmrp');
       const mrpv = v.mrp!=null ? v.mrp : (v.price!=null?Math.round(v.price*2.25):null);
-      if(signedIn() && RETAIL.on){
-        if(pc) pc.innerHTML = mrpv!=null ? '<b>'+rupee(disc(mrpv))+'</b>' : '—';
+      const u='<b class="vunit">/'+unitAbbr(v.unit)+'</b>';
+      if(ec){
+        // Never DP — the shop's own offer price if they set one, else MRP.
+        const offer=shopOfferFor(CUR);
+        if(pc) pc.innerHTML = (offer&&offer.price_offer!=null) ? '<b>'+rupee(offer.price_offer)+'</b>'+u
+          : (mrpv!=null ? rupee(mrpv)+u : '—');
+        if(mc) mc.innerHTML = '';
+      } else if(signedIn() && RETAIL.on){
+        if(pc) pc.innerHTML = mrpv!=null ? '<b>'+rupee(disc(mrpv))+'</b>'+u : '—';
         if(mc) mc.innerHTML = mrpv!=null ? '<span class="pmrp cut">'+rupee(mrpv)+'</span>' : '';
       } else if(signedIn()){
-        if(pc) pc.innerHTML = v.price!=null ? rupee(v.price) : '—';
+        if(pc) pc.innerHTML = v.price!=null ? rupee(v.price)+u : '—';
         if(mc) mc.innerHTML = v.mrp!=null ? rupee(v.mrp) : '';
       } else {
-        if(pc) pc.innerHTML = mrpv!=null ? rupee(mrpv) : '—';
+        if(pc) pc.innerHTML = mrpv!=null ? rupee(mrpv)+u : '—';
         if(mc) mc.innerHTML = '';
       }
     });
     const note=vt.nextElementSibling;
     if(note && note.tagName==='P'){
-      note.innerHTML = (signedIn()&&RETAIL.on)
+      note.innerHTML = ec
+        ? 'Prices include GST'+(CUR.gst?' at '+CUR.gst+'%':'')+'. Visit the shop to buy — see the note above for how to reach them.'
+        : (signedIn()&&RETAIL.on)
         ? 'Prices shown are MRP less '+(RETAIL.off||0)+'%. Tap the person icon to turn retail mode off.'
         : (signedIn()
           ? 'DP is your price per piece including GST'+(CUR.gst?' at '+CUR.gst+'%':'')+
@@ -1893,9 +2269,9 @@ function enhanceGallery(){
 const _openSheet = openSheet;
 openSheet = function(p){
   _openSheet(p);
-  try{ repriceSheet(); enhanceGallery(); }catch(e){}
+  try{ repriceSheet(); enhanceGallery(); wireOrderStepper(p); }catch(e){}
 };
 
-markWho(); retailBanner();
+markWho(); retailBanner(); refreshSession();
 
 </script></body></html>

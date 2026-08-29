@@ -96,8 +96,8 @@ main{max-width:1000px;margin:0 auto;padding:14px}
 .tg input:checked+i{background:var(--ac)}
 .tg input:checked+i::after{transform:translateX(19px)}
 .tg.danger input:checked+i{background:#B4433B}
-.vrow{display:grid;grid-template-columns:1.25fr .8fr .8fr .6fr auto;gap:6px;margin-bottom:6px;align-items:center}
-.vrow input{padding:8px 9px;border:1.5px solid var(--bd);border-radius:7px;background:var(--sf);
+.vrow{display:grid;grid-template-columns:1.1fr .7fr .7fr .5fr .8fr auto;gap:6px;margin-bottom:6px;align-items:center}
+.vrow input,.vrow select{padding:8px 9px;border:1.5px solid var(--bd);border-radius:7px;background:var(--sf);
  font-family:var(--fm);font-size:.79rem;min-width:0}
 .mini{border:0;background:var(--sf2);color:var(--tx);border-radius:7px;width:31px;height:31px;
  font-size:.95rem;line-height:1;flex-shrink:0}
@@ -143,12 +143,23 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
 <div id="gate" class="gate">
   <div class="mark">PM</div>
-  <h1>Admin sign in</h1>
-  <p>Enter your admin phone number. Only the numbers listed as admins can open this page.</p>
-  <div class="row"><span>+91</span><input id="gp" type="tel" inputmode="numeric" maxlength="15"
-    placeholder="98765 43210" autocomplete="off"></div>
-  <div id="gEcho" style="font-family:var(--fm);font-size:.7rem;color:var(--tm);margin:-4px 0 10px;min-height:15px"></div>
-  <button class="btn" id="gb" style="width:100%">Continue</button>
+  <div id="gStepPhone">
+    <h1>Admin sign in</h1>
+    <p>Enter your admin phone number — we will text you a one-time code. Only numbers
+      marked as admin in the allowlist can open this page.</p>
+    <div class="row"><span>+91</span><input id="gp" type="tel" inputmode="numeric" maxlength="15"
+      placeholder="98765 43210" autocomplete="off"></div>
+    <div id="gEcho" style="font-family:var(--fm);font-size:.7rem;color:var(--tm);margin:-4px 0 10px;min-height:15px"></div>
+    <button class="btn" id="gb" style="width:100%">Send code</button>
+  </div>
+  <div id="gStepOtp" style="display:none">
+    <h1>Enter code</h1>
+    <p id="gOtpTo">Sent by SMS. It can take a minute to arrive.</p>
+    <div class="row"><span>#</span><input id="gCode" type="tel" inputmode="numeric" maxlength="6"
+      placeholder="6-digit code" autocomplete="one-time-code"></div>
+    <button class="btn" id="gv" style="width:100%">Verify &amp; sign in</button>
+    <p style="margin-top:14px"><button class="ibtn" id="gBack" style="border:0;background:transparent">Use a different number</button></p>
+  </div>
   <div class="msg" id="gm"></div>
   <p style="margin-top:22px"><a class="ibtn" href="index.html">Back to catalogue</a></p>
 </div>
@@ -201,12 +212,18 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
   <!-- CUSTOMERS -->
   <section class="panel" id="p-customers">
-    <div class="note"><b>These numbers are readable in the page source.</b>
-      Plain text for now, as agreed. Keep the list to business numbers only.
-      v3 moves sign-in to a real OTP and the list stops being public.</div>
+    <div class="note"><b>This list saves straight to the database.</b>
+      Adding a number here lets them sign in with an OTP texted to that phone —
+      nothing to download or upload.</div>
     <div class="bar">
-      <input class="s" id="cName" placeholder="Name or shop">
+      <input class="s" id="cName" placeholder="Name">
+      <input class="s" id="cShop" placeholder="Shop (optional)">
       <input class="s" id="cPhone" inputmode="numeric" maxlength="15" placeholder="10-digit number" style="flex:0 0 160px">
+      <select class="s" id="cRole" style="flex:0 0 130px">
+        <option value="dealer" selected>Dealer</option>
+        <option value="shop_owner">Shop owner</option>
+        <option value="admin">Admin</option>
+      </select>
       <button class="btn g" id="cAdd">Add</button>
     </div>
     <div class="stat" id="cStat"></div>
@@ -215,21 +232,21 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
   <!-- PUBLISH -->
   <section class="panel" id="p-publish">
-    <div class="note"><b>Nothing is live until you upload.</b>
-      Changes are saved on this phone as you work. Download the files below and
-      upload them to GitHub — Vercel redeploys on its own in about a minute.</div>
+    <div class="note"><b>Product edits save to the database as you make them.</b>
+      The catalogue website itself is still the static file below, though — nothing
+      customers see changes until you download it and upload it to GitHub. Vercel
+      redeploys on its own in about a minute.</div>
     <div id="pubSummary"></div>
     <div class="fg"><button class="btn" id="dlData" style="width:100%">Download data.json</button>
       <div class="hint">Every product change. Goes in the repo root, replacing the old one.</div></div>
-    <div class="fg"><button class="btn" id="dlConfig" style="width:100%">Download config.js</button>
-      <div class="hint">Only needed when you have added or removed customers. Goes in <code>v2/</code>.</div></div>
     <div class="fg"><button class="btn o" id="dlOrphans" style="width:100%">List unused photo files</button>
       <div class="hint">Photos in the repo that no product points at any more. Safe to delete to save space.</div></div>
     <div id="orph"></div>
     <div class="fg" style="margin-top:22px">
-      <label>After Vercel finishes</label>
-      <div class="hint">Run this once in the Supabase SQL editor so the database matches. It
-        also removes rows for products you deleted.</div>
+      <label>If the database ever looks out of step</label>
+      <div class="hint">Product saves and deletes write to the database immediately, but if one
+        ever fails (a dropped connection, mostly), run this once in the Supabase SQL editor
+        to bring it back in line with the live site.</div>
       <code class="blk">select * from catalog.sync_from_site();</code>
     </div>
     <div class="fg" style="margin-top:22px">
@@ -247,67 +264,95 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=6"></script>
+<script src="config.js?v=7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-auth.js?v=1"></script>
 <script>
 (function(){
   const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
     site:'https://patelmarketing-catalog.vercel.app',
-    auth:{admins:[{n:'Raj',p:'919686754024'},{n:'Admin 2',p:'918800353840'}],
-      customers:[{n:'Customer 1',p:'919448666177'},{n:'Customer 2',p:'918880050050'},
-        {n:'Customer 3',p:'918431625230'},{n:'Customer 4',p:'919448471795'},
-        {n:'Customer 5',p:'919448463254'},{n:'Customer 6',p:'918800353843'},
-        {n:'Customer 7',p:'919686754026'}]}};
+    supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s',
+    auth:{ noAccessMessage:'We do not recognise that number yet.' }};
   const K=window.PM_CONFIG||{};
-  const usable=x=>(x||[]).filter(r=>r&&typeof r.p==='string'&&r.p.replace(/\D/g,'').length>=10);
   const M=Object.assign({},D,K);
   M.auth=Object.assign({},D.auth,K.auth||{});
-  M.auth.admins    = usable(M.auth.admins).length    ? usable(M.auth.admins)    : D.auth.admins;
-  M.auth.customers = usable(M.auth.customers).length ? usable(M.auth.customers) : D.auth.customers;
   if(!M.whatsapp||M.whatsapp.replace(/\D/g,'').length<10) M.whatsapp=D.whatsapp;
+  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
+  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
   window.PM_CONFIG=M;
 })();
 const C=window.PM_CONFIG, $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=n=>'₹'+Number(n).toLocaleString('en-IN');
 const IMG=n=>'../images/'+n+'.jpg';
-const DRAFT='v2_admin_draft', CUSTD='v2_admin_customers', SESSK='v2_pm_session';
+const DRAFT='v3_admin_draft';
 
 let P=[], LIVE='', shown=40, q='', quick='all', dirty=false;
-let CUSTOMERS=null, custDirty=false;
+// Customers live in catalog.allowlist now, not config.js — this panel reads
+// and writes the table directly, so there is no local draft to publish.
+let CUSTOMERS=[];
 
 const last10=s=>String(s||'').replace(/\D/g,'').slice(-10);
+const UNITS=['Piece','Dozen','Box','Gross','Kg','Tag'];
+let PENDING_PHONE=null;
 
 /* ---------------- gate ---------------- */
-function tryGate(raw){
-  if(raw.length<10) return null;
-  const t=last10(raw);
-  return (C.auth&&C.auth.admins||[]).find(r=>last10(r.p)===t)||null;
-}
 $('#gp').oninput=function(){
   const d=($('#gp').value||'').replace(/\D/g,'');
   $('#gEcho').textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10)
                           : (d.length? d.length+' of 10 digits':'');
 };
 $('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
-$('#gb').onclick=function(){
+$('#gb').onclick=async function(){
   const raw=($('#gp').value||'').replace(/\D/g,'');
-  const m=$('#gm');
+  const m=$('#gm'); m.classList.remove('on');
   if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
     '. Type the 10-digit number — 91 in front is fine too.'; m.classList.add('on'); return; }
-  const a=tryGate(raw);
-  if(!a){ m.textContent='That number is not an admin.'; m.classList.add('on'); return; }
-  localStorage.setItem(SESSK, JSON.stringify({ok:true,admin:true,name:a.n,tail:a.t}));
-  start(a);
+  const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
+  const {error}=await PMAuth.sendOtp(raw);
+  gb.disabled=false; gb.textContent='Send code';
+  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  PENDING_PHONE=raw;
+  $('#gOtpTo').textContent='Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
+  $('#gStepPhone').style.display='none'; $('#gStepOtp').style.display='block';
+  $('#gCode').focus();
 };
-(function(){
-  const s=JSON.parse(localStorage.getItem(SESSK)||'null');
-  if(s&&s.ok&&s.admin) start(s);
+$('#gBack').onclick=function(){
+  PENDING_PHONE=null; $('#gm').classList.remove('on');
+  $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
+  $('#gp').focus();
+};
+$('#gCode').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gv').click()} };
+$('#gv').onclick=async function(){
+  const code=($('#gCode').value||'').replace(/\D/g,'');
+  const m=$('#gm'); m.classList.remove('on');
+  if(code.length<4){ m.textContent='Enter the code as texted to you.'; m.classList.add('on'); return; }
+  const gv=$('#gv'); gv.disabled=true; gv.textContent='Verifying…';
+  const {error}=await PMAuth.verifyOtp(PENDING_PHONE, code);
+  gv.disabled=false; gv.textContent='Verify & sign in';
+  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  PENDING_PHONE=null;
+  const row=await PMAuth.myAllowlistRow();
+  if(!row||!row.is_admin){
+    await PMAuth.signOut();
+    m.textContent='That number signed in, but it is not on the admin list.'; m.classList.add('on');
+    $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
+    return;
+  }
+  start(row);
+};
+(async function(){
+  const sess=await PMAuth.currentSession();
+  if(!sess) return;
+  const row=await PMAuth.myAllowlistRow();
+  if(row&&row.is_admin) start(row); else await PMAuth.signOut();
 })();
-$('#outBtn').onclick=function(){ localStorage.removeItem(SESSK); location.reload(); };
+$('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
 
 async function start(a){
   $('#gate').style.display='none'; $('#app').style.display='block';
-  $('#whoLine').textContent=(a.n||'admin')+' '+(a.t||'');
+  $('#whoLine').textContent=(a.name||'admin');
   await load();
 }
 
@@ -319,16 +364,13 @@ async function load(){
   const d=localStorage.getItem(DRAFT);
   P = d ? JSON.parse(d) : JSON.parse(LIVE);
   dirty = !!d;
-  const cd=localStorage.getItem(CUSTD);
-  CUSTOMERS = cd ? JSON.parse(cd) : JSON.parse(JSON.stringify((C.auth&&C.auth.customers)||[]));
-  custDirty = !!cd;
-  draw(); drawTax(); drawCust(); footer();
+  draw(); drawTax(); footer();
+  await loadAllowlist();
 }
 function touch(){ dirty=true; localStorage.setItem(DRAFT,JSON.stringify(P)); draw(); footer(); }
-function touchC(){ custDirty=true; localStorage.setItem(CUSTD,JSON.stringify(CUSTOMERS)); drawCust(); footer(); }
 function footer(){
   const n=changeCount();
-  $('#footNote').innerHTML = (dirty||custDirty)
+  $('#footNote').innerHTML = dirty
     ? '<b>'+n+' unsaved change'+(n===1?'':'s')+'</b> — not live yet'
     : 'Everything matches the live catalogue';
 }
@@ -340,7 +382,6 @@ function changeCount(){
     P.forEach(p=>{ const k=p.slug||p.name; if(byS[k]!==JSON.stringify(p)) n++; delete byS[k]; });
     n+=Object.keys(byS).length;
   }catch(e){}
-  if(custDirty) n++;
   return n;
 }
 
@@ -415,6 +456,7 @@ function edit(i){
   const p=P[i];
   let imgs=(p.imgs&&p.imgs.length)?p.imgs.slice():(p.img?[p.img]:[]);
   let vs=JSON.parse(JSON.stringify(p.variants||[]));
+  vs.forEach(v=>{ if(!v.unit) v.unit='Piece'; });
 
   sheet.innerHTML=
    '<div class="shead"><strong>'+(p.name?'Edit product':'New product')+'</strong>'+
@@ -491,17 +533,19 @@ function edit(i){
   function drawV(){
     $('#vl').innerHTML = vs.length ? ('<div class="vrow" style="font-size:.6rem;color:var(--tm);'+
       'text-transform:uppercase;letter-spacing:.07em"><span>Size</span><span>DP</span><span>MRP</span>'+
-      '<span>MOQ</span><span></span></div>') + vs.map((v,ix)=>
+      '<span>MOQ</span><span>Unit</span><span></span></div>') + vs.map((v,ix)=>
       '<div class="vrow">'+
       '<input placeholder="Size" value="'+esc(v.size||'')+'" data-k="size" data-i="'+ix+'">'+
       '<input placeholder="DP" type="number" value="'+(v.price??'')+'" data-k="price" data-i="'+ix+'">'+
       '<input placeholder="MRP" type="number" value="'+(v.mrp??'')+'" data-k="mrp" data-i="'+ix+'">'+
       '<input placeholder="MOQ" type="number" value="'+(v.moq??'')+'" data-k="moq" data-i="'+ix+'">'+
+      '<select data-k="unit" data-i="'+ix+'">'+UNITS.map(u=>
+        '<option value="'+u+'"'+((v.unit||'Piece')===u?' selected':'')+'>'+u+'</option>').join('')+'</select>'+
       '<button class="mini del" data-rm="'+ix+'">×</button></div>').join('') : '';
     $('#vl').oninput=function(e){
       const t=e.target; if(!t.dataset.k) return;
       const v=vs[+t.dataset.i];
-      v[t.dataset.k] = t.dataset.k==='size' ? t.value : (t.value===''?null:+t.value);
+      v[t.dataset.k] = (t.dataset.k==='size'||t.dataset.k==='unit') ? t.value : (t.value===''?null:+t.value);
     };
     $('#vl').onclick=function(e){
       const b=e.target.closest('button[data-rm]'); if(!b) return;
@@ -509,14 +553,23 @@ function edit(i){
     };
   }
   drawV();
-  $('#addV').onclick=function(){vs.push({size:'',rate:null,price:null,mrp:null,moq:null});drawV()};
+  $('#addV').onclick=function(){vs.push({size:'',rate:null,price:null,mrp:null,moq:null,unit:'Piece'});drawV()};
 
   $('#xb').onclick=closeSheet;
-  $('#delP').onclick=function(){
+  $('#delP').onclick=async function(){
     if(!confirm('Delete "'+(p.name||'this product')+'" from the catalogue?\n\nHiding it is usually safer.')) return;
+    const del=$('#delP'); del.disabled=true; del.textContent='Deleting…';
+    if(p.slug){
+      const {error}=await PMAuth.sb.rpc('admin_delete_product',{p_slug:p.slug});
+      if(error){
+        del.disabled=false; del.textContent='Delete';
+        alert('Could not delete from the database — '+error.message+
+          '\n\nRemoved here only; run sync_from_site() after publishing to catch it up, or try again.');
+      }
+    }
     P.splice(i,1); touch(); closeSheet();
   };
-  $('#saveP').onclick=function(){
+  $('#saveP').onclick=async function(){
     const num=id=>{const v=$(id).value;return v===''?null:+v};
     const name=$('#fName').value.trim(), brand=$('#fBrand').value.trim();
     if(!name||!brand){alert('Name and brand are both required.');return}
@@ -534,6 +587,13 @@ function edit(i){
       variants:vs.filter(v=>v.size||v.price!=null||v.mrp!=null),
     });
     if(!p.slug) p.slug=mkSlug(p);
+    const sv=$('#saveP'); sv.disabled=true; sv.textContent='Saving…';
+    const {error}=await PMAuth.sb.rpc('admin_upsert_product',{payload:p});
+    sv.disabled=false; sv.textContent='Done';
+    if(error){
+      alert('Saved here, but the database write failed — '+error.message+
+        '\n\nKeep going; run sync_from_site() after you publish to catch it up.');
+    }
     touch(); closeSheet();
   };
   ov.classList.add('open'); document.body.style.overflow='hidden'; sheet.scrollTop=0;
@@ -574,32 +634,49 @@ $('#taxAdd').onclick=function(){
         'open any product and type it into the '+(k==='brand'?'Brand':k==='cat'?'Category':'Sub-group')+' box.');
 };
 
-/* ---------------- customers ---------------- */
+/* ---------------- customers (catalog.allowlist, live) ---------------- */
+async function loadAllowlist(){
+  // End customers are a shop owner's own list, not ours to browse here — see
+  // V3-AMENDMENTS.md. Admin RLS access to those rows still exists in the
+  // database for support, this panel just doesn't surface them.
+  const {data,error}=await PMAuth.sb.from('allowlist').select('*').neq('role','end_customer').order('added_at');
+  if(error){ $('#cStat').textContent='Could not load the customer list — '+error.message; return; }
+  CUSTOMERS=data||[];
+  drawCust();
+}
+const ROLE_LABEL={admin:'ADMIN',shop_owner:'SHOP OWNER',end_customer:'END CUSTOMER',dealer:''};
 function drawCust(){
-  $('#cStat').textContent=CUSTOMERS.length+' customers can see dealer prices · '+
-    ((C.auth&&C.auth.admins||[]).length)+' admins';
-  $('#cList').innerHTML = CUSTOMERS.length ? CUSTOMERS.map((c,i)=>
-    '<tr><td><div class="nm">'+esc(c.n)+'</div><div class="ph">+'+esc(c.p||'')+'</div></td>'+
-    '<td><button class="ibtn" data-rm="'+i+'">Remove</button></td></tr>').join('')
-    : '<tr><td class="empty">No customers yet.</td></tr>';
-  $('#cList').onclick=function(e){
+  const dealers=CUSTOMERS.filter(c=>c.role==='dealer'), shops=CUSTOMERS.filter(c=>c.role==='shop_owner'),
+    admins=CUSTOMERS.filter(c=>c.is_admin);
+  $('#cStat').textContent=dealers.length+' dealers · '+shops.length+' shop owners · '+admins.length+' admins';
+  $('#cList').innerHTML = CUSTOMERS.length ? CUSTOMERS.map(c=>
+    '<tr><td><div class="nm">'+esc(c.name||'(unnamed)')+
+      (ROLE_LABEL[c.role]?'<span class="flag f">'+ROLE_LABEL[c.role]+'</span>':'')+'</div>'+
+      '<div class="ph">'+(c.shop?esc(c.shop)+' · ':'')+'+'+esc(c.phone||'')+'</div></td>'+
+      '<td><button class="ibtn" data-rm="'+esc(c.phone)+'">Remove</button></td></tr>').join('')
+    : '<tr><td class="empty">No one yet.</td></tr>';
+  $('#cList').onclick=async function(e){
     const b=e.target.closest('[data-rm]'); if(!b) return;
-    const i=+b.dataset.rm;
-    if(!confirm('Remove '+CUSTOMERS[i].n+'? They will see MRP only.')) return;
-    CUSTOMERS.splice(i,1); touchC();
+    const phone=b.dataset.rm, row=CUSTOMERS.find(c=>c.phone===phone);
+    if(!confirm('Remove '+(row&&row.name||phone)+'? They will lose access to dealer prices and sign-in.')) return;
+    const {error}=await PMAuth.sb.rpc('admin_delete_customer',{p_phone:phone});
+    if(error){ alert('Could not remove — '+error.message); return; }
+    await loadAllowlist();
   };
 }
-$('#cAdd').onclick=function(){
-  const n=$('#cName').value.trim(), raw=($('#cPhone').value||'').replace(/\D/g,'');
+$('#cAdd').onclick=async function(){
+  const n=$('#cName').value.trim(), shop=$('#cShop').value.trim(), role=$('#cRole').value;
+  const raw=($('#cPhone').value||'').replace(/\D/g,'');
   if(!n){alert('Give the customer a name so you can recognise them later.');return}
   if(raw.length<10){alert('That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
     '. Type the 10-digit number — 91 in front is fine too.');return}
   const ph='91'+raw.slice(-10);
-  if(CUSTOMERS.some(c=>last10(c.p)===last10(ph))){alert('That number is already on the list.');return}
-  if((C.auth&&C.auth.admins||[]).some(a=>last10(a.p)===last10(ph))){alert('That number is already an admin.');return}
-  CUSTOMERS.push({n:n,p:ph});
-  $('#cName').value='';$('#cPhone').value='';
-  touchC();
+  if(CUSTOMERS.some(c=>last10(c.phone)===last10(ph))){alert('That number is already on the list.');return}
+  const {error}=await PMAuth.sb.rpc('admin_upsert_customer',
+    {p_phone:ph,p_name:n,p_shop:shop||null,p_role:role});
+  if(error){ alert('Could not add — '+error.message); return; }
+  $('#cName').value='';$('#cShop').value='';$('#cPhone').value='';$('#cRole').value='dealer';
+  await loadAllowlist();
 };
 
 /* ---------------- publish ---------------- */
@@ -607,10 +684,8 @@ function drawPublish(){
   const n=changeCount();
   $('#pubSummary').innerHTML = n
     ? '<div class="note" style="background:var(--act)"><b>'+n+' change'+(n===1?'':'s')+' waiting</b>'+
-      (dirty?'data.json has product changes. ':'')+
-      (custDirty?'config.js has customer changes. ':'')+'</div>'
+      'data.json has product changes.</div>'
     : '<div class="note"><b>Nothing to publish</b>Everything here matches the live catalogue.</div>';
-  $('#dlConfig').disabled=!custDirty;
 }
 function dl(name, text, type){
   const b=new Blob([text],{type:type||'text/plain'});
@@ -621,27 +696,6 @@ function dl(name, text, type){
 $('#dlData').onclick=function(){
   const clean=P.map(p=>{const c=Object.assign({},p); delete c._h; return c});
   dl('data.json', JSON.stringify(clean,null,1), 'application/json');
-};
-$('#dlConfig').onclick=function(){
-  const A=(C.auth&&C.auth.admins)||[];
-  const q=o=>JSON.stringify(o);
-  const txt='/* Patel Marketing catalogue — v2 settings.\n'+
-   '   Generated by the admin panel on '+new Date().toLocaleString('en-IN')+'.\n'+
-   '   Numbers are one-way hashes, never stored in the clear. */\n\n'+
-   'window.PM_CONFIG = {\n\n'+
-   "  firm: "+q(C.firm||'Patel Marketing')+",\n"+
-   "  tagline: "+q(C.tagline||'Wholesale Kitchenware')+",\n"+
-   "  whatsapp: "+q(C.whatsapp||'')+",\n"+
-   "  site: "+q(C.site||'')+",\n\n"+
-   '  auth: {\n    admins: [\n'+
-   A.map(a=>'      { n:'+q(a.n)+', p:'+q(a.p)+' }').join(',\n')+'\n    ],\n'+
-   '    customers: [\n'+
-   CUSTOMERS.map(c=>'      { n:'+q(c.n)+', p:'+q(c.p)+' }').join(',\n')+'\n    ],\n'+
-   '    noAccessMessage: '+q((C.auth&&C.auth.noAccessMessage)||'This number is not on our customer list yet.')+',\n'+
-   '  },\n\n'+
-   '  festive: '+JSON.stringify(C.festive||{},null,2).replace(/\n/g,'\n  ')+',\n\n'+
-   '  motion: '+q(C.motion||'full')+',\n};\n';
-  dl('config.js', txt, 'application/javascript');
 };
 $('#dlOrphans').onclick=async function(){
   const used=new Set();
@@ -660,7 +714,7 @@ $('#dlOrphans').onclick=async function(){
 };
 $('#resetBtn').onclick=function(){
   if(!confirm('Throw away every change made on this phone since your last download?')) return;
-  localStorage.removeItem(DRAFT); localStorage.removeItem(CUSTD); location.reload();
+  localStorage.removeItem(DRAFT); location.reload();
 };
 </script>
 </body>

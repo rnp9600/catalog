@@ -48,8 +48,10 @@ catalogue or the database changes.
 
    Neither belongs in this repo or in `config.js`. They live only here.
 
-5. Sign in on `/v2/` with a number that is on `catalog.allowlist`. A code
-   should arrive within a minute.
+5. Sign in on **`/v3/`** with a number that is on `catalog.allowlist`. A code
+   should arrive within a minute. (`/v2/` is the previous, still-live version
+   and deliberately keeps the old plain-text sign-in — it will never send an
+   OTP.)
 
 ## Notes
 

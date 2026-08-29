@@ -20,16 +20,16 @@
   let sb = null;
   try {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { storageKey: 'v2_sb_auth', persistSession: true, autoRefreshToken: true }
+      auth: { storageKey: 'v3_sb_auth', persistSession: true, autoRefreshToken: true }
     });
   } catch (e) { /* CDN script failed to load — PMAuth degrades to signed-out */ }
 
   async function sendOtp(phoneDigits) {
-    if (!sb) return { error: { message: 'Sign-in is unavailable right now.' } };
+    if (!sb) return { error: { message: 'Sign-in could not load — check your connection and reload the page.' } };
     return sb.auth.signInWithOtp({ phone: toE164(phoneDigits) });
   }
   async function verifyOtp(phoneDigits, code) {
-    if (!sb) return { error: { message: 'Sign-in is unavailable right now.' } };
+    if (!sb) return { error: { message: 'Sign-in could not load — check your connection and reload the page.' } };
     return sb.auth.verifyOtp({ phone: toE164(phoneDigits), token: dg(code), type: 'sms' });
   }
   async function currentSession() {
