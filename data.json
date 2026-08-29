@@ -1,23 +1,23 @@
 [
  {
   "sr": 1,
-  "img": "surya/vadachatti-1",
+  "img": "surya/vadachatti-3",
   "imgs": [
-   "surya/vadachatti-1",
-   "surya/vadachatti-2",
    "surya/vadachatti-3",
+   "surya/vadachatti-1",
    "surya/vadachatti-4",
    "surya/vadachatti-5",
-   "surya/vadachatti-6",
-   "surya/vadachatti-7"
+   "surya/vadachatti-2",
+   "surya/vadachatti-7",
+   "surya/vadachatti-6"
   ],
-  "name": "Vadachatti",
+  "name": "Vadachatti (Kadhai)",
   "brand": "Surya",
   "cat": "Cast Iron",
   "sub": "Vadachatti",
   "desc": "Cast iron Vadachatti — kadhai in Tamil. Deep bowl with two side handles, for gravies, curries and deep-frying.",
   "code": "SUR-001",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": "Kadhai",
   "spec": "",
@@ -86,7 +86,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-vadachatti"
+  "slug": "surya-vadachatti",
+  "hidden": false
  },
  {
   "sr": 2,
@@ -312,11 +313,11 @@
  },
  {
   "sr": 6,
-  "img": "surya/dosa-double-handle-12-1",
+  "img": "surya/dosa-double-handle-12-2",
   "imgs": [
-   "surya/dosa-double-handle-12-1",
    "surya/dosa-double-handle-12-2",
-   "surya/dosa-double-handle-12-3"
+   "surya/dosa-double-handle-12-3",
+   "surya/dosa-double-handle-12-1"
   ],
   "name": "Double Handle Dosa Plate 12\" (DH)",
   "brand": "Surya",
@@ -324,7 +325,7 @@
   "sub": "Dosa Plate",
   "desc": "Cast iron dosa plate with handles on both sides. 36.4 x 30.3 x 1.15 cm.",
   "code": "SUR-006",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": "DH · Double Handle",
   "spec": "",
@@ -344,7 +345,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-double-handle-dosa-plate-12-dh"
+  "slug": "surya-double-handle-dosa-plate-12-dh",
+  "hidden": false
  },
  {
   "sr": 7,
@@ -420,16 +422,15 @@
   "img": "surya/appakal-8-9-1",
   "imgs": [
    "surya/appakal-8-9-1",
-   "surya/appakal-8-9-2",
-   "surya/appakal-8-9-3"
+   "surya/appakal-8-9-2"
   ],
-  "name": "Appakal 8 & 9\" (Appacity)",
+  "name": "Appakal (Appacity)",
   "brand": "Surya",
   "cat": "Cast Iron",
   "sub": "Appakal",
   "desc": "Cast iron Appakal for appam — deep bowl, even heat, crisp edges. Induction compatible.",
   "code": "SUR-009",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": "Appacity",
   "spec": "",
@@ -445,7 +446,7 @@
    {
     "size": "9 Inch",
     "rate": 440,
-    "price": 570,
+    "price": 575,
     "mrp": null,
     "moq": null
    }
@@ -456,7 +457,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-appakal-8-9-appacity"
+  "slug": "surya-appakal-8-9-appacity",
+  "hidden": false
  },
  {
   "sr": 10,
@@ -470,7 +472,7 @@
   "sub": "Appakal",
   "desc": "Cast iron Appakal with handles. 32.1 x 22.2 x 5.10 cm. Induction compatible.",
   "code": "SUR-010",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": "Appacity",
   "spec": "",
@@ -490,7 +492,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-handle-appakal-9-appacity"
+  "slug": "surya-handle-appakal-9-appacity",
+  "hidden": true
  },
  {
   "sr": 11,
@@ -504,7 +507,7 @@
   "sub": "Appakal",
   "desc": "Cast iron lid for Appakal.",
   "code": "SUR-011",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": "Appacity",
   "spec": "",
@@ -524,7 +527,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-appakal-lid"
+  "slug": "surya-appakal-lid",
+  "hidden": true
  },
  {
   "sr": 12,
@@ -636,12 +640,12 @@
  },
  {
   "sr": 15,
-  "img": "surya/paniyarakal-12-1",
+  "img": "surya/paniyarakal-12-2",
   "imgs": [
-   "surya/paniyarakal-12-1",
    "surya/paniyarakal-12-2",
    "surya/paniyarakal-12-3",
    "surya/paniyarakal-12-4",
+   "surya/paniyarakal-12-1",
    "surya/paniyarakal-12-5"
   ],
   "name": "Paniyarakal 12 Pits (Appam)",
@@ -650,7 +654,7 @@
   "sub": "Paniyarakal",
   "desc": "Cast iron paniyarakal, 12 pits. 32.2 x 26.3 x 3.18 cm. Induction compatible.",
   "code": "SUR-015",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": "Appam",
   "spec": "",
@@ -670,18 +674,19 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-paniyarakal-12-pits-appam"
+  "slug": "surya-paniyarakal-12-pits-appam",
+  "hidden": false
  },
  {
   "sr": 16,
-  "img": "surya/paniyarakal-14-flat-1",
+  "img": "surya/paniyarakal-14-flat-2",
   "imgs": [
-   "surya/paniyarakal-14-flat-1",
    "surya/paniyarakal-14-flat-2",
+   "surya/paniyarakal-14-flat-6",
+   "surya/paniyarakal-14-flat-1",
    "surya/paniyarakal-14-flat-3",
    "surya/paniyarakal-14-flat-4",
    "surya/paniyarakal-14-flat-5",
-   "surya/paniyarakal-14-flat-6",
    "surya/paniyarakal-14-kuzhi-1"
   ],
   "name": "Paniyarakal 14 Pits (Appam)",
@@ -690,7 +695,7 @@
   "sub": "Paniyarakal",
   "desc": "Cast iron paniyarakal, 14 pits — two base options. Flat base 36.1 x 30 x 4.2 cm · Kuzhi (bump) base 32.8 x 25.3 x 3.15 cm. Induction compatible.",
   "code": "SUR-016",
-  "gst": null,
+  "gst": 18,
   "note": "Two Special versions at the same rate — flat base and kuzhi (bump) base.",
   "alias": "Appam",
   "spec": "",
@@ -717,7 +722,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-paniyarakal-14-pits-appam"
+  "slug": "surya-paniyarakal-14-pits-appam",
+  "hidden": false
  },
  {
   "sr": 17,
@@ -973,7 +979,7 @@
   "sub": "Bowls & Lids",
   "desc": "Cast iron kadai with lid. 21.6 x 18.1 x 6.3 cm.",
   "code": "SUR-022",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": null,
   "spec": "",
@@ -993,7 +999,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-kadai-lid"
+  "slug": "surya-kadai-lid",
+  "hidden": true
  },
  {
   "sr": 23,
@@ -1099,13 +1106,13 @@
  },
  {
   "sr": 26,
-  "img": "surya/flat-kadai-1",
+  "img": "surya/flat-kadai-2",
   "imgs": [
-   "surya/flat-kadai-1",
    "surya/flat-kadai-2",
    "surya/flat-kadai-3",
    "surya/flat-kadai-4",
    "surya/flat-kadai-5",
+   "surya/flat-kadai-1",
    "surya/flat-kadai-6"
   ],
   "name": "Flat Kadai",
@@ -1114,7 +1121,7 @@
   "sub": "Bowls & Lids",
   "desc": "Flat-base cast iron kadai. 32 x 26 x 6.18 cm.",
   "code": "SUR-026",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": null,
   "spec": "",
@@ -1134,7 +1141,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-flat-kadai"
+  "slug": "surya-flat-kadai",
+  "hidden": false
  },
  {
   "sr": 27,
