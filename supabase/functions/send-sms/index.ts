@@ -20,6 +20,9 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const FAST2SMS_ENDPOINT = "https://www.fast2sms.com/dev/bulkV2";
 // Reject replayed webhooks older than this (Standard Webhooks guidance).
 const MAX_SKEW_SECONDS = 300;
+// Give up on the SMS provider well before Supabase Auth's own request would
+// time out, so the sign-in screen always gets an answer.
+const FAST2SMS_TIMEOUT_MS = 15000;
 
 function base64ToBytes(b64: string): Uint8Array {
   const bin = atob(b64);
@@ -87,20 +90,32 @@ async function sendViaFast2SMS(tenDigit: string, otp: string): Promise<void> {
   const apiKey = Deno.env.get("FAST2SMS_API_KEY");
   if (!apiKey) throw new Error("FAST2SMS_API_KEY is not set");
 
-  const res = await fetch(FAST2SMS_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "authorization": apiKey,
-      "Content-Type": "application/json",
-    },
-    // route "otp" uses Fast2SMS's own pre-approved template, which is what
-    // lets this work without our own DLT registration.
-    body: JSON.stringify({
-      route: "otp",
-      variables_values: otp,
-      numbers: tenDigit,
-    }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(FAST2SMS_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "authorization": apiKey,
+        "Content-Type": "application/json",
+      },
+      // route "otp" uses Fast2SMS's own pre-approved template, which is what
+      // lets this work without our own DLT registration.
+      body: JSON.stringify({
+        route: "otp",
+        variables_values: otp,
+        numbers: tenDigit,
+      }),
+      // Without this, a stalled provider keeps Supabase Auth's own request
+      // open, and the sign-in screen sits on "Sending…" indefinitely. Fail
+      // fast instead, so the reader gets a message they can act on.
+      signal: AbortSignal.timeout(FAST2SMS_TIMEOUT_MS),
+    });
+  } catch (err) {
+    const reason = (err as Error)?.name === "TimeoutError"
+      ? `no response within ${FAST2SMS_TIMEOUT_MS / 1000}s`
+      : ((err as Error)?.message ?? "network error");
+    throw new Error(`Could not reach Fast2SMS: ${reason}`);
+  }
 
   const text = await res.text();
   let parsed: { return?: boolean; message?: unknown } = {};
