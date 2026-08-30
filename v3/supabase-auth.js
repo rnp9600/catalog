@@ -4,10 +4,13 @@
    allowlist row (name, is_admin) behind window.PMAuth so neither page
    duplicates the Supabase wiring.
 
-   Real SMS delivery needs the MSG91 + DLT template hookup done once in the
-   Supabase dashboard (Authentication → Providers → Phone). Until that is
-   done, signInWithOtp() below will reach Supabase but no code will arrive
-   by SMS — everything else keeps working. */
+   Delivery goes: this page → Supabase Auth → the send-sms Edge Function →
+   Fast2SMS. Supabase generates the code; the function only carries it. No
+   DLT registration is needed because Fast2SMS's `otp` route sends on their
+   own pre-approved template — but that route does require a one-time
+   website + Aadhaar KYC on the Fast2SMS account, without which it answers
+   "complete website verification" and the sign-in reports a hook error.
+   See supabase/functions/send-sms/README.md. */
 (function(){
   const CFG = window.PM_CONFIG || {};
   const SUPABASE_URL = CFG.supabaseUrl || 'https://vcrzauuxvgpsbforiszz.supabase.co';
@@ -109,6 +112,13 @@
     if (!error) return '';
     const m = error.message || '';
     if (error.status === 429 || /rate limit/i.test(m)) return 'Too many attempts. Please try again in an hour.';
+    // Supabase reports a failing Send SMS hook as a bare status code, which
+    // means nothing to the reader. The code is kept for us; the sentence is
+    // for them.
+    if (/from hook/i.test(m) || /\b50[0-9]\b/.test(m)) {
+      return 'We could not send the code just now — the SMS service refused it. ' +
+             'Please try again in a moment. (' + m + ')';
+    }
     return m || 'Something went wrong — please try again.';
   }
 
@@ -116,7 +126,7 @@
   // live site is not reachable from where this gets written — so the page has
   // to be able to say for itself which build it is running and how far the
   // Supabase wiring got.
-  const BUILD = 9;
+  const BUILD = 10;
   function diagnostics() {
     return {
       build: BUILD,

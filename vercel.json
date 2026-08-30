@@ -1,5 +1,9 @@
 {
   "rewrites": [
     { "source": "/p/:id", "destination": "/api/p?id=:id" }
+  ],
+  "redirects": [
+    { "source": "/v2", "destination": "/v2/", "permanent": false },
+    { "source": "/v3", "destination": "/v3/", "permanent": false }
   ]
 }
