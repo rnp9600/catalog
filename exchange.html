@@ -149,9 +149,9 @@ datalist{}
 </main>
 </div>
 
-<script src="config.js?v=16"></script>
+<script src="config.js?v=17"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=16"></script>
+<script src="supabase-auth.js?v=17"></script>
 <script>
 (function(){
   const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
@@ -228,7 +228,12 @@ $('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload()
 async function start(row){
   ME=row;
   $('#gate').style.display='none'; $('#app').style.display='block';
-  $('#whoLine').textContent=(row.name||'you')+(row.role==='shop_owner'?' · shop owner':row.role==='admin'?' · admin':' · dealer');
+  // 'shop_owner' is the older spelling of a retail dealer — say "dealer"
+  // either way, and let dealer_type carry the distinction that matters here.
+  $('#whoLine').textContent=(row.shop||row.nickname||row.name||'you')+
+    (row.role==='admin' ? ' · admin'
+     : ' · '+(row.dealer_type==='wholesaler'?'wholesale dealer':'dealer'))+
+    (row.city?' · '+row.city:'');
   const r=await fetch('data.json',{cache:'no-cache'});
   P=await r.json();
   const dl=$('#dProducts');
