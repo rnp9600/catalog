@@ -24,8 +24,14 @@ catalogue or the database changes.
 
 ## One-time setup
 
-1. **Fast2SMS**: complete KYC and add wallet balance. Copy the API key from
-   *Dev API*.
+1. **Fast2SMS**: copy the API key from *Dev API*, then complete the OTP KYC —
+   the `otp` route refuses to send until this is done, answering
+   *"Before using OTP Message API, complete website verification."*
+   In the Fast2SMS panel: **OTP SMS section → KYC button (top)**, then
+   - add at least ₹100 credit,
+   - enter the website URL (`https://patelmarketing-catalog.vercel.app`),
+   - verify Aadhaar — the OTP goes to the **Aadhaar-linked** mobile, which is
+     not necessarily the number on the Fast2SMS account.
 
 2. **Supabase → Authentication → Providers → Phone**: enable phone sign-in.
    (No SMS provider needs choosing there — the hook below replaces it.)
