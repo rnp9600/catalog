@@ -72,8 +72,8 @@ main{max-width:760px;margin:0 auto;padding:14px}
 <div id="gate" class="gate">
   <div class="mark">PM</div>
   <div id="gStepPhone">
-    <h1>Shop sign in</h1>
-    <p>For shop owners only. Enter your phone number — we'll text you a one-time code.</p>
+    <h1>Dealer sign in</h1>
+    <p>For Patel Marketing dealers. Enter your phone number — we'll text you a one-time code.</p>
     <div class="row"><span>+91</span><input id="gp" type="tel" inputmode="numeric" maxlength="15"
       placeholder="98765 43210" autocomplete="off"></div>
     <div id="gEcho" style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--tm);margin:-4px 0 10px;min-height:15px"></div>
@@ -114,9 +114,18 @@ main{max-width:760px;margin:0 auto;padding:14px}
     <div class="bar">
       <input id="cName" placeholder="Customer name">
       <input id="cPhone" inputmode="numeric" maxlength="15" placeholder="10-digit number" style="flex:0 0 160px">
+    </div>
+    <div class="bar">
+      <input id="cNick" placeholder="Your own name for them (optional)">
+      <input id="cCity" placeholder="Area (optional)" style="flex:0 0 160px">
       <button class="btn g" id="cAdd">Add</button>
     </div>
     <div id="custList"></div>
+
+    <h4 style="font-size:.8rem;margin:22px 0 4px;font-weight:800">Followed your shop</h4>
+    <p style="font-size:.75rem;color:var(--tm);margin-bottom:9px">Consumers who found you in the
+      catalogue and chose your shop. Add them to your list to give them a name and set offers for them.</p>
+    <div id="followList"></div>
   </section>
 
   <section class="panel" id="p-offers">
@@ -142,9 +151,9 @@ main{max-width:760px;margin:0 auto;padding:14px}
 </main>
 </div>
 
-<script src="config.js?v=14"></script>
+<script src="config.js?v=15"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=14"></script>
+<script src="supabase-auth.js?v=15"></script>
 <script>
 (function(){
   const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
@@ -158,8 +167,12 @@ main{max-width:760px;margin:0 auto;padding:14px}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=n=>n==null?'':'₹'+Number(n).toLocaleString('en-IN');
-let ME=null, P=[], PENDING_PHONE=null;
+let ME=null, P=[], PENDING_PHONE=null, MINE=new Set();
 const STATUS_LABEL={in_stock:'In stock',arriving:'Arriving',held:'Kept aside'};
+/* Level 2 is one role — a shop owner IS a dealer whose dealer_type is
+   'retailer'. 'shop_owner' is the older spelling of the same thing and is
+   still accepted so a row written before the merge keeps its access. */
+const isDealer=r=>!!r && (r.role==='dealer'||r.role==='shop_owner');
 
 /* ---------------- gate ---------------- */
 $('#gp').oninput=function(){
@@ -197,9 +210,9 @@ $('#gv').onclick=async function(){
   if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
   PENDING_PHONE=null;
   const row=await PMAuth.myAllowlistRow();
-  if(!row || row.role!=='shop_owner'){
+  if(!row || !isDealer(row)){
     await PMAuth.signOut();
-    m.textContent='That number signed in, but this screen is for shop owners only.';
+    m.textContent='That number signed in, but this screen is for Patel Marketing dealers.';
     m.classList.add('on');
     $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
     return;
@@ -210,18 +223,19 @@ $('#gv').onclick=async function(){
   const sess=await PMAuth.currentSession();
   if(!sess) return;
   const row=await PMAuth.myAllowlistRow();
-  if(row && row.role==='shop_owner') start(row); else await PMAuth.signOut();
+  if(row && isDealer(row)) start(row); else await PMAuth.signOut();
 })();
 $('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
 
 async function start(row){
   ME=row;
   $('#gate').style.display='none'; $('#app').style.display='block';
-  $('#whoLine').textContent=(row.shop||row.name||'your shop');
+  $('#whoLine').textContent=(row.shop||row.nickname||row.name||'your shop')+
+    (row.dealer_type==='wholesaler'?' · wholesale':'')+(row.city?' · '+row.city:'');
   const r=await fetch('../data.json',{cache:'no-cache'});
   P=await r.json();
   $('#dProducts').innerHTML=P.map(p=>'<option value="'+esc(p.name)+(p.code?' — '+esc(p.code):'')+'">').join('');
-  await loadCustomers(); await loadOffers();
+  await loadCustomers(); await loadFollowers(); await loadOffers();
 }
 
 document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
@@ -237,9 +251,11 @@ async function loadCustomers(){
   const {data,error}=await PMAuth.sb.from('allowlist').select('*')
     .eq('owner_phone', ME.phone).eq('role','end_customer').order('added_at');
   if(error){ $('#custList').innerHTML='<div class="empty">Could not load — '+esc(error.message)+'</div>'; return; }
+  MINE=new Set((data||[]).map(c=>c.phone));
   $('#custList').innerHTML = (data&&data.length) ? data.map(c=>
-    '<div class="item"><div class="t"><div class="n">'+esc(c.name||'(unnamed)')+'</div>'+
-    '<div class="s">+'+esc(c.phone)+'</div></div>'+
+    '<div class="item"><div class="t"><div class="n">'+esc(c.nickname||c.name||'(unnamed)')+'</div>'+
+    '<div class="s">+'+esc(c.phone)+(c.nickname&&c.name?' · '+esc(c.name):'')+
+    (c.city?' · '+esc(c.city):'')+'</div></div>'+
     '<button class="ibtn" data-rm="'+esc(c.phone)+'">Remove</button></div>').join('')
     : '<div class="empty">No customers added yet.</div>';
   $('#custList').onclick=async function(e){
@@ -250,17 +266,44 @@ async function loadCustomers(){
     await loadCustomers();
   };
 }
+async function addCustomer(ph, name, nick, city){
+  const {error}=await PMAuth.sb.rpc('shop_upsert_end_customer',
+    {p_phone:ph, p_name:name, p_nickname:nick||null, p_city:city||null});
+  if(error){ alert('Could not add — '+error.message); return false; }
+  await loadCustomers(); await loadFollowers();
+  return true;
+}
 $('#cAdd').onclick=async function(){
   const n=$('#cName').value.trim(), raw=($('#cPhone').value||'').replace(/\D/g,'');
   if(!n){alert('Give the customer a name.');return}
   if(raw.length<10){alert('That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
     '. Type the 10-digit number.');return}
-  const ph='91'+raw.slice(-10);
-  const {error}=await PMAuth.sb.rpc('shop_upsert_end_customer',{p_phone:ph,p_name:n});
-  if(error){ alert('Could not add — '+error.message); return; }
-  $('#cName').value='';$('#cPhone').value='';
-  await loadCustomers();
+  if(await addCustomer('91'+raw.slice(-10), n, $('#cNick').value.trim(), $('#cCity').value.trim())){
+    $('#cName').value='';$('#cPhone').value='';$('#cNick').value='';$('#cCity').value='';
+  }
 };
+
+/* Consumers who signed up on their own and picked this shop. Their allowlist
+   row is not readable here — it is not this dealer's customer yet — so all
+   there is to show is the number they followed with. Adding them is what
+   makes them a customer, and only then does a name appear. */
+async function loadFollowers(){
+  const {data,error}=await PMAuth.sb.from('follows').select('customer_phone,created_at')
+    .eq('dealer_phone', ME.phone).order('created_at',{ascending:false});
+  if(error){ $('#followList').innerHTML='<div class="empty">Could not load — '+esc(error.message)+'</div>'; return; }
+  const news=(data||[]).filter(f=>!MINE.has(f.customer_phone));
+  $('#followList').innerHTML = news.length ? news.map(f=>
+    '<div class="item"><div class="t"><div class="n">+'+esc(f.customer_phone)+'</div>'+
+    '<div class="s">followed '+new Date(f.created_at).toLocaleDateString('en-IN')+'</div></div>'+
+    '<button class="ibtn" data-add="'+esc(f.customer_phone)+'">Add to my list</button></div>').join('')
+    : '<div class="empty">Nobody new — everyone who follows your shop is already on your list.</div>';
+  $('#followList').onclick=async function(e){
+    const b=e.target.closest('[data-add]'); if(!b) return;
+    const name=prompt('What is their name?');
+    if(name===null || !name.trim()) return;
+    await addCustomer(b.dataset.add, name.trim(), '', '');
+  };
+}
 
 /* ---------------- offers ---------------- */
 function findProduct(text){

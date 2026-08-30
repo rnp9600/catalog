@@ -570,6 +570,37 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  line-height:1.6;color:var(--tx)}
 .visitshop b{display:block;margin-bottom:4px}
 
+
+/* ---- reviews, and the shop directory a consumer picks from ---- */
+.stars{display:inline-flex;align-items:center;gap:3px;font-size:.72rem;color:#C8891B;font-weight:700}
+.stars .sc{color:var(--tm);font-weight:600}
+.card .stars{margin-top:5px}
+.revwrap{margin-top:20px;border-top:1px solid var(--bd);padding-top:16px}
+.revwrap h4{font-size:.9rem;font-weight:800;margin-bottom:3px}
+.revwrap .rsum{font-size:.75rem;color:var(--tm);margin-bottom:11px}
+.rev{background:var(--sf2);border-radius:var(--rs);padding:10px 12px;margin-bottom:8px}
+.rev .rh{display:flex;align-items:baseline;gap:8px;font-size:.78rem;font-weight:700}
+.rev .rh small{font-weight:500;color:var(--tm);font-family:var(--fm);font-size:.64rem}
+.rev p{font-size:.82rem;margin-top:5px;line-height:1.55}
+.revform{background:var(--sf2);border-radius:var(--rs);padding:12px;margin-top:10px}
+.revform textarea{width:100%;min-height:64px;padding:9px 11px;border:1.5px solid var(--bd);
+ border-radius:var(--rs);background:var(--sf);font-size:.85rem;resize:vertical;margin:8px 0}
+.pickstar{display:flex;gap:5px}
+.pickstar button{border:0;background:transparent;font-size:1.5rem;line-height:1;padding:0;
+ color:var(--bd);transition:color .1s}
+.pickstar button.on{color:#E0A320}
+.shoplist .shopitem{display:flex;align-items:center;gap:10px;background:var(--sf2);
+ border-radius:var(--rs);padding:11px 12px;margin-bottom:8px}
+.shoplist .shopitem .t{flex:1;min-width:0}
+.shoplist .shopitem b{display:block;font-size:.87rem}
+.shoplist .shopitem small{font-family:var(--fm);font-size:.66rem;color:var(--tm)}
+.shoplist .shopitem button{flex:0 0 auto;border:0;border-radius:999px;padding:7px 13px;
+ font-size:.72rem;font-weight:700;background:var(--pr);color:#fff}
+.shoplist .shopitem button.on{background:var(--sf);color:var(--tm);border:1.5px solid var(--bd)}
+.sgnin{width:100%;padding:13px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);
+ background:var(--sf);font-size:.9rem;margin-bottom:10px}
+.linkish{border:0;background:transparent;color:inherit;text-decoration:underline;
+ font:inherit;font-weight:700;padding:0;cursor:pointer}
 </style></head><body data-theme="sky" class="v-grid">
 <header><div class="hin">
  <div class="brandbox"><div class="mark">PM</div>
@@ -778,11 +809,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · v3 (testing) · build 14</footer>
+<footer>Patel Marketing — wholesale kitchenware · v3 (testing) · build 15</footer>
 
-<script src="config.js?v=14"></script>
+<script src="config.js?v=15"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=14"></script>
+<script src="supabase-auth.js?v=15"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1047,6 +1078,7 @@ function card(p,i){
     ${p.desc?`<div class="ds">${p.desc}</div>`:''}
     ${specHtml(p)}${vc}${sz}
     <span class="br">${p.brand}${p.code?' · <span class="cd">'+p.code+'</span>':''}</span>
+    ${starsHtml(p.slug)}
     <div class="pw">${priceLine(p)}${statusChip}</div>${cta}</div></div>`;
 }
 
@@ -1149,6 +1181,12 @@ function openSheet(p){
        <button class="alt" id="shBtn">Share product</button>
        <button class="alt" id="cpBtn">Copy details</button>
      </div>`}
+     <div class="revwrap" id="revwrap">
+       <h4>What buyers say</h4>
+       <div class="rsum" id="revSum">Loading reviews…</div>
+       <div id="revList"></div>
+       <div id="revMine"></div>
+     </div>
      ${relHtml}
    </div>`;
   ov.classList.add('open');document.body.style.overflow='hidden';
@@ -1167,7 +1205,7 @@ function openSheet(p){
   sheet.querySelectorAll('[data-rel]').forEach(c=>c.onclick=()=>openSheet(P[+c.dataset.rel]));
   const holdBtn=document.getElementById('holdBtn');
   if(holdBtn) holdBtn.onclick=()=>{
-    const target=(SESS&&SESS.ownerPhone)||WA_NUMBER;
+    const target=currentShopPhone()||WA_NUMBER;
     const msg='Hi, is "'+p.name+'" available? Could you keep one for me?';
     window.open(`https://wa.me/${target}?text=`+encodeURIComponent(msg),'_blank');};
   const waBtn=document.getElementById('waBtn');
@@ -1184,6 +1222,7 @@ function openSheet(p){
     try{await navigator.clipboard.writeText(url);b.textContent='Link copied ✓';}
     catch(e){b.textContent=url;}
     setTimeout(()=>b.textContent='Share product',1800);};
+  loadReviews(p);
   const cpBtn=document.getElementById('cpBtn');
   if(cpBtn) cpBtn.onclick=()=>{
     const lines=[p.name,p.brand+' · '+p.cat+(p.code?' · '+p.code:'')];
@@ -1659,25 +1698,70 @@ let RETAIL = JSON.parse(localStorage.getItem('v3_pm_retail')||'null') || {on:fal
 const signedIn = () => !!(SESS && SESS.ok);
 const isEndCustomer = () => !!(SESS && SESS.role==='end_customer');
 const saveRtl  = () => localStorage.setItem('v3_pm_retail',  JSON.stringify(RETAIL));
-// Populated for end customers only: the shop they're browsing under, and
-// that shop's own status/offer per product slug.
-let SHOP_INFO=null, SHOP_OFFERS={};
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,
+  c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// Populated for end customers only: every shop they may see (the one that
+// added them, plus any they have followed), the one they are browsing under,
+// and that shop's own status/offer per product slug.
+let SHOP_INFO=null, SHOP_OFFERS={}, SHOP_LIST=[];
+const SHOP_KEY='v3_pm_shop';
 function shopOfferFor(p){ return SHOP_OFFERS[p.slug] || null; }
 async function loadShopContext(){
-  SHOP_INFO=null; SHOP_OFFERS={};
-  if(!isEndCustomer() || !SESS.ownerPhone) return;
+  SHOP_INFO=null; SHOP_OFFERS={}; SHOP_LIST=[];
+  if(!isEndCustomer()) return;
   try{
-    const [{data:shop}, {data:offers}] = await Promise.all([
-      PMAuth.sb.from('allowlist').select('name,shop').eq('phone', SESS.ownerPhone).maybeSingle(),
-      PMAuth.sb.from('shop_offers').select('*').eq('shop_phone', SESS.ownerPhone),
-    ]);
-    SHOP_INFO = shop || null;
+    // No "which shops are mine" filter is needed: RLS already answers that.
+    // A consumer may read exactly the dealers who added them or whom they
+    // have followed, so asking for all dealers returns precisely those.
+    const {data:shops} = await PMAuth.sb.from('allowlist')
+      .select('phone,name,shop,city').in('role',['dealer','shop_owner']);
+    SHOP_LIST = shops || [];
+    let want=null; try{ want=localStorage.getItem(SHOP_KEY); }catch(e){}
+    SHOP_INFO = SHOP_LIST.find(x=>x.phone===want)
+             || SHOP_LIST.find(x=>x.phone===SESS.ownerPhone)
+             || SHOP_LIST[0] || null;
+    if(!SHOP_INFO) return;
+    const {data:offers} = await PMAuth.sb.from('shop_offers').select('*')
+      .eq('shop_phone', SHOP_INFO.phone);
     (offers||[]).forEach(o=>{ SHOP_OFFERS[o.product_slug]=o; });
   }catch(e){}
 }
+function currentShopPhone(){ return (SHOP_INFO && SHOP_INFO.phone) || (SESS && SESS.ownerPhone) || null; }
+
+/* ---------- what buyers say ----------
+   Ratings are read from catalog.product_rating_summary, a view that averages
+   the reviews per product. A card only needs the average and the count, and
+   pulling every review just to draw a row of stars would mean fetching the
+   whole review table on every catalogue load. The reviews themselves are
+   fetched one product at a time, when a sheet opens. */
+let RATINGS={};
+async function loadRatings(){
+  try{
+    const {data,error}=await PMAuth.sb.from('product_rating_summary').select('*');
+    if(error) return;              // reviews are a bonus; never block the catalogue
+    const m={};
+    (data||[]).forEach(r=>{ m[r.product_slug]={n:r.reviews, avg:Number(r.rating)}; });
+    RATINGS=m;
+  }catch(e){}
+}
+function starsHtml(slug){
+  const r=RATINGS[slug];
+  if(!r||!r.n) return '';
+  const full=Math.max(0,Math.min(5,Math.round(r.avg)));
+  return '<span class="stars">'+'\u2605'.repeat(full)+
+    '<span class="sc">'+'\u2606'.repeat(5-full)+' '+r.avg.toFixed(1)+
+    ' ('+r.n+')</span></span>';
+}
 async function refreshSession(){
   const sess = await PMAuth.currentSession();
-  if(!sess){ SESS=null; SHOP_INFO=null; SHOP_OFFERS={}; markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet(); obarRender(); return; }
+  if(!sess){
+    SESS=null; SHOP_INFO=null; SHOP_OFFERS={}; SHOP_LIST=[];
+    // Reviews are public, so a signed-out visitor sees the stars too.
+    await loadRatings();
+    markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet(); obarRender();
+    return;
+  }
   const row = await PMAuth.myAllowlistRow();
   if(!row){
     const why=(PMAuth.lookupError&&PMAuth.lookupError())||'';
@@ -1693,15 +1777,18 @@ async function refreshSession(){
     SESS=null;
   } else {
     const full = dg(sess.user && sess.user.phone), last = full.slice(-10);
-    // role is groundwork for the three-tier auth described in
-    // V3-AMENDMENTS.md (dealer / shop_owner / end_customer / admin) — not
-    // yet used to change what anyone sees, so a dealer and a shop owner
-    // still get today's identical signed-in view. end_customer is the one
-    // exception: see loadShopContext()/campaignBanner() below.
+    // Three levels, not four: admin, dealer, end_customer. 'shop_owner' is
+    // the older spelling of a retail dealer and is still honoured so a row
+    // written before the roles were collapsed keeps working. A dealer and an
+    // admin see the same trade view; end_customer is the one that changes
+    // what the catalogue shows — see loadShopContext()/campaignBanner().
     SESS = {ok:true, admin:!!row.is_admin, role:row.role||'dealer', name:row.name||'Signed in',
-      tail: last?'…'+last.slice(-3):'', phone: full, shop: row.shop||'', ownerPhone: row.owner_phone||null};
+      tail: last?'…'+last.slice(-3):'', phone: full, shop: row.shop||'',
+      ownerPhone: row.owner_phone||null, city: row.city||'',
+      dealerType: row.dealer_type||null};
   }
   if(isEndCustomer()) await loadShopContext();
+  await loadRatings();
   markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet();
   obarRender();
 }
@@ -1987,11 +2074,14 @@ function menuSignHtml(){
       ? '<a class="sgnbtn" href="admin.html" style="display:block;text-align:center;'+
         'text-decoration:none;margin-top:10px;background:var(--ac)">Open admin panel</a>'
       : '';
-    const trade = (SESS.role==='dealer'||SESS.role==='shop_owner'||SESS.admin)
+    // Level 2 is one role: every dealer trades and every dealer keeps their
+    // own customer list. 'shop_owner' is the older spelling of a retail dealer.
+    const isDlr = SESS.role==='dealer'||SESS.role==='shop_owner';
+    const trade = (isDlr||SESS.admin)
       ? '<a class="sgnbtn ghost" href="exchange.html" style="display:block;text-align:center;'+
         'text-decoration:none;margin-top:4px">Stock exchange</a>'
       : '';
-    const shop = SESS.role==='shop_owner'
+    const shop = isDlr
       ? '<a class="sgnbtn ghost" href="shop.html" style="display:block;text-align:center;'+
         'text-decoration:none;margin-top:4px">Your customers</a>'
       : '';
@@ -2062,6 +2152,8 @@ function accountHtml(){
    '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
    '<div><b>'+nm+'</b><small>'+tail+(SESS.admin?' · admin':'')+'</small></div></div>'+
    retailToggle+
+   (isEndCustomer()?'<button class="sgnbtn" id="sgnShops" style="margin-top:16px">'+
+     (SHOP_INFO?'Change your shop':'Find shops near you')+'</button>':'')+
    (SESS.admin?'<a class="sgnbtn" style="display:block;text-align:center;text-decoration:none;'+
      'margin-top:16px" href="admin.html">Open admin panel</a>':'')+
    '<button class="sgnbtn ghost" id="sgnOut">Sign out</button>'+
@@ -2121,6 +2213,8 @@ function wireSignIn(){
   };
   const skip=document.getElementById('sgnSkip');
   if(skip) skip.onclick=closeSignIn;
+  const shops=document.getElementById('sgnShops');
+  if(shops) shops.onclick=openShops;
   const out=document.getElementById('sgnOut');
   if(out) out.onclick=async function(){
     await PMAuth.signOut();
@@ -2132,6 +2226,234 @@ function wireSignIn(){
     if(CUR) openSheet(CUR); retailBanner(); };
   if(off) off.oninput=function(){ RETAIL.off=Math.max(0,Math.min(90,+off.value||0)); saveRtl();
     render(); if(CUR) openSheet(CUR); retailBanner(); };
+}
+
+/* ---------- reviews on the open product ---------- */
+// Reads catalog.product_reviews_public — a view that drops hidden reviews and
+// exposes a first name instead of the phone number, so a signed-out visitor
+// can read reviews without anyone's number being readable.
+let MY_REVIEW=null;
+async function loadReviews(p){
+  const sum=document.getElementById('revSum'), list=document.getElementById('revList');
+  if(!sum||!list||!CUR||CUR.slug!==p.slug) return;
+  MY_REVIEW=null;
+  let rows=[];
+  try{
+    const {data,error}=await PMAuth.sb.from('product_reviews_public')
+      .select('*').eq('product_slug',p.slug)
+      .order('created_at',{ascending:false}).limit(40);
+    if(error) throw error;
+    rows=data||[];
+  }catch(e){
+    if(CUR&&CUR.slug===p.slug){ sum.textContent='Reviews could not be loaded just now.'; }
+    return;
+  }
+  if(!CUR||CUR.slug!==p.slug) return;   // they moved on while we were fetching
+  MY_REVIEW=rows.find(r=>r.mine)||null;
+  const avg=rows.length?rows.reduce((n,r)=>n+r.rating,0)/rows.length:0;
+  sum.innerHTML = rows.length
+    ? starsHtml(p.slug) || ('<span class="stars">'+'★'.repeat(Math.round(avg))+'</span>')
+    : 'No reviews yet.';
+  list.innerHTML = rows.map(r=>
+    '<div class="rev"><div class="rh">'+'★'.repeat(r.rating)+
+    '<small>'+esc(r.author)+(r.city?' · '+esc(r.city):'')+
+    (r.mine?' · yours':'')+'</small></div>'+
+    (r.body?'<p>'+esc(r.body)+'</p>':'')+'</div>').join('');
+  renderReviewForm(p);
+}
+// Only a consumer is asked to review: the review is about having used the
+// thing, and a dealer opening this sheet is buying stock, not cooking in it.
+function renderReviewForm(p){
+  const box=document.getElementById('revMine');
+  if(!box) return;
+  if(!isEndCustomer()){
+    box.innerHTML = signedIn() ? '' :
+      '<p style="font-size:.75rem;color:var(--tm);margin-top:8px">'+
+      'Used this at home? <button class="linkish" id="revSignIn">Sign in</button> to leave a review.</p>';
+    const si=document.getElementById('revSignIn');
+    if(si) si.onclick=openSignIn;
+    return;
+  }
+  const r=MY_REVIEW||{};
+  const picked=r.rating||0;
+  box.innerHTML='<div class="revform">'+
+    '<b style="font-size:.82rem">'+(MY_REVIEW?'Your review':'Have you used this?')+'</b>'+
+    '<div class="pickstar" id="revStars">'+[1,2,3,4,5].map(n=>
+      '<button data-n="'+n+'" class="'+(n<=picked?'on':'')+'">★</button>').join('')+'</div>'+
+    '<textarea id="revBody" maxlength="600" placeholder="How has it held up? Anyone else deciding will read this.">'+
+    esc(r.body||'')+'</textarea>'+
+    '<button class="sgnbtn" id="revSave" style="margin:0">'+
+    (MY_REVIEW?'Update my review':'Post review')+'</button>'+
+    '<div class="sgnmsg" id="revMsg"></div></div>';
+  let rating=picked;
+  const stars=document.getElementById('revStars');
+  stars.onclick=function(e){
+    const b=e.target.closest('[data-n]'); if(!b) return;
+    rating=+b.dataset.n;
+    stars.querySelectorAll('button').forEach(x=>x.classList.toggle('on',+x.dataset.n<=rating));
+  };
+  document.getElementById('revSave').onclick=async function(){
+    const msg=document.getElementById('revMsg');
+    if(!rating){ msg.textContent='Tap the stars to give it a rating first.'; msg.classList.add('on'); return; }
+    const btn=this; btn.disabled=true; btn.textContent='Saving…';
+    const {error}=await PMAuth.sb.from('product_reviews').upsert({
+      product_slug:p.slug, phone:SESS.phone, rating:rating,
+      body:(document.getElementById('revBody').value||'').trim()||null,
+      updated_at:new Date().toISOString(),
+    },{onConflict:'product_slug,phone'});
+    btn.disabled=false; btn.textContent=MY_REVIEW?'Update my review':'Post review';
+    if(error){ msg.textContent='Could not save — '+error.message; msg.classList.add('on'); return; }
+    await loadRatings();
+    render();
+    await loadReviews(p);
+    toastMsg('Thanks — your review is up.');
+  };
+}
+
+/* ---------- shops a consumer can follow ---------- */
+// The directory is city text, not a map: the user was explicit that a consumer
+// picks their city rather than sharing a location. catalog.dealer_directory
+// lists a retail dealer only once the admin has given them a city, so being
+// listed is a decision somebody made rather than a side effect of being on
+// the allowlist. Wholesalers are not consumer-facing and never appear.
+let DIRECTORY=[];
+function openShops(){
+  // signOverlay() builds the sheet on first use — openShops can be the first
+  // thing a new consumer taps, before the sign-in panel has ever been opened.
+  const ov2=signOverlay();
+  const sh=document.getElementById('sgnSheet');
+  if(!sh) return;
+  sh.innerHTML=shopsHtml();
+  ov2.classList.add('open'); document.body.style.overflow='hidden';
+  wireShops();
+  loadDirectory();
+}
+function shopsHtml(){
+  return '<div class="shead"><strong>Shops near you</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<p>Type your city or area to see the shops stocking this range. Follow one and you will see '+
+   'what they have in stock, what is arriving, and anything they are keeping aside for you.</p>'+
+   '<input class="sgnin" id="shopCity" placeholder="City or area" '+
+   'value="'+esc((SESS&&SESS.city)||'')+'" autocomplete="address-level2">'+
+   '<div class="shoplist" id="shopList"><p style="font-size:.8rem;color:var(--tm)">Loading shops…</p></div>'+
+   '</div></div>';
+}
+async function loadDirectory(){
+  try{
+    const {data,error}=await PMAuth.sb.from('dealer_directory').select('*').order('city');
+    if(error) throw error;
+    DIRECTORY=data||[];
+  }catch(e){
+    const l=document.getElementById('shopList');
+    if(l) l.innerHTML='<p style="font-size:.8rem;color:var(--tm)">Could not load the shop list just now.</p>';
+    return;
+  }
+  drawDirectory();
+}
+function drawDirectory(){
+  const l=document.getElementById('shopList'); if(!l) return;
+  const qc=((document.getElementById('shopCity')||{}).value||'').trim().toLowerCase();
+  const rows=DIRECTORY.filter(d=>!qc || (d.city||'').toLowerCase().includes(qc));
+  if(!rows.length){
+    l.innerHTML='<p style="font-size:.8rem;color:var(--tm)">'+
+      (DIRECTORY.length?'No shops listed for that area yet.':'No shops are listed yet.')+'</p>';
+    return;
+  }
+  const cur=currentShopPhone();
+  l.innerHTML=rows.map(d=>
+    '<div class="shopitem"><div class="t"><b>'+esc(d.shop)+'</b><small>'+esc(d.city||'')+'</small></div>'+
+    (d.following
+      ? '<button class="'+(d.phone===cur?'':'on')+'" data-browse="'+esc(d.phone)+'">'+
+        (d.phone===cur?'Browsing':'Browse')+'</button>'+
+        '<button class="on" data-unfollow="'+esc(d.phone)+'">✕</button>'
+      : '<button data-follow="'+esc(d.phone)+'">Follow</button>')+
+    '</div>').join('');
+  l.onclick=async function(e){
+    const f=e.target.closest('[data-follow]');
+    const u=e.target.closest('[data-unfollow]');
+    const b=e.target.closest('[data-browse]');
+    if(f){
+      const {error}=await PMAuth.sb.from('follows')
+        .insert({customer_phone:SESS.phone, dealer_phone:f.dataset.follow});
+      if(error){ alert('Could not follow that shop — '+error.message); return; }
+      try{ localStorage.setItem(SHOP_KEY, f.dataset.follow); }catch(err){}
+      await afterShopChange('Following. Their stock and offers now show on every product.');
+    } else if(u){
+      const {error}=await PMAuth.sb.from('follows').delete()
+        .eq('customer_phone',SESS.phone).eq('dealer_phone',u.dataset.unfollow);
+      if(error){ alert('Could not unfollow — '+error.message); return; }
+      let cur2=null; try{ cur2=localStorage.getItem(SHOP_KEY); }catch(err){}
+      if(cur2===u.dataset.unfollow){ try{ localStorage.removeItem(SHOP_KEY); }catch(err){} }
+      await afterShopChange('Unfollowed.');
+    } else if(b){
+      try{ localStorage.setItem(SHOP_KEY, b.dataset.browse); }catch(err){}
+      await afterShopChange('Now browsing that shop.');
+    }
+  };
+}
+async function afterShopChange(note){
+  await loadDirectory_refresh();
+  await loadShopContext();
+  campaignBanner(); render(); if(CUR) openSheet(CUR);
+  toastMsg(note);
+}
+// The `following` flag lives in the view, so it has to be re-read rather than
+// patched locally — otherwise the row keeps saying "Follow" after a follow.
+async function loadDirectory_refresh(){
+  try{
+    const {data}=await PMAuth.sb.from('dealer_directory').select('*').order('city');
+    DIRECTORY=data||DIRECTORY;
+  }catch(e){}
+  drawDirectory();
+}
+function wireShops(){
+  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  const c=document.getElementById('shopCity'); if(c) c.oninput=drawDirectory;
+}
+
+/* ---------- consumer sign-up ---------- */
+// Two very different people reach "we don't know this number": a shop buying
+// wholesale, who needs Patel Marketing to open an account for them, and a
+// consumer, who needs nobody's permission. Turning both away with the same
+// sentence was the old behaviour; this asks which one they are.
+function signupHtml(phoneDigits){
+  const last=dg(phoneDigits).slice(-10);
+  return '<div class="shead"><strong>One more step</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<h4>+91 '+last+' is not on our list yet</h4>'+
+   '<p>Shopping for yourself? Make a free account. You will see which shops near you have '+
+   'something in stock, and you can review what you have actually used.</p>'+
+   '<input class="sgnin" id="suName" placeholder="Your name" autocomplete="name">'+
+   '<input class="sgnin" id="suCity" placeholder="Your city or area" autocomplete="address-level2">'+
+   '<button class="sgnbtn" id="suGo">Create my account</button>'+
+   '<p style="margin-top:18px">Buying for a shop? Trade accounts are opened by Patel Marketing.</p>'+
+   '<a class="sgnbtn ghost" style="display:block;text-align:center;text-decoration:none" '+
+   'href="https://wa.me/'+WA_NUMBER+'?text='+
+   encodeURIComponent('Hi, please give my number access to order rates. +91'+last)+
+   '">Message us on WhatsApp</a>'+
+   '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
+}
+function wireSignup(){
+  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  const go=document.getElementById('suGo');
+  if(!go) return;
+  go.onclick=async function(){
+    const name=(document.getElementById('suName').value||'').trim();
+    const city=(document.getElementById('suCity').value||'').trim();
+    const msg=document.getElementById('sgnMsg');
+    if(!name){ msg.textContent='Please tell us your name.'; msg.classList.add('on'); return; }
+    go.disabled=true; go.textContent='Creating…';
+    const {error}=await PMAuth.sb.rpc('self_signup_end_customer',{p_name:name,p_city:city||null});
+    go.disabled=false; go.textContent='Create my account';
+    if(error){ msg.textContent='Could not create the account — '+error.message; msg.classList.add('on'); return; }
+    await refreshSession();
+    if(!signedIn()){ msg.textContent='Account made, but we could not read it back. Please reload.';
+      msg.classList.add('on'); return; }
+    // Straight on to picking a shop: an account with no shop shows the plain
+    // catalogue, which is not what they came for.
+    openShops();
+    toastMsg('Welcome, '+name.split(' ')[0]+'.');
+  };
 }
 function wireOtpStep(){
   const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
@@ -2166,14 +2488,17 @@ function wireOtpStep(){
       // pretending to be a rejected number.
       const why=(window.PMAuth&&PMAuth.lookupError&&PMAuth.lookupError())||'';
       const notOnList = !why || /no row/i.test(why);
-      msg.innerHTML = notOnList
-        ? (AUTH.noAccessMessage||'This number is not on our customer list yet.')+
-          ' <a href="https://wa.me/'+WA_NUMBER+'?text='+
-          encodeURIComponent('Hi, please give my number access to order rates. +91'+ph.slice(-10))+
-          '">Message us on WhatsApp</a>'
-        : 'Signed in, but we could not read your account just now. Please try again.'+
-          '<br><span style="opacity:.7;font-size:.9em">'+why+'</span>';
-      msg.innerHTML += '<br><span style="opacity:.6;font-size:.85em">'+
+      if(notOnList){
+        // Not a rejection — the code verified, so the number is real. Offer
+        // the consumer sign-up, and the WhatsApp route for a trade account.
+        document.getElementById('sgnSheet').innerHTML=signupHtml(ph);
+        wireSignup();
+        const f=document.getElementById('suName'); if(f) setTimeout(()=>f.focus(),120);
+        return;
+      }
+      msg.innerHTML = 'Signed in, but we could not read your account just now. Please try again.'+
+        '<br><span style="opacity:.7;font-size:.9em">'+why+'</span>'+
+        '<br><span style="opacity:.6;font-size:.85em">'+
         ((window.PMAuth&&PMAuth.diagLine)?PMAuth.diagLine():'')+'</span>';
       msg.classList.add('on'); return;
     }
@@ -2216,10 +2541,22 @@ function campaignBanner(){
   const el=document.getElementById('campaignBanner');
   if(!el) return;
   if(!isEndCustomer()){ el.innerHTML=''; return; }
-  const shopName=(SHOP_INFO&&(SHOP_INFO.shop||SHOP_INFO.name))||'your local shop';
-  el.innerHTML='<div class="campaign"><b>🏃 Go out. Move your body. Eat healthy.</b>'+
-    '<span>Support your local store — you\'re browsing '+shopName+'\'s range. '+
-    'See what\'s in stock, then head over and pick it up.</span></div>';
+  if(!SHOP_INFO){
+    // A consumer who signed up alone has no shop yet, and without one the
+    // catalogue is just a list — no stock, no offers, nowhere to go.
+    el.innerHTML='<div class="campaign"><b>🏃 Go out. Move your body. Eat healthy.</b>'+
+      '<span>Pick the shop you buy from and you will see what they have in stock. '+
+      '<button class="linkish" id="cbShops">Find shops near you</button></span></div>';
+  } else {
+    const shopName=SHOP_INFO.shop||SHOP_INFO.name||'your local shop';
+    el.innerHTML='<div class="campaign"><b>🏃 Go out. Move your body. Eat healthy.</b>'+
+      '<span>Support your local store — you\'re browsing '+esc(shopName)+'\'s range. '+
+      'See what\'s in stock, then head over and pick it up. '+
+      '<button class="linkish" id="cbShops">'+
+      (SHOP_LIST.length>1?'Change shop':'Find more shops')+'</button></span></div>';
+  }
+  const b=document.getElementById('cbShops');
+  if(b) b.onclick=openShops;
 }
 const _wb=document.getElementById('whoBtn'); if(_wb) _wb.addEventListener('click', openSignIn);
 
