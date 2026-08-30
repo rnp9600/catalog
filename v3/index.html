@@ -778,11 +778,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · v3 (testing) · build 11</footer>
+<footer>Patel Marketing — wholesale kitchenware · v3 (testing) · build 12</footer>
 
-<script src="config.js?v=11"></script>
+<script src="config.js?v=12"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=11"></script>
+<script src="supabase-auth.js?v=12"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -2150,10 +2150,22 @@ function wireOtpStep(){
     const ph=PENDING_PHONE; PENDING_PHONE=null;
     await refreshSession();
     if(!signedIn()){
-      msg.innerHTML=(AUTH.noAccessMessage||'This number is not on our customer list yet.')+
-        ' <a href="https://wa.me/'+WA_NUMBER+'?text='+
-        encodeURIComponent('Hi, please give my number access to order rates. +91'+ph.slice(-10))+
-        '">Message us on WhatsApp</a>';
+      // The code verified, so the number is real — we simply could not read
+      // its row. Distinguish "genuinely not on the list" from "the lookup
+      // itself failed": the second is our problem, not the reader's, and
+      // saying the same thing for both is how a 404 spent a round of testing
+      // pretending to be a rejected number.
+      const why=(window.PMAuth&&PMAuth.lookupError&&PMAuth.lookupError())||'';
+      const notOnList = !why || /no row/i.test(why);
+      msg.innerHTML = notOnList
+        ? (AUTH.noAccessMessage||'This number is not on our customer list yet.')+
+          ' <a href="https://wa.me/'+WA_NUMBER+'?text='+
+          encodeURIComponent('Hi, please give my number access to order rates. +91'+ph.slice(-10))+
+          '">Message us on WhatsApp</a>'
+        : 'Signed in, but we could not read your account just now. Please try again.'+
+          '<br><span style="opacity:.7;font-size:.9em">'+why+'</span>';
+      msg.innerHTML += '<br><span style="opacity:.6;font-size:.85em">'+
+        ((window.PMAuth&&PMAuth.diagLine)?PMAuth.diagLine():'')+'</span>';
       msg.classList.add('on'); return;
     }
     closeSignIn(); if(CUR) openSheet(CUR);
