@@ -12,6 +12,11 @@
       "permanent": false
     },
     {
+      "source": "/v3/",
+      "destination": "/",
+      "permanent": false
+    },
+    {
       "source": "/v3/:path*",
       "destination": "/:path*",
       "permanent": false
