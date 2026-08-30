@@ -277,11 +277,11 @@
  },
  {
   "sr": 5,
-  "img": "surya/dosa-handle-11-1",
+  "img": "surya/dosa-handle-11-3",
   "imgs": [
+   "surya/dosa-handle-11-3",
    "surya/dosa-handle-11-1",
-   "surya/dosa-handle-11-2",
-   "surya/dosa-handle-11-3"
+   "surya/dosa-handle-11-2"
   ],
   "name": "Handle Dosa Plate 11\"",
   "brand": "Surya",
@@ -289,7 +289,7 @@
   "sub": "Dosa Plate",
   "desc": "Cast iron dosa plate with a single long handle. 39.1 x 26.7 x 1.18 cm.",
   "code": "SUR-005",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": null,
   "spec": "",
@@ -300,7 +300,8 @@
     "rate": 600,
     "price": 780,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    }
   ],
   "stock": "active",
@@ -309,7 +310,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-handle-dosa-plate-11"
+  "slug": "surya-handle-dosa-plate-11",
+  "hidden": false
  },
  {
   "sr": 6,
@@ -395,7 +397,7 @@
   "sub": "Dosa Plate",
   "desc": "King-size heavy cast iron dosa plate. 33.7 x 29.7 x 1 cm.",
   "code": "SUR-008",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": null,
   "spec": "",
@@ -406,7 +408,8 @@
     "rate": 960,
     "price": 1250,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    }
   ],
   "stock": "active",
@@ -415,7 +418,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-king-dosa-plate-12"
+  "slug": "surya-king-dosa-plate-12",
+  "hidden": true
  },
  {
   "sr": 9,
@@ -566,11 +570,11 @@
  },
  {
   "sr": 13,
-  "img": "surya/paniyarakal-7-1",
+  "img": "surya/paniyarakal-7-3",
   "imgs": [
+   "surya/paniyarakal-7-3",
    "surya/paniyarakal-7-1",
    "surya/paniyarakal-7-2",
-   "surya/paniyarakal-7-3",
    "surya/paniyarakal-7-4",
    "surya/paniyarakal-7-5"
   ],
@@ -580,7 +584,7 @@
   "sub": "Paniyarakal",
   "desc": "Cast iron paniyarakal, 7 pits. 27.5 x 21.6 x 5.3 cm. Induction compatible.",
   "code": "SUR-013",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": "Appam",
   "spec": "",
@@ -591,7 +595,8 @@
     "rate": 580,
     "price": 755,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    }
   ],
   "stock": "active",
@@ -600,7 +605,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-paniyarakal-7-pits-appam"
+  "slug": "surya-paniyarakal-7-pits-appam",
+  "hidden": false
  },
  {
   "sr": 14,
@@ -1497,7 +1503,7 @@
   "sub": "Tawa",
   "desc": "Flat cast iron tawa. 35.3 x 25.3 x 3.1 cm.",
   "code": "SUR-037",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": null,
   "spec": "",
@@ -1508,7 +1514,8 @@
     "rate": 900,
     "price": 1170,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    }
   ],
   "stock": "active",
@@ -1517,7 +1524,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-tawa-pan"
+  "slug": "surya-tawa-pan",
+  "hidden": true
  },
  {
   "sr": 38,
@@ -1761,11 +1769,9 @@
  },
  {
   "sr": 45,
-  "img": "surya/biryani-pot-2in1-1",
+  "img": "surya/biryani-pot-1",
   "imgs": [
-   "surya/biryani-pot-2in1-1",
    "surya/biryani-pot-1",
-   "surya/biryani-pot-2in1-2",
    "surya/biryani-pot-2"
   ],
   "name": "Briyani Pot",
@@ -1774,7 +1780,7 @@
   "sub": "Special Products",
   "desc": "Cast iron biryani pot.",
   "code": "SUR-045",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": null,
   "spec": "",
@@ -1785,7 +1791,8 @@
     "rate": 1600,
     "price": 2080,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    }
   ],
   "stock": "active",
@@ -1794,7 +1801,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-briyani-pot"
+  "slug": "surya-briyani-pot",
+  "hidden": false
  },
  {
   "sr": 46,
@@ -1809,7 +1817,7 @@
   "sub": "Special Products",
   "desc": "Cast iron biryani pot — lid doubles as a second pan.",
   "code": "SUR-046",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": null,
   "spec": "",
@@ -1820,7 +1828,8 @@
     "rate": 2800,
     "price": 3640,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    }
   ],
   "stock": "active",
@@ -1829,15 +1838,16 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-2-in-1-briyani-pot"
+  "slug": "surya-2-in-1-briyani-pot",
+  "hidden": false
  },
  {
   "sr": 47,
-  "img": "surya/mini-uttapakal-1",
+  "img": "surya/mini-uttapakal-3",
   "imgs": [
-   "surya/mini-uttapakal-1",
+   "surya/mini-uttapakal-3",
    "surya/mini-uttapakal-2",
-   "surya/mini-uttapakal-3"
+   "surya/mini-uttapakal-1"
   ],
   "name": "Mini Uttapakal",
   "brand": "Surya",
@@ -1845,7 +1855,7 @@
   "sub": "Special Products",
   "desc": "5-in-1 mini cast iron uttapam pan. 39.1 x 32.9 x 2.3 cm.",
   "code": "SUR-047",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": "Uttapam",
   "spec": "",
@@ -1856,7 +1866,8 @@
     "rate": 1200,
     "price": 1560,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    }
   ],
   "stock": "active",
@@ -1865,7 +1876,8 @@
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-mini-uttapakal"
+  "slug": "surya-mini-uttapakal",
+  "hidden": false
  },
  {
   "sr": 48,
@@ -1883,7 +1895,7 @@
   "sub": "Special Products",
   "desc": "Children's miniature cast iron cookware play set. 13 x 11 x 05 cm.",
   "code": "SUR-048",
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": "Soppu Saman",
   "spec": "",
@@ -1894,16 +1906,18 @@
     "rate": 700,
     "price": 910,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    }
   ],
-  "stock": "active",
-  "feat": false,
+  "stock": "out",
+  "feat": true,
   "sizes": [],
   "hotel": null,
   "hsn": null,
   "mrp": null,
-  "slug": "surya-miniature-toys"
+  "slug": "surya-miniature-toys",
+  "hidden": false
  },
  {
   "img": "mazda/mz001",
@@ -11351,7 +11365,7 @@
   "desc": "",
   "spec": "Pan 10–14 inch wide · 3.0 mm thick · ISI",
   "price": null,
-  "stock": "out",
+  "stock": "active",
   "hotel": null,
   "feat": false,
   "sizes": [],
@@ -11360,12 +11374,13 @@
    "india-gold/ha_langri"
   ],
   "variants": [],
-  "gst": null,
+  "gst": 18,
   "note": null,
   "alias": null,
   "hsn": null,
   "mrp": null,
-  "slug": "india-gold-langri"
+  "slug": "india-gold-langri",
+  "hidden": false
  },
  {
   "img": "india-gold/ha_uruli",
@@ -22800,14 +22815,15 @@
   "gst": 18,
   "note": null,
   "price": 90,
-  "mrp": 199,
+  "mrp": 239,
   "variants": [
    {
     "size": "Standard",
     "rate": null,
     "price": 90,
-    "mrp": 199,
-    "moq": null
+    "mrp": 239,
+    "moq": null,
+    "unit": "Piece"
    }
   ],
   "stock": "active",
@@ -22816,7 +22832,8 @@
   "sizes": [],
   "alias": "gujiya mould, karanji mould, ghughra, sanza",
   "hsn": null,
-  "slug": "paxton-alu-aluminium-samosa-mould-fancy-gujiya-karanji"
+  "slug": "paxton-alu-aluminium-samosa-mould-fancy-gujiya-karanji",
+  "hidden": false
  },
  {
   "img": "paxton-alu/pxa_modak_mould_open",
