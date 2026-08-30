@@ -234,6 +234,10 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
       </select>
       <button class="btn g" id="cAdd">Add</button>
     </div>
+    <label style="display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--tm);margin-bottom:8px">
+      <input type="checkbox" id="cShowEnd"> Include end customers
+      <span style="opacity:.8">— consumers, each belonging to a dealer or to nobody yet</span>
+    </label>
     <div class="stat" id="cStat"></div>
     <table class="tt"><tbody id="cList"></tbody></table>
   </section>
@@ -309,9 +313,9 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=15"></script>
+<script src="config.js?v=16"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=15"></script>
+<script src="supabase-auth.js?v=16"></script>
 <script>
 (function(){
   const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
@@ -704,32 +708,49 @@ $('#taxAdd').onclick=function(){
 };
 
 /* ---------------- customers (catalog.allowlist, live) ---------------- */
+// End customers are a dealer's own list, not Patel Marketing's, so they are
+// hidden by default — the list would otherwise be mostly other people's
+// customers. They can be shown on demand, which matters now that a consumer
+// can sign up with no dealer at all: without this there was no way to see one,
+// let alone help them.
+let SHOW_END=false;
 async function loadAllowlist(){
-  // End customers are a shop owner's own list, not ours to browse here — see
-  // V3-AMENDMENTS.md. Admin RLS access to those rows still exists in the
-  // database for support, this panel just doesn't surface them.
-  const {data,error}=await PMAuth.sb.from('allowlist').select('*').neq('role','end_customer').order('added_at');
+  let q=PMAuth.sb.from('allowlist').select('*');
+  if(!SHOW_END) q=q.neq('role','end_customer');
+  const {data,error}=await q.order('added_at');
   if(error){ $('#cStat').textContent='Could not load the customer list — '+error.message; return; }
   CUSTOMERS=data||[];
   drawCust();
 }
 const ROLE_LABEL={admin:'ADMIN',shop_owner:'DEALER',end_customer:'END CUSTOMER',dealer:''};
+// Whose customer is this? The dealer's own row is in the same list.
+function ownerLabel(phone){
+  const o=CUSTOMERS.find(c=>c.phone===phone);
+  return o ? (o.nickname||o.shop||o.name||('+'+phone)) : ('+'+phone);
+}
 const TYPE_LABEL={wholesaler:'wholesaler',retailer:'retail shop'};
 function drawCust(){
   const dealers=CUSTOMERS.filter(c=>c.role==='dealer'||c.role==='shop_owner');
   const retail=dealers.filter(c=>(c.dealer_type||'retailer')==='retailer');
   const admins=CUSTOMERS.filter(c=>c.is_admin);
   const listed=dealers.filter(c=>(c.dealer_type||'retailer')==='retailer'&&c.city);
+  const ends=CUSTOMERS.filter(c=>c.role==='end_customer');
   $('#cStat').textContent=dealers.length+' dealers ('+retail.length+' retail, '+
     (dealers.length-retail.length)+' wholesale) · '+admins.length+' admin'+
-    (admins.length===1?'':'s')+' · '+listed.length+' listed for consumers';
+    (admins.length===1?'':'s')+' · '+listed.length+' listed for consumers'+
+    (SHOW_END?' · '+ends.length+' end customer'+(ends.length===1?'':'s'):'');
   $('#cList').innerHTML = CUSTOMERS.length ? CUSTOMERS.map(c=>
     '<tr><td><div class="nm">'+esc(c.nickname||c.name||'(unnamed)')+
       (c.nickname&&c.name&&c.nickname!==c.name?' <span style="font-weight:400;color:var(--tm)">('+esc(c.name)+')</span>':'')+
       (ROLE_LABEL[c.role]?'<span class="flag f">'+ROLE_LABEL[c.role]+'</span>':'')+'</div>'+
       '<div class="ph">'+(c.shop?esc(c.shop)+' · ':'')+'+'+esc(c.phone||'')+
       (c.dealer_type?' · '+TYPE_LABEL[c.dealer_type]:'')+
-      (c.city?' · '+esc(c.city):'')+'</div></td>'+
+      (c.city?' · '+esc(c.city):'')+
+      (c.role==='end_customer'
+        ? ' · '+(c.owner_phone
+            ? 'via '+esc(ownerLabel(c.owner_phone))
+            : 'signed up on their own')
+        : '')+'</div></td>'+
       '<td><button class="ibtn" data-ed="'+esc(c.phone)+'">Edit</button> '+
       '<button class="ibtn" data-rm="'+esc(c.phone)+'">Remove</button></td></tr>').join('')
     : '<tr><td class="empty">No one yet.</td></tr>';
@@ -768,9 +789,10 @@ function editCustomer(c){
      'retail dealer for consumers to find and follow. Leave it blank to keep them unlisted.</div></div>'+
    '<div class="two">'+
      '<div class="fg"><label>Role</label><select id="eRole">'+
-       ['dealer','admin'].map(r=>'<option value="'+r+'"'+
+       ['dealer','admin','end_customer'].map(r=>'<option value="'+r+'"'+
          ((c.role===r||(r==='dealer'&&c.role==='shop_owner'))?' selected':'')+'>'+
-         (r==='dealer'?'Dealer':'Admin')+'</option>').join('')+'</select></div>'+
+         (r==='dealer'?'Dealer':r==='admin'?'Admin':'End customer')+'</option>').join('')+
+       '</select></div>'+
      '<div class="fg" id="eTypeWrap"><label>Dealer type</label><select id="eType">'+
        ['retailer','wholesaler'].map(t=>'<option value="'+t+'"'+(c.dealer_type===t?' selected':'')+'>'+
          (t==='retailer'?'Retail shop':'Wholesaler')+'</option>').join('')+'</select></div>'+
@@ -819,6 +841,7 @@ $('#cAdd').onclick=async function(){
   $('#cRole').value='dealer'; $('#cType').value='retailer';
   await loadAllowlist();
 };
+$('#cShowEnd').onchange=async function(){ SHOW_END=this.checked; await loadAllowlist(); };
 // The dealer-type picker only means anything for a dealer.
 $('#cRole').onchange=function(){
   $('#cType').style.display = this.value==='dealer' ? '' : 'none';
