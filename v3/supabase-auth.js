@@ -5,12 +5,9 @@
    duplicates the Supabase wiring.
 
    Delivery goes: this page → Supabase Auth → the send-sms Edge Function →
-   Fast2SMS. Supabase generates the code; the function only carries it. No
-   DLT registration is needed because Fast2SMS's `otp` route sends on their
-   own pre-approved template — but that route does require a one-time
-   website + Aadhaar KYC on the Fast2SMS account, without which it answers
-   "complete website verification" and the sign-in reports a hook error.
-   See supabase/functions/send-sms/README.md. */
+   Fast2SMS. Supabase generates the code; the function only carries it.
+   Which Fast2SMS route it goes out on is a secret, not code — see
+   supabase/functions/send-sms/README.md. */
 (function(){
   const CFG = window.PM_CONFIG || {};
   const SUPABASE_URL = CFG.supabaseUrl || 'https://vcrzauuxvgpsbforiszz.supabase.co';
@@ -40,6 +37,14 @@
   let sb = null;
   try {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      // Every table and function this app uses lives in the `catalog` schema,
+      // not `public`. Without this the client silently queries public.* —
+      // sb.from('allowlist') looks for public.allowlist, sb.rpc() looks for
+      // public.<function> — and every one of them fails. The sign-in symptom
+      // was the worst kind: the OTP verified fine, then the allowlist lookup
+      // came back empty and the screen said "we do not recognise that number"
+      // about a number that was plainly there.
+      db: { schema: 'catalog' },
       auth: {
         storageKey: 'v3_sb_auth',
         persistSession: true,
@@ -97,12 +102,23 @@
     try { const { data } = await sb.auth.getSession(); return data && data.session; }
     catch (e) { return null; }
   }
-  // RLS on catalog.allowlist restricts SELECT to the signed-in caller's own
-  // row (phone = auth.jwt()->>'phone'), so this never sees anyone else's.
+  // Filter by the caller's own phone rather than leaning on RLS to return a
+  // single row. There are two SELECT policies on catalog.allowlist: everyone
+  // may read their own row, but an admin may read them all. So for an admin
+  // an unfiltered select returns every row, maybeSingle() rejects ("multiple
+  // rows returned"), and the caller reads that failure as "not on the list" —
+  // which is exactly how a real admin got told their number was unrecognised.
   async function myAllowlistRow() {
     if (!sb) return null;
-    try { const { data } = await sb.from('allowlist').select('*').maybeSingle(); return data || null; }
-    catch (e) { return null; }
+    try {
+      const session = await currentSession();
+      const phone = dg(session && session.user && session.user.phone);
+      if (!phone) return null;
+      const { data, error } = await sb
+        .from('allowlist').select('*').eq('phone', phone).maybeSingle();
+      if (error) { console.warn('allowlist lookup failed:', error.message); return null; }
+      return data || null;
+    } catch (e) { return null; }
   }
   async function signOut() {
     if (!sb) return;
@@ -126,7 +142,7 @@
   // live site is not reachable from where this gets written — so the page has
   // to be able to say for itself which build it is running and how far the
   // Supabase wiring got.
-  const BUILD = 10;
+  const BUILD = 11;
   function diagnostics() {
     return {
       build: BUILD,
