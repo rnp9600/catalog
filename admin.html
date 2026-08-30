@@ -177,6 +177,7 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
     <button class="tab on" data-t="products">Products</button>
     <button class="tab" data-t="taxonomy">Brands &amp; categories</button>
     <button class="tab" data-t="customers">Customers</button>
+    <button class="tab" data-t="reviews">Reviews</button>
     <button class="tab" data-t="publish">Publish</button>
   </div>
 </header>
@@ -214,15 +215,17 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
   <section class="panel" id="p-customers">
     <div class="note"><b>This list saves straight to the database.</b>
       Adding a number here lets them sign in with an OTP texted to that phone —
-      nothing to download or upload.</div>
+      nothing to download or upload. A <b>retail dealer with a city</b> is also
+      listed for consumers to find and follow; leave the city blank to keep a
+      dealer off that list. Wholesalers are never listed to consumers.</div>
     <div class="bar">
       <input class="s" id="cName" placeholder="Name">
       <input class="s" id="cShop" placeholder="Shop / firm (optional)">
       <input class="s" id="cNick" placeholder="Your nickname for them (optional)">
       <input class="s" id="cPhone" inputmode="numeric" maxlength="15" placeholder="10-digit number" style="flex:0 0 160px">
+      <input class="s" id="cCity" placeholder="City / area" style="flex:0 0 150px">
       <select class="s" id="cRole" style="flex:0 0 130px">
         <option value="dealer" selected>Dealer</option>
-        <option value="shop_owner">Shop owner</option>
         <option value="admin">Admin</option>
       </select>
       <select class="s" id="cType" style="flex:0 0 140px">
@@ -233,6 +236,16 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
     </div>
     <div class="stat" id="cStat"></div>
     <table class="tt"><tbody id="cList"></tbody></table>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="panel" id="p-reviews">
+    <div class="note"><b>Consumers review the product, not the shop.</b>
+      Everyone sees these on the product, with the reviewer's first name only.
+      Hiding one takes it off the site and stops its author reposting it; nothing
+      is deleted, so you can put it back.</div>
+    <div class="stat" id="rvStat"></div>
+    <table class="tt"><tbody id="rvList"></tbody></table>
   </section>
 
   <!-- PUBLISH -->
@@ -296,9 +309,9 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=14"></script>
+<script src="config.js?v=15"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=14"></script>
+<script src="supabase-auth.js?v=15"></script>
 <script>
 (function(){
   const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
@@ -317,7 +330,7 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 const C=window.PM_CONFIG, $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=n=>'₹'+Number(n).toLocaleString('en-IN');
-const IMG=n=>'../images/'+n+'.jpg';
+const IMG=n=>'images/'+n+'.jpg';
 const DRAFT='v3_admin_draft';
 
 let P=[], LIVE='', shown=40, q='', quick='all', dirty=false;
@@ -390,7 +403,7 @@ async function start(a){
 
 /* ---------------- data ---------------- */
 async function load(){
-  const r=await fetch('../data.json',{cache:'no-cache'});
+  const r=await fetch('data.json',{cache:'no-cache'});
   const live=await r.json();
   LIVE=JSON.stringify(live);
   const d=localStorage.getItem(DRAFT);
@@ -424,6 +437,7 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
   $('#p-'+b.dataset.t).classList.add('on');
   if(b.dataset.t==='publish') drawPublish();
+  if(b.dataset.t==='reviews') loadReviews();
   window.scrollTo(0,0);
 });
 $('#goPublish').onclick=()=>document.querySelector('.tab[data-t="publish"]').click();
@@ -699,18 +713,23 @@ async function loadAllowlist(){
   CUSTOMERS=data||[];
   drawCust();
 }
-const ROLE_LABEL={admin:'ADMIN',shop_owner:'SHOP OWNER',end_customer:'END CUSTOMER',dealer:''};
+const ROLE_LABEL={admin:'ADMIN',shop_owner:'DEALER',end_customer:'END CUSTOMER',dealer:''};
 const TYPE_LABEL={wholesaler:'wholesaler',retailer:'retail shop'};
 function drawCust(){
-  const dealers=CUSTOMERS.filter(c=>c.role==='dealer'), shops=CUSTOMERS.filter(c=>c.role==='shop_owner'),
-    admins=CUSTOMERS.filter(c=>c.is_admin);
-  $('#cStat').textContent=dealers.length+' dealers · '+shops.length+' shop owners · '+admins.length+' admins';
+  const dealers=CUSTOMERS.filter(c=>c.role==='dealer'||c.role==='shop_owner');
+  const retail=dealers.filter(c=>(c.dealer_type||'retailer')==='retailer');
+  const admins=CUSTOMERS.filter(c=>c.is_admin);
+  const listed=dealers.filter(c=>(c.dealer_type||'retailer')==='retailer'&&c.city);
+  $('#cStat').textContent=dealers.length+' dealers ('+retail.length+' retail, '+
+    (dealers.length-retail.length)+' wholesale) · '+admins.length+' admin'+
+    (admins.length===1?'':'s')+' · '+listed.length+' listed for consumers';
   $('#cList').innerHTML = CUSTOMERS.length ? CUSTOMERS.map(c=>
     '<tr><td><div class="nm">'+esc(c.nickname||c.name||'(unnamed)')+
       (c.nickname&&c.name&&c.nickname!==c.name?' <span style="font-weight:400;color:var(--tm)">('+esc(c.name)+')</span>':'')+
       (ROLE_LABEL[c.role]?'<span class="flag f">'+ROLE_LABEL[c.role]+'</span>':'')+'</div>'+
       '<div class="ph">'+(c.shop?esc(c.shop)+' · ':'')+'+'+esc(c.phone||'')+
-      (c.role==='dealer'&&c.dealer_type?' · '+TYPE_LABEL[c.dealer_type]:'')+'</div></td>'+
+      (c.dealer_type?' · '+TYPE_LABEL[c.dealer_type]:'')+
+      (c.city?' · '+esc(c.city):'')+'</div></td>'+
       '<td><button class="ibtn" data-ed="'+esc(c.phone)+'">Edit</button> '+
       '<button class="ibtn" data-rm="'+esc(c.phone)+'">Remove</button></td></tr>').join('')
     : '<tr><td class="empty">No one yet.</td></tr>';
@@ -743,10 +762,15 @@ function editCustomer(c){
    '<div class="fg"><label>Name</label><input id="eName" value="'+esc(c.name||'')+'"></div>'+
    '<div class="fg"><label>Shop / firm</label><input id="eShop" value="'+esc(c.shop||'')+'">'+
      '<div class="hint">Their business name.</div></div>'+
+   '<div class="fg"><label>City / area</label><input id="eCity" value="'+esc(c.city||'')+'" '+
+     'placeholder="e.g. Hubli">'+
+     '<div class="hint">Free text — consumers search by it. Filling this in is what lists a '+
+     'retail dealer for consumers to find and follow. Leave it blank to keep them unlisted.</div></div>'+
    '<div class="two">'+
      '<div class="fg"><label>Role</label><select id="eRole">'+
-       ['dealer','shop_owner','admin'].map(r=>'<option value="'+r+'"'+(c.role===r?' selected':'')+'>'+
-         (r==='dealer'?'Dealer':r==='shop_owner'?'Shop owner':'Admin')+'</option>').join('')+'</select></div>'+
+       ['dealer','admin'].map(r=>'<option value="'+r+'"'+
+         ((c.role===r||(r==='dealer'&&c.role==='shop_owner'))?' selected':'')+'>'+
+         (r==='dealer'?'Dealer':'Admin')+'</option>').join('')+'</select></div>'+
      '<div class="fg" id="eTypeWrap"><label>Dealer type</label><select id="eType">'+
        ['retailer','wholesaler'].map(t=>'<option value="'+t+'"'+(c.dealer_type===t?' selected':'')+'>'+
          (t==='retailer'?'Retail shop':'Wholesaler')+'</option>').join('')+'</select></div>'+
@@ -767,6 +791,7 @@ function editCustomer(c){
       p_role:role,
       p_nickname:$('#eNick').value.trim()||null,
       p_dealer_type: role==='dealer' ? $('#eType').value : null,
+      p_city: $('#eCity').value.trim()||null,
     });
     btn.disabled=false; btn.textContent='Save';
     if(error){ alert('Could not save — '+error.message); return; }
@@ -786,9 +811,11 @@ $('#cAdd').onclick=async function(){
   const {error}=await PMAuth.sb.rpc('admin_upsert_customer',
     {p_phone:ph,p_name:n,p_shop:shop||null,p_role:role,
      p_nickname:nick||null,
-     p_dealer_type: role==='dealer' ? $('#cType').value : null});
+     p_dealer_type: role==='dealer' ? $('#cType').value : null,
+     p_city: $('#cCity').value.trim()||null});
   if(error){ alert('Could not add — '+error.message); return; }
   $('#cName').value='';$('#cShop').value='';$('#cNick').value='';$('#cPhone').value='';
+  $('#cCity').value='';
   $('#cRole').value='dealer'; $('#cType').value='retailer';
   await loadAllowlist();
 };
@@ -796,6 +823,40 @@ $('#cAdd').onclick=async function(){
 $('#cRole').onchange=function(){
   $('#cType').style.display = this.value==='dealer' ? '' : 'none';
 };
+
+/* ---------------- reviews (moderation) ---------------- */
+// The admin reads catalog.product_reviews itself rather than the public view,
+// because moderation needs the rows that are already hidden — the view drops
+// exactly those.
+async function loadReviews(){
+  const {data,error}=await PMAuth.sb.from('product_reviews').select('*')
+    .order('created_at',{ascending:false}).limit(300);
+  if(error){ $('#rvStat').textContent='Could not load reviews — '+error.message; return; }
+  const rows=data||[];
+  const shown=rows.filter(r=>!r.hidden).length;
+  $('#rvStat').textContent = rows.length
+    ? rows.length+' review'+(rows.length===1?'':'s')+' · '+shown+' showing on the site'
+    : 'No reviews yet.';
+  $('#rvList').innerHTML = rows.length ? rows.map(r=>{
+    const prod=P.find(x=>x.slug===r.product_slug);
+    return '<tr'+(r.hidden?' style="opacity:.5"':'')+'><td>'+
+      '<div class="nm">'+'\u2605'.repeat(r.rating)+' '+esc(prod?prod.name:r.product_slug)+
+      (r.hidden?'<span class="flag f">HIDDEN</span>':'')+'</div>'+
+      '<div class="ph">+'+esc(r.phone)+' · '+new Date(r.created_at).toLocaleDateString('en-IN')+'</div>'+
+      (r.body?'<div style="font-size:.82rem;margin-top:4px">'+esc(r.body)+'</div>':'')+
+      '</td><td><button class="ibtn" data-tog="'+esc(r.product_slug)+'|'+esc(r.phone)+'">'+
+      (r.hidden?'Show':'Hide')+'</button></td></tr>';
+  }).join('') : '<tr><td class="empty">No reviews yet.</td></tr>';
+  $('#rvList').onclick=async function(e){
+    const b=e.target.closest('[data-tog]'); if(!b) return;
+    const [slug,phone]=b.dataset.tog.split('|');
+    const row=rows.find(r=>r.product_slug===slug&&r.phone===phone); if(!row) return;
+    const {error}=await PMAuth.sb.from('product_reviews').update({hidden:!row.hidden})
+      .eq('product_slug',slug).eq('phone',phone);
+    if(error){ alert('Could not change that — '+error.message); return; }
+    await loadReviews();
+  };
+}
 
 /* ---------------- publish ---------------- */
 // "Saved" and "published" are different states here, and confusing them is how
