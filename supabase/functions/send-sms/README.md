@@ -21,7 +21,13 @@ Default order: `otp,q`. Override with the `FAST2SMS_ROUTE` secret
 only fail. Add it explicitly once registered, e.g. `FAST2SMS_ROUTE=dlt,otp,q`.
 
 The log line `Sent on route "..."` records which route actually carried each
-message — the only way to tell afterwards what an OTP cost.
+message — the only way to tell afterwards what an OTP cost. A refused route
+logs `Route "..." refused: <reason>` even when a later one succeeds, so you can
+see whether the cheap `otp` route has started working without spending ₹5 to
+find out.
+
+As of the last check every delivered OTP went out on `q`, at about ₹5 — the
+`otp` route is still refused pending the KYC in step 1 below.
 
 Note Smart OTP is **not** usable here: it generates and verifies its own code,
 whereas Supabase generates the code and needs us to deliver that exact one.

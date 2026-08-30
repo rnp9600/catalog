@@ -163,7 +163,7 @@ async function sendOnRoute(route: string, tenDigit: string, otp: string): Promis
     const reason = (err as Error)?.name === "TimeoutError"
       ? `no response within ${FAST2SMS_TIMEOUT_MS / 1000}s`
       : ((err as Error)?.message ?? "network error");
-    throw new Error(`Could not reach Fast2SMS: ${reason}`);
+    throw new Error(`route "${route}": could not reach Fast2SMS: ${reason}`);
   }
 
   const text = await res.text();
@@ -207,7 +207,13 @@ async function sendViaFast2SMS(tenDigit: string, otp: string): Promise<void> {
       console.log(`Sent on route "${route}"`);
       return;
     } catch (err) {
-      failures.push(err instanceof Error ? err.message : String(err));
+      const reason = err instanceof Error ? err.message : String(err);
+      failures.push(reason);
+      // Log the rejection even when a later route succeeds. Otherwise the only
+      // record of the cheap route being refused is a message nobody ever sees,
+      // and "has the OTP KYC gone through yet?" has no answer short of paying
+      // Rs 5 to find out. This line answers it.
+      console.log(`Route "${route}" refused: ${reason}`);
     }
   }
   throw new Error(`Fast2SMS rejected every route — ${failures.join(" | ")}`);
