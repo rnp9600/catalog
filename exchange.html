@@ -169,7 +169,7 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 const money=n=>n==null?'—':'₹'+Number(n).toLocaleString('en-IN');
 const last10=s=>String(s||'').replace(/\D/g,'').slice(-10);
 const WA_NUMBER=(C.whatsapp||'917892967505').replace(/\D/g,'');
-const IMG=n=>'../images/'+n+'.jpg';
+const IMG=n=>'images/'+n+'.jpg';
 let ME=null, P=[], PENDING_PHONE=null;
 
 /* ---------------- gate ---------------- */
@@ -229,7 +229,7 @@ async function start(row){
   ME=row;
   $('#gate').style.display='none'; $('#app').style.display='block';
   $('#whoLine').textContent=(row.name||'you')+(row.role==='shop_owner'?' · shop owner':row.role==='admin'?' · admin':' · dealer');
-  const r=await fetch('../data.json',{cache:'no-cache'});
+  const r=await fetch('data.json',{cache:'no-cache'});
   P=await r.json();
   const dl=$('#dProducts');
   dl.innerHTML=P.map(p=>'<option value="'+esc(p.name)+(p.code?' — '+esc(p.code):'')+'">').join('');

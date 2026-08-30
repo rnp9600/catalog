@@ -58,10 +58,10 @@ whereas Supabase generates the code and needs us to deliver that exact one.
 
    Neither belongs in this repo or in `config.js`. They live only here.
 
-5. Sign in on **`/v3/`** with a number that is on `catalog.allowlist`. A code
-   should arrive within a minute. (`/v2/` is the previous, still-live version
-   and deliberately keeps the old plain-text sign-in — it will never send an
-   OTP.)
+5. Sign in on the site with a number that is on `catalog.allowlist`. A code
+   should arrive within a minute. (`/v2/` is kept as a fallback and deliberately
+   keeps the old plain-text sign-in — it will never send an OTP. `/v3/` was
+   where this was tested and now redirects to the root.)
 
 ## Notes
 

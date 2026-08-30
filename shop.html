@@ -232,7 +232,7 @@ async function start(row){
   $('#gate').style.display='none'; $('#app').style.display='block';
   $('#whoLine').textContent=(row.shop||row.nickname||row.name||'your shop')+
     (row.dealer_type==='wholesaler'?' · wholesale':'')+(row.city?' · '+row.city:'');
-  const r=await fetch('../data.json',{cache:'no-cache'});
+  const r=await fetch('data.json',{cache:'no-cache'});
   P=await r.json();
   $('#dProducts').innerHTML=P.map(p=>'<option value="'+esc(p.name)+(p.code?' — '+esc(p.code):'')+'">').join('');
   await loadCustomers(); await loadFollowers(); await loadOffers();

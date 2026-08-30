@@ -330,7 +330,7 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 const C=window.PM_CONFIG, $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=n=>'₹'+Number(n).toLocaleString('en-IN');
-const IMG=n=>'../images/'+n+'.jpg';
+const IMG=n=>'images/'+n+'.jpg';
 const DRAFT='v3_admin_draft';
 
 let P=[], LIVE='', shown=40, q='', quick='all', dirty=false;
@@ -403,7 +403,7 @@ async function start(a){
 
 /* ---------------- data ---------------- */
 async function load(){
-  const r=await fetch('../data.json',{cache:'no-cache'});
+  const r=await fetch('data.json',{cache:'no-cache'});
   const live=await r.json();
   LIVE=JSON.stringify(live);
   const d=localStorage.getItem(DRAFT);
