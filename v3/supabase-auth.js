@@ -108,18 +108,33 @@
   // an unfiltered select returns every row, maybeSingle() rejects ("multiple
   // rows returned"), and the caller reads that failure as "not on the list" —
   // which is exactly how a real admin got told their number was unrecognised.
+  // Why the last lookup came back empty. A failed lookup and a genuinely
+  // absent row are indistinguishable to the caller otherwise, and the caller
+  // reports both as "we do not recognise that number" — which is what let a
+  // 404 masquerade as a rejected number for a whole round of testing.
+  let lastLookupError = '';
   async function myAllowlistRow() {
-    if (!sb) return null;
+    lastLookupError = '';
+    if (!sb) { lastLookupError = 'client not created'; return null; }
     try {
       const session = await currentSession();
       const phone = dg(session && session.user && session.user.phone);
-      if (!phone) return null;
+      if (!phone) { lastLookupError = 'no phone on the session'; return null; }
       const { data, error } = await sb
         .from('allowlist').select('*').eq('phone', phone).maybeSingle();
-      if (error) { console.warn('allowlist lookup failed:', error.message); return null; }
+      if (error) {
+        lastLookupError = (error.code ? error.code + ' ' : '') + (error.message || 'lookup failed');
+        console.warn('allowlist lookup failed:', lastLookupError);
+        return null;
+      }
+      if (!data) lastLookupError = 'no row for this number';
       return data || null;
-    } catch (e) { return null; }
+    } catch (e) {
+      lastLookupError = (e && e.message) || 'lookup threw';
+      return null;
+    }
   }
+  function lookupError() { return lastLookupError; }
   async function signOut() {
     if (!sb) return;
     try { await sb.auth.signOut(); } catch (e) {}
@@ -142,7 +157,7 @@
   // live site is not reachable from where this gets written — so the page has
   // to be able to say for itself which build it is running and how far the
   // Supabase wiring got.
-  const BUILD = 11;
+  const BUILD = 12;
   function diagnostics() {
     return {
       build: BUILD,
@@ -159,5 +174,5 @@
       ' · auth ' + (d.auth ? 'ok' : 'MISSING');
   }
 
-  window.PMAuth = { sb, dg, toE164, sendOtp, verifyOtp, currentSession, myAllowlistRow, signOut, friendlyAuthError, diagnostics, diagLine, BUILD };
+  window.PMAuth = { sb, dg, toE164, sendOtp, verifyOtp, currentSession, myAllowlistRow, signOut, friendlyAuthError, diagnostics, diagLine, lookupError, BUILD };
 })();
