@@ -1,9 +1,10 @@
 // Patel Marketing catalogue — Supabase "Send SMS" auth hook.
 //
 // Supabase Auth generates the OTP itself, then calls this function to deliver
-// it through Fast2SMS. Which route it goes out on is chosen by the
-// FAST2SMS_ROUTE secret — see the constant below for the trade-offs. Nothing
-// in the catalogue or the database changes when that route changes.
+// it through Fast2SMS. Several Fast2SMS routes can carry it and they differ
+// ~14x in price, so this tries them cheapest-first and stops at the first that
+// sends — see FAST2SMS_ROUTES below. Nothing in the catalogue or the database
+// changes when that order changes.
 //
 // Secrets this function needs (Dashboard -> Edge Functions -> send-sms ->
 // Secrets, or `supabase secrets set`):
@@ -13,7 +14,7 @@
 //                         refuse to send, so nobody but Supabase Auth can make
 //                         this function burn SMS credits.
 // Optional:
-//   FAST2SMS_ROUTE     "q" (default), "otp", or "dlt"
+//   FAST2SMS_ROUTE     routes to try, cheapest first (default "otp,q")
 //   FAST2SMS_SENDER_ID, FAST2SMS_TEMPLATE_ID   only for the "dlt" route
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
@@ -24,21 +25,26 @@ const MAX_SKEW_SECONDS = 300;
 // time out, so the sign-in screen always gets an answer.
 const FAST2SMS_TIMEOUT_MS = 15000;
 
-// Which Fast2SMS route to send on. Set FAST2SMS_ROUTE to change this without
-// touching code or redeploying.
+// Routes to try, cheapest first, stopping at the first that sends. Override
+// with FAST2SMS_ROUTE (comma-separated) to force a particular order or a
+// single route — no code change or redeploy needed.
 //
-//   "q"   Quick SMS (default). No DLT registration and no OTP-menu
-//         verification — the one route this account can actually use today.
-//         Random numeric sender, delivers to DND numbers, and the wording is
-//         ours, so the message can name the business. Around Rs 5 per SMS.
-//   "otp" Fast2SMS's own OTP template. Cheaper (~Rs 0.35) but the account
-//         must first pass "website verification" under the OTP SMS menu —
-//         which this account's panel no longer shows, so it returns
-//         "Before using OTP Message API, complete website verification."
-//   "dlt" A DLT-registered sender. Cheapest and shows a proper sender ID
-//         instead of a random number, but needs TRAI DLT registration plus
-//         FAST2SMS_SENDER_ID and FAST2SMS_TEMPLATE_ID set as secrets.
-const FAST2SMS_ROUTE = (Deno.env.get("FAST2SMS_ROUTE") ?? "q").trim().toLowerCase();
+//   "otp" Fast2SMS's own OTP template, ~Rs 0.35. Wording and sender are
+//         theirs ("Your OTP: 123456"). Some accounts must pass a website
+//         verification first, which is why this is attempted rather than
+//         assumed.
+//   "q"   Quick SMS, ~Rs 5. No DLT and no extra verification, delivers to DND
+//         numbers, and the wording is ours so the message can name the
+//         business. The dependable fallback.
+//   "dlt" A DLT-registered sender. Cheapest (~Rs 0.11-0.25) and the only one
+//         that shows a real sender ID instead of a random number, but needs
+//         TRAI DLT registration plus FAST2SMS_SENDER_ID and
+//         FAST2SMS_TEMPLATE_ID. Not in the default order: without those
+//         secrets it can only fail, so it is opt-in.
+const FAST2SMS_ROUTES = (Deno.env.get("FAST2SMS_ROUTE") ?? "otp,q")
+  .split(",")
+  .map((r) => r.trim().toLowerCase())
+  .filter(Boolean);
 
 function base64ToBytes(b64: string): Uint8Array {
   const bin = atob(b64);
@@ -103,12 +109,12 @@ function fail(status: number, message: string): Response {
 }
 
 /** The request body Fast2SMS expects differs per route. */
-function buildPayload(tenDigit: string, otp: string): Record<string, unknown> {
-  if (FAST2SMS_ROUTE === "otp") {
+function buildPayload(route: string, tenDigit: string, otp: string): Record<string, unknown> {
+  if (route === "otp") {
     // Fast2SMS supplies the wording ("Your OTP: 123456").
     return { route: "otp", variables_values: otp, numbers: tenDigit };
   }
-  if (FAST2SMS_ROUTE === "dlt") {
+  if (route === "dlt") {
     const sender = Deno.env.get("FAST2SMS_SENDER_ID");
     const template = Deno.env.get("FAST2SMS_TEMPLATE_ID");
     if (!sender || !template) {
@@ -135,7 +141,7 @@ function buildPayload(tenDigit: string, otp: string): Record<string, unknown> {
   };
 }
 
-async function sendViaFast2SMS(tenDigit: string, otp: string): Promise<void> {
+async function sendOnRoute(route: string, tenDigit: string, otp: string): Promise<void> {
   const apiKey = Deno.env.get("FAST2SMS_API_KEY");
   if (!apiKey) throw new Error("FAST2SMS_API_KEY is not set");
 
@@ -147,7 +153,7 @@ async function sendViaFast2SMS(tenDigit: string, otp: string): Promise<void> {
         "authorization": apiKey,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(buildPayload(tenDigit, otp)),
+      body: JSON.stringify(buildPayload(route, tenDigit, otp)),
       // Without this, a stalled provider keeps Supabase Auth's own request
       // open, and the sign-in screen sits on "Sending…" indefinitely. Fail
       // fast instead, so the reader gets a message they can act on.
@@ -176,8 +182,35 @@ async function sendViaFast2SMS(tenDigit: string, otp: string): Promise<void> {
       : (parsed.message ?? text ?? "").toString().slice(0, 300);
     // Name the route: the same key behaves differently per route, and the
     // last round of debugging turned on knowing which one was in use.
-    throw new Error(`Fast2SMS rejected the send on route "${FAST2SMS_ROUTE}": ${detail || res.status}`);
+    throw new Error(`route "${route}": ${detail || res.status}`);
   }
+}
+
+/**
+ * Try each route in preference order and stop at the first that sends.
+ *
+ * The routes differ ~14x in price (otp ~Rs 0.35 against quick ~Rs 5), but
+ * whether an account may use the cheap one depends on gates Fast2SMS applies
+ * per account and does not publish. A rejected attempt is not billed — only a
+ * delivered SMS is — so trying the cheap route first costs nothing when it is
+ * refused, and saves most of the money whenever it is allowed. Falling back
+ * automatically also means a route being turned off later degrades to a more
+ * expensive SMS rather than to a customer who cannot sign in.
+ */
+async function sendViaFast2SMS(tenDigit: string, otp: string): Promise<void> {
+  const failures: string[] = [];
+  for (const route of FAST2SMS_ROUTES) {
+    try {
+      await sendOnRoute(route, tenDigit, otp);
+      // Which route actually carried it is the only way to tell from the logs
+      // what an OTP cost.
+      console.log(`Sent on route "${route}"`);
+      return;
+    } catch (err) {
+      failures.push(err instanceof Error ? err.message : String(err));
+    }
+  }
+  throw new Error(`Fast2SMS rejected every route — ${failures.join(" | ")}`);
 }
 
 Deno.serve(async (req: Request) => {

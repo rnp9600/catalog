@@ -4,41 +4,27 @@ Supabase Auth generates the OTP; this function delivers it through Fast2SMS.
 
 ## Which route we send on
 
-Set by the `FAST2SMS_ROUTE` secret. Default **`q`** (Quick SMS).
+Routes are tried **cheapest first**, stopping at the first that sends. A
+rejected attempt is not billed — only a delivered SMS is — so trying the cheap
+route costs nothing when it is refused.
 
-| Route | DLT? | Extra setup | Sender shown | Cost | Wording |
+Default order: `otp,q`. Override with the `FAST2SMS_ROUTE` secret
+(comma-separated) to force an order or a single route.
+
+| Route | Cost | DLT? | Extra setup | Sender shown | Wording |
 |---|---|---|---|---|---|
-| **`q`** (default) | no | none | random number | ~Rs 5 | ours — names the business |
-| `otp` | no | account must pass "website verification" under the OTP SMS menu | Fast2SMS | ~Rs 0.35 | fixed, "Your OTP: 123456" |
-| `dlt` | **yes** | DLT registration + `FAST2SMS_SENDER_ID`, `FAST2SMS_TEMPLATE_ID` | your own, e.g. PATLMK | ~Rs 0.11-0.25 | your approved template |
+| `otp` | ~Rs 0.35 | no | some accounts need a website verification | Fast2SMS | fixed, "Your OTP: 123456" |
+| `q` | ~Rs 5 | no | none | random number | ours — names the business |
+| `dlt` | ~Rs 0.11-0.25 | **yes** | DLT registration + `FAST2SMS_SENDER_ID`, `FAST2SMS_TEMPLATE_ID` | your own, e.g. PATLMK | your approved template |
 
-`otp` was tried first and refused with *"Before using OTP Message API,
-complete website verification. Visit OTP Message menu or use DLT SMS API."* —
-and this account's panel has no OTP SMS menu at all (it shows Smart OTP and
-Quick SMS instead), so there is nowhere to do that verification. Hence `q`.
+`dlt` is deliberately not in the default order: without its two secrets it can
+only fail. Add it explicitly once registered, e.g. `FAST2SMS_ROUTE=dlt,otp,q`.
+
+The log line `Sent on route "..."` records which route actually carried each
+message — the only way to tell afterwards what an OTP cost.
 
 Note Smart OTP is **not** usable here: it generates and verifies its own code,
 whereas Supabase generates the code and needs us to deliver that exact one.
-
-## Historical note: the `otp` route
-
-Sending SMS in India normally needs DLT registration (TRAI rule): register the
-business, a 6-letter sender ID, and the exact message template. That is days of
-paperwork.
-
-Fast2SMS's `route: "otp"` sidesteps it — they send on **their own**
-pre-approved template, `Your OTP: 123456`. No DLT registration on our side.
-
-The trade-offs, accepted deliberately:
-
-- The message wording is fixed. It cannot say "Patel Marketing".
-- The sender ID is Fast2SMS's, not ours.
-- Roughly ₹0.35 per SMS (a DLT-registered sender is ~₹0.11–0.25).
-
-If Raj later wants the SMS to read as Patel Marketing, do the DLT registration
-and change **only** `sendViaFast2SMS()` in `index.ts` (switch to
-`route: "dlt"` with the approved `sender_id` and template id). Nothing in the
-catalogue or the database changes.
 
 ## One-time setup
 
