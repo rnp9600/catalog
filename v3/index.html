@@ -778,11 +778,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · v3 (testing) · build 12</footer>
+<footer>Patel Marketing — wholesale kitchenware · v3 (testing) · build 13</footer>
 
-<script src="config.js?v=12"></script>
+<script src="config.js?v=13"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=12"></script>
+<script src="supabase-auth.js?v=13"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1680,8 +1680,17 @@ async function refreshSession(){
   if(!sess){ SESS=null; SHOP_INFO=null; SHOP_OFFERS={}; markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet(); obarRender(); return; }
   const row = await PMAuth.myAllowlistRow();
   if(!row){
-    // A verified phone that isn't on the allowlist yet — don't leave it signed in.
-    await PMAuth.signOut(); SESS=null;
+    const why=(PMAuth.lookupError&&PMAuth.lookupError())||'';
+    if(!why || /no row/i.test(why)){
+      // Genuinely not on the allowlist — a verified phone with no account
+      // should not be left holding a session.
+      await PMAuth.signOut();
+    }
+    // A lookup that *failed* is our fault, not theirs. Keep the Supabase
+    // session: signing out would make them spend another paid SMS just to get
+    // back to the same point, and once the fault is fixed a plain reload signs
+    // them in with no new code at all.
+    SESS=null;
   } else {
     const full = dg(sess.user && sess.user.phone), last = full.slice(-10);
     // role is groundwork for the three-tier auth described in
