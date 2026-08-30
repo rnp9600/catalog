@@ -1,12 +1,9 @@
 // Patel Marketing catalogue — Supabase "Send SMS" auth hook.
 //
 // Supabase Auth generates the OTP itself, then calls this function to deliver
-// it. We hand it to Fast2SMS's `otp` route, which uses THEIR pre-approved
-// template ("Your OTP: 123456") — so no DLT registration is needed on our
-// side. The trade-off is that the message wording and the sender ID are
-// Fast2SMS's, not ours. Moving to a DLT-registered sender later (so the SMS
-// reads as Patel Marketing) only changes the body of sendViaFast2SMS() below;
-// nothing in the catalogue or the database has to change.
+// it through Fast2SMS. Which route it goes out on is chosen by the
+// FAST2SMS_ROUTE secret — see the constant below for the trade-offs. Nothing
+// in the catalogue or the database changes when that route changes.
 //
 // Secrets this function needs (Dashboard -> Edge Functions -> send-sms ->
 // Secrets, or `supabase secrets set`):
@@ -15,6 +12,9 @@
 //                         enable the Send SMS hook. Required — without it we
 //                         refuse to send, so nobody but Supabase Auth can make
 //                         this function burn SMS credits.
+// Optional:
+//   FAST2SMS_ROUTE     "q" (default), "otp", or "dlt"
+//   FAST2SMS_SENDER_ID, FAST2SMS_TEMPLATE_ID   only for the "dlt" route
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const FAST2SMS_ENDPOINT = "https://www.fast2sms.com/dev/bulkV2";
@@ -23,6 +23,22 @@ const MAX_SKEW_SECONDS = 300;
 // Give up on the SMS provider well before Supabase Auth's own request would
 // time out, so the sign-in screen always gets an answer.
 const FAST2SMS_TIMEOUT_MS = 15000;
+
+// Which Fast2SMS route to send on. Set FAST2SMS_ROUTE to change this without
+// touching code or redeploying.
+//
+//   "q"   Quick SMS (default). No DLT registration and no OTP-menu
+//         verification — the one route this account can actually use today.
+//         Random numeric sender, delivers to DND numbers, and the wording is
+//         ours, so the message can name the business. Around Rs 5 per SMS.
+//   "otp" Fast2SMS's own OTP template. Cheaper (~Rs 0.35) but the account
+//         must first pass "website verification" under the OTP SMS menu —
+//         which this account's panel no longer shows, so it returns
+//         "Before using OTP Message API, complete website verification."
+//   "dlt" A DLT-registered sender. Cheapest and shows a proper sender ID
+//         instead of a random number, but needs TRAI DLT registration plus
+//         FAST2SMS_SENDER_ID and FAST2SMS_TEMPLATE_ID set as secrets.
+const FAST2SMS_ROUTE = (Deno.env.get("FAST2SMS_ROUTE") ?? "q").trim().toLowerCase();
 
 function base64ToBytes(b64: string): Uint8Array {
   const bin = atob(b64);
@@ -86,6 +102,39 @@ function fail(status: number, message: string): Response {
   );
 }
 
+/** The request body Fast2SMS expects differs per route. */
+function buildPayload(tenDigit: string, otp: string): Record<string, unknown> {
+  if (FAST2SMS_ROUTE === "otp") {
+    // Fast2SMS supplies the wording ("Your OTP: 123456").
+    return { route: "otp", variables_values: otp, numbers: tenDigit };
+  }
+  if (FAST2SMS_ROUTE === "dlt") {
+    const sender = Deno.env.get("FAST2SMS_SENDER_ID");
+    const template = Deno.env.get("FAST2SMS_TEMPLATE_ID");
+    if (!sender || !template) {
+      throw new Error(
+        "FAST2SMS_ROUTE is 'dlt' but FAST2SMS_SENDER_ID / FAST2SMS_TEMPLATE_ID are not set",
+      );
+    }
+    return {
+      route: "dlt",
+      sender_id: sender,
+      message: template,
+      variables_values: otp,
+      numbers: tenDigit,
+    };
+  }
+  // Quick SMS. The wording is ours, so unlike the "otp" route the message can
+  // say who it is from — worth a lot when the sender ID is a random number.
+  return {
+    route: "q",
+    message: `${otp} is your Patel Marketing verification code. Do not share it with anyone.`,
+    language: "english",
+    flash: 0,
+    numbers: tenDigit,
+  };
+}
+
 async function sendViaFast2SMS(tenDigit: string, otp: string): Promise<void> {
   const apiKey = Deno.env.get("FAST2SMS_API_KEY");
   if (!apiKey) throw new Error("FAST2SMS_API_KEY is not set");
@@ -98,13 +147,7 @@ async function sendViaFast2SMS(tenDigit: string, otp: string): Promise<void> {
         "authorization": apiKey,
         "Content-Type": "application/json",
       },
-      // route "otp" uses Fast2SMS's own pre-approved template, which is what
-      // lets this work without our own DLT registration.
-      body: JSON.stringify({
-        route: "otp",
-        variables_values: otp,
-        numbers: tenDigit,
-      }),
+      body: JSON.stringify(buildPayload(tenDigit, otp)),
       // Without this, a stalled provider keeps Supabase Auth's own request
       // open, and the sign-in screen sits on "Sending…" indefinitely. Fail
       // fast instead, so the reader gets a message they can act on.
@@ -131,7 +174,9 @@ async function sendViaFast2SMS(tenDigit: string, otp: string): Promise<void> {
     const detail = Array.isArray(parsed.message)
       ? parsed.message.join("; ")
       : (parsed.message ?? text ?? "").toString().slice(0, 300);
-    throw new Error(`Fast2SMS rejected the send: ${detail || res.status}`);
+    // Name the route: the same key behaves differently per route, and the
+    // last round of debugging turned on knowing which one was in use.
+    throw new Error(`Fast2SMS rejected the send on route "${FAST2SMS_ROUTE}": ${detail || res.status}`);
   }
 }
 

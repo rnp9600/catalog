@@ -2,7 +2,25 @@
 
 Supabase Auth generates the OTP; this function delivers it through Fast2SMS.
 
-## Why Fast2SMS's `otp` route
+## Which route we send on
+
+Set by the `FAST2SMS_ROUTE` secret. Default **`q`** (Quick SMS).
+
+| Route | DLT? | Extra setup | Sender shown | Cost | Wording |
+|---|---|---|---|---|---|
+| **`q`** (default) | no | none | random number | ~Rs 5 | ours — names the business |
+| `otp` | no | account must pass "website verification" under the OTP SMS menu | Fast2SMS | ~Rs 0.35 | fixed, "Your OTP: 123456" |
+| `dlt` | **yes** | DLT registration + `FAST2SMS_SENDER_ID`, `FAST2SMS_TEMPLATE_ID` | your own, e.g. PATLMK | ~Rs 0.11-0.25 | your approved template |
+
+`otp` was tried first and refused with *"Before using OTP Message API,
+complete website verification. Visit OTP Message menu or use DLT SMS API."* —
+and this account's panel has no OTP SMS menu at all (it shows Smart OTP and
+Quick SMS instead), so there is nowhere to do that verification. Hence `q`.
+
+Note Smart OTP is **not** usable here: it generates and verifies its own code,
+whereas Supabase generates the code and needs us to deliver that exact one.
+
+## Historical note: the `otp` route
 
 Sending SMS in India normally needs DLT registration (TRAI rule): register the
 business, a 6-letter sender ID, and the exact message template. That is days of
