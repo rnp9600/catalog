@@ -548,9 +548,11 @@
     "slug": "paxton-kw-plastic-samosa-gujiya-maker-jumbo"
   },
   {
-    "img": "paxton-kw/pxk_sansa_jumbo",
+    "img": "paxton-kw/yellow-samosa-royal-open",
     "imgs": [
-      "paxton-kw/pxk_sansa_jumbo"
+      "paxton-kw/yellow-samosa-royal-open",
+      "paxton-kw/yellow-samosa-royal-front",
+      "paxton-kw/yellow-samosa-royal-side"
     ],
     "name": "Plastic Samosa / Gujiya Maker — Royal",
     "brand": "Paxton KW",
@@ -581,9 +583,11 @@
     "slug": "paxton-kw-plastic-samosa-gujiya-maker-royal"
   },
   {
-    "img": "paxton-kw/pxk_sansa_jumbo",
+    "img": "paxton-kw/yellow-samosa-triangle-open",
     "imgs": [
-      "paxton-kw/pxk_sansa_jumbo"
+      "paxton-kw/yellow-samosa-triangle-open",
+      "paxton-kw/yellow-samosa-triangle-front",
+      "paxton-kw/yellow-samosa-triangle-side"
     ],
     "name": "Plastic Samosa / Gujiya Maker — Triangle",
     "brand": "Paxton KW",
