@@ -138,6 +138,31 @@ invented figure in front of consumers, struck it through in retail mode, and
 took a percentage off it. If a supplier's MRP is missing, add it in the admin
 panel — that is the only thing that makes an MRP appear.
 
+## Promo strips
+
+`config.js` takes a list of `promos` — a title, an optional date window, a
+colour tone, and a rule for which products belong. Add a clearance or a new
+range there; nothing in the page has to change. Two more strips appear on their
+own when there is enough to show: what customers have rated highest, and what
+the reader opened recently.
+
+## Orders
+
+`orders.html` is Patel Marketing's order book, for admin and office. Orders a
+dealer sends themselves from the catalogue land in the same list as ones the
+office writes for a customer, and each moves along: confirm, packed, sent,
+completed. Writing one picks the customer, adds lines with size, rate and
+quantity, and sends it to their WhatsApp as a purchase order.
+
+Admin and office deliberately have no order pad on the catalogue — an order
+placed by the admin would go to Patel Marketing's own number. They see "Edit
+this product" instead.
+
+## Turning this into an app
+
+See `APP.md`. Short version: the site can be made installable to a home screen
+in about a day and for nothing, and that is worth doing before anything else.
+
 ## Notes for whoever edits this next
 
 - Product names are copied exactly from supplier price lists. Do not tidy or
