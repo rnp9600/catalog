@@ -149,9 +149,9 @@ datalist{}
 </main>
 </div>
 
-<script src="config.js?v=18"></script>
+<script src="config.js?v=19"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=18"></script>
+<script src="supabase-auth.js?v=19"></script>
 <script>
 (function(){
   const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
@@ -183,12 +183,19 @@ $('#gb').onclick=async function(){
   const m=$('#gm'); m.classList.remove('on');
   if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
     '. Type the 10-digit number — 91 in front is fine too.'; m.classList.add('on'); return; }
-  const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
-  const {error}=await PMAuth.sendOtp(raw);
-  gb.disabled=false; gb.textContent='Send code';
-  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  // Test numbers carry a PIN instead of a texted code — no SMS, no cost.
+  const testNo=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(raw));
+  if(!testNo){
+    const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
+    const {error}=await PMAuth.sendOtp(raw);
+    gb.disabled=false; gb.textContent='Send code';
+    if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  }
   PENDING_PHONE=raw;
-  $('#gOtpTo').textContent='Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
+    $('#gOtpTo').textContent = testNo
+    ? 'Test account. No SMS is sent for these — type the 6-digit PIN.'
+    : 'Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
+  $('#gCode').placeholder = testNo ? '6-digit PIN' : '6-digit code';
   $('#gStepPhone').style.display='none'; $('#gStepOtp').style.display='block';
   $('#gCode').focus();
 };
@@ -202,9 +209,11 @@ $('#gv').onclick=async function(){
   const code=($('#gCode').value||'').replace(/\D/g,'');
   const m=$('#gm'); m.classList.remove('on');
   if(code.length<4){ m.textContent='Enter the code as texted to you.'; m.classList.add('on'); return; }
-  const gv=$('#gv'); gv.disabled=true; gv.textContent='Verifying…';
-  const {error}=await PMAuth.verifyOtp(PENDING_PHONE, code);
-  gv.disabled=false; gv.textContent='Verify & sign in';
+  const isTest=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(PENDING_PHONE));
+  const gv=$('#gv'); gv.disabled=true; gv.textContent=isTest?'Signing in…':'Verifying…';
+  const {error}= isTest ? await PMAuth.signInWithPin(PENDING_PHONE, code)
+                        : await PMAuth.verifyOtp(PENDING_PHONE, code);
+  gv.disabled=false; gv.textContent=isTest?'Sign in':'Verify & sign in';
   if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
   PENDING_PHONE=null;
   const row=await PMAuth.myAllowlistRow();

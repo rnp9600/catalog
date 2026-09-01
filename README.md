@@ -81,6 +81,39 @@ The two get confused, so the admin panel now separates them explicitly.
 The Publish tab does the three steps in order: compare the draft against the
 database, download `data.json`, then open the GitHub upload page.
 
+## Test accounts
+
+Five numbers sign in with a **6-digit PIN instead of a texted code**, so the
+whole site can be walked at every level without paying for an SMS each time.
+They are ordinary accounts otherwise — a real session, the same database rules
+— so what they show is what that kind of customer actually sees.
+
+| Number | Role | What it is for |
+|---|---|---|
+| 9686754020 | admin | full access, second admin |
+| 9686754021 | office staff | catalogue and publishing, no access control |
+| 9686754022 | dealer (retail, Hubli) | trade rates, own customer list, exchange |
+| 9686754023 | end customer | belongs to and follows the test dealer, so sees its stock and offers |
+| 9686754024 | end customer | signed up alone — no shop yet, the "find a shop" screen |
+
+PIN: `765432`. Type the number as normal; the screen asks for the PIN instead
+of texting a code. Any other number still gets a real SMS.
+
+> **These are live credentials on the live site.** The PIN is short and the
+> numbers are sequential, so treat 9686754020 as a real admin login that a
+> stranger could guess. They are meant for a testing run, not to be left
+> standing. To remove all five when you are done — this deletes the sign-ins,
+> not any catalogue data:
+>
+> ```sql
+> delete from auth.users where phone in
+>   ('919686754020','919686754021','919686754022','919686754023','919686754024');
+> delete from catalog.allowlist where phone in
+>   ('919686754020','919686754021','919686754022','919686754023','919686754024');
+> ```
+>
+> Then drop the `TEST_NUMBERS` list in `supabase-auth.js`. Ask and I will do it.
+
 ## Sign-in
 
 Phone OTP through Supabase Auth. Supabase generates the code; the `send-sms`

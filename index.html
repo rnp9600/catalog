@@ -809,11 +809,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 18</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 19</footer>
 
-<script src="config.js?v=18"></script>
+<script src="config.js?v=19"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=18"></script>
+<script src="supabase-auth.js?v=19"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -871,11 +871,22 @@ const STATUS_LABEL={in_stock:'In stock',arriving:'Arriving',held:'Kept aside for
 const WA_NUMBER=(function(){var n=((window.PM_CONFIG||{}).whatsapp||'').replace(/\D/g,'');return n.length>=10?n:'917892967505';})();
 const SITE='https://patelmarketing-catalog.vercel.app';
 // slugOf() must stay byte-identical to the copy in api/p.js. If the two ever
-// disagree, every shared product link 404s. Verified unique across all 454
-// products; it is derived from brand + name, so it stays stable as long as
-// product names do (and names are fixed by supplier price list, so they do).
-const slugOf=p=>{const k=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+// disagree, every shared product link 404s.
+//
+// It used to derive the slug from brand + name every time, on the claim that
+// that was unique. It is not, and the catalogue has outgrown it: 15 products
+// now share 5 slugs between them — four different "Senso Pride Fruit & Veg
+// Juicer" models among them. Sharing any of those sent the reader to whichever
+// one happened to sit earliest in data.json, which is the same complaint as
+// tapping one card and opening another, except on WhatsApp where it is a
+// customer seeing the wrong price.
+//
+// data.json carries a real slug per product, unique across all 743, so use it.
+// The brand+name form stays as the fallback, which keeps every link already
+// shared resolving exactly as it did before.
+const legacySlug=p=>{const k=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   return k(p.brand)+'-'+k(p.name);};
+const slugOf=p=>(p&&p.slug)?String(p.slug):legacySlug(p);
 const shareUrl=p=>`${SITE}/p/${slugOf(p)}`;
 // The message that lands in Raj's WhatsApp. The trailing link is what makes
 // the rich product card render underneath it.
@@ -1039,17 +1050,10 @@ function updateFilterSummary(){
 }
 
 /* ---------- card ---------- */
-function priceLine(p){
-  if(p.variants&&p.variants.length){
-    const ps=p.variants.map(v=>v.price).filter(x=>x!=null);
-    if(!ps.length)return `<span class="ph">Enquire for pricing</span>`;
-    const lo=Math.min(...ps),hi=Math.max(...ps);
-    return lo===hi?`<span class="pc">₹${lo}</span><span class="pn">incl. GST</span>`
-      :`<span class="pc">₹${lo}–${hi}</span><span class="pn">incl. GST</span>`;
-  }
-  return p.price!=null?`<span class="pc">₹${p.price}</span><span class="pn">incl. GST</span>`
-    :`<span class="ph">Enquire for pricing</span>`;
-}
+/* priceLine lives further down, in the v3 block: it has to know who is
+   signed in. The v2 version that used to sit here was silently overridden by
+   it — same name, later definition, so every call already went to the v3 one.
+   Editing the dead copy would have changed nothing on screen. */
 function specHtml(p){
   if(p.hotel){const h=p.hotel;
     return `<div class="sp"><span>${h.pits} pits</span><span class="dt">·</span><span>each pit ${h.dia} mm wide</span><span class="dt">·</span><span>${h.base} base</span><span class="dt">·</span><span>approx ${h.kg} kg</span></div>`
@@ -1585,8 +1589,12 @@ fetch('data.json').then(r=>r.json()).then(d=>{P=d;
   // /p/[slug] page): open that product's sheet straight away.
   const want=new URLSearchParams(location.search).get('p');
   if(want){
-    const hit=P.find(x=>slugOf(x)===want.toLowerCase())
-           ||P.find(x=>(x.code||'').toLowerCase()===want.toLowerCase());
+    const low=want.toLowerCase();
+    // Exact slug first, then the old brand+name form so links shared before
+    // this fix still open something sensible, then the product code.
+    const hit=P.find(x=>String(x.slug||'').toLowerCase()===low)
+           ||P.find(x=>legacySlug(x)===low)
+           ||P.find(x=>(x.code||'').toLowerCase()===low);
     if(hit)openSheet(hit);
   }
 }).catch(()=>{g.innerHTML='<div class="empty"><strong>Could not load data.json</strong>Serve this folder over http, not by double-clicking index.html</div>';});
@@ -1622,6 +1630,10 @@ function daysLeft(){
 function mkFestive(){
   const box=document.getElementById('fest');
   if(!box) return;
+  // Rebuilding throws away where the reader had scrolled the rail to, which
+  // is jarring when a redraw happens under them. Put it back afterwards.
+  const oldRail=box.querySelector('.festrail');
+  const scrollLeft=oldRail?oldRail.scrollLeft:0;
   if(!festiveLive()){ box.innerHTML=''; return; }
   const picks=P.filter(isFestive);
   if(!picks.length){ box.innerHTML=''; return; }
@@ -1631,10 +1643,21 @@ function mkFestive(){
     (d?'<span class="fcd">'+d+' days to go</span>':'')+'</div>'+
     '<div class="festrail">'+picks.map(card).join('')+'</div></div>';
   const rail=box.querySelector('.festrail');
-  rail.querySelectorAll('[data-open]').forEach(function(el,ix){
-    el.addEventListener('click',function(e){ e.stopPropagation(); openSheet(picks[ix]); });
+  // Read the index out of the markup, not out of the loop counter. card()
+  // puts data-open on TWO elements — the card itself and its "View sizes"
+  // button — and omits the button entirely when a product is out of stock.
+  // So the nth matching element is not the nth product, and tapping a card
+  // opened whichever product happened to sit at that position. The main grid
+  // always read el.dataset.open; only this rail counted nodes.
+  rail.querySelectorAll('[data-open]').forEach(function(el){
+    el.addEventListener('click',function(e){
+      e.stopPropagation();
+      const pick=picks[+el.dataset.open];
+      if(pick) openSheet(pick);
+    });
   });
   rail.querySelectorAll('.med img').forEach(markReady);
+  if(scrollLeft) rail.scrollLeft=scrollLeft;
 }
 function markReady(im){
   if(im.complete) im.classList.add('ready');
@@ -1662,6 +1685,12 @@ function revealCards(){
 const _render=render;
 render=function(){
   _render.apply(null,arguments);
+  // The strip is built from the same card() as the grid, so it carries prices
+  // — and prices depend on who is signed in. It used to be built once, when
+  // the data landed, and never again: sign in and the grid switched to dealer
+  // rates while the strip above it still said "Sign in to check for a
+  // discount". Same product, two answers, on one screen.
+  try{ mkFestive(); }catch(e){}
   try{ revealCards(); }catch(e){}
 };
 
@@ -2128,13 +2157,18 @@ function signInHtml(){
 }
 function otpHtml(phoneDigits){
   const last=dg(phoneDigits).slice(-10);
-  return '<div class="shead"><strong>Enter code</strong><button class="sx" id="sgnX">×</button></div>'+
+  const isTest=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(phoneDigits));
+  return '<div class="shead"><strong>'+(isTest?'Enter PIN':'Enter code')+
+   '</strong><button class="sx" id="sgnX">×</button></div>'+
    '<div class="sbody"><div class="sgn">'+
-   '<h4>Enter the code we texted you</h4>'+
-   '<p>Sent by SMS to +91 '+last+'. It can take a minute to arrive.</p>'+
+   '<h4>'+(isTest?'Enter the 6-digit PIN':'Enter the code we texted you')+'</h4>'+
+   '<p>'+(isTest
+     ? 'Test account for +91 '+last+'. No SMS is sent for these — type the PIN.'
+     : 'Sent by SMS to +91 '+last+'. It can take a minute to arrive.')+'</p>'+
    '<div class="sgnrow"><span>#</span><input id="sgnOtp" type="tel" inputmode="numeric" '+
-   'maxlength="6" placeholder="6-digit code" autocomplete="one-time-code"></div>'+
-   '<button class="sgnbtn" id="sgnVerify">Verify &amp; sign in</button>'+
+   'maxlength="6" placeholder="'+(isTest?'6-digit PIN':'6-digit code')+'" '+
+   'autocomplete="'+(isTest?'off':'one-time-code')+'"></div>'+
+   '<button class="sgnbtn" id="sgnVerify">'+(isTest?'Sign in':'Verify &amp; sign in')+'</button>'+
    '<button class="sgnbtn ghost" id="sgnBack">Use a different number</button>'+
    '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
 }
@@ -2181,6 +2215,15 @@ function wireSignIn(){
       msg.innerHTML='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+'. '+
         'Type the 10-digit number — you can include 91 in front if you prefer.';
       msg.classList.add('on'); return; }
+    // A test number has a PIN instead of a texted code: no SMS, no cost, and
+    // straight to the second step.
+    if(PMAuth.isTestNumber && PMAuth.isTestNumber(raw)){
+      PENDING_PHONE=raw;
+      document.getElementById('sgnSheet').innerHTML=otpHtml(raw);
+      wireOtpStep();
+      const f0=document.getElementById('sgnOtp'); if(f0) setTimeout(()=>f0.focus(),120);
+      return;
+    }
     go.disabled=true; go.textContent='Sending…';
     // Belt and braces. PMAuth has its own 30s ceiling, but this watchdog lives
     // in the page itself, so the button still comes back even if an older
@@ -2476,9 +2519,11 @@ function wireOtpStep(){
     if(code.length<4){
       msg.innerHTML='Enter the code as texted to you.'; msg.classList.add('on'); return;
     }
-    go.disabled=true; go.textContent='Verifying…';
-    const {error}=await PMAuth.verifyOtp(PENDING_PHONE, code);
-    go.disabled=false; go.textContent='Verify & sign in';
+    const isTest=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(PENDING_PHONE));
+    go.disabled=true; go.textContent=isTest?'Signing in…':'Verifying…';
+    const {error}= isTest ? await PMAuth.signInWithPin(PENDING_PHONE, code)
+                          : await PMAuth.verifyOtp(PENDING_PHONE, code);
+    go.disabled=false; go.textContent=isTest?'Sign in':'Verify & sign in';
     if(error){
       msg.innerHTML=PMAuth.friendlyAuthError(error); msg.classList.add('on'); return;
     }
