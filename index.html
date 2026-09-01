@@ -809,11 +809,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 21</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 22</footer>
 
-<script src="config.js?v=21"></script>
+<script src="config.js?v=22"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=21"></script>
+<script src="supabase-auth.js?v=22"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1127,6 +1127,32 @@ function render(){
     b.textContent=(open?'▾ ':'▸ ')+b.textContent.slice(2);}));
 }
 
+/* ---------- similar / recently viewed ---------- */
+// Slugs, newest first, in this browser only. Slugs rather than indexes,
+// because a product's position in data.json changes every time the catalogue
+// is republished and an index would then point at something else entirely.
+const RECENT_KEY='v3_pm_recent', RECENT_MAX=14;
+function recentSlugs(){
+  try{ const a=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]');
+       return Array.isArray(a)?a:[]; }catch(e){ return []; }
+}
+function recentProducts(){
+  const bySlug={}; P.forEach(x=>{ if(x.slug) bySlug[x.slug]=x; });
+  return recentSlugs().map(sl=>bySlug[sl]).filter(Boolean);
+}
+function noteRecent(p){
+  if(!p||!p.slug) return;
+  const a=recentSlugs().filter(sl=>sl!==p.slug);
+  a.unshift(p.slug);
+  try{ localStorage.setItem(RECENT_KEY, JSON.stringify(a.slice(0,RECENT_MAX))); }catch(e){}
+}
+function strip(title, list){
+  return '<div class="related"><h4>'+title+'</h4><div class="rrow">'+
+    list.map(r=>'<div class="rcard" data-rel="'+P.indexOf(r)+'">'+
+      '<div class="rimg">'+(r.img?'<img src="'+IMG(r.img)+'" loading="lazy" alt="">':'—')+'</div>'+
+      '<span>'+esc(r.name)+'</span></div>').join('')+'</div></div>';
+}
+
 /* ---------- detail sheet ---------- */
 const ov=document.getElementById('ov'),sheet=document.getElementById('sheet');
 let CUR=null;
@@ -1154,11 +1180,26 @@ function openSheet(p){
           <b class="qv" data-qv="Standard">0</b><button class="qbtn" data-qp="Standard">+</button>
           <span style="font-size:.78rem;color:var(--tm)">Add to your order</span></div>`:''));
 
-  const rel=P.filter(x=>x!==p&&x.sub===p.sub&&x.brand===p.brand).slice(0,10);
-  const relHtml=rel.length?`<div class="related"><h4>More ${p.sub.toLowerCase()}</h4><div class="rrow">
-     ${rel.map(r=>`<div class="rcard" data-rel="${P.indexOf(r)}">
-       <div class="rimg">${r.img?`<img src="${IMG(r.img)}" loading="lazy" alt="">`:'—'}</div>
-       <span>${r.name}</span></div>`).join('')}</div></div>`:'';
+  // Two different questions, so two strips. "Similar" answers what else is
+  // like this one; "recently viewed" answers what you were just looking at.
+  // Rolling them into one row made both worse.
+  //
+  // Similar widens in steps: same sub-group and brand first (closest match),
+  // then the sub-group across every brand, then the category. `sub` is
+  // optional in the data, so nothing here assumes it is there — a product
+  // added without one used to be able to throw on p.sub.toLowerCase().
+  const near=(a,b)=>a&&b&&String(a).toLowerCase()===String(b).toLowerCase();
+  const sim=[];
+  const push=x=>{ if(x!==p && !sim.includes(x) && x.stock!=='out' && sim.length<12) sim.push(x); };
+  P.forEach(x=>{ if(near(x.sub,p.sub) && near(x.brand,p.brand)) push(x); });
+  P.forEach(x=>{ if(near(x.sub,p.sub)) push(x); });
+  P.forEach(x=>{ if(near(x.cat,p.cat)) push(x); });
+
+  const simHtml = sim.length ? strip('Similar products', sim) : '';
+  // Read the list before this product joins it, or it appears in its own row.
+  const recent = recentProducts().filter(x=>x!==p).slice(0,12);
+  const recHtml = recent.length ? strip('Recently viewed', recent) : '';
+  const relHtml = simHtml + recHtml;
 
   sheet.innerHTML=`
    <div class="shead"><strong>${p.name}</strong><button class="sx" id="sxb">×</button></div>
@@ -1238,6 +1279,7 @@ function openSheet(p){
     try{await navigator.clipboard.writeText(url);b.textContent='Link copied ✓';}
     catch(e){b.textContent=url;}
     setTimeout(()=>b.textContent='Share product',1800);};
+  noteRecent(p);
   loadReviews(p);
   const cpBtn=document.getElementById('cpBtn');
   if(cpBtn) cpBtn.onclick=()=>{
