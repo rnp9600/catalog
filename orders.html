@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Orders — Patel Marketing</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--r:14px;--rs:9px;--fd:'Inter',-apple-system,sans-serif;--fm:'IBM Plex Mono',monospace}
+[data-theme="sky"]{--bg:#F2F8FD;--sf:#FFF;--sf2:#E8F3FC;--pr:#2F6FA8;--prh:#245880;--prt:#B7DCF7;
+ --ac:#12A594;--act:#CFF5F0;--tx:#0D2137;--tm:#5B7690;--bd:#D6E6F2;--sh:15,60,100}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fd);background:var(--bg);color:var(--tx);line-height:1.45;padding-bottom:40px}
+button,input,select,textarea{font-family:var(--fd);color:inherit}
+button{cursor:pointer}
+header{position:sticky;top:0;z-index:40;background:var(--sf);border-bottom:1px solid var(--bd)}
+.hin{display:flex;align-items:center;gap:10px;padding:10px 14px;max-width:760px;margin:0 auto}
+.mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--pr),var(--ac));
+ display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.85rem;flex-shrink:0}
+.hin b{font-size:.98rem;font-weight:800;letter-spacing:-.02em}
+.hin .who{font-family:var(--fm);font-size:.62rem;color:var(--tm)}
+.sp{flex:1}
+.ibtn{border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:999px;
+ padding:7px 12px;font-size:.72rem;font-weight:700;text-decoration:none;display:inline-block}
+.tabs{display:flex;gap:4px;padding:0 14px 9px;max-width:760px;margin:0 auto;overflow-x:auto}
+.tab{flex:0 0 auto;border:0;background:var(--sf2);color:var(--tm);border-radius:999px;
+ padding:7px 14px;font-size:.76rem;font-weight:700;white-space:nowrap}
+.tab.on{background:var(--pr);color:#fff}
+main{max-width:760px;margin:0 auto;padding:14px}
+.panel{display:none}.panel.on{display:block}
+.note{background:var(--act);border-radius:var(--rs);padding:12px 14px;font-size:.79rem;
+ line-height:1.6;margin-bottom:14px}
+.note b{display:block;margin-bottom:3px}
+.bar{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+.bar input{flex:1;min-width:140px;padding:10px 13px;border:1.5px solid var(--bd);border-radius:var(--rs);
+ background:var(--sf);font-size:.88rem}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:.66rem;font-weight:700;color:var(--tm);text-transform:uppercase;
+ letter-spacing:.07em;margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bd);
+ border-radius:var(--rs);background:var(--sf);font-size:.88rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{padding:10px 14px;border:0;border-radius:var(--rs);background:var(--pr);color:#fff;
+ font-weight:700;font-size:.83rem}
+.btn.g{background:var(--ac)}
+.btn.o{background:var(--sf);color:var(--tx);border:1.5px solid var(--bd)}
+.btn.r{background:#B4433B;color:#fff}
+.btn:disabled{opacity:.45}
+.item{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--bd);
+ border-radius:var(--rs);padding:9px 11px;margin-bottom:7px}
+.item .t{flex:1;min-width:0}
+.item .n{font-size:.85rem;font-weight:700}
+.item .s{font-family:var(--fm);font-size:.68rem;color:var(--tm);margin-top:2px}
+.empty{padding:36px 16px;text-align:center;color:var(--tm);font-size:.85rem}
+.gate{max-width:340px;margin:70px auto;text-align:center}
+.gate .mark{margin:0 auto 18px}
+.gate h1{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.gate p{font-size:.84rem;color:var(--tm);margin-bottom:18px;line-height:1.55}
+.gate .row{display:flex;margin-bottom:10px}
+.gate .row span{font-family:var(--fm);padding:13px 11px;border:1.5px solid var(--bd);border-right:0;
+ border-radius:var(--rs) 0 0 var(--rs);background:var(--sf2);color:var(--tm);font-size:.88rem}
+.gate .row input{flex:1;min-width:0;padding:13px 12px;border:1.5px solid var(--bd);border-left:0;
+ border-radius:0 var(--rs) var(--rs) 0;background:var(--sf);font-family:var(--fm);
+ letter-spacing:.08em;font-size:.95rem}
+.gate .msg{font-size:.8rem;color:#B4433B;margin-top:11px;display:none}
+.gate .msg.on{display:block}
+</style>
+<style>
+/* order book */
+.ohead{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.oref{font-family:var(--fm);font-size:.72rem;font-weight:600;color:var(--tm)}
+.ocard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+ padding:12px 14px;margin-bottom:10px}
+.ocard.done{opacity:.62}
+.ocust{font-size:.95rem;font-weight:800;letter-spacing:-.01em}
+.ometa{font-size:.74rem;color:var(--tm);margin-top:3px}
+.chip{display:inline-block;border-radius:999px;padding:3px 9px;font-size:.66rem;
+ font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.s-new{background:#FFF0D6;color:#8A5B00}
+.s-confirmed{background:#DDEBFF;color:#28527F}
+.s-packed{background:#E6E2FF;color:#463C9B}
+.s-sent{background:#D8F1EC;color:#0F6B5C}
+.s-completed{background:#DCF3DC;color:#2A6B2A}
+.s-cancelled{background:#F6DEDC;color:#8A3A32}
+.tag-office{background:var(--sf2);color:var(--tm)}
+.olines{margin-top:10px;border-top:1px dashed var(--bd);padding-top:9px;display:none}
+.olines.on{display:block}
+.oline{display:flex;gap:8px;font-size:.8rem;padding:3px 0}
+.oline .q{font-family:var(--fm);font-weight:700;flex:0 0 46px}
+.oline .n{flex:1;min-width:0}
+.oline .p{font-family:var(--fm);color:var(--tm)}
+.oacts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.oacts button{border:1px solid var(--bd);background:var(--sf);border-radius:999px;
+ padding:6px 12px;font-size:.72rem;font-weight:700;color:var(--tx)}
+.oacts button.go{background:var(--ac);border-color:var(--ac);color:#fff}
+.oacts button.warn{color:#8A3A32}
+.pick{position:relative}
+.pickmenu{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--sf);
+ border:1px solid var(--bd);border-radius:var(--rs);max-height:260px;overflow:auto;
+ box-shadow:0 12px 30px rgba(var(--sh),.14);display:none}
+.pickmenu.on{display:block}
+.pickmenu button{display:block;width:100%;text-align:left;border:0;background:transparent;
+ padding:9px 12px;font-size:.84rem;border-bottom:1px solid var(--bd)}
+.pickmenu button:hover{background:var(--sf2)}
+.pickmenu small{display:block;color:var(--tm);font-family:var(--fm);font-size:.66rem}
+.chosen{display:flex;align-items:center;gap:9px;background:var(--act);border-radius:var(--rs);
+ padding:10px 12px;margin-bottom:12px}
+.chosen b{flex:1;font-size:.88rem}
+.lrow{display:grid;grid-template-columns:1fr 74px 84px 34px;gap:7px;align-items:center;margin-bottom:7px}
+.lrow input,.lrow select{padding:9px 10px;border:1.5px solid var(--bd);border-radius:var(--rs);
+ background:var(--sf);font-size:.84rem;width:100%}
+.lrow .x{border:0;background:transparent;color:#8A3A32;font-size:1.1rem;font-weight:800}
+.ltot{display:flex;justify-content:space-between;align-items:baseline;
+ border-top:1.5px solid var(--bd);margin-top:10px;padding-top:10px;font-weight:800}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:9px}
+.filters button{flex:0 0 auto;border:1px solid var(--bd);background:var(--sf);border-radius:999px;
+ padding:6px 13px;font-size:.74rem;font-weight:700;color:var(--tm);white-space:nowrap}
+.filters button.on{background:var(--pr);border-color:var(--pr);color:#fff}
+.stat{font-size:.75rem;color:var(--tm);margin-bottom:10px}
+</style>
+</head>
+<body data-theme="sky">
+
+<div id="gate" class="gate">
+  <div class="mark">PM</div>
+  <div id="gStepPhone">
+    <h1>Orders</h1>
+    <p>For Patel Marketing only. Enter your phone number — we'll text you a one-time code.</p>
+    <div class="row"><span>+91</span><input id="gp" type="tel" inputmode="numeric" maxlength="15"
+      placeholder="98765 43210" autocomplete="off"></div>
+    <div id="gEcho" style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--tm);margin:-4px 0 10px;min-height:15px"></div>
+    <button class="btn" id="gb" style="width:100%">Send code</button>
+  </div>
+  <div id="gStepOtp" style="display:none">
+    <h1>Enter code</h1>
+    <p id="gOtpTo">Sent by SMS. It can take a minute to arrive.</p>
+    <div class="row"><span>#</span><input id="gCode" type="tel" inputmode="numeric" maxlength="6"
+      placeholder="6-digit code" autocomplete="one-time-code"></div>
+    <button class="btn" id="gv" style="width:100%">Verify &amp; sign in</button>
+    <p style="margin-top:14px"><button class="ibtn" id="gBack" style="border:0;background:transparent">Use a different number</button></p>
+  </div>
+  <div class="msg" id="gm"></div>
+  <p style="margin-top:22px"><a class="ibtn" href="index.html">Back to catalogue</a></p>
+</div>
+
+<div id="app" style="display:none">
+<header>
+  <div class="hin">
+    <div class="mark">PM</div>
+    <div><b>Orders</b><div class="who" id="whoLine"></div></div>
+    <div class="sp"></div>
+    <a class="ibtn" href="index.html">Catalogue</a>
+    <a class="ibtn" href="admin.html">Admin</a>
+    <button class="ibtn" id="outBtn">Sign out</button>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-t="book">Order book</button>
+    <button class="tab" data-t="write">Write an order</button>
+  </div>
+</header>
+
+<main>
+  <section class="panel on" id="p-book">
+    <div class="note"><b>Every order in one place.</b>
+      Orders your dealers send themselves arrive here alongside the ones you write for them.
+      Move one along as you work it — confirm, pack, send, complete.</div>
+    <div class="filters" id="oFilters"></div>
+    <div id="oStat" class="stat"></div>
+    <div id="oList"></div>
+  </section>
+
+  <section class="panel" id="p-write">
+    <div class="note"><b>Writing an order for a customer.</b>
+      Pick who it is for, add what they asked for, and save. They get it on WhatsApp as a
+      purchase order, and it appears in the book for you to work.</div>
+
+    <div id="pickWrap">
+      <div class="fg"><label>Customer</label>
+        <div class="pick">
+          <input id="cSearch" placeholder="Type a name, shop or number…" autocomplete="off">
+          <div class="pickmenu" id="cMenu"></div>
+        </div>
+      </div>
+    </div>
+    <div id="chosenWrap"></div>
+
+    <h4 style="font-size:.85rem;margin:16px 0 8px;font-weight:800">What they want</h4>
+    <div class="fg">
+      <input id="pSearch" list="dProducts" placeholder="Search a product by name, brand or code…">
+      <datalist id="dProducts"></datalist>
+      <div id="pHint" style="font-size:.7rem;color:var(--tm);margin-top:4px"></div>
+    </div>
+    <div id="lines"></div>
+    <div class="ltot"><span>Total</span><span id="lTotal">₹0</span></div>
+
+    <div class="fg" style="margin-top:14px"><label>Note (optional)</label>
+      <input id="oNote" placeholder="e.g. send with the Friday lorry"></div>
+    <button class="btn g" id="saveOrder" style="width:100%;margin-top:6px">Save &amp; send the PO</button>
+    <p style="font-size:.72rem;color:var(--tm);margin-top:9px;line-height:1.5" id="saveHint"></p>
+  </section>
+</main>
+</div>
+
+<script src="config.js?v=22"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-auth.js?v=22"></script>
+<script>
+(function(){
+  const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s'};
+  const M=Object.assign({},D,window.PM_CONFIG||{});
+  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
+  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
+  window.PM_CONFIG=M;
+})();
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=n=>n==null?'—':'₹'+Number(n).toLocaleString('en-IN');
+const dg=s=>String(s||'').replace(/\D/g,'');
+let ME=null, P=[], PENDING_PHONE=null;
+let ORDERS=[], ITEMS={}, FILTER='open', CUSTOMERS=[], CHOSEN=null, LINES=[];
+
+/* Only Patel Marketing's own side works the order book. */
+const mayOpen=r=>!!r && (r.is_admin || r.role==='staff' || r.role==='admin');
+
+const STATUS=['new','confirmed','packed','sent','completed','cancelled'];
+const NEXT={new:'confirmed',confirmed:'packed',packed:'sent',sent:'completed'};
+const VERB={confirmed:'Confirm',packed:'Mark packed',sent:'Mark sent',completed:'Mark completed'};
+
+/* ---------------- gate ---------------- */
+$('#gp').oninput=function(){
+  const d=dg($('#gp').value);
+  $('#gEcho').textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10) : (d.length?d.length+' of 10 digits':'');
+};
+$('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
+$('#gb').onclick=async function(){
+  const raw=dg($('#gp').value);
+  const m=$('#gm'); m.classList.remove('on');
+  if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
+    '. Type the 10-digit number.'; m.classList.add('on'); return; }
+  const testNo=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(raw));
+  if(!testNo){
+    const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
+    const {error}=await PMAuth.sendOtp(raw);
+    gb.disabled=false; gb.textContent='Send code';
+    if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  }
+  PENDING_PHONE=raw;
+  $('#gOtpTo').textContent = testNo
+    ? 'Test account. No SMS is sent for these — type the 6-digit PIN.'
+    : 'Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
+  $('#gCode').placeholder = testNo ? '6-digit PIN' : '6-digit code';
+  $('#gStepPhone').style.display='none'; $('#gStepOtp').style.display='block';
+  $('#gCode').focus();
+};
+$('#gBack').onclick=function(){
+  PENDING_PHONE=null; $('#gm').classList.remove('on');
+  $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block'; $('#gp').focus();
+};
+$('#gCode').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gv').click()} };
+$('#gv').onclick=async function(){
+  const code=dg($('#gCode').value);
+  const m=$('#gm'); m.classList.remove('on');
+  if(code.length<4){ m.textContent='Enter the code as texted to you.'; m.classList.add('on'); return; }
+  const isTest=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(PENDING_PHONE));
+  const gv=$('#gv'); gv.disabled=true; gv.textContent=isTest?'Signing in…':'Verifying…';
+  const {error}= isTest ? await PMAuth.signInWithPin(PENDING_PHONE, code)
+                        : await PMAuth.verifyOtp(PENDING_PHONE, code);
+  gv.disabled=false; gv.textContent=isTest?'Sign in':'Verify & sign in';
+  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
+  PENDING_PHONE=null;
+  const row=await PMAuth.myAllowlistRow();
+  if(!mayOpen(row)){
+    await PMAuth.signOut();
+    m.textContent='That number signed in, but the order book is for Patel Marketing only.';
+    m.classList.add('on');
+    $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
+    return;
+  }
+  start(row);
+};
+(async function(){
+  const sess=await PMAuth.currentSession(); if(!sess) return;
+  const row=await PMAuth.myAllowlistRow();
+  if(mayOpen(row)) start(row); else await PMAuth.signOut();
+})();
+$('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+
+async function start(row){
+  ME=row;
+  $('#gate').style.display='none'; $('#app').style.display='block';
+  $('#whoLine').textContent=(row.name||'office')+(row.is_admin?' · admin':' · office');
+  try{ const r=await fetch('data.json',{cache:'no-cache'}); P=await r.json(); }catch(e){ P=[]; }
+  $('#dProducts').innerHTML=P.map(p=>'<option value="'+esc(p.name)+(p.code?' — '+esc(p.code):'')+'">').join('');
+  drawFilters();
+  await loadOrders();
+  await loadCustomers();
+  drawLines();
+}
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  $('#p-'+b.dataset.t).classList.add('on');
+  window.scrollTo(0,0);
+});
+
+/* ---------------- the book ---------------- */
+function drawFilters(){
+  const opts=[['open','To do'],['all','All'],['new','New'],['confirmed','Confirmed'],
+              ['packed','Packed'],['sent','Sent'],['completed','Completed'],['cancelled','Cancelled']];
+  $('#oFilters').innerHTML=opts.map(([k,l])=>
+    '<button data-f="'+k+'" class="'+(FILTER===k?'on':'')+'">'+l+'</button>').join('');
+  $('#oFilters').onclick=function(e){
+    const b=e.target.closest('[data-f]'); if(!b) return;
+    FILTER=b.dataset.f; drawFilters(); drawOrders();
+  };
+}
+async function loadOrders(){
+  const {data,error}=await PMAuth.sb.from('order_summary').select('*')
+    .order('created_at',{ascending:false}).limit(300);
+  if(error){ $('#oList').innerHTML='<div class="empty">Could not load orders — '+esc(error.message)+'</div>'; return; }
+  ORDERS=data||[];
+  drawOrders();
+}
+function shown(){
+  if(FILTER==='all') return ORDERS;
+  if(FILTER==='open') return ORDERS.filter(o=>o.status!=='completed'&&o.status!=='cancelled');
+  return ORDERS.filter(o=>o.status===FILTER);
+}
+function drawOrders(){
+  const list=shown();
+  const open=ORDERS.filter(o=>o.status!=='completed'&&o.status!=='cancelled').length;
+  $('#oStat').textContent = ORDERS.length
+    ? ORDERS.length+' order'+(ORDERS.length===1?'':'s')+' · '+open+' still to work'
+    : '';
+  $('#oList').innerHTML = list.length ? list.map(o=>{
+    const done=o.status==='completed'||o.status==='cancelled';
+    const nx=NEXT[o.status];
+    return '<div class="ocard'+(done?' done':'')+'" data-ref="'+esc(o.ref)+'">'+
+      '<div class="ohead"><span class="ocust">'+esc(o.customer)+'</span>'+
+        '<span class="chip s-'+o.status+'">'+o.status+'</span>'+
+        (o.taken_by_office?'<span class="chip tag-office">office</span>':'')+
+        '<span class="sp" style="flex:1"></span><span class="oref">'+esc(o.ref)+'</span></div>'+
+      '<div class="ometa">'+o.lines+' line'+(o.lines===1?'':'s')+' · '+o.pieces+' pcs · '+
+        money(o.total)+' · '+new Date(o.created_at).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})+
+        (o.note?'<br>'+esc(o.note):'')+'</div>'+
+      '<div class="olines" id="ol-'+esc(o.ref)+'"></div>'+
+      '<div class="oacts">'+
+        '<button data-show="'+esc(o.ref)+'">Lines</button>'+
+        (nx?'<button class="go" data-next="'+esc(o.ref)+'">'+VERB[nx]+'</button>':'')+
+        '<button data-wa="'+esc(o.ref)+'">Send PO again</button>'+
+        (done?'':'<button class="warn" data-cancel="'+esc(o.ref)+'">Cancel</button>')+
+      '</div></div>';
+  }).join('') : '<div class="empty">Nothing here yet.</div>';
+}
+$('#oList').onclick=async function(e){
+  const show=e.target.closest('[data-show]');
+  const next=e.target.closest('[data-next]');
+  const wa=e.target.closest('[data-wa]');
+  const cancel=e.target.closest('[data-cancel]');
+  if(show){ await toggleLines(show.dataset.show, show); return; }
+  if(next){ const o=ORDERS.find(x=>x.ref===next.dataset.next);
+    await move(o.ref, NEXT[o.status]); return; }
+  if(cancel){ if(confirm('Cancel '+cancel.dataset.cancel+'?')) await move(cancel.dataset.cancel,'cancelled'); return; }
+  if(wa){ const o=ORDERS.find(x=>x.ref===wa.dataset.wa);
+    const its=await lines(o.ref);
+    window.open('https://wa.me/'+o.customer_phone+'?text='+encodeURIComponent(poText(o,its)),'_blank'); }
+};
+async function lines(ref){
+  if(ITEMS[ref]) return ITEMS[ref];
+  const o=ORDERS.find(x=>x.ref===ref); if(!o) return [];
+  const {data}=await PMAuth.sb.from('order_items').select('*').eq('order_id',o.id).order('sort');
+  ITEMS[ref]=data||[];
+  return ITEMS[ref];
+}
+async function toggleLines(ref, btn){
+  const box=document.getElementById('ol-'+ref);
+  if(box.classList.contains('on')){ box.classList.remove('on'); btn.textContent='Lines'; return; }
+  const its=await lines(ref);
+  box.innerHTML = its.length ? its.map(i=>
+    '<div class="oline"><span class="q">'+i.qty+'×</span><span class="n">'+esc(i.name)+
+    (i.size&&i.size!=='Standard'?' <span style="color:var(--tm)">('+esc(i.size)+')</span>':'')+
+    '</span><span class="p">'+money(i.price)+'</span></div>').join('')
+    : '<div class="oline">No lines recorded.</div>';
+  box.classList.add('on'); btn.textContent='Hide';
+}
+async function move(ref,status){
+  const {error}=await PMAuth.sb.rpc('set_order_status',{p_ref:ref,p_status:status});
+  if(error){ alert('Could not update — '+error.message); return; }
+  await loadOrders();
+}
+
+/* ---------------- writing one ---------------- */
+async function loadCustomers(){
+  const {data,error}=await PMAuth.sb.from('order_customers').select('*').order('name');
+  if(error){ $('#saveHint').textContent='Could not load the customer list — '+error.message; return; }
+  CUSTOMERS=data||[];
+}
+$('#cSearch').oninput=function(){
+  const q=this.value.trim().toLowerCase();
+  const menu=$('#cMenu');
+  if(!q){ menu.classList.remove('on'); menu.innerHTML=''; return; }
+  const hits=CUSTOMERS.filter(c=>
+    (c.name||'').toLowerCase().includes(q) || (c.shop||'').toLowerCase().includes(q) ||
+    (c.phone||'').includes(q) || (c.city||'').toLowerCase().includes(q)).slice(0,25);
+  menu.innerHTML = hits.length ? hits.map(c=>
+    '<button data-ph="'+esc(c.phone)+'">'+esc(c.name)+
+    '<small>+'+esc(c.phone)+(c.city?' · '+esc(c.city):'')+
+    ' · '+(c.role==='end_customer'?'consumer':(c.dealer_type||'dealer'))+'</small></button>').join('')
+    : '<button disabled style="color:var(--tm)">No one matches that.</button>';
+  menu.classList.add('on');
+};
+$('#cMenu').onclick=function(e){
+  const b=e.target.closest('[data-ph]'); if(!b) return;
+  CHOSEN=CUSTOMERS.find(c=>c.phone===b.dataset.ph);
+  $('#cMenu').classList.remove('on'); $('#cSearch').value='';
+  drawChosen();
+};
+function drawChosen(){
+  $('#chosenWrap').innerHTML = CHOSEN
+    ? '<div class="chosen"><b>'+esc(CHOSEN.name)+'</b>'+
+      '<span style="font-family:var(--fm);font-size:.7rem;color:var(--tm)">+'+esc(CHOSEN.phone)+'</span>'+
+      '<button class="ibtn" id="unpick">Change</button></div>'
+    : '';
+  $('#pickWrap').style.display = CHOSEN ? 'none' : '';
+  const u=$('#unpick'); if(u) u.onclick=function(){ CHOSEN=null; drawChosen(); $('#cSearch').focus(); };
+  updateHint();
+}
+function findProduct(text){
+  const t=(text||'').split(' — ')[0].trim().toLowerCase();
+  return P.find(p=>p.name.toLowerCase()===t) ||
+    P.find(p=>((p.name+' — '+(p.code||'')).toLowerCase())===(text||'').trim().toLowerCase());
+}
+$('#pSearch').oninput=function(){
+  const p=findProduct(this.value);
+  $('#pHint').textContent = p ? (p.brand+' · '+p.cat+(p.code?' · '+p.code:'')) : '';
+  if(p){ addLine(p); this.value=''; $('#pHint').textContent=''; }
+};
+function addLine(p){
+  const vs=(p.variants&&p.variants.length)?p.variants:[{size:'Standard',price:p.price,mrp:p.mrp,unit:'Piece'}];
+  LINES.push({slug:p.slug, name:p.name, sizes:vs, six:0, qty:1});
+  drawLines();
+}
+function drawLines(){
+  const box=$('#lines');
+  box.innerHTML = LINES.length ? LINES.map((l,ix)=>{
+    const v=l.sizes[l.six]||{};
+    return '<div class="lrow">'+
+      '<div><div style="font-size:.85rem;font-weight:700">'+esc(l.name)+'</div>'+
+        (l.sizes.length>1
+          ? '<select data-sz="'+ix+'" style="margin-top:4px">'+l.sizes.map((s,si)=>
+              '<option value="'+si+'"'+(si===l.six?' selected':'')+'>'+esc(s.size||'Standard')+
+              (s.price!=null?' — ₹'+s.price:'')+'</option>').join('')+'</select>'
+          : '<div style="font-size:.72rem;color:var(--tm)">'+esc(v.size||'Standard')+'</div>')+
+      '</div>'+
+      '<input type="number" min="1" value="'+l.qty+'" data-q="'+ix+'">'+
+      '<input type="number" value="'+(v.price!=null?v.price:'')+'" data-p="'+ix+'" placeholder="rate">'+
+      '<button class="x" data-x="'+ix+'">×</button></div>';
+  }).join('') : '<div style="font-size:.82rem;color:var(--tm);padding:6px 0">'+
+      'Nothing added yet — search a product above.</div>';
+  $('#lTotal').textContent=money(total());
+  updateHint();
+}
+function total(){ return LINES.reduce((s,l)=>{
+  const v=l.sizes[l.six]||{}; const pr=(l.price!=null?l.price:v.price);
+  return s+((pr!=null?pr:0)*(l.qty||0)); },0); }
+$('#lines').oninput=function(e){
+  const q=e.target.closest('[data-q]'), pr=e.target.closest('[data-p]'), sz=e.target.closest('[data-sz]');
+  if(q){ LINES[+q.dataset.q].qty=Math.max(1,+q.value||1); $('#lTotal').textContent=money(total()); }
+  if(pr){ LINES[+pr.dataset.p].price=pr.value===''?null:+pr.value; $('#lTotal').textContent=money(total()); }
+  if(sz){ const l=LINES[+sz.dataset.sz]; l.six=+sz.value; l.price=null; drawLines(); }
+};
+$('#lines').onclick=function(e){
+  const x=e.target.closest('[data-x]'); if(!x) return;
+  LINES.splice(+x.dataset.x,1); drawLines();
+};
+function updateHint(){
+  const h=$('#saveHint');
+  if(!CHOSEN) h.textContent='Pick a customer first.';
+  else if(!LINES.length) h.textContent='Add at least one product.';
+  else h.textContent='Saves the order and opens WhatsApp to +'+CHOSEN.phone+' with the PO.';
+}
+function poText(o, items){
+  const L=['*PURCHASE ORDER*  '+o.ref,'', 'To: '+o.customer, ''];
+  items.forEach(i=>{
+    L.push(i.qty+' × '+i.name+(i.size&&i.size!=='Standard'?' ('+i.size+')':'')+
+      (i.price!=null?'  —  ₹'+i.price+(i.qty>1?' ea':''):''));
+  });
+  L.push('', 'Total: '+money(o.total));
+  if(o.note) L.push('', 'Note: '+o.note);
+  L.push('', 'From Patel Marketing. Reply here to change anything.');
+  return L.join('\n');
+}
+$('#saveOrder').onclick=async function(){
+  if(!CHOSEN){ alert('Pick a customer first.'); return; }
+  if(!LINES.length){ alert('Add at least one product.'); return; }
+  const items=LINES.map(l=>{
+    const v=l.sizes[l.six]||{};
+    return {slug:l.slug, name:l.name, size:v.size||'Standard', unit:v.unit||'Piece',
+            qty:l.qty, price:(l.price!=null?l.price:v.price), mrp:v.mrp};
+  });
+  const w=window.open('', '_blank');            // opened inside the click
+  const b=this; b.disabled=true; b.textContent='Saving…';
+  const {data,error}=await PMAuth.sb.rpc('place_order',{
+    p_customer:CHOSEN.phone, p_note:$('#oNote').value.trim()||null, p_items:items });
+  b.disabled=false; b.textContent='Save & send the PO';
+  if(error){ if(w&&!w.closed) w.close(); alert('Could not save — '+error.message); return; }
+  const o={ref:data, customer:CHOSEN.name, note:$('#oNote').value.trim(),
+           total:items.reduce((s,i)=>s+((i.price||0)*i.qty),0)};
+  const target='https://wa.me/'+CHOSEN.phone+'?text='+encodeURIComponent(poText(o,items));
+  if(w&&!w.closed) w.location.href=target; else location.href=target;
+  LINES=[]; CHOSEN=null; $('#oNote').value=''; drawChosen(); drawLines();
+  ITEMS={}; await loadOrders();
+  document.querySelector('.tab[data-t="book"]').click();
+  alert('Saved as '+data+' and sent.');
+};
+</script>
+</body>
+</html>

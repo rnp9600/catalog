@@ -63,39 +63,51 @@ async function loadData(req) {
   return data;
 }
 
+// This page is public: it is what a shared link opens, with no sign-in and no
+// way to have one. So it shows what a signed-out visitor sees in the
+// catalogue — the printed MRP — and never the dealer rate. It used to print
+// the DP column for every size to anyone holding the link, which meant
+// forwarding a product to a customer forwarded your buying price with it.
 function priceBlock(p) {
   const v = p.variants || [];
   if (v.length) {
-    const rows = v.map(x => `<tr>
-      <td>${esc(x.size)}</td>
-      <td class="r">${x.price != null ? '₹' + x.price : '—'}</td>
-      <td class="r dim">${x.mrp != null ? '₹' + x.mrp : ''}</td>
-      <td class="r dim">${x.moq ? x.moq + ' pc' : '—'}</td></tr>`).join('');
-    return `<table class="vt">
-      <thead><tr><th>Size / option</th><th class="r">Rate</th><th class="r">MRP</th><th class="r">MOQ</th></tr></thead>
-      <tbody>${rows}</tbody></table>
-      <p class="fine">Rate is per piece including GST${p.gst ? ' at ' + p.gst + '%' : ''}. MRP is the printed maximum retail price. MOQ is the minimum order quantity where the supplier sets one.</p>`;
+    const anyMrp = v.some(x => x.mrp != null);
+    if (anyMrp) {
+      const rows = v.map(x => `<tr>
+        <td>${esc(x.size)}</td>
+        <td class="r">${x.mrp != null ? '₹' + x.mrp : '—'}</td>
+        <td class="r dim">${x.moq ? x.moq + ' pc' : '—'}</td></tr>`).join('');
+      return `<table class="vt">
+        <thead><tr><th>Size / option</th><th class="r">MRP</th><th class="r">MOQ</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+        <p class="fine">MRP is the printed maximum retail price. MOQ is the minimum order quantity where the supplier sets one. Trade rates are shown once you sign in on the catalogue.</p>`;
+    }
+    // Sizes are useful on their own; the rate is not ours to publish.
+    return `<ul class="plain">${v.map(x => `<li>${esc(x.size)}${x.moq ? ` — MOQ ${x.moq} pc` : ''}</li>`).join('')}</ul>
+      <p class="fine">Sign in on the catalogue for rates.</p>`;
   }
   if (p.sizes && p.sizes.length) {
     return `<ul class="plain">${p.sizes.map(s => `<li>${esc(s)}</li>`).join('')}</ul>`;
   }
-  if (p.price != null) return `<p class="big">₹${p.price} <span class="dim">incl. GST</span></p>`;
-  return `<p class="dim">Enquire for pricing</p>`;
+  if (p.mrp != null) return `<p class="big">₹${p.mrp} <span class="dim">MRP</span></p>`;
+  return `<p class="dim">Sign in on the catalogue for rates</p>`;
 }
 
 // The short line WhatsApp shows under the title in the preview card.
 function ogDescription(p) {
   const bits = [p.brand, p.cat].filter(Boolean);
+  // MRP only. This string is the grey line under the title in the WhatsApp
+  // preview, so whatever goes here is broadcast to every chat the link reaches.
   const v = p.variants || [];
   if (v.length) {
-    const prices = v.map(x => x.price).filter(x => x != null);
-    if (prices.length) {
-      const lo = Math.min(...prices), hi = Math.max(...prices);
-      bits.push(lo === hi ? `₹${lo}` : `₹${lo}–₹${hi}`);
+    const mrps = v.map(x => x.mrp).filter(x => x != null);
+    if (mrps.length) {
+      const lo = Math.min(...mrps), hi = Math.max(...mrps);
+      bits.push(lo === hi ? `MRP ₹${lo}` : `MRP ₹${lo}–₹${hi}`);
     }
     bits.push(`${v.length} size${v.length > 1 ? 's' : ''}`);
-  } else if (p.price != null) {
-    bits.push(`₹${p.price}`);
+  } else if (p.mrp != null) {
+    bits.push(`MRP ₹${p.mrp}`);
   }
   const head = bits.join(' · ');
   const tail = p.desc ? ' — ' + p.desc : '';
@@ -111,7 +123,9 @@ function waLink(p) {
   const v = p.variants || [];
   if (v.length) {
     t += `${nl}📏 *Sizes:*${nl}`;
-    t += v.map(x => `  • ${x.size}${x.price != null ? ` — ₹${x.price}` : ''}`).join(nl) + nl;
+    // Sizes only — this text is composed in the visitor's own WhatsApp, so a
+    // rate here is a rate they can read, screenshot and forward.
+    t += v.map(x => `  • ${x.size}`).join(nl) + nl;
   } else if (p.sizes && p.sizes.length) {
     t += `${nl}📏 *Sizes:* ${p.sizes.join(', ')}${nl}`;
   }
@@ -188,8 +202,9 @@ h1{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;line-height:1.2;margin
 .acts{display:flex;flex-direction:column;gap:8px;margin-top:22px}
 .acts a,.acts button{display:block;width:100%;text-align:center;border:0;border-radius:10px;
  padding:13px 16px;font-family:var(--fd);font-size:.88rem;font-weight:700;cursor:pointer;text-decoration:none}
-.wa{background:#25D366;color:#fff}
+.wa{background:linear-gradient(135deg,var(--pr),var(--ac));color:#fff}
 .alt{background:var(--sf);color:var(--tx);border:1px solid var(--bd)!important}
+.hint{font-size:.72rem;color:var(--tm);text-align:center;margin-top:12px}
 footer{max-width:760px;margin:28px auto 0;padding:0 18px;color:var(--tm);font-size:.72rem;text-align:center}
 @media(max-width:560px){.hero{height:230px}h1{font-size:1.2rem}}
 </style></head><body>
@@ -214,11 +229,28 @@ footer{max-width:760px;margin:28px auto 0;padding:0 18px;color:var(--tm);font-si
  ${p.note ? `<div class="note">ℹ️ ${esc(p.note)}</div>` : ''}
  ${priceBlock(p)}
  <div class="acts">
-  <a class="wa" href="${esc(waLink(p))}" target="_blank" rel="noopener">💬 Enquire on WhatsApp</a>
-  <a class="alt" href="/?p=${esc(slug)}">View in full catalogue</a>
+  <a class="wa" href="/?p=${esc(slug)}">Open in the catalogue</a>
+  <a class="alt" href="${esc(waLink(p))}" target="_blank" rel="noopener">Enquire on WhatsApp</a>
  </div>
+ <p class="hint">Taking you to the catalogue…</p>
 </main>
 <footer>Patel Marketing — wholesale kitchenware</footer>
+<script>
+/* This page exists for the link preview: WhatsApp, Facebook and the rest fetch
+   it with a crawler that reads the <head> and never runs a line of script. A
+   person who taps the link does run script, and should get the real product
+   sheet — the catalogue's own, with its sizes, order pad, reviews, similar
+   products, and its rules about who may see a rate.
+
+   Keeping a second hand-written copy of a product page is what let this one
+   drift: it was still printing the dealer price to anyone holding the link
+   long after the catalogue had stopped. One page for people means one place to
+   get that right. What stays above is the fallback for a browser with script
+   turned off, and it now shows MRP only, like any signed-out visitor. */
+(function(){
+  try{ location.replace('/?p=' + ${JSON.stringify(slug)}); }catch(e){}
+})();
+</script>
 </body></html>`;
 }
 

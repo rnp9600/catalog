@@ -809,11 +809,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 20</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 22</footer>
 
-<script src="config.js?v=20"></script>
+<script src="config.js?v=22"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=20"></script>
+<script src="supabase-auth.js?v=22"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1127,6 +1127,32 @@ function render(){
     b.textContent=(open?'▾ ':'▸ ')+b.textContent.slice(2);}));
 }
 
+/* ---------- similar / recently viewed ---------- */
+// Slugs, newest first, in this browser only. Slugs rather than indexes,
+// because a product's position in data.json changes every time the catalogue
+// is republished and an index would then point at something else entirely.
+const RECENT_KEY='v3_pm_recent', RECENT_MAX=14;
+function recentSlugs(){
+  try{ const a=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]');
+       return Array.isArray(a)?a:[]; }catch(e){ return []; }
+}
+function recentProducts(){
+  const bySlug={}; P.forEach(x=>{ if(x.slug) bySlug[x.slug]=x; });
+  return recentSlugs().map(sl=>bySlug[sl]).filter(Boolean);
+}
+function noteRecent(p){
+  if(!p||!p.slug) return;
+  const a=recentSlugs().filter(sl=>sl!==p.slug);
+  a.unshift(p.slug);
+  try{ localStorage.setItem(RECENT_KEY, JSON.stringify(a.slice(0,RECENT_MAX))); }catch(e){}
+}
+function strip(title, list){
+  return '<div class="related"><h4>'+title+'</h4><div class="rrow">'+
+    list.map(r=>'<div class="rcard" data-rel="'+P.indexOf(r)+'">'+
+      '<div class="rimg">'+(r.img?'<img src="'+IMG(r.img)+'" loading="lazy" alt="">':'—')+'</div>'+
+      '<span>'+esc(r.name)+'</span></div>').join('')+'</div></div>';
+}
+
 /* ---------- detail sheet ---------- */
 const ov=document.getElementById('ov'),sheet=document.getElementById('sheet');
 let CUR=null;
@@ -1135,28 +1161,45 @@ function openSheet(p){
   CUR=p;
   const imgs=(p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[]));
   const ec=isEndCustomer();
+  const off=isOffice();          // admin or office staff: edit, don't order
+  const ord=canOrder();          // only a dealer gets quantity steppers
   const vt=(p.variants&&p.variants.length)?`
     <div class="vt">
-      <div class="vh"><span>Size / option</span><span>Rate</span><span>MRP</span><span>${ec?'':'Order'}</span></div>
+      <div class="vh"><span>Size / option</span><span>Rate</span><span>MRP</span><span>${ord?'Order':''}</span></div>
       ${p.variants.map(v=>`<div class="vr">
         <span class="vsize">${v.size}${v.moq?'<small class="vmoq">MOQ '+v.moq+'</small>':''}</span>
         <span class="vprice">${v.price!=null?'₹'+v.price+'<b class="vunit">/'+unitAbbr(v.unit)+'</b>':'—'}</span>
         <span class="vmrp">${v.mrp!=null?'₹'+v.mrp:''}</span>
-        <span class="vord">${ec?'':'<button class="qbtn" data-qm="'+v.size+'">−</button><b class="qv" data-qv="'+v.size+'">0</b><button class="qbtn" data-qp="'+v.size+'">+</button>'}</span></div>`).join('')}
+        <span class="vord">${ord?'<button class="qbtn" data-qm="'+v.size+'">−</button><b class="qv" data-qv="'+v.size+'">0</b><button class="qbtn" data-qp="'+v.size+'">+</button>':''}</span></div>`).join('')}
     </div>
     <p style="font-size:.7rem;color:var(--tm);margin-top:7px;line-height:1.5">
       Rate is per unit shown (pc = piece, dz = dozen, gr = gross) including GST${p.gst?' at '+p.gst+'%':''}. MRP is the printed maximum retail price.
-      MOQ is the minimum order quantity where the supplier sets one.${ec?'':' Use the + button to add a size to your order.'}</p>`
+      MOQ is the minimum order quantity where the supplier sets one.${ord?' Use the + button to add a size to your order.':''}</p>`
     : (p.sizes&&p.sizes.length? `<div class="sizesplain">${p.sizes.map(s=>`<div>${s}</div>`).join('')}</div>`
-      : (p.price!=null&&!ec?`<div class="singleAdd"><button class="qbtn" data-qm="Standard">−</button>
+      : (p.price!=null&&ord?`<div class="singleAdd"><button class="qbtn" data-qm="Standard">−</button>
           <b class="qv" data-qv="Standard">0</b><button class="qbtn" data-qp="Standard">+</button>
           <span style="font-size:.78rem;color:var(--tm)">Add to your order</span></div>`:''));
 
-  const rel=P.filter(x=>x!==p&&x.sub===p.sub&&x.brand===p.brand).slice(0,10);
-  const relHtml=rel.length?`<div class="related"><h4>More ${p.sub.toLowerCase()}</h4><div class="rrow">
-     ${rel.map(r=>`<div class="rcard" data-rel="${P.indexOf(r)}">
-       <div class="rimg">${r.img?`<img src="${IMG(r.img)}" loading="lazy" alt="">`:'—'}</div>
-       <span>${r.name}</span></div>`).join('')}</div></div>`:'';
+  // Two different questions, so two strips. "Similar" answers what else is
+  // like this one; "recently viewed" answers what you were just looking at.
+  // Rolling them into one row made both worse.
+  //
+  // Similar widens in steps: same sub-group and brand first (closest match),
+  // then the sub-group across every brand, then the category. `sub` is
+  // optional in the data, so nothing here assumes it is there — a product
+  // added without one used to be able to throw on p.sub.toLowerCase().
+  const near=(a,b)=>a&&b&&String(a).toLowerCase()===String(b).toLowerCase();
+  const sim=[];
+  const push=x=>{ if(x!==p && !sim.includes(x) && x.stock!=='out' && sim.length<12) sim.push(x); };
+  P.forEach(x=>{ if(near(x.sub,p.sub) && near(x.brand,p.brand)) push(x); });
+  P.forEach(x=>{ if(near(x.sub,p.sub)) push(x); });
+  P.forEach(x=>{ if(near(x.cat,p.cat)) push(x); });
+
+  const simHtml = sim.length ? strip('Similar products', sim) : '';
+  // Read the list before this product joins it, or it appears in its own row.
+  const recent = recentProducts().filter(x=>x!==p).slice(0,12);
+  const recHtml = recent.length ? strip('Recently viewed', recent) : '';
+  const relHtml = simHtml + recHtml;
 
   sheet.innerHTML=`
    <div class="shead"><strong>${p.name}</strong><button class="sx" id="sxb">×</button></div>
@@ -1180,6 +1223,14 @@ function openSheet(p){
      ${ec?`<div class="visitshop"><b>Visit the shop to buy</b>
        No online ordering here — see what's on offer, then head over.
        <button class="cta" id="holdBtn" style="margin-top:10px;width:100%">Ask the shop to hold one</button></div>`
+     :off?`<div class="sactions">
+       <button id="edBtn">✎ Edit this product</button>
+       <button class="alt" id="shBtn">Share product</button>
+       <button class="alt" id="cpBtn">Copy details</button>
+     </div>
+     <p style="font-size:.72rem;color:var(--tm);margin-top:8px;line-height:1.5">
+       You are signed in on Patel Marketing's side, so there is no order pad here.
+       To write an order for a customer, open <a href="orders.html" style="color:var(--pr);font-weight:700">Orders</a>.</p>`
      :`<div class="sactions">
        <button id="waBtn">Enquire on WhatsApp</button>
        <button class="alt" id="shBtn">Share product</button>
@@ -1212,6 +1263,8 @@ function openSheet(p){
     const target=currentShopPhone()||WA_NUMBER;
     const msg='Hi, is "'+p.name+'" available? Could you keep one for me?';
     window.open(`https://wa.me/${target}?text=`+encodeURIComponent(msg),'_blank');};
+  const edBtn=document.getElementById('edBtn');
+  if(edBtn) edBtn.onclick=()=>{ location.href='admin.html?edit='+encodeURIComponent(p.slug||slugOf(p)); };
   const waBtn=document.getElementById('waBtn');
   if(waBtn) waBtn.onclick=()=>{
     window.open(`https://wa.me/${orderTarget()}?text=`+encodeURIComponent(waMessage(p)),'_blank');};
@@ -1226,6 +1279,7 @@ function openSheet(p){
     try{await navigator.clipboard.writeText(url);b.textContent='Link copied ✓';}
     catch(e){b.textContent=url;}
     setTimeout(()=>b.textContent='Share product',1800);};
+  noteRecent(p);
   loadReviews(p);
   const cpBtn=document.getElementById('cpBtn');
   if(cpBtn) cpBtn.onclick=()=>{
@@ -1726,6 +1780,13 @@ let PENDING_PHONE = null; // digits awaiting an OTP code, or null
 let RETAIL = JSON.parse(localStorage.getItem('v3_pm_retail')||'null') || {on:false, off:10};
 const signedIn = () => !!(SESS && SESS.ok);
 const isEndCustomer = () => !!(SESS && SESS.role==='end_customer');
+// Patel Marketing's own side of the counter. They do not place orders — an
+// order from the admin went to Patel Marketing's own WhatsApp, i.e. to
+// themselves. They take orders instead, on the Orders screen, and here they
+// get a way into the editor rather than a quantity stepper.
+const isOffice = () => !!(SESS && (SESS.admin || SESS.role==='staff'));
+// Only a dealer actually orders through the catalogue.
+const canOrder = () => signedIn() && !isEndCustomer() && !isOffice();
 const saveRtl  = () => localStorage.setItem('v3_pm_retail',  JSON.stringify(RETAIL));
 const esc = s => String(s==null?'':s).replace(/[&<>"]/g,
   c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1849,7 +1910,9 @@ function basketCount(){ return BASKET.reduce((n,b)=>n+b.qty,0); }
 function obarRender(){
   const b=document.getElementById('obar'); if(!b) return;
   // End customers browse, they don't order online — see V3-AMENDMENTS.md.
-  if(isEndCustomer()){ b.classList.remove('on'); return; }
+  // Nor does Patel Marketing's own side: an order they placed would be
+  // addressed to themselves.
+  if(!canOrder()){ b.classList.remove('on'); return; }
   const n=basketCount();
   document.getElementById('obarTxt').innerHTML = '🧺 <b>'+n+'</b> in your order';
   b.classList.toggle('on', n>0);
@@ -1969,14 +2032,41 @@ function wireOrderSheet(){
     openOrderSheet();
   });
   const send=document.getElementById('oSend');
-  if(send) send.onclick=function(){
+  if(send) send.onclick=async function(){
     const meta=readOrderMeta(); if(!meta) return;
     const items=orderItems(); if(!items.length) return;
-    const ref=orderRef();
-    window.open('https://wa.me/'+orderTarget()+'?text='+encodeURIComponent(waOrderMessage(items,meta,ref)),'_blank');
+
+    // Open the tab now, while we are still inside the click. Awaiting first
+    // and opening after would look like a pop-up to the browser and be
+    // blocked — the order would silently never be sent.
+    const w=window.open('', '_blank');
+    send.disabled=true; send.textContent='Sending…';
+
+    // The order goes on the books as well as into WhatsApp, so the office can
+    // work it and mark it done. If recording fails we still send: a customer's
+    // order must not be lost because our database was unreachable, and the
+    // reference in the message is enough to reconcile it by hand.
+    let ref=orderRef(), recorded=false;
+    try{
+      const {data,error}=await PMAuth.sb.rpc('place_order',{
+        p_customer:null,
+        // What they typed on the form, which can differ from what we have on
+        // file — the office should see the name and shop the order came in as.
+        p_note:'From: '+meta.name+' · '+meta.shop+' · +91'+meta.phone,
+        p_items: items.map(it=>({slug:it.slug,name:it.name,size:it.size,
+          unit:it.unit,qty:it.qty,price:it.price,mrp:it.mrp})),
+      });
+      if(!error && data){ ref=data; recorded=true; }
+    }catch(e){}
+
+    const url='https://wa.me/'+orderTarget()+'?text='+
+      encodeURIComponent(waOrderMessage(items,meta,ref));
+    if(w && !w.closed) w.location.href=url; else location.href=url;
+
+    send.disabled=false; send.textContent='Send order on WhatsApp';
     BASKET=[]; CURRENT_ORDER_REF=null; saveBasket();
     closeOrderSheet();
-    toastMsg('Order sent · '+ref);
+    toastMsg(recorded ? 'Order placed · '+ref : 'Sent on WhatsApp · '+ref);
   };
   const pdf=document.getElementById('oPdf');
   if(pdf) pdf.onclick=function(){
@@ -2122,6 +2212,10 @@ function menuSignHtml(){
       : '';
     // Level 2 is one role: every dealer trades and every dealer keeps their
     // own customer list. 'shop_owner' is the older spelling of a retail dealer.
+    const orders = isOffice()
+      ? '<a class="sgnbtn ghost" href="orders.html" style="display:block;text-align:center;'+
+        'text-decoration:none;margin-top:4px">Orders</a>'
+      : '';
     const isDlr = SESS.role==='dealer'||SESS.role==='shop_owner';
     const trade = (isDlr||SESS.admin||SESS.role==='staff')
       ? '<a class="sgnbtn ghost" href="exchange.html" style="display:block;text-align:center;'+
@@ -2136,7 +2230,7 @@ function menuSignHtml(){
       '<div><b>'+(SESS.name||'Signed in')+'</b><small>'+(SESS.tail||'')+
       (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></div></div>'+
       '<button class="sgnbtn" id="menuAcct" style="margin-top:10px">Your account'+
-      (RETAIL.on?' · showing customer prices':'')+'</button>' + adm + trade + shop;
+      (RETAIL.on?' · showing customer prices':'')+'</button>' + adm + orders + trade + shop;
   }
   return '<p style="font-size:.8rem;color:var(--tm);line-height:1.55;margin-bottom:10px">'+
     'Sign in to see if a discount applies to your account, and to place an order.</p>'+
