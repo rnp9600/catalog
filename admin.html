@@ -171,6 +171,7 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
     <div><b>Admin</b><div class="who" id="whoLine"></div></div>
     <div class="sp"></div>
     <a class="ibtn" href="index.html">Catalogue</a>
+    <a class="ibtn" href="orders.html">Orders</a>
     <button class="ibtn" id="outBtn">Sign out</button>
   </div>
   <div class="tabs">
@@ -315,9 +316,9 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=20"></script>
+<script src="config.js?v=21"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=20"></script>
+<script src="supabase-auth.js?v=21"></script>
 <script>
 (function(){
   const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
@@ -442,6 +443,15 @@ async function load(){
   dirty = !!d;
   draw(); drawTax(); footer();
   if(IS_ADMIN) await loadAllowlist();
+  // Arriving from "Edit this product" on the catalogue: open that one and
+  // clear the parameter, so a reload does not keep reopening it.
+  const want=new URLSearchParams(location.search).get('edit');
+  if(want){
+    const ix=P.findIndex(x=>String(x.slug||'')===want);
+    if(ix>=0){ edit(ix); }
+    else { alert('That product is not in this draft — it may have been renamed.'); }
+    try{ history.replaceState(null,'',location.pathname); }catch(e){}
+  }
 }
 function touch(){ dirty=true; localStorage.setItem(DRAFT,JSON.stringify(P)); draw(); footer(); }
 function footer(){
