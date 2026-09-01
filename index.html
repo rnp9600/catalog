@@ -426,6 +426,21 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
 .festrail .med{height:128px}
 .festrail .ds,.festrail .sp,.festrail .szbtn,.festrail .szlist,.festrail .refnote{display:none}
 .bg.fst{background:var(--ac);color:#fff}
+/* Each strip carries its own accent so two running at once stay apart at a
+   glance. The tone only sets colour — structure is identical. */
+.fest[data-tone="festive"]{--tone:#12A594;--toneb:#CFF5F0}
+.fest[data-tone="offer"]  {--tone:#C8891B;--toneb:#FBEFD6}
+.fest[data-tone="new"]    {--tone:#2F6FA8;--toneb:#DDEBFF}
+.fest[data-tone="top"]    {--tone:#6E5AC8;--toneb:#E6E2FF}
+.fest[data-tone] .festh{background:linear-gradient(100deg,var(--toneb),var(--sf))}
+.fest[data-tone] .festh .fdot{background:var(--tone)}
+.fest[data-tone] .fcd{color:var(--tone);border-color:var(--tone)}
+.festrail>.card{transition:transform .16s ease, box-shadow .16s ease}
+.festrail>.card:active{transform:scale(.975)}
+@media (hover:hover){.festrail>.card:hover{transform:translateY(-2px);
+  box-shadow:0 10px 24px rgba(var(--sh),.10)}}
+.frate{display:inline-flex;align-items:center;gap:3px;font-size:.68rem;
+ font-weight:700;color:#C8891B}
 
 /* motion */
 body.m-off *,body.m-off *::before,body.m-off *::after{animation:none!important;transition:none!important}
@@ -597,6 +612,27 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
 .shoplist .shopitem button{flex:0 0 auto;border:0;border-radius:999px;padding:7px 13px;
  font-size:.72rem;font-weight:700;background:var(--pr);color:#fff}
 .shoplist .shopitem button.on{background:var(--sf);color:var(--tm);border:1.5px solid var(--bd)}
+/* ---- polish pass: depth, motion and focus, no layout changes ---- */
+header{backdrop-filter:saturate(1.6) blur(10px);
+ background:color-mix(in srgb, var(--sf) 88%, transparent)}
+@supports not (backdrop-filter:blur(2px)){header{background:var(--sf)}}
+.card{border-radius:var(--r);
+ box-shadow:0 1px 2px rgba(var(--sh),.05), 0 8px 22px -12px rgba(var(--sh),.20);
+ transition:transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .18s ease}
+.card:active{transform:scale(.985)}
+@media (hover:hover){
+  .card:hover{transform:translateY(-3px);
+    box-shadow:0 2px 4px rgba(var(--sh),.06), 0 18px 40px -18px rgba(var(--sh),.30)}
+  .card:hover .med img{transform:scale(1.045)}
+}
+.card .med{background:linear-gradient(160deg,var(--sf2),var(--sf) 65%)}
+.card .med img{transition:transform .45s cubic-bezier(.2,.7,.3,1)}
+.cta{background:linear-gradient(135deg,var(--pr),var(--prh));
+ box-shadow:0 6px 16px -8px rgba(var(--sh),.55)}
+.cta.dis{background:var(--sf2);box-shadow:none}
+/* A visible ring for anyone moving through the page by keyboard. */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-radius:6px}
 .sgnin{width:100%;padding:13px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);
  background:var(--sf);font-size:.9rem;margin-bottom:10px}
 .linkish{border:0;background:transparent;color:inherit;text-decoration:underline;
@@ -809,11 +845,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 22</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 23</footer>
 
-<script src="config.js?v=22"></script>
+<script src="config.js?v=23"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=22"></script>
+<script src="supabase-auth.js?v=23"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1667,51 +1703,110 @@ function festiveLive(){
   if(F.until && now > new Date(F.until+'T23:59:59')) return false;
   return true;
 }
-function isFestive(p){
-  if(!festiveLive()) return false;
-  const m=F.match||{};
+// A promo is a title, a window of dates, and a rule for which products it
+// covers. The festival was hard-coded as the only one; there can now be any
+// number, set in config.js without touching this file. CFG.festive still works
+// and becomes the first promo, so nothing that already runs has to change.
+function allPromos(){
+  const list=(CFG.promos&&CFG.promos.length) ? CFG.promos.slice()
+           : (F.enabled ? [Object.assign({id:'festive',tone:'festive'},F)] : []);
+  return list.filter(x=>x && x.enabled!==false);
+}
+function promoLive(pr){
+  if(!pr) return false;
+  const now=new Date();
+  if(pr.from  && now < new Date(pr.from +'T00:00:00')) return false;
+  if(pr.until && now > new Date(pr.until+'T23:59:59')) return false;
+  return true;
+}
+function promoMatch(pr,p){
+  const m=pr.match||{};
   if((m.codes ||[]).indexOf(p.code )>=0) return true;
   if((m.subs  ||[]).indexOf(p.sub  )>=0) return true;
   if((m.brands||[]).indexOf(p.brand)>=0) return true;
+  if((m.cats  ||[]).indexOf(p.cat  )>=0) return true;
   const t=((p.name||'')+' '+(p.alias||'')+' '+(p.sub||'')).toLowerCase();
-  return (m.words||[]).some(w=>t.indexOf(w.toLowerCase())>=0);
+  return (m.words||[]).some(w=>t.indexOf(String(w).toLowerCase())>=0);
 }
-function daysLeft(){
-  if(!F.until) return null;
-  const d=Math.ceil((new Date(F.until+'T00:00:00')-new Date())/86400000);
+function daysLeftOf(pr){
+  if(!pr||!pr.until) return null;
+  const d=Math.ceil((new Date(pr.until+'T00:00:00')-new Date())/86400000);
   return d>0?d:null;
+}
+// Kept because other code still asks these two questions.
+function isFestive(p){
+  const pr=allPromos().find(x=>promoLive(x));
+  return !!pr && promoMatch(pr,p);
+}
+function festiveLive(){ return allPromos().some(promoLive); }
+function daysLeft(){ return daysLeftOf(allPromos().find(promoLive)); }
+
+// Two strips nobody has to configure, because the answer is already in the
+// data: what customers rate highest, and what this reader was just looking at.
+function autoPromos(){
+  const out=[];
+  const rated=P.filter(x=>RATINGS[x.slug]&&RATINGS[x.slug].n>0&&x.stock!=='out')
+    .sort((a,b)=>(RATINGS[b.slug].avg-RATINGS[a.slug].avg)||(RATINGS[b.slug].n-RATINGS[a.slug].n));
+  if(rated.length>=3){
+    out.push({id:'top',tone:'top',title:'Rated by customers',
+      note:'What people who bought these actually said', items:rated.slice(0,12)});
+  }
+  const recent=(typeof recentProducts==='function'?recentProducts():[]).slice(0,12);
+  if(recent.length>=3){
+    out.push({id:'recent',tone:'new',title:'Pick up where you left off',
+      note:'Products you opened recently', items:recent});
+  }
+  return out;
 }
 function mkFestive(){
   const box=document.getElementById('fest');
   if(!box) return;
-  // Rebuilding throws away where the reader had scrolled the rail to, which
-  // is jarring when a redraw happens under them. Put it back afterwards.
-  const oldRail=box.querySelector('.festrail');
-  const scrollLeft=oldRail?oldRail.scrollLeft:0;
-  if(!festiveLive()){ box.innerHTML=''; return; }
-  const picks=P.filter(isFestive);
-  if(!picks.length){ box.innerHTML=''; return; }
-  const d=daysLeft();
-  box.innerHTML='<div class="fest"><div class="festh"><span class="fdot"></span>'+
-    '<div><b>'+(F.title||'Trending now')+'</b><small>'+(F.note||'')+'</small></div>'+
-    (d?'<span class="fcd">'+d+' days to go</span>':'')+'</div>'+
-    '<div class="festrail">'+picks.map(card).join('')+'</div></div>';
-  const rail=box.querySelector('.festrail');
+  // Rebuilding throws away where the reader had scrolled each rail to, which
+  // is jarring when a redraw happens under them. Put them back afterwards.
+  const was={};
+  box.querySelectorAll('.fest[data-id]').forEach(f=>{
+    const r=f.querySelector('.festrail'); if(r) was[f.dataset.id]=r.scrollLeft;
+  });
+
+  const strips=[];
+  allPromos().forEach(pr=>{
+    if(!promoLive(pr)) return;
+    const items=P.filter(x=>promoMatch(pr,x)).slice(0, pr.max||24);
+    if(items.length) strips.push(Object.assign({},pr,{items}));
+  });
+  autoPromos().forEach(pr=>strips.push(pr));
+
+  if(!strips.length){ box.innerHTML=''; return; }
+
+  box.innerHTML=strips.map(pr=>{
+    const d=daysLeftOf(pr);
+    return '<div class="fest" data-tone="'+(pr.tone||'festive')+'" data-id="'+esc(pr.id||pr.title)+'">'+
+      '<div class="festh"><span class="fdot"></span>'+
+      '<div><b>'+esc(pr.title||'Trending now')+'</b>'+
+      (pr.note?'<small>'+esc(pr.note)+'</small>':'')+'</div>'+
+      (d?'<span class="fcd">'+d+' day'+(d===1?'':'s')+' to go</span>':'')+'</div>'+
+      '<div class="festrail">'+pr.items.map(card).join('')+'</div></div>';
+  }).join('');
+
   // Read the index out of the markup, not out of the loop counter. card()
   // puts data-open on TWO elements — the card itself and its "View sizes"
   // button — and omits the button entirely when a product is out of stock.
   // So the nth matching element is not the nth product, and tapping a card
   // opened whichever product happened to sit at that position. The main grid
-  // always read el.dataset.open; only this rail counted nodes.
-  rail.querySelectorAll('[data-open]').forEach(function(el){
-    el.addEventListener('click',function(e){
-      e.stopPropagation();
-      const pick=picks[+el.dataset.open];
-      if(pick) openSheet(pick);
+  // always read el.dataset.open; only these rails counted nodes.
+  box.querySelectorAll('.fest[data-id]').forEach((f,si)=>{
+    const items=strips[si].items;
+    f.querySelectorAll('[data-open]').forEach(function(el){
+      el.addEventListener('click',function(e){
+        e.stopPropagation();
+        const pick=items[+el.dataset.open];
+        if(pick) openSheet(pick);
+      });
     });
+    f.querySelectorAll('.med img').forEach(markReady);
+    const r=f.querySelector('.festrail');
+    if(r && was[f.dataset.id]) r.scrollLeft=was[f.dataset.id];
   });
-  rail.querySelectorAll('.med img').forEach(markReady);
-  if(scrollLeft) rail.scrollLeft=scrollLeft;
 }
 function markReady(im){
   if(im.complete) im.classList.add('ready');
