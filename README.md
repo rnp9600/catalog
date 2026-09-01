@@ -127,6 +127,17 @@ hook secret. They live only as Supabase edge function secrets. The Supabase
 *publishable* key in `config.js` is meant to be public and is protected by
 row-level security.
 
+## Prices we do not have
+
+563 of 743 products carry both a dealer price and a printed MRP. 50 have a
+dealer price but no printed MRP, and 130 have neither.
+
+Where the MRP is not printed, the site says so rather than guessing. It used
+to multiply the dealer price by 2.25 and label the result "MRP", which put an
+invented figure in front of consumers, struck it through in retail mode, and
+took a percentage off it. If a supplier's MRP is missing, add it in the admin
+panel — that is the only thing that makes an MRP appear.
+
 ## Notes for whoever edits this next
 
 - Product names are copied exactly from supplier price lists. Do not tidy or
