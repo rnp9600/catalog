@@ -97,6 +97,38 @@
     if (!sb) return { error: { message: 'Sign-in could not load — check your connection and reload the page.' } };
     return settle(() => sb.auth.verifyOtp({ phone: toE164(phoneDigits), token: dg(code), type: 'sms' }), 'Checking the code');
   }
+  // ---- test accounts: a PIN instead of a texted code ----------------------
+  // Walking the site as a dealer, as an office user and as two kinds of
+  // consumer means signing in four times, and every real sign-in sends an SMS
+  // that costs money. These five numbers hold a password instead, so the flow
+  // can be walked end to end for nothing.
+  //
+  // They are ordinary accounts in every other way: signing in as one returns a
+  // real token, so what you see is exactly what a customer on that rung would
+  // see, with the same database rules applied. Nothing here fakes a session.
+  //
+  // This list only decides which screen to show. The PIN is checked by
+  // Supabase, not by this file — a number not on the list simply gets the
+  // normal texted code.
+  const TEST_NUMBERS = [
+    '919686754020', // admin
+    '919686754021', // office staff
+    '919686754022', // dealer (retail, Hubli)
+    '919686754023', // end customer, belongs to the test dealer
+    '919686754024', // end customer, no shop yet
+  ];
+  function isTestNumber(phoneDigits) {
+    const d = dg(phoneDigits).slice(-10);
+    return TEST_NUMBERS.some(n => n.slice(-10) === d);
+  }
+  async function signInWithPin(phoneDigits, pin) {
+    if (!sb) return { error: { message: 'Sign-in could not load — check your connection and reload the page.' } };
+    return settle(
+      () => sb.auth.signInWithPassword({ phone: toE164(phoneDigits), password: String(pin || '') }),
+      'Checking the PIN',
+    );
+  }
+
   async function currentSession() {
     if (!sb) return null;
     try { const { data } = await sb.auth.getSession(); return data && data.session; }
@@ -143,6 +175,9 @@
     if (!error) return '';
     const m = error.message || '';
     if (error.status === 429 || /rate limit/i.test(m)) return 'Too many attempts. Please try again in an hour.';
+    // The PIN path returns this, and "invalid login credentials" tells a
+    // tester nothing about which of the two things they got wrong.
+    if (/invalid login credentials/i.test(m)) return 'That PIN is not right for this number.';
     // Supabase reports a failing Send SMS hook as a bare status code, which
     // means nothing to the reader. The code is kept for us; the sentence is
     // for them.
@@ -157,7 +192,7 @@
   // live site is not reachable from where this gets written — so the page has
   // to be able to say for itself which build it is running and how far the
   // Supabase wiring got.
-  const BUILD = 18;
+  const BUILD = 19;
   function diagnostics() {
     return {
       build: BUILD,
@@ -174,5 +209,7 @@
       ' · auth ' + (d.auth ? 'ok' : 'MISSING');
   }
 
-  window.PMAuth = { sb, dg, toE164, sendOtp, verifyOtp, currentSession, myAllowlistRow, signOut, friendlyAuthError, diagnostics, diagLine, lookupError, BUILD };
+  window.PMAuth = { sb, dg, toE164, sendOtp, verifyOtp, currentSession, myAllowlistRow,
+    signOut, friendlyAuthError, diagnostics, diagLine, lookupError, BUILD,
+    isTestNumber, signInWithPin };
 })();

@@ -20,9 +20,15 @@ const WA_NUMBER = '917892967505';        // Patel Marketing WhatsApp Business
 const SITE = 'https://patelmarketing-catalog.vercel.app';
 
 // Must stay byte-identical to slugOf() in index.html, or shared links break.
-function slugOf(p) {
+// data.json carries a unique slug per product; brand + name does not (15
+// products share 5 slugs between them), so the stored one wins and the old
+// form is kept only for resolving links shared before that was fixed.
+function legacySlug(p) {
   const k = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   return k(p.brand) + '-' + k(p.name);
+}
+function slugOf(p) {
+  return (p && p.slug) ? String(p.slug) : legacySlug(p);
 }
 
 const esc = s => String(s == null ? '' : s)
@@ -245,7 +251,8 @@ export default async function handler(req, res) {
   let p = null;
   if (id) {
     const low = id.toLowerCase();
-    p = data.find(x => slugOf(x) === low)
+    p = data.find(x => String(x.slug || '').toLowerCase() === low)
+      || data.find(x => legacySlug(x) === low)
       || data.find(x => (x.code || '').toLowerCase() === low)
       || null;
   }
