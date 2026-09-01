@@ -226,6 +226,7 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
       <input class="s" id="cCity" placeholder="City / area" style="flex:0 0 150px">
       <select class="s" id="cRole" style="flex:0 0 130px">
         <option value="dealer" selected>Dealer</option>
+        <option value="staff">Office staff</option>
         <option value="admin">Admin</option>
       </select>
       <select class="s" id="cType" style="flex:0 0 140px">
@@ -238,6 +239,7 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
       <input type="checkbox" id="cShowEnd"> Include end customers
       <span style="opacity:.8">— consumers, each belonging to a dealer or to nobody yet</span>
     </label>
+    <div id="cRoleNote" style="font-size:.75rem;color:var(--tm);margin-bottom:8px"></div>
     <div class="stat" id="cStat"></div>
     <table class="tt"><tbody id="cList"></tbody></table>
   </section>
@@ -313,9 +315,9 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=17"></script>
+<script src="config.js?v=18"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=17"></script>
+<script src="supabase-auth.js?v=18"></script>
 <script>
 (function(){
   const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
@@ -345,6 +347,10 @@ let CUSTOMERS=[];
 const last10=s=>String(s||'').replace(/\D/g,'').slice(-10);
 const UNITS=['Piece','Dozen','Box','Gross','Kg','Tag'];
 let PENDING_PHONE=null;
+let ME=null, IS_ADMIN=false;
+// Who may open this panel at all. is_admin is the flag the database sets from
+// the role, so it stays the test for "full access"; staff is the second door.
+const mayOpenPanel=r=>!!r && (r.is_admin || r.role==='staff' || r.role==='admin');
 
 /* ---------------- gate ---------------- */
 $('#gp').oninput=function(){
@@ -383,7 +389,7 @@ $('#gv').onclick=async function(){
   if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
   PENDING_PHONE=null;
   const row=await PMAuth.myAllowlistRow();
-  if(!row||!row.is_admin){
+  if(!row||!mayOpenPanel(row)){
     await PMAuth.signOut();
     m.textContent='That number signed in, but it is not on the admin list.'; m.classList.add('on');
     $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
@@ -395,13 +401,25 @@ $('#gv').onclick=async function(){
   const sess=await PMAuth.currentSession();
   if(!sess) return;
   const row=await PMAuth.myAllowlistRow();
-  if(row&&row.is_admin) start(row); else await PMAuth.signOut();
+  if(row&&mayOpenPanel(row)) start(row); else await PMAuth.signOut();
 })();
 $('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
 
+// Office staff get the catalogue work — products, brands, publishing — but
+// not the two things that are hard to undo: who is allowed in and at what
+// role, and which reviews the public sees. The tabs below are hidden for
+// them, but hiding a tab is presentation, not security; the database refuses
+// those writes for a staff row whatever the page shows.
 async function start(a){
+  ME=a;
+  IS_ADMIN=!!a.is_admin;
   $('#gate').style.display='none'; $('#app').style.display='block';
-  $('#whoLine').textContent=(a.name||'admin');
+  $('#whoLine').textContent=(a.name||(IS_ADMIN?'admin':'office'))+(IS_ADMIN?'':' · office');
+  if(!IS_ADMIN){
+    document.querySelectorAll('.tab[data-t="customers"],.tab[data-t="reviews"]')
+      .forEach(t=>t.style.display='none');
+    document.querySelector('header .hin b').textContent='Catalogue';
+  }
   await load();
 }
 
@@ -414,7 +432,7 @@ async function load(){
   P = d ? JSON.parse(d) : JSON.parse(LIVE);
   dirty = !!d;
   draw(); drawTax(); footer();
-  await loadAllowlist();
+  if(IS_ADMIN) await loadAllowlist();
 }
 function touch(){ dirty=true; localStorage.setItem(DRAFT,JSON.stringify(P)); draw(); footer(); }
 function footer(){
@@ -722,7 +740,7 @@ async function loadAllowlist(){
   CUSTOMERS=data||[];
   drawCust();
 }
-const ROLE_LABEL={admin:'ADMIN',shop_owner:'DEALER',end_customer:'END CUSTOMER',dealer:''};
+const ROLE_LABEL={admin:'ADMIN',staff:'OFFICE',shop_owner:'DEALER',end_customer:'END CUSTOMER',dealer:''};
 // Whose customer is this? The dealer's own row is in the same list.
 function ownerLabel(phone){
   const o=CUSTOMERS.find(c=>c.phone===phone);
@@ -733,11 +751,14 @@ function drawCust(){
   const dealers=CUSTOMERS.filter(c=>c.role==='dealer'||c.role==='shop_owner');
   const retail=dealers.filter(c=>(c.dealer_type||'retailer')==='retailer');
   const admins=CUSTOMERS.filter(c=>c.is_admin);
+  const staff=CUSTOMERS.filter(c=>c.role==='staff');
   const listed=dealers.filter(c=>(c.dealer_type||'retailer')==='retailer'&&c.city);
   const ends=CUSTOMERS.filter(c=>c.role==='end_customer');
   $('#cStat').textContent=dealers.length+' dealers ('+retail.length+' retail, '+
     (dealers.length-retail.length)+' wholesale) · '+admins.length+' admin'+
-    (admins.length===1?'':'s')+' · '+listed.length+' listed for consumers'+
+    (admins.length===1?'':'s')+
+    (staff.length?' · '+staff.length+' office':'')+
+    ' · '+listed.length+' listed for consumers'+
     (SHOW_END?' · '+ends.length+' end customer'+(ends.length===1?'':'s'):'');
   $('#cList').innerHTML = CUSTOMERS.length ? CUSTOMERS.map(c=>
     '<tr><td><div class="nm">'+esc(c.nickname||c.name||'(unnamed)')+
@@ -789,9 +810,10 @@ function editCustomer(c){
      'retail dealer for consumers to find and follow. Leave it blank to keep them unlisted.</div></div>'+
    '<div class="two">'+
      '<div class="fg"><label>Role</label><select id="eRole">'+
-       ['dealer','admin','end_customer'].map(r=>'<option value="'+r+'"'+
+       ['dealer','staff','admin','end_customer'].map(r=>'<option value="'+r+'"'+
          ((c.role===r||(r==='dealer'&&c.role==='shop_owner'))?' selected':'')+'>'+
-         (r==='dealer'?'Dealer':r==='admin'?'Admin':'End customer')+'</option>').join('')+
+         ({dealer:'Dealer',staff:'Office staff',admin:'Admin',end_customer:'End customer'}[r])+
+         '</option>').join('')+
        '</select></div>'+
      '<div class="fg" id="eTypeWrap"><label>Dealer type</label><select id="eType">'+
        ['retailer','wholesaler'].map(t=>'<option value="'+t+'"'+(c.dealer_type===t?' selected':'')+'>'+
@@ -846,6 +868,16 @@ $('#cShowEnd').onchange=async function(){ SHOW_END=this.checked; await loadAllow
 $('#cRole').onchange=function(){
   $('#cType').style.display = this.value==='dealer' ? '' : 'none';
 };
+// Explain the role being handed out, since "office staff" is the one whose
+// limits are not obvious from its name.
+$('#cRole').addEventListener('change',function(){
+  const n=$('#cRoleNote');
+  n.textContent = this.value==='staff'
+    ? 'Office staff can edit products and publish, but cannot add people, change roles, or hide reviews.'
+    : this.value==='admin'
+    ? 'An admin can do everything you can, including granting access.'
+    : '';
+});
 
 /* ---------------- reviews (moderation) ---------------- */
 // The admin reads catalog.product_reviews itself rather than the public view,

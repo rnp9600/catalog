@@ -33,6 +33,15 @@ The business has three, and so does the software.
 wholesale to retail outlets. Edits products, sets everyone's role, moderates
 reviews, publishes the catalogue.
 
+`staff` is the office, working for the admin — not a fourth level of the
+business. Staff open the same admin panel and do all the catalogue work
+(products, brands, publishing) and can use the stock exchange, but they cannot
+add or remove people, change anyone's role, or hide a review. A mispriced
+product is fixed in a minute and the old `data.json` is still in git; a
+wrongly granted admin is a different kind of mistake. The panel hides those two
+tabs for staff, but that is presentation — the database refuses the writes
+regardless of what the page shows.
+
 **Dealers (`dealer`)** — who Patel Marketing sells to. Every dealer sees trade
 rates, can list slow stock on the exchange, and keeps their own customer list.
 `dealer_type` says which kind:

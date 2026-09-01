@@ -809,11 +809,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 17</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 18</footer>
 
-<script src="config.js?v=17"></script>
+<script src="config.js?v=18"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=17"></script>
+<script src="supabase-auth.js?v=18"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -2070,14 +2070,16 @@ function openSignIn(){
 }
 function menuSignHtml(){
   if(signedIn()){
-    const adm = SESS.admin
+    // Office staff open the same panel; it hides the two tabs they cannot use.
+    const adm = (SESS.admin || SESS.role==='staff')
       ? '<a class="sgnbtn" href="admin.html" style="display:block;text-align:center;'+
-        'text-decoration:none;margin-top:10px;background:var(--ac)">Open admin panel</a>'
+        'text-decoration:none;margin-top:10px;background:var(--ac)">'+
+        (SESS.admin?'Open admin panel':'Edit the catalogue')+'</a>'
       : '';
     // Level 2 is one role: every dealer trades and every dealer keeps their
     // own customer list. 'shop_owner' is the older spelling of a retail dealer.
     const isDlr = SESS.role==='dealer'||SESS.role==='shop_owner';
-    const trade = (isDlr||SESS.admin)
+    const trade = (isDlr||SESS.admin||SESS.role==='staff')
       ? '<a class="sgnbtn ghost" href="exchange.html" style="display:block;text-align:center;'+
         'text-decoration:none;margin-top:4px">Stock exchange</a>'
       : '';
@@ -2088,7 +2090,7 @@ function menuSignHtml(){
     return '<div class="who"><div class="whoav">'+
       ((SESS.name||'PM').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
       '<div><b>'+(SESS.name||'Signed in')+'</b><small>'+(SESS.tail||'')+
-      (SESS.admin?' · admin':'')+'</small></div></div>'+
+      (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></div></div>'+
       '<button class="sgnbtn" id="menuAcct" style="margin-top:10px">Your account'+
       (RETAIL.on?' · showing customer prices':'')+'</button>' + adm + trade + shop;
   }
@@ -2150,12 +2152,14 @@ function accountHtml(){
   return '<div class="shead"><strong>Your account</strong><button class="sx" id="sgnX">×</button></div>'+
    '<div class="sbody"><div class="sgn">'+
    '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
-   '<div><b>'+nm+'</b><small>'+tail+(SESS.admin?' · admin':'')+'</small></div></div>'+
+   '<div><b>'+nm+'</b><small>'+tail+
+   (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></div></div>'+
    retailToggle+
    (isEndCustomer()?'<button class="sgnbtn" id="sgnShops" style="margin-top:16px">'+
      (SHOP_INFO?'Change your shop':'Find shops near you')+'</button>':'')+
-   (SESS.admin?'<a class="sgnbtn" style="display:block;text-align:center;text-decoration:none;'+
-     'margin-top:16px" href="admin.html">Open admin panel</a>':'')+
+   ((SESS.admin||SESS.role==='staff')?'<a class="sgnbtn" style="display:block;text-align:center;'+
+     'text-decoration:none;margin-top:16px" href="admin.html">'+
+     (SESS.admin?'Open admin panel':'Edit the catalogue')+'</a>':'')+
    '<button class="sgnbtn ghost" id="sgnOut">Sign out</button>'+
    '</div></div>';
 }
@@ -2503,7 +2507,9 @@ function wireOtpStep(){
       msg.classList.add('on'); return;
     }
     closeSignIn(); if(CUR) openSheet(CUR);
-    toastMsg(SESS.admin?'Signed in as admin':'Signed in as '+SESS.name);
+    toastMsg(SESS.admin?'Signed in as admin'
+             :SESS.role==='staff'?'Signed in — office access'
+             :'Signed in as '+SESS.name);
   };
 }
 function closeSignIn(){

@@ -149,9 +149,9 @@ datalist{}
 </main>
 </div>
 
-<script src="config.js?v=17"></script>
+<script src="config.js?v=18"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=17"></script>
+<script src="supabase-auth.js?v=18"></script>
 <script>
 (function(){
   const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
@@ -208,7 +208,9 @@ $('#gv').onclick=async function(){
   if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
   PENDING_PHONE=null;
   const row=await PMAuth.myAllowlistRow();
-  if(!row || !['dealer','shop_owner','admin'].includes(row.role)){
+  // Staff act for Patel Marketing, so the exchange is open to them for the
+  // same reason it is open to the admin.
+  if(!row || !['dealer','shop_owner','admin','staff'].includes(row.role)){
     await PMAuth.signOut();
     m.textContent='That number signed in, but this screen is for dealers and shop owners only.';
     m.classList.add('on');
@@ -221,7 +223,7 @@ $('#gv').onclick=async function(){
   const sess=await PMAuth.currentSession();
   if(!sess) return;
   const row=await PMAuth.myAllowlistRow();
-  if(row && ['dealer','shop_owner','admin'].includes(row.role)) start(row); else await PMAuth.signOut();
+  if(row && ['dealer','shop_owner','admin','staff'].includes(row.role)) start(row); else await PMAuth.signOut();
 })();
 $('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
 
@@ -232,6 +234,7 @@ async function start(row){
   // either way, and let dealer_type carry the distinction that matters here.
   $('#whoLine').textContent=(row.shop||row.nickname||row.name||'you')+
     (row.role==='admin' ? ' · admin'
+     : row.role==='staff' ? ' · office'
      : ' · '+(row.dealer_type==='wholesaler'?'wholesale dealer':'dealer'))+
     (row.city?' · '+row.city:'');
   const r=await fetch('data.json',{cache:'no-cache'});
