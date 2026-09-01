@@ -809,11 +809,11 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 19</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 20</footer>
 
-<script src="config.js?v=19"></script>
+<script src="config.js?v=20"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=19"></script>
+<script src="supabase-auth.js?v=20"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1867,7 +1867,10 @@ function orderItems(){ return BASKET.map(resolveItem).filter(Boolean); }
 const orderShowPrice = () => signedIn();
 function orderUnitPrice(it){
   if(!signedIn()) return null;
-  if(RETAIL.on){ const m=it.mrp!=null?it.mrp:(it.price!=null?Math.round(it.price*2.25):null); return m!=null?disc(m):null; }
+  // Retail mode prices off MRP. Where the supplier printed none there is
+  // nothing to discount — inventing one put a made-up figure into the
+  // customer's WhatsApp message and their PDF.
+  if(RETAIL.on){ return it.mrp!=null ? disc(it.mrp) : null; }
   return it.price!=null?it.price:null;
 }
 function orderTotal(items){ return items.reduce((s,it)=>{const u=orderUnitPrice(it); return s+(u!=null?u*it.qty:0)},0); }
@@ -2021,33 +2024,47 @@ function span(nums){ const a=nums.filter(x=>x!=null); if(!a.length)return null;
   const lo=Math.min(...a),hi=Math.max(...a); return {lo,hi,one:lo===hi}; }
 function fmt(r){ return r.one ? rupee(r.lo) : rupee(r.lo)+'–'+r.hi.toLocaleString('en-IN'); }
 function dpOf(p){ return span((p.variants&&p.variants.length)?p.variants.map(v=>v.price):[p.price]); }
+// Only a printed MRP. This used to fall back to 2.25x the dealer price when
+// the supplier had not given one, and nothing downstream checked the "est"
+// flag it set — so 50 products told a consumer "MRP ₹1699" about a number the
+// software had made up, and in retail mode struck it through and took a
+// percentage off it. MRP is a printed price; if we do not have it we say so.
 function mrpOf(p){
-  const raw=(p.variants&&p.variants.length)?p.variants.map(v=>v.mrp):[p.mrp];
-  const r=span(raw);
-  if(r) return r;
-  const d=dpOf(p);                       // no printed MRP: fall back to 2.25x
-  return d?{lo:Math.round(d.lo*2.25),hi:Math.round(d.hi*2.25),one:d.one,est:true}:null;
+  return span((p.variants&&p.variants.length)?p.variants.map(v=>v.mrp):[p.mrp]);
 }
 const disc = v => Math.round(v * (1 - (RETAIL.off||0)/100));
 
 /* the one place that decides what a price looks like */
 function priceLine(p){
   const dp=dpOf(p), mrp=mrpOf(p);
-  if(!dp && !mrp) return '<span class="ph">Enquire for pricing</span>';
+  const signIn = label =>
+    '<button class="signlink" data-sign="1">'+
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">'+
+    '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>'+
+    label+'</button>';
 
-  /* end customer: MRP (or the shop's own offer price if set), never DP */
-  if(isEndCustomer() && mrp){
+  /* End customer: the shop's own offer, else the printed MRP, and never the
+     dealer price. This branch has to come before the signed-in one — an end
+     customer IS signed in, and with no MRP to show they used to fall through
+     to it and be shown DP. */
+  if(isEndCustomer()){
     const offer=shopOfferFor(p);
     if(offer && offer.price_offer!=null){
-      return '<span class="pmrp cut">'+fmt(mrp)+'</span> '+
+      return (mrp?'<span class="pmrp cut">'+fmt(mrp)+'</span> ':'')+
              '<span class="pdp">'+rupee(offer.price_offer)+'</span>'+
              '<span class="poff">SPECIAL</span>';
     }
-    return '<span class="plab">Price</span><span class="pdp">'+fmt(mrp)+'</span>';
+    if(mrp) return '<span class="plab">Price</span><span class="pdp">'+fmt(mrp)+'</span>';
+    return '<span class="ph">Ask in the shop</span>';
   }
 
-  /* retail mode: MRP struck, discounted price beside it, discount as a chip */
-  if(signedIn() && RETAIL.on && mrp){
+  if(!dp && !mrp) return '<span class="ph">Enquire for pricing</span>';
+
+  /* Retail mode, for showing a customer over your shoulder. Same rule: with
+     no printed MRP there is no discount to quote, and falling through to the
+     dealer price would show the one thing this mode exists to hide. */
+  if(signedIn() && RETAIL.on){
+    if(!mrp) return '<span class="ph">No printed MRP — ask</span>';
     const now={lo:disc(mrp.lo),hi:disc(mrp.hi),one:mrp.one};
     return '<span class="pmrp cut">'+fmt(mrp)+'</span> '+
            '<span class="pdp">'+fmt(now)+'</span>'+
@@ -2062,12 +2079,10 @@ function priceLine(p){
   /* guest: MRP only, with a way in */
   if(mrp){
     return '<span class="plab">MRP</span><span class="pdp">'+fmt(mrp)+'</span>'+
-      '<br><button class="signlink" data-sign="1">'+
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">'+
-      '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>'+
-      'Sign in to check for a discount</button>';
+      '<br>'+signIn('Sign in to check for a discount');
   }
-  return '<span class="ph">Enquire for pricing</span>';
+  /* guest, no printed MRP but we do have a rate for dealers */
+  return signIn('Sign in to see the rate');
 }
 
 /* clicking "Sign in for dealer price" anywhere opens the panel */
@@ -2630,7 +2645,7 @@ function repriceSheet(){
     vt.querySelectorAll('.vr').forEach(function(row,i){
       const v=(CUR.variants||[])[i]; if(!v) return;
       const pc=row.querySelector('.vprice'), mc=row.querySelector('.vmrp');
-      const mrpv = v.mrp!=null ? v.mrp : (v.price!=null?Math.round(v.price*2.25):null);
+      const mrpv = v.mrp!=null ? v.mrp : null;   // printed MRP only, never a guess
       const u='<b class="vunit">/'+unitAbbr(v.unit)+'</b>';
       if(ec){
         // Never DP — the shop's own offer price if they set one, else MRP.
@@ -2639,6 +2654,7 @@ function repriceSheet(){
           : (mrpv!=null ? rupee(mrpv)+u : '—');
         if(mc) mc.innerHTML = '';
       } else if(signedIn() && RETAIL.on){
+        // No printed MRP: show a dash, not the dealer price.
         if(pc) pc.innerHTML = mrpv!=null ? '<b>'+rupee(disc(mrpv))+'</b>'+u : '—';
         if(mc) mc.innerHTML = mrpv!=null ? '<span class="pmrp cut">'+rupee(mrpv)+'</span>' : '';
       } else if(signedIn()){
