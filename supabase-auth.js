@@ -192,7 +192,7 @@
   // live site is not reachable from where this gets written — so the page has
   // to be able to say for itself which build it is running and how far the
   // Supabase wiring got.
-  const BUILD = 24;
+  const BUILD = 25;
   function diagnostics() {
     return {
       build: BUILD,
