@@ -1310,6 +1310,41 @@ function strip(title, list){
 }
 
 /* ---------- detail sheet ---------- */
+// The two ways a product carries its sizes, normalised to one shape. Priced
+// variant rows pass through; a plain text size list borrows the product's own
+// rate and MRP — the same fallback resolveItem() uses when a line is added to
+// an order, so what the sheet shows and what the order charges cannot drift.
+function sheetRows(p){
+  if(!p) return [];
+  if(p.variants && p.variants.length) return p.variants;
+  if(p.sizes && p.sizes.length) return p.sizes.map(z=>({
+    size:z, price:(p.price!=null?p.price:null), mrp:(p.mrp!=null?p.mrp:null),
+    unit:'Piece', moq:null }));
+  return [];
+}
+// The line under the size table. Written once, because openSheet() draws it and
+// repriceSheet() rewrites it whenever the session or the price mode changes —
+// and the two had drifted far enough apart that one of them told a customer
+// standing at the counter how to turn retail mode off.
+function sheetNote(p, rows){
+  rows = rows || sheetRows(p);
+  const ec=isEndCustomer(), gst=p&&p.gst?' at '+p.gst+'%':'';
+  const noRates = rows.length && rows.every(v=>v.price==null);
+  if(ec) return 'Prices include GST'+gst+'. Visit the shop to buy \u2014 see the note '+
+    'above for how to reach them.';
+  // Retail mode is meant to be invisible: the note says nothing about it, and
+  // nothing about a dealer price. See retailMark() for the rest of that.
+  if(signedIn() && RETAIL.on) return 'Prices include GST'+gst+'.';
+  if(!signedIn()) return 'Prices shown are MRP. '+
+    '<button class="signlink" data-sign="1">Sign in to check for a discount</button>';
+  if(noRates) return canOrder()
+    ? 'No rate is loaded for these yet \u2014 add the size you want and we will quote it on the order.'
+    : 'Rates for these are not loaded yet.';
+  return 'DP is your price per unit shown (pc = piece, dz = dozen, gr = gross) '+
+    'including GST'+gst+'. MRP is the printed maximum retail price. MOQ is the '+
+    'minimum order quantity where the supplier sets one.'+
+    (canOrder()?' Use the + button to add a size to your order.':'');
+}
 const ov=document.getElementById('ov'),sheet=document.getElementById('sheet');
 let CUR=null;
 function openSheet(p){
@@ -1319,37 +1354,32 @@ function openSheet(p){
   const ec=isEndCustomer();
   const off=isOffice();          // admin or office staff: edit, don't order
   const ord=canOrder();          // only a dealer gets quantity steppers
-  const vt=(p.variants&&p.variants.length)?`
+  // Two shapes of size list, one table. Priced variant rows are the normal
+  // case; a plain text size list falls back to the product's own rate, which
+  // is the rate the order pad actually charges for those sizes — so showing
+  // "Ask for rate" against them while the card said Rs 625 was the sheet
+  // disagreeing with itself. sheetRows() settles it in one place.
+  const rows=sheetRows(p);
+  // A minimum order quantity is a wholesale term. It means nothing to a
+  // consumer, and a signed-out visitor on a shared WhatsApp link is usually
+  // one — so MOQ is for signed-in trade accounts only, same rule as the rates.
+  // Retail mode counts as a consumer here: the dealer has turned the screen
+  // round, and "MOQ 12" would give away that this is a wholesale list.
+  const trade=signedIn() && !ec && !RETAIL.on;
+  const askFor = ec?'Ask in the shop':'Ask for rate';
+  const vt = rows.length ? `
     <div class="vt">
       <div class="vh"><span>Size / option</span><span>Rate</span><span>MRP</span><span>${ord?'Order':''}</span></div>
-      ${p.variants.map(v=>`<div class="vr">
-        <span class="vsize">${v.size}${(v.moq&&!ec)?'<small class="vmoq">MOQ '+v.moq+'</small>':''}</span>
-        <span class="vprice">${v.price!=null?'₹'+v.price+'<b class="vunit">/'+unitAbbr(v.unit)+'</b>':'—'}</span>
-        <span class="vmrp">${v.mrp!=null?'₹'+v.mrp:''}</span>
-        <span class="vord">${ord?'<button class="qbtn" data-qm="'+v.size+'">−</button><b class="qv" data-qv="'+v.size+'">0</b><button class="qbtn" data-qp="'+v.size+'">+</button>':''}</span></div>`).join('')}
+      ${rows.map(v=>`<div class="vr">
+        <span class="vsize">${esc(v.size)}${(v.moq&&trade)?'<small class="vmoq">MOQ '+v.moq+'</small>':''}</span>
+        <span class="vprice${v.price==null?' tdim':''}">${v.price!=null?'\u20b9'+v.price+'<b class="vunit">/'+unitAbbr(v.unit)+'</b>':askFor}</span>
+        <span class="vmrp">${v.mrp!=null?'\u20b9'+v.mrp:''}</span>
+        <span class="vord">${ord?'<button class="qbtn" data-qm="'+esc(v.size)+'">\u2212</button><b class="qv" data-qv="'+esc(v.size)+'">0</b><button class="qbtn" data-qp="'+esc(v.size)+'">+</button>':''}</span></div>`).join('')}
     </div>
-    <p style="font-size:.7rem;color:var(--tm);margin-top:7px;line-height:1.5">
-      ${ec?'Prices include GST'+(p.gst?' at '+p.gst+'%':'')+'.'
-          :'Rate is per unit shown (pc = piece, dz = dozen, gr = gross) including GST'+(p.gst?' at '+p.gst+'%':'')+'. MRP is the printed maximum retail price. MOQ is the minimum order quantity where the supplier sets one.'}${ord?' Use the + button to add a size to your order.':''}</p>`
-    : (p.sizes&&p.sizes.length
-        // A plain text size list rather than priced rows. It used to render as
-        // a box you could only read; a dealer can now put a line against the
-        // size they want and ask for the rate.
-        ? `<div class="vt">
-             <div class="vh"><span>Size / option</span><span>Rate</span><span></span><span>${ord?'Order':''}</span></div>
-             ${p.sizes.map(z=>`<div class="vr">
-               <span class="vsize">${z}</span>
-               <span class="vprice tdim">${ec?'Ask in the shop':'Ask for rate'}</span>
-               <span class="vmrp"></span>
-               <span class="vord">${ord?'<button class="qbtn" data-qm="'+esc(z)+'">−</button><b class="qv" data-qv="'+esc(z)+'">0</b><button class="qbtn" data-qp="'+esc(z)+'">+</button>':''}</span>
-             </div>`).join('')}
-           </div>
-           <p style="font-size:.7rem;color:var(--tm);margin-top:7px;line-height:1.5">
-             ${ord?'No rate is loaded for these yet — add the size you want and we will quote it on the order.'
-                  :'Rates for these are not loaded yet.'}</p>`
-      : (ord?`<div class="singleAdd"><button class="qbtn" data-qm="Standard">−</button>
-          <b class="qv" data-qv="Standard">0</b><button class="qbtn" data-qp="Standard">+</button>
-          <span style="font-size:.78rem;color:var(--tm)">${p.price!=null?'Add to your order':'Add to your order — we will quote the rate'}</span></div>`:''));
+    <p style="font-size:.7rem;color:var(--tm);margin-top:7px;line-height:1.5">${sheetNote(p,rows)}</p>`
+    : (ord?`<div class="singleAdd"><button class="qbtn" data-qm="Standard">\u2212</button>
+        <b class="qv" data-qv="Standard">0</b><button class="qbtn" data-qp="Standard">+</button>
+        <span style="font-size:.78rem;color:var(--tm)">${p.price!=null?'Add to your order':'Add to your order \u2014 we will quote the rate'}</span></div>`:'');
 
   // Two different questions, so two strips. "Similar" answers what else is
   // like this one; "recently viewed" answers what you were just looking at.
@@ -3322,6 +3352,9 @@ function repriceSheet(){
   const vt=sheet.querySelector('.vt');
   if(vt){
     const ec=isEndCustomer();
+    const rows=sheetRows(CUR);
+    const trade=signedIn() && !ec && !RETAIL.on;
+    const askFor = ec?'Ask in the shop':'Ask for rate';
     const head=vt.querySelector('.vh');
     if(head){
       const cells=head.querySelectorAll('span');
@@ -3333,40 +3366,43 @@ function repriceSheet(){
                                         : (signedIn()?'MRP':'');
     }
     vt.querySelectorAll('.vr').forEach(function(row,i){
-      const v=(CUR.variants||[])[i]; if(!v) return;
+      const v=rows[i]; if(!v) return;
       const pc=row.querySelector('.vprice'), mc=row.querySelector('.vmrp');
+      // The sheet is often drawn before the session lands, so the MOQ badge is
+      // re-decided here too rather than only at first paint.
+      const sz=row.querySelector('.vsize');
+      if(sz) sz.innerHTML = esc(v.size)+
+        ((v.moq&&trade)?'<small class="vmoq">MOQ '+v.moq+'</small>':'');
       const mrpv = v.mrp!=null ? v.mrp : null;   // printed MRP only, never a guess
       const u='<b class="vunit">/'+unitAbbr(v.unit)+'</b>';
+      // A missing rate says so in words. "\u2014" in the rate column read as a
+      // product with nothing to sell rather than one we have not priced yet.
+      const dim=on=>{ if(pc) pc.classList.toggle('tdim', !!on); };
       if(ec){
         // Never DP — the shop's own discount off this size's MRP if they set
         // one, else the MRP itself.
         const off=offerPriceOn(CUR, mrpv);
         if(pc) pc.innerHTML = (off!=null) ? '<b>'+rupee(off)+'</b>'+u
-          : (mrpv!=null ? rupee(mrpv)+u : '—');
+          : (mrpv!=null ? rupee(mrpv)+u : askFor);
+        dim(off==null && mrpv==null);
         if(mc) mc.innerHTML = '';
       } else if(signedIn() && RETAIL.on){
         // No printed MRP: show a dash, not the dealer price.
-        if(pc) pc.innerHTML = mrpv!=null ? '<b>'+rupee(disc(mrpv))+'</b>'+u : '—';
+        if(pc) pc.innerHTML = mrpv!=null ? '<b>'+rupee(disc(mrpv))+'</b>'+u : askFor;
+        dim(mrpv==null);
         if(mc) mc.innerHTML = mrpv!=null ? '<span class="pmrp cut">'+rupee(mrpv)+'</span>' : '';
       } else if(signedIn()){
-        if(pc) pc.innerHTML = v.price!=null ? rupee(v.price)+u : '—';
+        if(pc) pc.innerHTML = v.price!=null ? rupee(v.price)+u : askFor;
+        dim(v.price==null);
         if(mc) mc.innerHTML = v.mrp!=null ? rupee(v.mrp) : '';
       } else {
-        if(pc) pc.innerHTML = mrpv!=null ? rupee(mrpv)+u : '—';
+        if(pc) pc.innerHTML = mrpv!=null ? rupee(mrpv)+u : askFor;
+        dim(mrpv==null);
         if(mc) mc.innerHTML = '';
       }
     });
     const note=vt.nextElementSibling;
-    if(note && note.tagName==='P'){
-      note.innerHTML = ec
-        ? 'Prices include GST'+(CUR.gst?' at '+CUR.gst+'%':'')+'. Visit the shop to buy — see the note above for how to reach them.'
-        : (signedIn()&&RETAIL.on)
-        ? 'Prices shown are MRP less '+(RETAIL.off||0)+'%. Tap the person icon to turn retail mode off.'
-        : (signedIn()
-          ? 'DP is your price per piece including GST'+(CUR.gst?' at '+CUR.gst+'%':'')+
-            '. MRP is the printed maximum retail price. MOQ is the minimum order quantity where the supplier sets one.'
-          : 'Prices shown are MRP. <button class="signlink" data-sign="1">Sign in to check for a discount</button>');
-    }
+    if(note && note.tagName==='P') note.innerHTML = sheetNote(CUR, rows);
   }
 }
 

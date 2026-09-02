@@ -174,6 +174,22 @@ invented figure in front of consumers, struck it through in retail mode, and
 took a percentage off it. If a supplier's MRP is missing, add it in the admin
 panel — that is the only thing that makes an MRP appear.
 
+Where no rate is loaded at all, the size row says "Ask for rate" (dealers) or
+"Ask in the shop" (consumers) rather than an em dash, and the size can still be
+added to an order for us to quote.
+
+Sizes reach the sheet two ways: priced `variants` rows, or a plain `sizes` text
+list. A product with a `sizes` list and no variants borrows the product's own
+rate and MRP — the same fallback the order pad uses, so the table and the order
+cannot disagree. Two products (Cast Iron Dosa Tawa and Appam Pan) showed a rate
+on the card and "Ask for rate" against every size until this was made one code
+path.
+
+MOQ is a wholesale term, so it is shown only to a signed-in trade account that
+is not in customer-facing mode. The rounding still applies either way — the
+quantity is still forced to a multiple, it is just not labelled where a consumer
+would read it.
+
 ## Promo strips
 
 `config.js` takes a list of `promos` — a title, an optional date window, a
