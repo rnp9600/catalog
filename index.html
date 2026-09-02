@@ -3,6 +3,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Patel Marketing — Wholesale Kitchenware Catalogue</title>
 <meta name="description" content="Browse our wholesale kitchenware range by brand, search by product type, and enquire directly on WhatsApp.">
+<!-- Installable. The manifest and the service worker turn this into something
+     a dealer keeps on their home screen, which is also what makes it open
+     with no signal. iOS ignores most of the manifest, so the apple-* tags
+     below are not duplicates of it. -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2F6FA8">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Patel Marketing">
 <!-- Link preview card shown when the catalogue itself is shared (WhatsApp,
      Facebook, Telegram, iMessage). Individual products get their own card
      from /api/p.js — see vercel.json. -->
@@ -754,7 +765,23 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  background:var(--sf);font-size:.9rem;margin-bottom:10px}
 .linkish{border:0;background:transparent;color:inherit;text-decoration:underline;
  font:inherit;font-weight:700;padding:0;cursor:pointer}
+/* Shown only when a new version is sitting waiting. Never automatic — see
+   rule 4 in sw.js. */
+.swbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:120;display:none;
+ align-items:center;gap:10px;padding:11px 13px;border-radius:var(--rs);
+ background:var(--pr);color:#fff;box-shadow:0 10px 30px rgba(var(--sh),.28);
+ font-size:.8rem;font-weight:600}
+.swbar.on{display:flex}
+.swbar b{flex:1;font-weight:600}
+.swbar button{border:0;border-radius:999px;padding:7px 13px;font-family:var(--fd);
+ font-weight:800;font-size:.76rem;cursor:pointer;background:#fff;color:var(--pr)}
+.swbar .later{background:transparent;color:#fff;text-decoration:underline;padding:7px 4px}
 </style></head><body data-theme="sky" class="v-grid">
+<div class="swbar" id="swbar" role="status">
+  <b>A new version of the catalogue is ready.</b>
+  <button id="swGo">Reload</button>
+  <button class="later" id="swLater">Later</button>
+</div>
 <header><div class="hin">
  <div class="brandbox"><div class="mark">PM</div>
   <div><div class="bn">Patel Marketing</div><div class="bs">Wholesale Kitchenware</div></div></div>
@@ -980,11 +1007,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 31</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 32</footer>
 
-<script src="config.js?v=31"></script>
+<script src="config.js?v=32"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=31"></script>
+<script src="supabase-auth.js?v=32"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1026,6 +1053,38 @@ const g=document.getElementById('g'),em=document.getElementById('em');
 const IMAGE_SOURCE = 'local'; // 'local' | 'supabase'
 const SUPABASE_IMAGE_BASE = 'https://vcrzauuxvgpsbforiszz.supabase.co/storage/v1/object/public/catalog-images';
 const IMG=n=>IMAGE_SOURCE==='supabase' ? `${SUPABASE_IMAGE_BASE}/${n}.jpg` : `images/${n}.jpg`;
+/* The 300px WebP built by tools/thumbs.mjs, mirroring images/ under
+   images/thumb/. Only for the small renderings — grid cards, the sheet's
+   thumbnail strip, the related-product rows — never the hero image or the
+   lightbox, which want the real photo.
+
+   Returns null when the photos are being served from Supabase Storage
+   instead, because the thumbnails are built in this repository and are not
+   up there. Then the original JPEG is used and nothing looks different. */
+const THUMB=n=>IMAGE_SOURCE==='supabase' ? null : `images/thumb/${n}.webp`;
+
+/* A plain <img> at the thumbnail, with the original as an onerror fallback.
+
+   NOT <picture><source type="image/webp">, which was the first attempt and is
+   wrong for this: a browser that supports WebP picks the <source> and, if
+   that file 404s, shows a broken image — it does not fall back to the <img>
+   inside. Since the whole point is that a photo added through the GitHub
+   upload page is safe before its thumbnail has been built, that is the one
+   case that had to work. onerror covers both of the ways a thumbnail can
+   fail — not built yet, or a browser that cannot decode WebP — with one
+   mechanism, and lands on exactly the old behaviour. */
+function pic(n, alt){
+  const t=THUMB(n), full=IMG(n);
+  const a=String(alt||'').replace(/"/g,'&quot;');
+  if(!t) return '<img src="'+full+'" alt="'+a+'" loading="lazy" decoding="async">';
+  return '<img src="'+t+'" data-full="'+full+'" alt="'+a+'" loading="lazy" decoding="async" '+
+         'onerror="pmThumbFallback(this)">';
+}
+window.pmThumbFallback=function(img){
+  img.onerror=null;                       // the original gets one try, not a loop
+  const full=img.getAttribute('data-full');
+  if(full) img.src=full;
+};
 
 /* ---------- unit ---------- */
 // What a basket quantity actually means. Piece is the default for products
@@ -1322,7 +1381,7 @@ function card(p,i){
       <div class="szlist" id="sz${i}">${p.sizes.map(s=>`<span>${s}</span>`).join('')}</div>`:'';
   const cta=p.stock==='out'?'<button class="cta dis">Currently unavailable</button>'
     :'<button class="cta" data-open="'+i+'">'+(isEndCustomer()?'See details':'View sizes &amp; rates')+'</button>';
-  const im=p.img?`<img src="${IMG(p.img)}" alt="${p.name}" loading="lazy">`:`<span class="noimg">—</span>`;
+  const im=p.img?pic(p.img,p.name):`<span class="noimg">—</span>`;
   const statusChip=isEndCustomer()&&shopOfferFor(p)&&shopOfferFor(p).status
     ?`<span class="statuschip ${shopOfferFor(p).status}">${STATUS_LABEL[shopOfferFor(p).status]||shopOfferFor(p).status}</span>`:'';
   return `<div class="card ${p.stock==='out'?'out':''}" data-open="${i}" style="animation-delay:${Math.min(i,14)*.028}s">
@@ -1424,7 +1483,7 @@ function noteRecent(p){
 function strip(title, list){
   return '<div class="related"><h4>'+title+'</h4><div class="rrow">'+
     list.map(r=>'<div class="rcard" data-rel="'+P.indexOf(r)+'">'+
-      '<div class="rimg">'+(r.img?'<img src="'+IMG(r.img)+'" loading="lazy" alt="">':'—')+'</div>'+
+      '<div class="rimg">'+(r.img?pic(r.img,r.name):'—')+'</div>'+
       '<span>'+esc(r.name)+'</span></div>').join('')+'</div></div>';
 }
 
@@ -1526,7 +1585,7 @@ function openSheet(p){
    <div class="sbody">
      <div class="hero-img" id="heroimg">${imgs.length?`<img id="hi" src="${IMG(imgs[0])}" alt="${p.name}">`:'<span class="noimg">No photo yet</span>'}</div>
      ${imgs.length>1?`<div class="thumbs" id="thumbs">${imgs.map((n,i)=>
-        `<button class="${i?'':'on'}" data-i="${i}" data-n="${n}"><img src="${IMG(n)}" alt="" loading="lazy"></button>`).join('')}</div>`:''}
+        `<button class="${i?'':'on'}" data-i="${i}" data-n="${n}">${pic(n,'')}</button>`).join('')}</div>`:''}
      <div class="meta">
        <span class="tag pri">${p.brand}</span>
        <span class="tag">${p.cat}</span>
@@ -3781,5 +3840,60 @@ openSheet = function(p){
 };
 
 markWho(); retailMark(); refreshSession();
+
+/* ---------- installable, and readable with no signal ----------
+
+   The worker is registered as sw.js?v=<build>, which is what ties its cache
+   to the build number already printed in the footer — see the long comment at
+   the top of sw.js. Registrations are keyed by scope, so bumping the build
+   points this same scope at a new script and the browser installs it.
+
+   Nothing is swapped underneath anyone. A new worker installs and then waits;
+   the strip at the bottom of the page is the only thing that promotes it, and
+   only when the reader taps Reload. */
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  // file:// has no worker, and neither should a page opened by double-click.
+  if(location.protocol!=='http:' && location.protocol!=='https:') return;
+
+  const build=(window.PMAuth && PMAuth.BUILD) || 'dev';
+  const bar=document.getElementById('swbar');
+  let waiting=null;
+
+  function offer(sw){
+    if(!sw || !bar) return;
+    waiting=sw;
+    bar.classList.add('on');
+  }
+  if(bar){
+    const go=document.getElementById('swGo'), later=document.getElementById('swLater');
+    if(go) go.onclick=function(){
+      bar.classList.remove('on');
+      if(!waiting){ location.reload(); return; }
+      // The page reloads when the new worker takes over, not before — so the
+      // reader never sees half of one version and half of the next.
+      navigator.serviceWorker.addEventListener('controllerchange',function(){
+        location.reload();
+      },{once:true});
+      waiting.postMessage('skip-waiting');
+    };
+    if(later) later.onclick=function(){ bar.classList.remove('on'); };
+  }
+
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js?v='+build).then(function(reg){
+      if(reg.waiting && navigator.serviceWorker.controller) offer(reg.waiting);
+      reg.addEventListener('updatefound',function(){
+        const nw=reg.installing;
+        if(!nw) return;
+        nw.addEventListener('statechange',function(){
+          // A worker that reaches "installed" with nothing controlling the
+          // page is the very first install, not an update. Nothing to offer.
+          if(nw.state==='installed' && navigator.serviceWorker.controller) offer(nw);
+        });
+      });
+    }).catch(function(){ /* no worker is a working site, just a slower one */ });
+  });
+})();
 
 </script></body></html>

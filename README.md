@@ -20,6 +20,8 @@ and no longer deployed; it is still in git history if it is ever wanted back
 | `exchange.html` | Dealer-to-dealer stock exchange |
 | `config.js`, `supabase-auth.js` | Supabase URL, publishable key, shared sign-in |
 | `pm-ui.js` | The sign-in gate, account button and helpers the four signed-in pages share |
+| `sw.js`, `manifest.webmanifest`, `assets/icon-*` | What makes it installable and work offline |
+| `tools/thumbs.mjs` | Builds the 300px WebP grid thumbnails into `images/thumb/` |
 | `data.json` | What the public catalogue reads. **Not** the database — see Publishing |
 | `images/` | Product photos |
 | `api/p.js` | Server-renders one product's `<head>` so WhatsApp shows a real link preview |
@@ -275,6 +277,44 @@ noticeboard is for today.
 
 See `APP.md`. Short version: the site can be made installable to a home screen
 in about a day and for nothing, and that is worth doing before anything else.
+
+## An app on the home screen, and no signal
+
+The catalogue is installable. `manifest.webmanifest` and `sw.js` give it an
+icon, its own window, and — the part that matters in a shop with one bar of
+signal — it opens and works offline. Browsing, searching, the product sheets
+and the order pad all work with no network; signing in and sending an order do
+not, and fail clearly rather than hanging.
+
+**`sw.js` is the most dangerous file in this repository.** The build number and
+the `?v=` convention exist because phones served stale files and a fix looked
+like it had done nothing; a service worker is that failure with a longer memory,
+and the people it strands are dealers, not developers. Read the comment at the
+top of the file before changing it. The four rules it keeps:
+
+- **the cache name is the build number**, passed in as `sw.js?v=<build>` so
+  there is still exactly one build number in the project — the one in
+  `supabase-auth.js` you already bump — and activation deletes every other cache;
+- **`data.json` is network-first**, cache only as the no-signal fallback, so the
+  published catalogue can never be pinned to an old copy;
+- **nothing cross-origin and nothing that is not a `GET` is touched**, so
+  Supabase — sign-in, orders, reviews, the noticeboard — always goes to the
+  network;
+- **there is no `skipWaiting()`**. A new version installs and waits, and a strip
+  at the bottom of the page offers it. The reader picks the moment.
+
+If a worker ever does go wrong, it is undone by a normal push, not by asking
+every dealer to clear their browser. The replacement `sw.js` that unregisters
+itself is in `ROADMAP.md`.
+
+Grid cards, the sheet's thumbnail strip and the related-product rows use 300px
+WebP thumbnails from `images/thumb/`, built by `tools/thumbs.mjs` — 30.3 MB of
+photos becomes 2.7 MB, and a first paint drops from about 650 KB of images to
+88 KB. The hero image and the lightbox still use the real photo. A thumbnail
+that has not been built yet is harmless: the `<img>` carries an `onerror` that
+swaps in the original JPEG. You do not normally run the script — a GitHub
+Action rebuilds thumbnails whenever `images/` changes on a push, because photos
+are uploaded through GitHub rather than from a checkout.
 
 ## What to build next
 

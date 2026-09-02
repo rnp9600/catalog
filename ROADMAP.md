@@ -131,14 +131,26 @@ self.addEventListener('activate', async () => {
 });
 ```
 
-**Thumbnails are a real but modest win.** The photos were already sensible —
-median 25KB, mostly 900×900 — so this is roughly a threefold saving on the
-grid, not the tenfold one it would be on an unoptimised site. Around 500KB down
-to 160KB for a screenful. The `<picture>` element falls back to the existing
-JPEG, so a missing thumbnail degrades to exactly the old behaviour. Because
-photos are added through the GitHub upload page rather than a local checkout, a
-GitHub Action regenerates them on push — a script nobody can run is a script
-nobody runs.
+**Thumbnails turned out to be a bigger win than expected.** The photos were
+already sensible — median 25KB, mostly 900×900 — so the estimate here was a
+threefold saving. Measured, 300px WebP took **30.3 MB of photos down to 2.7 MB
+of thumbnails, 91% smaller**, and a first paint of the catalogue from about
+650KB of images to 88KB. The reason is simply that a 900px photo was being sent
+to fill a card 160px wide.
+
+The fallback took two attempts and the first one was wrong, which is worth
+recording. `<picture><source type="image/webp">` with the JPEG as the inner
+`<img>` looks like the textbook answer and does not do the job here: a browser
+that supports WebP picks the `<source>`, and if that file is missing it shows a
+broken image rather than falling back. The case that had to work is exactly
+that one — a photo uploaded through GitHub before its thumbnail exists. So it
+is a plain `<img>` at the thumbnail with an `onerror` that swaps in the
+original, which covers both a thumbnail that was never built and a browser that
+cannot decode WebP, and lands on precisely the old behaviour.
+
+Because photos are added through the GitHub upload page rather than a local
+checkout, a GitHub Action regenerates them on push — a script nobody can run is
+a script nobody runs.
 
 **The event log only writes.** Anyone may insert; only admin and staff may
 read. A browsing log that the page can read back out is a different and worse
