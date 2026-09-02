@@ -53,6 +53,31 @@ main{max-width:760px;margin:0 auto;padding:14px}
 .item .n{font-size:.85rem;font-weight:700}
 .item .s{font-family:var(--fm);font-size:.68rem;color:var(--tm);margin-top:2px}
 .empty{padding:36px 16px;text-align:center;color:var(--tm);font-size:.85rem}
+.stat{font-size:.75rem;color:var(--tm);margin-bottom:10px}
+.ocard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
+.ocard.done{opacity:.62}
+.ohead{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}
+.oref{font-family:var(--fm);font-size:.72rem;font-weight:600;color:var(--tm);margin-left:auto}
+.ometa{font-size:.74rem;color:var(--tm);margin-top:3px}
+.chip{display:inline-block;border-radius:999px;padding:3px 9px;font-size:.66rem;
+ font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.s-new{background:#FFF0D6;color:#8A5B00}
+.s-confirmed{background:#DDEBFF;color:#28527F}
+.s-packed{background:#E6E2FF;color:#463C9B}
+.s-sent{background:#D8F1EC;color:#0F6B5C}
+.s-completed{background:#DCF3DC;color:#2A6B2A}
+.s-cancelled{background:#F6DEDC;color:#8A3A32}
+.tag-office{background:var(--sf2);color:var(--tm)}
+.olines{margin-top:9px;border-top:1px dashed var(--bd);padding-top:8px;display:none}
+.olines.on{display:block}
+.oline{display:flex;gap:8px;font-size:.8rem;padding:3px 0}
+.oline .q{font-family:var(--fm);font-weight:700;flex:0 0 44px}
+.oline .n{flex:1;min-width:0}
+.oline .p{font-family:var(--fm);color:var(--tm)}
+/* A quiet progress rail, so "where has it got to" is answered without reading. */
+.steps{display:flex;gap:4px;margin-top:9px}
+.steps i{flex:1;height:4px;border-radius:999px;background:var(--bd)}
+.steps i.on{background:var(--ac)}
 .gate{max-width:340px;margin:70px auto;text-align:center}
 .gate .mark{margin:0 auto 18px}
 .gate h1{font-size:1.3rem;font-weight:800;margin-bottom:6px}
@@ -103,6 +128,7 @@ main{max-width:760px;margin:0 auto;padding:14px}
   <div class="tabs">
     <button class="tab on" data-t="custs">Customers</button>
     <button class="tab" data-t="offers">Offers &amp; status</button>
+    <button class="tab" data-t="orders">Your orders</button>
   </div>
 </header>
 
@@ -128,6 +154,14 @@ main{max-width:760px;margin:0 auto;padding:14px}
     <div id="followList"></div>
   </section>
 
+  <section class="panel" id="p-orders">
+    <div class="note"><b>Orders you have placed with Patel Marketing.</b>
+      Orders you send from the catalogue appear here, along with any the office
+      writes down for you over the phone, so you can see where each one has got to.</div>
+    <div class="stat" id="mStat"></div>
+    <div id="mList"></div>
+  </section>
+
   <section class="panel" id="p-offers">
     <div class="note"><b>Set what your customers see.</b>
       Pick a product, mark it in stock / arriving / kept aside, and add a price if you're offering
@@ -151,9 +185,9 @@ main{max-width:760px;margin:0 auto;padding:14px}
 </main>
 </div>
 
-<script src="config.js?v=23"></script>
+<script src="config.js?v=24"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=23"></script>
+<script src="supabase-auth.js?v=24"></script>
 <script>
 (function(){
   const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
@@ -244,7 +278,7 @@ async function start(row){
   const r=await fetch('data.json',{cache:'no-cache'});
   P=await r.json();
   $('#dProducts').innerHTML=P.map(p=>'<option value="'+esc(p.name)+(p.code?' — '+esc(p.code):'')+'">').join('');
-  await loadCustomers(); await loadFollowers(); await loadOffers();
+  await loadCustomers(); await loadFollowers(); await loadOffers(); await loadMyOrders();
 }
 
 document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
@@ -311,6 +345,57 @@ async function loadFollowers(){
     const name=prompt('What is their name?');
     if(name===null || !name.trim()) return;
     await addCustomer(b.dataset.add, name.trim(), '', '');
+  };
+}
+
+/* ---------------- your orders ---------------- */
+// Read-only here on purpose: only Patel Marketing moves an order along, and
+// the database enforces that whatever this page shows.
+const FLOW=['new','confirmed','packed','sent','completed'];
+const SAID={new:'Received',confirmed:'Confirmed',packed:'Packed',
+            sent:'On its way',completed:'Delivered',cancelled:'Cancelled'};
+let MYORDERS=[], MYITEMS={};
+async function loadMyOrders(){
+  const {data,error}=await PMAuth.sb.from('order_summary').select('*')
+    .order('created_at',{ascending:false}).limit(100);
+  if(error){ $('#mList').innerHTML='<div class="empty">Could not load your orders — '+esc(error.message)+'</div>'; return; }
+  MYORDERS=data||[];
+  const open=MYORDERS.filter(o=>o.status!=='completed'&&o.status!=='cancelled').length;
+  $('#mStat').textContent = MYORDERS.length
+    ? MYORDERS.length+' order'+(MYORDERS.length===1?'':'s')+' · '+open+' still on the way'
+    : '';
+  $('#mList').innerHTML = MYORDERS.length ? MYORDERS.map(o=>{
+    const done=o.status==='completed'||o.status==='cancelled';
+    const at=FLOW.indexOf(o.status);
+    return '<div class="ocard'+(done?' done':'')+'">'+
+      '<div class="ohead"><span class="chip s-'+o.status+'">'+(SAID[o.status]||o.status)+'</span>'+
+        (o.taken_by_office?'<span class="chip tag-office">taken by phone</span>':'')+
+        '<span class="oref">'+esc(o.ref)+'</span></div>'+
+      (o.status==='cancelled'?'':'<div class="steps">'+FLOW.map((_,i)=>
+        '<i class="'+(at>=0&&i<=at?'on':'')+'"></i>').join('')+'</div>')+
+      '<div class="ometa">'+o.lines+' line'+(o.lines===1?'':'s')+' · '+o.pieces+' pcs · '+
+        money(o.total)+' · '+new Date(o.created_at).toLocaleDateString('en-IN',
+          {day:'numeric',month:'short',year:'numeric'})+'</div>'+
+      '<div class="olines" id="ml-'+esc(o.ref)+'"></div>'+
+      '<button class="ibtn" data-lines="'+esc(o.ref)+'" style="margin-top:9px">What was on it</button>'+
+      '</div>';
+  }).join('') : '<div class="empty">No orders yet. Add products to your order on the catalogue and send it.</div>';
+  $('#mList').onclick=async function(e){
+    const b=e.target.closest('[data-lines]'); if(!b) return;
+    const ref=b.dataset.lines, box=document.getElementById('ml-'+ref);
+    if(box.classList.contains('on')){ box.classList.remove('on'); b.textContent='What was on it'; return; }
+    if(!MYITEMS[ref]){
+      const o=MYORDERS.find(x=>x.ref===ref);
+      const {data}=await PMAuth.sb.from('order_items').select('*').eq('order_id',o.id).order('sort');
+      MYITEMS[ref]=data||[];
+    }
+    const its=MYITEMS[ref];
+    box.innerHTML = its.length ? its.map(i=>
+      '<div class="oline"><span class="q">'+i.qty+'×</span><span class="n">'+esc(i.name)+
+      (i.size&&i.size!=='Standard'?' <span style="color:var(--tm)">('+esc(i.size)+')</span>':'')+
+      '</span><span class="p">'+money(i.price)+'</span></div>').join('')
+      : '<div class="oline">No lines recorded.</div>';
+    box.classList.add('on'); b.textContent='Hide';
   };
 }
 
