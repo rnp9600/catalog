@@ -92,6 +92,19 @@ every change four times.
 4. **Measurement and data quality** — a `catalog.events` log, and a work queue
    in the admin panel for the table above.
 
+### Two things still need someone with dashboard access
+
+Both are one paste-and-run in Supabase → SQL Editor, and both are written and
+waiting in the repo. Nothing breaks until they happen; they just do not start
+working.
+
+- **`supabase/03_events.sql`** — creates the event log. Until it is run the
+  catalogue quietly does not log and the admin panel says so. Every day it is
+  not run is a day of searches thrown away, so it is the more urgent of the two.
+- **The schema dump** — `supabase/SCHEMA.md` carries the query. Until it is run,
+  the only complete copy of the database's shape is inside the Supabase project.
+  Nothing is broken today; it is insurance, and it costs ten minutes.
+
 ### Notes on the ones with teeth
 
 **Order again** reloads a past order at *today's* prices, not the prices it was
