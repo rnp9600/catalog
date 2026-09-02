@@ -1840,13 +1840,12 @@ const F   = CFG.festive || {enabled:false};
 function motionOff(){
   return CFG.motion==='off' || window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 }
-function festiveLive(){
-  if(!F.enabled) return false;
-  const now=new Date();
-  if(F.from  && now < new Date(F.from +'T00:00:00')) return false;
-  if(F.until && now > new Date(F.until+'T23:59:59')) return false;
-  return true;
-}
+/* festiveLive() is defined further down, alongside the rest of the promo code:
+   it asks whether ANY promo is running, not just the one old `festive` block.
+   The single-promo version that used to sit here was silently overridden by
+   it — same name, later definition — so editing this one would have changed
+   nothing on screen, which is the trap a duplicate priceLine() had already
+   set once in this file. */
 // A promo is a title, a window of dates, and a rule for which products it
 // covers. The festival was hard-coded as the only one; there can now be any
 // number, set in config.js without touching this file. CFG.festive still works
