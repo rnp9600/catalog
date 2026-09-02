@@ -114,6 +114,45 @@ h1{font-size:1.85rem;font-weight:800;letter-spacing:-.028em;line-height:1.1;marg
 .bar h2{font-size:1.06rem;font-weight:800}
 .bar span{font-size:.74rem;color:var(--tm)}
 
+/* Sort and the saved-list toggle sit with the count, because that is the line
+   that already says what you are looking at. */
+.barctl{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.sortsel{font-family:var(--fd);font-size:.72rem;font-weight:600;color:var(--tx);
+ background:var(--sf);border:1px solid var(--bd);border-radius:999px;padding:5px 9px;cursor:pointer}
+.savetog{font-family:var(--fd);font-size:.72rem;font-weight:600;padding:5px 10px;border-radius:999px;
+ background:var(--sf);color:var(--tm);border:1px solid var(--bd);cursor:pointer;display:inline-flex;gap:5px}
+.savetog.on{background:var(--pr);border-color:var(--pr);color:#fff}
+.savetog[hidden]{display:none}
+/* The heart sits over the photo, top-right, where it does not cover a badge. */
+.savedot{position:absolute;top:7px;right:7px;z-index:3;width:29px;height:29px;border-radius:50%;
+ border:1px solid var(--bd);background:var(--sf);color:var(--tm);font-size:.86rem;line-height:1;
+ cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.savedot.on{background:var(--pr);border-color:var(--pr);color:#fff}
+.savedot:active{transform:scale(.92)}
+
+/* ---------- Your orders ---------- */
+.ocard{border:1px solid var(--bd);border-radius:var(--rs);padding:11px 12px;margin-bottom:9px;background:var(--sf)}
+.ocard.done{opacity:.66}
+.ohead{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.ochip{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+ padding:3px 8px;border-radius:999px;background:var(--act);color:var(--tx)}
+.oref{margin-left:auto;font-family:var(--fm);font-size:.68rem;color:var(--tm)}
+.osteps{display:flex;gap:3px;margin-bottom:7px}
+.osteps i{flex:1;height:3px;border-radius:2px;background:var(--bd)}
+.osteps i.on{background:var(--pr)}
+.ometa{font-size:.72rem;color:var(--tm)}
+.olines{display:none;margin-top:8px;border-top:1px solid var(--bd);padding-top:7px}
+.olines.on{display:block}
+.oline{display:flex;gap:7px;font-size:.76rem;padding:3px 0;align-items:baseline}
+.oline .q{font-family:var(--fm);color:var(--tm);flex:0 0 34px}
+.oline .n{flex:1}
+.oline .p{font-family:var(--fm);color:var(--tm)}
+.obtns{display:flex;gap:7px;margin-top:9px}
+.obtn{flex:1;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);border-radius:var(--rs);
+ padding:8px;font-family:var(--fd);font-weight:700;font-size:.74rem;cursor:pointer}
+.obtn.pri{background:var(--pr);border-color:var(--pr);color:#fff}
+.obtn:disabled{opacity:.6}
+
 /* ---------- GRID (default) ---------- */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(226px,1fr));gap:15px}
 .card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;
@@ -773,7 +812,18 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  </section>
  <div id="campaignBanner"></div>
  <div id="fest"></div>
- <div class="bar"><h2 id="bh">All products</h2><span id="bc"></span></div>
+ <div class="bar"><h2 id="bh">All products</h2>
+  <div class="barctl">
+   <button class="savetog" id="savedTog" hidden>♥ Saved <b id="savedN">0</b></button>
+   <select class="sortsel" id="sortsel" aria-label="Sort products">
+    <option value="suggested">Suggested order</option>
+    <option value="rate-asc">Rate — low to high</option>
+    <option value="rate-desc">Rate — high to low</option>
+    <option value="name">Name A–Z</option>
+    <option value="rated">Best rated</option>
+   </select>
+   <span id="bc"></span>
+  </div></div>
  <div id="tableHead"><span>Product</span><span>Size</span><span>Rate</span><span>MRP</span></div>
  <div class="grid" id="g"></div>
  <div class="empty" id="em" style="display:none"><strong>Nothing matches that.</strong>Try a shorter word — "pickle", "pourer", "mug", "dabbi".</div>
@@ -930,11 +980,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 30</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 31</footer>
 
-<script src="config.js?v=30"></script>
+<script src="config.js?v=31"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=30"></script>
+<script src="supabase-auth.js?v=31"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1043,8 +1093,75 @@ function hay(p){
    (p.sizes||[]).join(' ')+(p.hotel?` ${p.hotel.pits} pits ${p.hotel.base} ${p.hotel.dia} ${p.hotel.kg}`:'')).toLowerCase();
   return p._h;
 }
+/* ---------- saved list ----------
+   A dealer buys roughly the same forty things every month. Recently-viewed
+   already remembers what they looked at; this remembers what they meant to
+   keep. Same per-account localStorage shape as recentKey() — it needs no
+   table, no policy, and it still works with no signal, which matters now the
+   catalogue runs offline. If it turns out people want it across their phones,
+   promoting it to a Supabase table is a small change on its own. */
+const SAVED_MAX=300;
+const savedKey = () => 'v3_pm_saved_'+((SESS&&SESS.phone)||'guest');
+let SAVED=new Set(), fsav=false;
+function loadSaved(){
+  try{ SAVED=new Set(JSON.parse(localStorage.getItem(savedKey())||'[]')); }catch(e){ SAVED=new Set(); }
+}
+function saveSaved(){
+  try{ localStorage.setItem(savedKey(),JSON.stringify([...SAVED].slice(-SAVED_MAX))); }catch(e){}
+}
+loadSaved();   // the guest list, until refreshSession() says who this is
+function toggleSaved(slug){
+  if(SAVED.has(slug)) SAVED.delete(slug); else SAVED.add(slug);
+  saveSaved(); drawSavedTog();
+}
+function drawSavedTog(){
+  const t=document.getElementById('savedTog'); if(!t) return;
+  const n=SAVED.size;
+  // Nothing saved and not filtering by it: the control has nothing to say.
+  t.hidden = !n && !fsav;
+  t.classList.toggle('on',fsav);
+  const b=document.getElementById('savedN'); if(b) b.textContent=n;
+}
+
+/* ---------- sort ----------
+   Until now the only order was the hand-curated CAT_FIRST/BRAND_FIRST one,
+   which is the right default — it leads with what the business leads with —
+   so it stays as "Suggested". */
+const SORT_KEY='v3_pm_sort';
+let SORTBY='suggested';
+try{ SORTBY=localStorage.getItem(SORT_KEY)||'suggested'; }catch(e){}
+// The lowest rate a product can actually be bought at, since that is the
+// number a card shows and the one a person means when they sort by price.
+function rateOf(p){
+  const ns=(p.variants||[]).map(v=>v.price).filter(x=>x!=null);
+  if(ns.length) return Math.min.apply(null,ns);
+  return p.price!=null?p.price:null;
+}
+function sortView(){
+  if(SORTBY==='suggested') return;
+  if(SORTBY==='name'){ VIEW.sort((a,b)=>String(a.name).localeCompare(String(b.name),'en')); return; }
+  if(SORTBY==='rated'){
+    VIEW.sort((a,b)=>{
+      const A=RATINGS[a.slug]||{}, B=RATINGS[b.slug]||{};
+      return (B.avg||0)-(A.avg||0) || (B.n||0)-(A.n||0);
+    });
+    return;
+  }
+  // 127 products carry no rate at all. They sort last whichever way the sort
+  // runs — an unpriced product is not the cheapest thing we sell.
+  const dir = SORTBY==='rate-desc' ? -1 : 1;
+  VIEW.sort((a,b)=>{
+    const x=rateOf(a), y=rateOf(b);
+    if(x==null&&y==null) return 0;
+    if(x==null) return 1;
+    if(y==null) return -1;
+    return (x-y)*dir;
+  });
+}
+
 function match(p){
   if(p.hidden) return false;
+  if(fsav && !SAVED.has(p.slug)) return false;
   if(fc!=='All'&&p.cat!==fc)return false;
   if(fs!=='All'&&p.sub!==fs)return false;
   if(fb!=='All'&&p.brand!==fb)return false;
@@ -1209,7 +1326,7 @@ function card(p,i){
   const statusChip=isEndCustomer()&&shopOfferFor(p)&&shopOfferFor(p).status
     ?`<span class="statuschip ${shopOfferFor(p).status}">${STATUS_LABEL[shopOfferFor(p).status]||shopOfferFor(p).status}</span>`:'';
   return `<div class="card ${p.stock==='out'?'out':''}" data-open="${i}" style="animation-delay:${Math.min(i,14)*.028}s">
-   <div class="med">${b.join('')}${im}</div>
+   <div class="med">${b.join('')}${im}<button class="savedot${SAVED.has(p.slug)?' on':''}" data-save="${p.slug}" aria-label="${SAVED.has(p.slug)?'Saved':'Save for later'}" title="${SAVED.has(p.slug)?'Saved — tap to remove':'Save for later'}">${SAVED.has(p.slug)?'\u2665':'\u2661'}</button></div>
    <div class="bd_"><div class="nm">${p.name}</div>
     ${p.desc?`<div class="ds">${p.desc}</div>`:''}
     ${specHtml(p)}${vc}${sz}
@@ -1239,6 +1356,7 @@ function priceRows(p,i){
 }
 function render(){
   VIEW=P.filter(match);
+  sortView();
   const table=document.body.classList.contains('v-table');
   // Browsing a whole brand is browsing a range, and a range has shape: all the
   // salt and pepper together, then the oil pourers. Ungrouped it was 197 cards
@@ -1264,8 +1382,9 @@ function render(){
   }
   em.style.display=VIEW.length?'none':'block';
   document.getElementById('bc').textContent=VIEW.length+' of '+P.length+' shown';
-  document.getElementById('bh').textContent=
-    fs!=='All'?fs:(fc!=='All'?fc:(fb!=='All'?fb:(q?'Search results':'All products')));
+  drawSavedTog();
+  document.getElementById('bh').textContent= fsav ? 'Saved' :
+    (fs!=='All'?fs:(fc!=='All'?fc:(fb!=='All'?fb:(q?'Search results':'All products'))));
   document.getElementById('qx').classList.toggle('on',!!q);
   g.querySelectorAll('[data-open]').forEach(el=>el.addEventListener('click',e=>{
     e.stopPropagation();openSheet(VIEW[+el.dataset.open]);}));
@@ -1428,6 +1547,7 @@ function openSheet(p){
        <button id="edBtn">✎ Edit this product</button>
        <button class="alt" id="shBtn">Share product</button>
        <button class="alt" id="cpBtn">Copy details</button>
+       <button class="alt" id="svBtn">${SAVED.has(p.slug)?'\u2665 Saved':'\u2661 Save'}</button>
      </div>
      <p style="font-size:.72rem;color:var(--tm);margin-top:8px;line-height:1.5">
        You are signed in on Patel Marketing's side, so there is no order pad here.
@@ -1436,6 +1556,7 @@ function openSheet(p){
        <button id="waBtn">Enquire on WhatsApp</button>
        <button class="alt" id="shBtn">Share product</button>
        <button class="alt" id="cpBtn">Copy details</button>
+       <button class="alt" id="svBtn">${SAVED.has(p.slug)?'\u2665 Saved':'\u2661 Save'}</button>
      </div>`}
      <div class="revwrap" id="revwrap">
        <h4>What buyers say</h4>
@@ -1492,6 +1613,13 @@ function openSheet(p){
     (p.variants||[]).forEach(v=>lines.push(`  ${v.size} — ₹${v.price}/${unitAbbr(v.unit)} incl GST${v.mrp?` (MRP ₹${v.mrp})`:''}${v.moq?` · MOQ ${v.moq}`:''}`));
     navigator.clipboard.writeText(lines.join('\n')).then(()=>{
       const b=document.getElementById('cpBtn');b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy details',1600);});};
+  const svBtn=document.getElementById('svBtn');
+  if(svBtn) svBtn.onclick=()=>{
+    toggleSaved(p.slug);
+    const on=SAVED.has(p.slug);
+    svBtn.textContent = on ? '\u2665 Saved' : '\u2661 Save';
+    render();   // the card behind the sheet has a heart on it too
+  };
 }
 function closeSheet(){ov.classList.remove('open');document.body.style.overflow='';CUR=null;
   try{history.replaceState(null,'',location.pathname)}catch(e){}}
@@ -1831,6 +1959,47 @@ document.getElementById('q').addEventListener('input',e=>{
   clearTimeout(qt);const v=e.target.value.trim();qt=setTimeout(()=>{q=v;render()},140)});
 document.getElementById('qx').addEventListener('click',()=>{
   document.getElementById('q').value='';q='';render()});
+const sortSel=document.getElementById('sortsel');
+if(sortSel){
+  sortSel.value=SORTBY;
+  sortSel.addEventListener('change',()=>{
+    SORTBY=sortSel.value;
+    try{ localStorage.setItem(SORT_KEY,SORTBY); }catch(e){}
+    render();
+  });
+}
+const savedTog=document.getElementById('savedTog');
+if(savedTog) savedTog.addEventListener('click',()=>{ fsav=!fsav; render(); });
+
+/* The heart is wired once, on the document, in the capture phase.
+
+   Not per-card after each render, because card() does not only fill the grid:
+   the promo strips and the related-product rows are built from the same
+   function, and hearts drawn there had no handler at all — the tap fell
+   through to the card and opened the product instead. Capture also puts this
+   ahead of the card's own click handler, which is the only way to stop the
+   sheet opening underneath.
+
+   One product can be on screen more than once (grid and a strip), so every
+   copy of the tapped slug is repainted, not just the one under the thumb. */
+document.addEventListener('click', function(e){
+  const b = e.target && e.target.closest && e.target.closest('[data-save]');
+  if(!b) return;
+  e.stopPropagation(); e.preventDefault();
+  const slug=b.dataset.save;
+  toggleSaved(slug);
+  const on=SAVED.has(slug);
+  document.querySelectorAll('[data-save="'+(window.CSS&&CSS.escape?CSS.escape(slug):slug)+'"]')
+    .forEach(function(el){
+      el.classList.toggle('on',on);
+      el.textContent = on ? '\u2665' : '\u2661';
+      el.title = on ? 'Saved — tap to remove' : 'Save for later';
+      el.setAttribute('aria-label', el.title);
+    });
+  // Unless the saved list is what is being shown, in which case it really did
+  // just leave the list.
+  if(fsav) render();
+}, true);
 document.querySelectorAll('#tsw button').forEach(b=>b.addEventListener('click',()=>{
   document.body.dataset.theme=b.dataset.t;
   try{localStorage.setItem('v3_pm_theme',b.dataset.t)}catch(e){}
@@ -2197,6 +2366,7 @@ async function refreshSession(){
   const sess = await PMAuth.currentSession();
   if(!sess){
     SESS=null; SHOP_INFO=null; SHOP_OFFERS={}; SHOP_LIST=[];
+    loadSaved();
     // Reviews are public, so a signed-out visitor sees the stars too, and a
     // notice for "everyone" reaches them as well.
     await Promise.all([loadRatings(), loadNotices()]);
@@ -2228,6 +2398,7 @@ async function refreshSession(){
       ownerPhone: row.owner_phone||null, city: row.city||'',
       dealerType: row.dealer_type||null, gst: row.gst||'', photo: row.photo_url||''};
   }
+  loadSaved();
   if(isEndCustomer()) await loadShopContext();
   await Promise.all([loadRatings(), loadNotices()]);
   markWho(); retailMark(); campaignBanner(); render(); if(CUR) repriceSheet();
@@ -2379,7 +2550,11 @@ function orderSheetHtml(){
   const items=orderItems();
   if(!items.length) return '<div class="shead"><strong>Your order</strong><button class="sx" id="oxb">×</button></div>'+
     '<div class="sbody"><div class="oempty">Nothing in your order yet. Open a product and use the '+
-    '<b>+</b> next to a size to add it.</div></div>';
+    '<b>+</b> next to a size to add it.</div>'+
+    // An empty pad is exactly the moment someone wants last month's order back.
+    (canOrder()?'<button class="obtn pri" id="oAgain" style="width:100%;margin-top:14px">'+
+      'Repeat one of your past orders</button>':'')+
+    '</div>';
   const showP=orderShowPrice();
   const rows=items.map((it,idx)=>{
     const u=orderUnitPrice(it);
@@ -2499,6 +2674,8 @@ function openOrderSheet(){
   document.getElementById('osheet').innerHTML=orderSheetHtml();
   ov2.classList.add('open'); document.body.style.overflow='hidden';
   wireOrderSheet();
+  const again=document.getElementById('oAgain');
+  if(again) again.onclick=function(){ closeOrderSheet(); openMyOrders(); };
 }
 function closeOrderSheet(){
   const ov2=orderOverlay(); if(ov2) ov2.classList.remove('open');
@@ -2752,8 +2929,12 @@ function accountExtrasHtml(){
       ? link('admin.html', SESS.admin?'Open admin panel':'Edit the catalogue','') : '')+
     (isOffice() ? link('orders.html','Orders') : '')+
     (isDlr ? link('shop.html','Your customers') : '');
+  // Anyone who can place an order can look at the ones they placed. Admin and
+  // office order for other people, from the order book, so this is not theirs.
+  const mine = canOrder()
+    ? '<button class="sgnbtn ghost" id="sgnMine" style="margin-top:8px">Your orders</button>' : '';
   return retailToggle+
-   (links?'<div style="margin-top:18px">'+links+'</div>':'')+
+   ((links||mine)?'<div style="margin-top:18px">'+links+mine+'</div>':'')+
    (isEndCustomer()?'<button class="sgnbtn" id="sgnShops" style="margin-top:18px">'+
      (SHOP_INFO?'Change your shop':'Find shops near you')+'</button>':'')+
    '<div class="pfout"><button class="sgnbtn ghost" id="sgnOut">Sign out</button></div>';
@@ -2761,6 +2942,8 @@ function accountExtrasHtml(){
 function wireAccountExtras(){
   const shops=document.getElementById('sgnShops');
   if(shops) shops.onclick=openShops;
+  const mine=document.getElementById('sgnMine');
+  if(mine) mine.onclick=openMyOrders;
   const out=document.getElementById('sgnOut');
   if(out) out.onclick=async function(){
     await PMAuth.signOut();
@@ -3032,6 +3215,148 @@ function wireShops(){
 // role, owner and the admin's private nickname are not sent from here and
 // update_my_profile does not accept them, so this cannot become a way to
 // promote yourself or move yourself to another dealer.
+/* ---------- your orders ----------
+   The office has had an order book since orders.html; the dealer who placed
+   the order could only see it on shop.html, read-only. But the catalogue is
+   where they already are, and it is where the basket lives — which is the
+   whole point, because the useful thing to do with a past order is to place
+   it again.
+
+   Reads the same two sources shop.html and orders.html read, so there is no
+   new table and no new policy: order_summary for the headers, order_items for
+   the lines. */
+const OFLOW=['new','confirmed','packed','sent','completed'];
+const OSAID={new:'Received',confirmed:'Confirmed',packed:'Packed',
+             sent:'On its way',completed:'Delivered',cancelled:'Cancelled'};
+let MYORDERS=[], MYITEMS={};
+
+function openMyOrders(){
+  const ov2=signOverlay();
+  const sh=document.getElementById('sgnSheet'); if(!sh) return;
+  sh.innerHTML=
+   '<div class="shead"><strong>Your orders</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<p>Every order you have sent, newest first. <b>Order again</b> puts the same '+
+   'items back in your order pad at today&rsquo;s rates &mdash; change the quantities '+
+   'before you send it.</p>'+
+   '<div id="myOrders"><p style="font-size:.8rem;color:var(--tm)">Loading your orders…</p></div>'+
+   '</div></div>';
+  ov2.classList.add('open'); document.body.style.overflow='hidden';
+  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  loadMyOrders();
+}
+
+async function loadMyOrders(){
+  const box=document.getElementById('myOrders'); if(!box) return;
+  try{
+    const {data,error}=await PMAuth.sb.from('order_summary').select('*')
+      .order('created_at',{ascending:false}).limit(60);
+    if(error) throw error;
+    MYORDERS=data||[];
+  }catch(e){
+    box.innerHTML='<p style="font-size:.8rem;color:var(--tm)">Could not load your orders just now. '+
+      'They are safe — try again in a moment.</p>';
+    return;
+  }
+  drawMyOrders();
+}
+
+function drawMyOrders(){
+  const box=document.getElementById('myOrders'); if(!box) return;
+  if(!MYORDERS.length){
+    box.innerHTML='<p style="font-size:.8rem;color:var(--tm)">No orders yet. '+
+      'Add sizes to your order from any product, then send it.</p>';
+    return;
+  }
+  box.innerHTML=MYORDERS.map(o=>{
+    const done=o.status==='completed'||o.status==='cancelled';
+    const at=OFLOW.indexOf(o.status);
+    return '<div class="ocard'+(done?' done':'')+'">'+
+      '<div class="ohead"><span class="ochip">'+esc(OSAID[o.status]||o.status)+'</span>'+
+        '<span class="oref">'+esc(o.ref)+'</span></div>'+
+      (o.status==='cancelled'?'':'<div class="osteps">'+OFLOW.map((_,i)=>
+        '<i class="'+(at>=0&&i<=at?'on':'')+'"></i>').join('')+'</div>')+
+      '<div class="ometa">'+o.lines+' line'+(o.lines===1?'':'s')+' · '+o.pieces+' pcs · '+
+        rupee(o.total||0)+' · '+new Date(o.created_at).toLocaleDateString('en-IN',
+          {day:'numeric',month:'short',year:'numeric'})+'</div>'+
+      '<div class="olines" id="ol-'+esc(o.ref)+'"></div>'+
+      '<div class="obtns">'+
+        '<button class="obtn" data-lines="'+esc(o.ref)+'">What was on it</button>'+
+        '<button class="obtn pri" data-again="'+esc(o.ref)+'">Order again</button>'+
+      '</div></div>';
+  }).join('');
+  box.onclick=async function(e){
+    const l=e.target.closest('[data-lines]');
+    const a=e.target.closest('[data-again]');
+    if(l){
+      const ref=l.dataset.lines, panel=document.getElementById('ol-'+ref);
+      if(panel.classList.contains('on')){
+        panel.classList.remove('on'); l.textContent='What was on it'; return;
+      }
+      const its=await orderLines(MYORDERS.find(x=>x.ref===ref));
+      panel.innerHTML = its.length ? its.map(i=>
+        '<div class="oline"><span class="q">'+i.qty+'×</span><span class="n">'+esc(i.name)+
+        (i.size&&i.size!=='Standard'?' <span style="color:var(--tm)">('+esc(i.size)+')</span>':'')+
+        '</span><span class="p">'+(i.price!=null?rupee(i.price):'—')+'</span></div>').join('')
+        : '<div class="oline">No lines recorded.</div>';
+      panel.classList.add('on'); l.textContent='Hide';
+    } else if(a){
+      await orderAgain(a.dataset.again, a);
+    }
+  };
+}
+
+async function orderLines(o){
+  if(!o) return [];
+  if(MYITEMS[o.ref]) return MYITEMS[o.ref];
+  try{
+    const {data}=await PMAuth.sb.from('order_items').select('*').eq('order_id',o.id).order('sort');
+    MYITEMS[o.ref]=data||[];
+  }catch(e){ MYITEMS[o.ref]=[]; }
+  return MYITEMS[o.ref];
+}
+
+/* Put a past order back in the pad.
+
+   The basket has only ever held {slug,size,qty} and resolves the name, rate
+   and unit from P at render time — so a repeated order is priced at today's
+   rate, not the rate it was placed at, without anything here saying so.
+
+   A line is only added if resolveItem() can still price it. That is the same
+   test the order pad itself uses, so a repeat can never leave a line in the
+   basket the pad would silently drop: if a product has gone, or that size has,
+   it is reported instead of vanishing. */
+async function orderAgain(ref, btn){
+  const o=MYORDERS.find(x=>x.ref===ref); if(!o) return;
+  if(btn){ btn.disabled=true; btn.textContent='Adding…'; }
+  const its=await orderLines(o);
+  let added=0; const gone=[];
+  its.forEach(it=>{
+    const qty=Math.max(1, +it.qty||1);
+    // order_items may or may not carry the slug depending on when it was
+    // written, so fall back to the name the order was placed under.
+    const p=(it.slug && P.find(x=>x.slug===it.slug)) ||
+            P.find(x=>x.name===it.name && !x.hidden) || null;
+    const label=it.name+(it.size&&it.size!=='Standard'?' ('+it.size+')':'');
+    if(!p || p.hidden){ gone.push(label); return; }
+    const cand={slug:p.slug, size:it.size||'Standard', qty:qty};
+    if(!resolveItem(cand)){ gone.push(label); return; }
+    const line=findLine(cand.slug,cand.size);
+    if(line) line.qty+=qty; else BASKET.push(cand);
+    added++;
+  });
+  saveBasket();
+  if(btn){ btn.disabled=false; btn.textContent='Order again'; }
+  if(!added){
+    toastMsg('Nothing from that order is still in the catalogue');
+    return;
+  }
+  closeSignIn();
+  openOrderSheet();
+  toastMsg(added+' item'+(added===1?'':'s')+' added'+
+    (gone.length?' · '+gone.length+' no longer in the catalogue':''));
+}
+
 function openProfile(){
   const ov2=signOverlay();
   const sh=document.getElementById('sgnSheet'); if(!sh) return;

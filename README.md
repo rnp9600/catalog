@@ -211,6 +211,52 @@ Admin and office deliberately have no order pad on the catalogue — an order
 placed by the admin would go to Patel Marketing's own number. They see "Edit
 this product" instead.
 
+## Ordering the same things again
+
+A dealer buys roughly the same forty items every month, so the catalogue keeps
+what they did last time.
+
+**Your orders**, on the account screen, lists every order that account has sent,
+newest first, with where each one has got to. It reads the same
+`order_summary` and `order_items` the office reads in `orders.html` and a dealer
+reads in `shop.html` — same rows, same policies, nothing new in the database.
+
+**Order again** puts that order's lines back in the order pad. Two things about
+it are worth knowing:
+
+- **It repeats at today's rates, not the rates on the old order.** That is not
+  a special case; the basket has only ever stored `{slug, size, qty}` and looks
+  up the name, rate and unit at render time, so a repeat is priced the same way
+  a fresh order is.
+- **A line only comes back if the order pad could still price it.** It is
+  checked with the same `resolveItem()` the pad uses, so a repeat can never
+  leave a line in the basket that the pad would quietly drop. Products that
+  have gone, and sizes that have gone, are counted and reported rather than
+  disappearing.
+
+Repeating an order twice adds to the existing lines instead of listing the same
+size twice. An empty order pad offers the same list, because an empty pad is
+exactly when someone wants last month's order.
+
+Admin and office do not get this, for the same reason they have no order pad:
+they order for other people, from the order book.
+
+## Saved, and sorting
+
+The heart on a product card saves it. **Saved** next to the product count
+filters to that list, and only appears once there is something in it.
+
+It lives in `localStorage`, keyed by phone like recently-viewed — no table, no
+policy, and it still works with no signal. The trade-off is that it is per
+device: saving on the shop laptop does not save on the phone. If that starts to
+matter it becomes a table, and nothing else has to change.
+
+The sort control next to it offers rate low to high, rate high to low, name, and
+best rated. **Suggested** is the default and is the old behaviour — the
+hand-curated category and brand order, which leads with what the business leads
+with. Under either rate sort, the 127 products with no rate at all sort last
+both ways: something we cannot price is not the cheapest thing we sell.
+
 ## The noticeboard
 
 The Noticeboard tab in the admin panel puts a message at the top of the
