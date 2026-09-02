@@ -200,6 +200,7 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
     <button class="tab on" data-t="products">Products</button>
     <button class="tab" data-t="taxonomy">Brands &amp; categories</button>
     <button class="tab" data-t="customers">Customers</button>
+    <button class="tab" data-t="notices">Noticeboard</button>
     <button class="tab" data-t="reviews">Reviews</button>
     <button class="tab" data-t="publish">Publish</button>
   </div>
@@ -265,6 +266,43 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
     <div id="cRoleNote" style="font-size:.75rem;color:var(--tm);margin-bottom:8px"></div>
     <div class="stat" id="cStat"></div>
     <table class="tt"><tbody id="cList"></tbody></table>
+  </section>
+
+  <!-- NOTICEBOARD -->
+  <section class="panel" id="p-notices">
+    <div class="note"><b>A message at the top of the catalogue.</b>
+      Put up today's featured product or anything you want dealers to see the moment they open it.
+      It appears straight away — no publishing, no upload — and comes down the moment you switch it off.</div>
+    <div class="fg"><label>Heading</label>
+      <input id="nTitle" maxlength="80" placeholder="e.g. Today: Surya cast iron"></div>
+    <div class="fg"><label>Message</label>
+      <textarea id="nBody" maxlength="400" placeholder="Fresh stock landed this morning — ask for the festival rate."></textarea></div>
+    <div class="fg"><label>Pin a product (optional)</label>
+      <input id="nProduct" list="dNotProducts" placeholder="Search by name, brand or code…">
+      <datalist id="dNotProducts"></datalist>
+      <div class="hint" id="nProdHint">Tapping the notice opens this product.</div></div>
+    <div class="three">
+      <div class="fg"><label>Who sees it</label>
+        <select id="nAud">
+          <option value="dealer" selected>Dealers</option>
+          <option value="all">Everyone</option>
+          <option value="end_customer">Consumers</option>
+          <option value="staff">Only our own team</option>
+        </select></div>
+      <div class="fg"><label>Colour</label>
+        <select id="nTone">
+          <option value="new" selected>Blue</option>
+          <option value="offer">Amber</option>
+          <option value="festive">Teal</option>
+          <option value="top">Purple</option>
+        </select></div>
+      <div class="fg"><label>Take it down on</label>
+        <input id="nEnds" type="date">
+        <div class="hint">Leave blank to keep it up.</div></div>
+    </div>
+    <button class="btn g" id="nAdd" style="width:100%">Put it up</button>
+    <div class="stat" id="nStat" style="margin-top:16px"></div>
+    <table class="tt"><tbody id="nList"></tbody></table>
   </section>
 
   <!-- REVIEWS -->
@@ -338,9 +376,9 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=26"></script>
+<script src="config.js?v=27"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=26"></script>
+<script src="supabase-auth.js?v=27"></script>
 <script>
 (function(){
   const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
@@ -519,6 +557,7 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
   $('#p-'+b.dataset.t).classList.add('on');
   if(b.dataset.t==='publish') drawPublish();
   if(b.dataset.t==='reviews') loadReviews();
+  if(b.dataset.t==='notices') loadNotices();
   window.scrollTo(0,0);
 });
 $('#goPublish').onclick=()=>document.querySelector('.tab[data-t="publish"]').click();
@@ -941,6 +980,81 @@ $('#cRole').addEventListener('change',function(){
     ? 'An admin can do everything you can, including granting access.'
     : '';
 });
+
+/* ---------------- noticeboard ---------------- */
+// A row in the database rather than a setting in config.js, because "put this
+// up for the dealers this morning" should not mean editing a file and
+// republishing the site. It shows the instant it is saved.
+async function loadNotices(){
+  if(!$('#dNotProducts').innerHTML){
+    $('#dNotProducts').innerHTML=P.map(p=>
+      '<option value="'+esc(p.name)+(p.code?' — '+esc(p.code):'')+'">').join('');
+  }
+  const {data,error}=await PMAuth.sb.from('notices').select('*')
+    .order('created_at',{ascending:false}).limit(80);
+  if(error){ $('#nStat').textContent='Could not load — '+error.message; return; }
+  const rows=data||[];
+  const live=rows.filter(n=>n.active &&
+    (!n.starts_at || new Date(n.starts_at)<=new Date()) &&
+    (!n.ends_at   || new Date(n.ends_at)>=new Date()));
+  const AUD={all:'Everyone',dealer:'Dealers',end_customer:'Consumers',staff:'Our team'};
+  $('#nStat').textContent = rows.length
+    ? rows.length+' notice'+(rows.length===1?'':'s')+' · '+live.length+' showing now'
+    : 'Nothing on the board.';
+  $('#nList').innerHTML = rows.length ? rows.map(n=>{
+    const on=live.includes(n);
+    return '<tr'+(on?'':' style="opacity:.5"')+'><td>'+
+      '<div class="nm">'+esc(n.title)+
+        '<span class="flag f">'+(AUD[n.audience]||n.audience)+'</span>'+
+        (on?'':'<span class="flag f">OFF</span>')+'</div>'+
+      (n.body?'<div style="font-size:.82rem;margin-top:3px">'+esc(n.body)+'</div>':'')+
+      '<div class="ph">'+new Date(n.created_at).toLocaleDateString('en-IN')+
+        (n.product_slug?' · pinned to '+esc(n.product_slug):'')+
+        (n.ends_at?' · until '+new Date(n.ends_at).toLocaleDateString('en-IN'):'')+'</div>'+
+      '</td><td><button class="ibtn" data-tog="'+n.id+'">'+(n.active?'Take down':'Put up')+'</button> '+
+      '<button class="ibtn" data-del="'+n.id+'">Delete</button></td></tr>';
+  }).join('') : '<tr><td class="empty">Nothing yet.</td></tr>';
+  $('#nList').onclick=async function(e){
+    const t=e.target.closest('[data-tog]'), d=e.target.closest('[data-del]');
+    if(t){ const n=rows.find(x=>String(x.id)===t.dataset.tog);
+      const {error}=await PMAuth.sb.from('notices').update({active:!n.active}).eq('id',n.id);
+      if(error){ alert('Could not change it — '+error.message); return; }
+      await loadNotices(); return; }
+    if(d){ if(!confirm('Delete this notice?')) return;
+      const {error}=await PMAuth.sb.from('notices').delete().eq('id',+d.dataset.del);
+      if(error){ alert('Could not delete — '+error.message); return; }
+      await loadNotices(); }
+  };
+}
+$('#nProduct').oninput=function(){
+  const t=(this.value||'').split(' — ')[0].trim().toLowerCase();
+  const p=P.find(x=>x.name.toLowerCase()===t);
+  $('#nProdHint').textContent = p
+    ? 'Pinned to '+p.name+' — tapping the notice opens it.'
+    : (this.value?'No product matches that yet.':'Tapping the notice opens this product.');
+};
+$('#nAdd').onclick=async function(){
+  const title=$('#nTitle').value.trim();
+  if(!title){ alert('Give it a heading.'); return; }
+  const t=($('#nProduct').value||'').split(' — ')[0].trim().toLowerCase();
+  const prod=P.find(x=>x.name.toLowerCase()===t);
+  if($('#nProduct').value.trim() && !prod){
+    alert('That product name does not match anything. Clear it or pick from the list.'); return;
+  }
+  const b=this; b.disabled=true; b.textContent='Putting it up…';
+  const {error}=await PMAuth.sb.from('notices').insert({
+    title, body:$('#nBody').value.trim()||null,
+    product_slug: prod?prod.slug:null,
+    audience:$('#nAud').value, tone:$('#nTone').value,
+    ends_at: $('#nEnds').value ? new Date($('#nEnds').value+'T23:59:59').toISOString() : null,
+    created_by: ME&&ME.phone||null,
+  });
+  b.disabled=false; b.textContent='Put it up';
+  if(error){ alert('Could not save — '+error.message); return; }
+  $('#nTitle').value=''; $('#nBody').value=''; $('#nProduct').value=''; $('#nEnds').value='';
+  $('#nProdHint').textContent='Tapping the notice opens this product.';
+  await loadNotices();
+};
 
 /* ---------------- reviews (moderation) ---------------- */
 // The admin reads catalog.product_reviews itself rather than the public view,

@@ -665,6 +665,34 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  background:var(--sf2);border-radius:999px;padding:3px 8px}
 .groupgrid{grid-column:1/-1;display:grid;gap:14px;
  grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}
+.whoav{overflow:hidden}
+.whoav img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.pfphoto{display:flex;align-items:center;gap:14px;background:var(--bg);border-radius:var(--rs);
+ padding:14px;margin:4px 0 14px}
+.pfav{flex:0 0 auto;width:64px;height:64px;border-radius:50%;overflow:hidden;
+ background:linear-gradient(135deg,var(--pr),var(--ac));color:#fff;display:flex;
+ align-items:center;justify-content:center;font-weight:800;font-size:1.15rem}
+.pfav img{width:100%;height:100%;object-fit:cover}
+.pfpb{flex:1;min-width:0}
+.pfnote{font-size:.7rem;color:var(--tm);margin-top:6px;line-height:1.45}
+/* A message from Patel Marketing, above everything else. */
+.notice{display:flex;align-items:center;gap:12px;margin:16px 0 2px;padding:14px 16px;
+ border-radius:var(--r);border:1px solid var(--bd);background:var(--sf);
+ box-shadow:0 1px 2px rgba(var(--sh),.05)}
+.notice[data-tone="new"]    {--ntone:#2F6FA8;--nband:#DDEBFF}
+.notice[data-tone="offer"]  {--ntone:#C8891B;--nband:#FBEFD6}
+.notice[data-tone="festive"]{--ntone:#12A594;--nband:#CFF5F0}
+.notice[data-tone="top"]    {--ntone:#6E5AC8;--nband:#E6E2FF}
+.notice{background:linear-gradient(100deg,var(--nband),var(--sf) 62%)}
+.notice .ndot{flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--ntone);
+ animation:fpulse 2.1s infinite}
+.notice .ntext{flex:1;min-width:0}
+.notice .ntext b{display:block;font-size:.95rem;font-weight:800;letter-spacing:-.01em}
+.notice .ntext span{display:block;font-size:.79rem;color:var(--tm);margin-top:3px;line-height:1.5}
+.notice .nthumb{flex:0 0 auto;width:52px;height:52px;border-radius:var(--rs);overflow:hidden;
+ background:var(--sf2);display:flex;align-items:center;justify-content:center}
+.notice .nthumb img{width:100%;height:100%;object-fit:contain}
+.notice[data-noteopen]:active{transform:scale(.99)}
 .plab2{display:block;font-size:.66rem;font-weight:700;color:var(--tm);text-transform:uppercase;
  letter-spacing:.07em;margin:2px 0 5px}
 .sgnin:disabled{background:var(--sf2);color:var(--tm)}
@@ -887,11 +915,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 26</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 27</footer>
 
-<script src="config.js?v=26"></script>
+<script src="config.js?v=27"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=26"></script>
+<script src="supabase-auth.js?v=27"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1891,8 +1919,11 @@ function mkFestive(){
   // Once someone has filtered or searched, they have told us what they want to
   // see. Two promo rails above the results are then just something to scroll
   // past — worse on a phone, which is nearly all of the traffic.
+  // A notice is Patel Marketing talking to this reader, so it stays even while
+  // they are filtering; only the browsing rails step out of the way.
+  const notes=noticeHtml();
   const filtering = (fc!=='All' || fs!=='All' || fb!=='All' || !!q);
-  if(filtering){ box.innerHTML=''; return; }
+  if(filtering){ box.innerHTML=notes; wireNotices(box); return; }
 
   const strips=[];
   allPromos().forEach(pr=>{
@@ -1902,9 +1933,9 @@ function mkFestive(){
   });
   autoPromos().forEach(pr=>strips.push(pr));
 
-  if(!strips.length){ box.innerHTML=''; return; }
+  if(!strips.length){ box.innerHTML=notes; wireNotices(box); return; }
 
-  box.innerHTML=strips.map(pr=>{
+  box.innerHTML=notes+strips.map(pr=>{
     const d=daysLeftOf(pr);
     return '<div class="fest" data-tone="'+(pr.tone||'festive')+'" data-id="'+esc(pr.id||pr.title)+'">'+
       '<div class="festh"><span class="fdot"></span>'+
@@ -1920,6 +1951,7 @@ function mkFestive(){
   // So the nth matching element is not the nth product, and tapping a card
   // opened whichever product happened to sit at that position. The main grid
   // always read el.dataset.open; only these rails counted nodes.
+  wireNotices(box);
   box.querySelectorAll('.fest[data-id]').forEach((f,si)=>{
     const items=strips[si].items;
     f.querySelectorAll('[data-open]').forEach(function(el){
@@ -1932,6 +1964,15 @@ function mkFestive(){
     f.querySelectorAll('.med img').forEach(markReady);
     const r=f.querySelector('.festrail');
     if(r && was[f.dataset.id]) r.scrollLeft=was[f.dataset.id];
+  });
+}
+function wireNotices(box){
+  box.querySelectorAll('[data-noteopen]').forEach(el=>{
+    el.style.cursor='pointer';
+    el.onclick=function(){
+      const p=P.find(x=>x.slug===el.dataset.noteopen);
+      if(p) openSheet(p);
+    };
   });
 }
 function markReady(im){
@@ -2058,6 +2099,31 @@ function currentShopPhone(){ return (SHOP_INFO && SHOP_INFO.phone) || (SESS && S
    pulling every review just to draw a row of stars would mean fetching the
    whole review table on every catalogue load. The reviews themselves are
    fetched one product at a time, when a sheet opens. */
+// Put up from the admin panel and read straight from the database, so a
+// message appears the moment it is saved rather than waiting on a republish.
+// The audience test lives in the row-level policy, so what comes back is
+// already only what this reader is meant to see.
+let NOTICES=[];
+async function loadNotices(){
+  try{
+    const {data,error}=await PMAuth.sb.from('notices')
+      .select('id,title,body,product_slug,tone,audience')
+      .order('created_at',{ascending:false}).limit(4);
+    NOTICES = error ? [] : (data||[]);
+  }catch(e){ NOTICES=[]; }
+}
+function noticeHtml(){
+  if(!NOTICES.length) return '';
+  return NOTICES.map(n=>{
+    const p=n.product_slug?P.find(x=>x.slug===n.product_slug):null;
+    return '<div class="notice" data-tone="'+esc(n.tone||'new')+'"'+
+      (p?' data-noteopen="'+esc(p.slug)+'"':'')+'>'+
+      '<div class="ndot"></div><div class="ntext"><b>'+esc(n.title)+'</b>'+
+      (n.body?'<span>'+esc(n.body)+'</span>':'')+'</div>'+
+      (p?'<div class="nthumb">'+(p.img?'<img src="'+IMG(p.img)+'" alt="" loading="lazy">':'')+'</div>':'')+
+      '</div>';
+  }).join('');
+}
 let RATINGS={};
 async function loadRatings(){
   try{
@@ -2080,8 +2146,9 @@ async function refreshSession(){
   const sess = await PMAuth.currentSession();
   if(!sess){
     SESS=null; SHOP_INFO=null; SHOP_OFFERS={}; SHOP_LIST=[];
-    // Reviews are public, so a signed-out visitor sees the stars too.
-    await loadRatings();
+    // Reviews are public, so a signed-out visitor sees the stars too, and a
+    // notice for "everyone" reaches them as well.
+    await Promise.all([loadRatings(), loadNotices()]);
     markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet(); obarRender();
     return;
   }
@@ -2108,10 +2175,10 @@ async function refreshSession(){
     SESS = {ok:true, admin:!!row.is_admin, role:row.role||'dealer', name:row.name||'Signed in',
       tail: last?'…'+last.slice(-3):'', phone: full, shop: row.shop||'',
       ownerPhone: row.owner_phone||null, city: row.city||'',
-      dealerType: row.dealer_type||null, gst: row.gst||''};
+      dealerType: row.dealer_type||null, gst: row.gst||'', photo: row.photo_url||''};
   }
   if(isEndCustomer()) await loadShopContext();
-  await loadRatings();
+  await Promise.all([loadRatings(), loadNotices()]);
   markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet();
   obarRender();
 }
@@ -2527,7 +2594,8 @@ function menuSignHtml(){
         'text-decoration:none;margin-top:4px">Your customers</a>'
       : '';
     return '<div class="who"><div class="whoav">'+
-      ((SESS.name||'PM').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
+      (SESS.photo?'<img src="'+esc(SESS.photo)+'" alt="">'
+        :((SESS.name||'PM').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM'))+'</div>'+
       '<div><b>'+(SESS.name||'Signed in')+'</b><small>'+(SESS.tail||'')+
       (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></div></div>'+
       '<button class="sgnbtn" id="menuAcct" style="margin-top:10px">Your account'+
@@ -2595,7 +2663,9 @@ function accountHtml(){
    '</div>';
   return '<div class="shead"><strong>Your account</strong><button class="sx" id="sgnX">×</button></div>'+
    '<div class="sbody"><div class="sgn">'+
-   '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
+   '<div class="who"><div class="whoav">'+
+   (SESS.photo?'<img src="'+esc(SESS.photo)+'" alt="">'
+     :(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM'))+'</div>'+
    '<div><b>'+nm+'</b><small>'+tail+
    (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></div></div>'+
    '<button class="sgnbtn ghost" id="sgnProfile" style="margin-top:14px">Edit your details</button>'+
@@ -2891,6 +2961,19 @@ function openProfile(){
    '<div class="sbody"><div class="sgn">'+
    '<p>Your phone number is how you sign in and cannot be changed here. '+
    'Everything else is yours to correct.</p>'+
+   '<div class="pfphoto">'+
+     '<div class="pfav" id="pfAv">'+(SESS.photo
+        ? '<img src="'+esc(SESS.photo)+'" alt="">'
+        : esc(String(SESS.name||'?').replace(/[^A-Za-z ]/g,'').trim().split(/\s+/)
+              .slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'PM'))+'</div>'+
+     '<div class="pfpb">'+
+       '<button class="sgnbtn ghost" id="pfPick" style="margin:0">'+
+         (SESS.photo?'Change photo':'Add a photo')+'</button>'+
+       (SESS.photo?'<button class="sgnbtn ghost" id="pfDrop" style="margin:4px 0 0">Remove</button>':'')+
+       '<div class="pfnote" id="pfMsg">JPG or PNG, up to 2 MB.</div>'+
+     '</div>'+
+     '<input type="file" id="pfFile" accept="image/jpeg,image/png,image/webp" hidden>'+
+   '</div>'+
    '<label class="plab2">Phone</label>'+
    '<input class="sgnin" value="+'+esc(SESS.phone||'')+'" disabled>'+
    '<label class="plab2">'+(trade?'Your name':'Name')+'</label>'+
@@ -2909,13 +2992,11 @@ function openProfile(){
    '<button class="sgnbtn" id="pfSave">Save</button>'+
    '<button class="sgnbtn ghost" id="pfBack">Back</button>'+
    '<div class="sgnmsg" id="sgnMsg"></div>'+
-   '<p style="margin-top:14px;font-size:.72rem;color:var(--tm);line-height:1.55">'+
-   'A profile photo is not here yet — it needs a file store setting up, which is a '+
-   'separate job. Everything above saves straight away.</p>'+
    '</div></div>';
   ov2.classList.add('open'); document.body.style.overflow='hidden';
   const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
   document.getElementById('pfBack').onclick=openSignIn;
+  wirePhoto();
   document.getElementById('pfSave').onclick=async function(){
     const msg=document.getElementById('sgnMsg');
     const name=(document.getElementById('pfName').value||'').trim();
@@ -2937,6 +3018,71 @@ function openProfile(){
     await refreshSession();
     closeSignIn();
     toastMsg('Details saved');
+  };
+}
+
+// Photos go to a bucket of their own, under a folder named after the owner's
+// phone number — which is what the storage policies key on, so nobody can
+// write over anyone else's. Shrunk in the browser first: a phone camera
+// produces four megabytes for something shown at 40 pixels, and the bucket
+// refuses anything over two.
+const AVATAR_PX=384;
+function shrinkImage(file){
+  return new Promise(function(resolve,reject){
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=function(){
+      URL.revokeObjectURL(url);
+      const side=Math.min(img.width,img.height);      // square crop from the middle
+      const cv=document.createElement('canvas');
+      cv.width=cv.height=Math.min(AVATAR_PX, side);
+      const ctx=cv.getContext('2d');
+      ctx.drawImage(img,(img.width-side)/2,(img.height-side)/2,side,side,0,0,cv.width,cv.height);
+      cv.toBlob(function(b){ b?resolve(b):reject(new Error('could not read that image')); },
+        'image/jpeg', 0.85);
+    };
+    img.onerror=function(){ URL.revokeObjectURL(url); reject(new Error('that file is not an image')); };
+    img.src=url;
+  });
+}
+function wirePhoto(){
+  const pick=document.getElementById('pfPick'), file=document.getElementById('pfFile'),
+        msg=document.getElementById('pfMsg'), av=document.getElementById('pfAv'),
+        drop=document.getElementById('pfDrop');
+  if(pick&&file) pick.onclick=function(){ file.click(); };
+  if(drop) drop.onclick=async function(){
+    drop.disabled=true;
+    const {error}=await PMAuth.sb.rpc('set_my_photo',{p_url:null});
+    drop.disabled=false;
+    if(error){ msg.textContent='Could not remove it — '+error.message; return; }
+    await refreshSession(); openProfile(); toastMsg('Photo removed');
+  };
+  if(!file) return;
+  file.onchange=async function(){
+    const f=this.files&&this.files[0]; if(!f) return;
+    if(f.size>8*1024*1024){ msg.textContent='That file is very large — pick one under 8 MB.'; return; }
+    msg.textContent='Preparing…';
+    let blob;
+    try{ blob=await shrinkImage(f); }
+    catch(e){ msg.textContent=(e&&e.message)||'Could not read that image.'; return; }
+    msg.textContent='Uploading…';
+    const path=SESS.phone+'/avatar.jpg';
+    try{
+      const up=await PMAuth.sb.storage.from('avatars')
+        .upload(path, blob, {contentType:'image/jpeg', upsert:true});
+      if(up.error) throw up.error;
+      const {data}=PMAuth.sb.storage.from('avatars').getPublicUrl(path);
+      // A new file at the same path keeps the old one in caches, so hang a
+      // timestamp on the URL to make the change show immediately.
+      const url=data.publicUrl+'?t='+Date.now();
+      const {error}=await PMAuth.sb.rpc('set_my_photo',{p_url:url});
+      if(error) throw error;
+      if(av) av.innerHTML='<img src="'+url+'" alt="">';
+      msg.textContent='Saved.';
+      await refreshSession(); markWho();
+      toastMsg('Photo saved');
+    }catch(e){
+      msg.textContent='Could not upload — '+((e&&e.message)||'try again');
+    }
   };
 }
 

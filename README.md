@@ -158,6 +158,20 @@ Admin and office deliberately have no order pad on the catalogue — an order
 placed by the admin would go to Patel Marketing's own number. They see "Edit
 this product" instead.
 
+## The noticeboard
+
+The Noticeboard tab in the admin panel puts a message at the top of the
+catalogue — today's featured product, or anything dealers should see when they
+open it. Pick who sees it (dealers, consumers, everyone, or just the office), a
+colour, optionally a product to pin it to, and a date to take it down.
+
+This is a row in the database, not a setting in `config.js`, so it appears the
+moment it is saved and comes down the moment it is switched off — no editing a
+file, no republishing. The audience test lives in the row-level policy, so a
+dealer notice is not sitting in a consumer's response for them to find. Promo
+strips in `config.js` are still the right place for a season-long campaign; the
+noticeboard is for today.
+
 ## Turning this into an app
 
 See `APP.md`. Short version: the site can be made installable to a home screen
