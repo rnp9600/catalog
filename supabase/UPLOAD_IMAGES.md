@@ -30,6 +30,11 @@ each brand folder once, and it's done.
    → the **catalog-images** bucket.
 3. Tap **Create folder**, name it `mazda`. Open it, tap **Upload files**,
    select all files from the local `mazda/` folder, upload.
+> The `paxton-ci`, `paxton-alu` and `paxton-kw` folders keep those names even
+> though the three brands were merged into one **Paxton**. Folder names are
+> only paths — every product's `img` field points at them, so renaming would
+> mean touching 53 image references for no visible gain.
+
 4. Repeat for `senso`, `india-gold`, `ns-priyam`, `elephant`, `paxton-ci`,
    `vyan`, `lepel` — same steps each time. Mazda's the big one (243 files);
    the rest are quick.

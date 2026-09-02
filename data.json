@@ -2,7 +2,7 @@
  {
   "img": "paxton-ci/px_dosa_tawa",
   "name": "Cast Iron Dosa Tawa",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Tawa",
   "desc": "Pre-seasoned, induction friendly",
@@ -32,7 +32,7 @@
  {
   "img": "paxton-ci/px_appam_pan",
   "name": "Cast Iron Appam Pan",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Appam & Paniyaram",
   "desc": "Naturally non-stick once seasoned",
@@ -62,7 +62,7 @@
  {
   "img": "paxton-ci/px_sq_grill",
   "name": "Cast Iron 2-in-1 Square Grill Pan",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Grill",
   "desc": "Reversible grill and flat",
@@ -89,7 +89,7 @@
  {
   "img": "paxton-ci/px_rd_grill",
   "name": "Cast Iron 2-in-1 Round Grill Pan",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Grill",
   "desc": "Reversible grill and flat",
@@ -116,7 +116,7 @@
  {
   "img": "paxton-ci/px_fry_pan",
   "name": "Cast Iron Fry Pan",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Fry Pan",
   "desc": "Long handle, oven safe",
@@ -143,7 +143,7 @@
  {
   "img": "paxton-ci/px_kadhai",
   "name": "Cast Iron Kadhai",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Kadhai",
   "desc": "Twin loop handles",
@@ -172,7 +172,7 @@
  {
   "img": "paxton-ci/px_deep_kadhai",
   "name": "Cast Iron Deep Kadhai",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Kadhai",
   "desc": "Deeper profile for frying",
@@ -199,7 +199,7 @@
  {
   "img": "paxton-ci/px_roti_concave",
   "name": "Cast Iron Roti Tawa (Concave)",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Tawa",
   "desc": "Concave, long handle",
@@ -226,7 +226,7 @@
  {
   "img": "paxton-ci/px_flat_roti",
   "name": "Cast Iron Flat Roti Tawa",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Tawa",
   "desc": "Flat base, long handle",
@@ -253,7 +253,7 @@
  {
   "img": "paxton-ci/px_oven_skillet",
   "name": "Cast Iron Oven Skillet",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Fry Pan",
   "desc": "Oven to table",
@@ -280,7 +280,7 @@
  {
   "img": "paxton-ci/px_fish_fry",
   "name": "Cast Iron Fish Fry Pan",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Fry Pan",
   "desc": "Shallow oval, twin handles",
@@ -307,7 +307,7 @@
  {
   "img": "paxton-ci/px_grilled_pan",
   "name": "Cast Iron Grilled Pan",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Grill",
   "desc": "Ridged base for sear marks",
@@ -334,7 +334,7 @@
  {
   "img": "paxton-ci/px_sh_dosa_tawa",
   "name": "Cast Iron Single Handle Dosa Tawa",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Tawa",
   "desc": "Single long handle",
@@ -361,7 +361,7 @@
  {
   "img": "paxton-ci/px_cassrole",
   "name": "Cast Iron Casserole",
-  "brand": "Paxton CI",
+  "brand": "Paxton",
   "cat": "Cast Iron",
   "sub": "Cookpot",
   "desc": "With lid, slow cooking",
@@ -393,7 +393,7 @@
    "paxton-alu/pxa_samosa_mould_fancy_half"
   ],
   "name": "Aluminium Samosa Mould — Fancy (Gujiya / Karanji)",
-  "brand": "Paxton Alu",
+  "brand": "Paxton",
   "cat": "Moulds & Makers",
   "sub": "Samosa & Gujiya Moulds",
   "desc": "Hinged aluminium die-cast mould with fancy fan pattern, for samosa, gujiya and karanji.",
@@ -431,7 +431,7 @@
    "paxton-alu/pxa_modak_mould_top"
   ],
   "name": "Aluminium Modak Mould",
-  "brand": "Paxton Alu",
+  "brand": "Paxton",
   "cat": "Moulds & Makers",
   "sub": "Modak Moulds",
   "desc": "Cast aluminium three-part hinged modak mould with pleated cavity.",
@@ -480,7 +480,7 @@
    "paxton-kw/pxk_modak_mould_half"
   ],
   "name": "Plastic Modak Mould",
-  "brand": "Paxton KW",
+  "brand": "Paxton",
   "cat": "Moulds & Makers",
   "sub": "Modak Moulds",
   "desc": "Yellow food-grade plastic hinged modak mould with removable pin.",
@@ -522,7 +522,7 @@
    "paxton-kw/pxk_sansa_jumbo_closed"
   ],
   "name": "Plastic Samosa / Gujiya Maker — Jumbo",
-  "brand": "Paxton KW",
+  "brand": "Paxton",
   "cat": "Moulds & Makers",
   "sub": "Samosa & Gujiya Moulds",
   "desc": "Jumbo pattern hinged plastic samosa, gujiya and karanji maker. Sold per packet of 10 pieces.",
@@ -557,7 +557,7 @@
    "paxton-kw/yellow-samosa-royal-side"
   ],
   "name": "Plastic Samosa / Gujiya Maker — Royal",
-  "brand": "Paxton KW",
+  "brand": "Paxton",
   "cat": "Moulds & Makers",
   "sub": "Samosa & Gujiya Moulds",
   "desc": "Royal pattern hinged plastic samosa, gujiya and karanji maker. Sold per packet of 10 pieces.",
@@ -592,7 +592,7 @@
    "paxton-kw/yellow-samosa-triangle-side"
   ],
   "name": "Plastic Samosa / Gujiya Maker — Triangle",
-  "brand": "Paxton KW",
+  "brand": "Paxton",
   "cat": "Moulds & Makers",
   "sub": "Samosa & Gujiya Moulds",
   "desc": "Triangle pattern hinged plastic samosa, gujiya and karanji maker. Sold per packet of 10 pieces.",
