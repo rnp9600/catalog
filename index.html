@@ -510,6 +510,20 @@ body.m-off .reveal{opacity:1;transform:none}
  color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0}
 .who b{display:block;font-size:.86rem}
 .who small{color:var(--tm);font-size:.72rem;font-family:var(--fm)}
+.whoav img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+
+/* The signed-in row in the menu is itself the button — a person hunts for
+   their own face here, not for a word. */
+.whocard{display:flex;align-items:center;gap:11px;width:100%;padding:11px 12px;
+ border:1.5px solid var(--bd);border-radius:var(--rs);background:var(--sf);text-align:left}
+.whocard:active{background:var(--sf2)}
+.whotx{flex:1;min-width:0}
+.whotx b{display:block;font-size:.88rem;font-weight:800;overflow:hidden;text-overflow:ellipsis;
+ white-space:nowrap}
+.whotx small{color:var(--tm);font-size:.72rem;font-family:var(--fm)}
+.whochev{color:var(--tm);font-size:1.15rem;line-height:1;flex-shrink:0}
+/* Sign out is the last thing on the account screen and the only one anywhere. */
+.pfout{margin-top:26px;padding-top:16px;border-top:1px solid var(--bd)}
 
 /* retail controls */
 .rtl{display:flex;align-items:center;gap:10px;margin-top:10px}
@@ -523,12 +537,13 @@ body.m-off .reveal{opacity:1;transform:none}
  border-radius:50%;transition:.18s}
 .tgl2 input:checked+i{background:var(--ac)}
 .tgl2 input:checked+i::after{transform:translateX(19px)}
-.rbanner{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:150;
- background:var(--ac);color:#fff;padding:9px 16px;border-radius:999px;font-size:.75rem;font-weight:700;
- box-shadow:0 8px 24px rgba(0,0,0,.2);display:none;align-items:center;gap:9px}
-.rbanner.on{display:flex}
-.rbanner button{background:rgba(255,255,255,.22);border:0;color:#fff;border-radius:999px;
- padding:4px 10px;font-size:.68rem;font-weight:700;font-family:var(--fd)}
+/* The only sign that customer prices are showing: a dot on the PM badge, which
+   reads as part of the logo to anyone who is not looking for it. Hold the badge
+   for a moment to switch back — see retailMark() for why there is nothing more
+   than this. */
+header .mark{position:relative}
+header .mark.rtl::after{content:'';position:absolute;top:3px;right:3px;width:6px;height:6px;
+ border-radius:50%;background:#fff;opacity:.9}
 
 /* swipeable hero photo */
 .hero-img{position:relative;overflow:hidden;touch-action:pan-y}
@@ -915,11 +930,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 28</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 29</footer>
 
-<script src="config.js?v=28"></script>
+<script src="config.js?v=29"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=28"></script>
+<script src="supabase-auth.js?v=29"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1420,7 +1435,11 @@ function openSheet(p){
     const msg='Hi, is "'+p.name+'" available? Could you keep one for me?';
     window.open(`https://wa.me/${target}?text=`+encodeURIComponent(msg),'_blank');};
   const edBtn=document.getElementById('edBtn');
-  if(edBtn) edBtn.onclick=()=>{ location.href='admin.html?edit='+encodeURIComponent(p.slug||slugOf(p)); };
+  // Carry the way back with us. Without it, closing the edit sheet strands the
+  // admin on the admin product list — a screen they never asked for — instead
+  // of the product sheet they were reading a second ago.
+  if(edBtn) edBtn.onclick=()=>{ const sl=p.slug||slugOf(p);
+    location.href='admin.html?edit='+encodeURIComponent(sl)+'&back='+encodeURIComponent(sl); };
   const waBtn=document.getElementById('waBtn');
   if(waBtn) waBtn.onclick=()=>{
     window.open(`https://wa.me/${orderTarget()}?text=`+encodeURIComponent(waMessage(p)),'_blank');};
@@ -1764,6 +1783,9 @@ hov.addEventListener('click',closeHelp);
 (function(){
   let seen=false;
   try{seen=localStorage.getItem(HINT_KEY)==='1'}catch(e){}
+  // A signed-in session is remembered across reloads, so this catches the
+  // returning dealer before the strip ever paints; markWho() catches the case
+  // where the session resolves a moment later.
   if(seen)return;
   const strip=document.getElementById('hintStrip');
   strip.style.display='flex';
@@ -2148,7 +2170,7 @@ async function refreshSession(){
     // Reviews are public, so a signed-out visitor sees the stars too, and a
     // notice for "everyone" reaches them as well.
     await Promise.all([loadRatings(), loadNotices()]);
-    markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet(); obarRender();
+    markWho(); retailMark(); campaignBanner(); render(); if(CUR) repriceSheet(); obarRender();
     return;
   }
   const row = await PMAuth.myAllowlistRow();
@@ -2178,8 +2200,21 @@ async function refreshSession(){
   }
   if(isEndCustomer()) await loadShopContext();
   await Promise.all([loadRatings(), loadNotices()]);
-  markWho(); retailBanner(); campaignBanner(); render(); if(CUR) repriceSheet();
+  markWho(); retailMark(); campaignBanner(); render(); if(CUR) repriceSheet();
   obarRender();
+  openProfileIfAsked();
+}
+// The admin panel, the order book and the dealer screen have no account form of
+// their own — their header photo links here with ?profile=1. Waiting for the
+// session means the screen opens filled in, not blank and then filled in.
+function openProfileIfAsked(){
+  if(!signedIn()) return;
+  const qs=new URLSearchParams(location.search);
+  if(qs.get('profile')!=='1') return;
+  qs.delete('profile');
+  const rest=qs.toString();
+  try{ history.replaceState(null,'',location.pathname+(rest?'?'+rest:'')); }catch(e){}
+  openProfile();
 }
 
 const rupee = n => '₹' + Number(n).toLocaleString('en-IN');
@@ -2551,11 +2586,14 @@ function signOverlay(){
   return ov2;
 }
 function openSignIn(){
+  // Signed in there is nothing to sign in to — that tap means "my account",
+  // which is one screen, openProfile().
+  if(signedIn()) return openProfile();
   const ov2=signOverlay();
-  document.getElementById('sgnSheet').innerHTML = signedIn() ? accountHtml()
-    : (PENDING_PHONE ? otpHtml(PENDING_PHONE) : signInHtml());
+  document.getElementById('sgnSheet').innerHTML =
+    PENDING_PHONE ? otpHtml(PENDING_PHONE) : signInHtml();
   ov2.classList.add('open'); document.body.style.overflow='hidden';
-  if(!signedIn() && PENDING_PHONE) wireOtpStep(); else wireSignIn();
+  if(PENDING_PHONE) wireOtpStep(); else wireSignIn();
   const sv=document.getElementById('sov'); if(sv) sv.classList.remove('open');
   const f=document.getElementById(PENDING_PHONE?'sgnOtp':'sgnPh'); if(f) setTimeout(()=>f.focus(),120);
 }
@@ -2592,22 +2630,34 @@ function menuSignHtml(){
       ? '<a class="sgnbtn ghost" href="shop.html" style="display:block;text-align:center;'+
         'text-decoration:none;margin-top:4px">Your customers</a>'
       : '';
-    return '<div class="who"><div class="whoav">'+
-      (SESS.photo?'<img src="'+esc(SESS.photo)+'" alt="">'
-        :((SESS.name||'PM').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM'))+'</div>'+
-      '<div><b>'+(SESS.name||'Signed in')+'</b><small>'+(SESS.tail||'')+
-      (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></div></div>'+
-      '<button class="sgnbtn" id="menuAcct" style="margin-top:10px">Your account'+
-      (RETAIL.on?' · showing customer prices':'')+'</button>' + adm + orders + trade + shop;
+    // The row itself is the way in. A person looks for their own face or name
+    // here, not for a button called "Account" — and everything that button
+    // used to lead to is one tap away inside it.
+    return '<button class="whocard" id="menuAcct">'+avatarHtml('whoav')+
+      '<span class="whotx"><b>'+esc(SESS.name||'Signed in')+'</b><small>'+esc(SESS.tail||'')+
+      (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></span>'+
+      '<span class="whochev">›</span></button>' + adm + orders + trade + shop;
   }
   return '<p style="font-size:.8rem;color:var(--tm);line-height:1.55;margin-bottom:10px">'+
     'Sign in to see if a discount applies to your account, and to place an order.</p>'+
     '<button class="sgnbtn" id="menuSign">Sign in</button>';
 }
+// One place decides what a person's picture looks like when they have not set
+// one: their initials, and failing that the firm's. Used by every header and
+// panel that shows who is signed in, here and on the other screens.
+function initialsOf(name){
+  return String(name||'').replace(/[^A-Za-z ]/g,'').trim().split(/\s+/)
+    .slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'PM';
+}
+function avatarHtml(cls){
+  return '<span class="'+(cls||'whoav')+'">'+
+    (SESS && SESS.photo ? '<img src="'+esc(SESS.photo)+'" alt="">'
+                        : esc(initialsOf(SESS&&SESS.name)))+'</span>';
+}
 function wireMenuSign(){
   const a=document.getElementById('menuSign'), b=document.getElementById('menuAcct');
   if(a) a.onclick=openSignIn;
-  if(b) b.onclick=openSignIn;
+  if(b) b.onclick=openProfile;
 }
 function signInHtml(){
   return '<div class="shead"><strong>Sign in</strong><button class="sx" id="sgnX">×</button></div>'+
@@ -2649,33 +2699,49 @@ function otpHtml(phoneDigits){
    '<button class="sgnbtn ghost" id="sgnBack">Use a different number</button>'+
    '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
 }
-function accountHtml(){
-  const nm=SESS.name||'Signed in', tail=SESS.tail||'';
+// The half of the account screen that is not the details form: where else you
+// can go from here, the customer-facing price switch, and sign out. Kept as its
+// own function so openProfile() stays readable.
+function accountExtrasHtml(){
   const retailToggle = isEndCustomer() ? '' :
-   '<div class="fsection" style="border:0;padding-top:14px">'+
+   '<div class="fsection" style="border:0;padding-top:18px;margin-bottom:0">'+
    '<h4 style="font-size:.95rem">Showing to a customer</h4>'+
    '<p style="margin-bottom:8px">Turn this on when someone is looking over your shoulder. '+
-   'Prices switch to MRP with your discount applied, and your own rate is hidden.</p>'+
+   'Prices switch to MRP with your discount applied, and your own rate is hidden. '+
+   '<b>Nothing on screen says it is on</b> — to switch back, press and hold the '+
+   'PM badge at the top of the catalogue for a second.</p>'+
    '<div class="rtl"><span class="tgl2"><input type="checkbox" id="rtlOn"'+(RETAIL.on?' checked':'')+
    '><i></i></span><label for="rtlOff">Discount on MRP</label>'+
    '<input type="number" id="rtlOff" min="0" max="90" value="'+(RETAIL.off||0)+'"><label>%</label></div>'+
    '</div>';
-  return '<div class="shead"><strong>Your account</strong><button class="sx" id="sgnX">×</button></div>'+
-   '<div class="sbody"><div class="sgn">'+
-   '<div class="who"><div class="whoav">'+
-   (SESS.photo?'<img src="'+esc(SESS.photo)+'" alt="">'
-     :(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM'))+'</div>'+
-   '<div><b>'+nm+'</b><small>'+tail+
-   (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></div></div>'+
-   '<button class="sgnbtn ghost" id="sgnProfile" style="margin-top:14px">Edit your details</button>'+
-   retailToggle+
-   (isEndCustomer()?'<button class="sgnbtn" id="sgnShops" style="margin-top:16px">'+
+  const isDlr = SESS.role==='dealer'||SESS.role==='shop_owner';
+  const link=(href,label,cls)=>'<a class="sgnbtn'+(cls||' ghost')+'" href="'+href+'" '+
+    'style="display:block;text-align:center;text-decoration:none;margin-top:8px">'+label+'</a>';
+  const links =
+    ((SESS.admin||SESS.role==='staff')
+      ? link('admin.html', SESS.admin?'Open admin panel':'Edit the catalogue','') : '')+
+    (isOffice() ? link('orders.html','Orders') : '')+
+    (isDlr ? link('shop.html','Your customers') : '');
+  return retailToggle+
+   (links?'<div style="margin-top:18px">'+links+'</div>':'')+
+   (isEndCustomer()?'<button class="sgnbtn" id="sgnShops" style="margin-top:18px">'+
      (SHOP_INFO?'Change your shop':'Find shops near you')+'</button>':'')+
-   ((SESS.admin||SESS.role==='staff')?'<a class="sgnbtn" style="display:block;text-align:center;'+
-     'text-decoration:none;margin-top:16px" href="admin.html">'+
-     (SESS.admin?'Open admin panel':'Edit the catalogue')+'</a>':'')+
-   '<button class="sgnbtn ghost" id="sgnOut">Sign out</button>'+
-   '</div></div>';
+   '<div class="pfout"><button class="sgnbtn ghost" id="sgnOut">Sign out</button></div>';
+}
+function wireAccountExtras(){
+  const shops=document.getElementById('sgnShops');
+  if(shops) shops.onclick=openShops;
+  const out=document.getElementById('sgnOut');
+  if(out) out.onclick=async function(){
+    await PMAuth.signOut();
+    SESS=null; RETAIL.on=false; saveRtl();
+    closeSignIn(); markWho(); render(); if(CUR) openSheet(CUR);
+  };
+  const on=document.getElementById('rtlOn'), off=document.getElementById('rtlOff');
+  if(on) on.onchange=function(){ RETAIL.on=on.checked; saveRtl(); markWho(); render();
+    if(CUR) openSheet(CUR); retailMark(); };
+  if(off) off.oninput=function(){ RETAIL.off=Math.max(0,Math.min(90,+off.value||0)); saveRtl();
+    render(); if(CUR) openSheet(CUR); };
 }
 function wireSignIn(){
   const x=document.getElementById('sgnX');
@@ -2740,21 +2806,6 @@ function wireSignIn(){
   };
   const skip=document.getElementById('sgnSkip');
   if(skip) skip.onclick=closeSignIn;
-  const shops=document.getElementById('sgnShops');
-  if(shops) shops.onclick=openShops;
-  const prof=document.getElementById('sgnProfile');
-  if(prof) prof.onclick=openProfile;
-  const out=document.getElementById('sgnOut');
-  if(out) out.onclick=async function(){
-    await PMAuth.signOut();
-    SESS=null; RETAIL.on=false; saveRtl();
-    closeSignIn(); markWho(); render(); if(CUR) openSheet(CUR);
-  };
-  const on=document.getElementById('rtlOn'), off=document.getElementById('rtlOff');
-  if(on) on.onchange=function(){ RETAIL.on=on.checked; saveRtl(); markWho(); render();
-    if(CUR) openSheet(CUR); retailBanner(); };
-  if(off) off.oninput=function(){ RETAIL.off=Math.max(0,Math.min(90,+off.value||0)); saveRtl();
-    render(); if(CUR) openSheet(CUR); retailBanner(); };
 }
 
 /* ---------- reviews on the open product ---------- */
@@ -2955,16 +3006,19 @@ function openProfile(){
   const ov2=signOverlay();
   const sh=document.getElementById('sgnSheet'); if(!sh) return;
   const trade=!isEndCustomer();
+  // One account screen. Everything that used to be split between a "Your
+  // account" panel and a "Your details" form now lives here, because the two
+  // read as the same thing to everyone who used them — and because sign out
+  // has exactly one home, at the bottom of it.
   sh.innerHTML=
-   '<div class="shead"><strong>Your details</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="shead"><strong>Your account</strong><button class="sx" id="sgnX">×</button></div>'+
    '<div class="sbody"><div class="sgn">'+
    '<p>Your phone number is how you sign in and cannot be changed here. '+
    'Everything else is yours to correct.</p>'+
    '<div class="pfphoto">'+
      '<div class="pfav" id="pfAv">'+(SESS.photo
         ? '<img src="'+esc(SESS.photo)+'" alt="">'
-        : esc(String(SESS.name||'?').replace(/[^A-Za-z ]/g,'').trim().split(/\s+/)
-              .slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'PM'))+'</div>'+
+        : esc(initialsOf(SESS.name)))+'</div>'+
      '<div class="pfpb">'+
        '<button class="sgnbtn ghost" id="pfPick" style="margin:0">'+
          (SESS.photo?'Change photo':'Add a photo')+'</button>'+
@@ -2989,13 +3043,12 @@ function openProfile(){
        'placeholder="15 characters" autocapitalize="characters">'
      : '')+
    '<button class="sgnbtn" id="pfSave">Save</button>'+
-   '<button class="sgnbtn ghost" id="pfBack">Back</button>'+
    '<div class="sgnmsg" id="sgnMsg"></div>'+
+   accountExtrasHtml()+
    '</div></div>';
   ov2.classList.add('open'); document.body.style.overflow='hidden';
   const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
-  document.getElementById('pfBack').onclick=openSignIn;
-  wirePhoto();
+  wirePhoto(); wireAccountExtras();
   document.getElementById('pfSave').onclick=async function(){
     const msg=document.getElementById('sgnMsg');
     const name=(document.getElementById('pfName').value||'').trim();
@@ -3194,6 +3247,12 @@ function markWho(){
   if(b) b.classList.toggle('in', signedIn());
   const s=document.getElementById('menuSignRow');
   if(s) s.innerHTML=menuSignHtml();
+  if(s) wireMenuSign();
+  // "New here?" is for someone who has never seen the place. A dealer who signs
+  // in every morning is not new here, and the session only lands after the
+  // first paint, so this is where the strip goes away.
+  const h=document.getElementById('hintStrip');
+  if(h && signedIn()) h.style.display='none';
 }
 function toastMsg(m){
   const d=document.createElement('div'); d.textContent=m;
@@ -3201,17 +3260,36 @@ function toastMsg(m){
     'background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:.82rem;font-weight:600';
   document.body.appendChild(d); setTimeout(()=>d.remove(),2200);
 }
-function retailBanner(){
-  let b=document.getElementById('rbanner');
-  if(!b){ b=document.createElement('div'); b.id='rbanner'; b.className='rbanner';
-    document.body.appendChild(b); }
-  if(signedIn() && RETAIL.on){
-    b.innerHTML='Retail mode · '+(RETAIL.off||0)+'% off MRP <button id="rbOff">Turn off</button>';
-    b.classList.add('on');
-    document.getElementById('rbOff').onclick=function(){
-      RETAIL.on=false; saveRtl(); render(); if(CUR) openSheet(CUR); retailBanner(); };
-  } else b.classList.remove('on');
+// Retail mode used to float a pill reading "Retail mode · 10% off MRP · Turn
+// off" across the bottom of the screen. The whole point of the mode is that the
+// customer standing at the counter cannot tell it is on, and that pill told
+// them — in words, with the discount in it. So there is no pill. What is left
+// is a dot on the PM badge that means nothing to anyone but the dealer, and a
+// press-and-hold on that same badge to switch back. Both are explained where
+// the mode is turned on, in the account screen.
+function retailMark(){
+  const old=document.getElementById('rbanner'); if(old) old.remove();
+  const m=document.querySelector('header .mark');
+  if(m) m.classList.toggle('rtl', !!(signedIn() && RETAIL.on));
 }
+function exitRetail(){
+  if(!(signedIn() && RETAIL.on)) return false;
+  RETAIL.on=false; saveRtl(); markWho(); render();
+  if(CUR) openSheet(CUR); retailMark(); toastMsg('Your own rates are back');
+  return true;
+}
+(function(){
+  const m=document.querySelector('header .mark'); if(!m) return;
+  let t=null;
+  const start=()=>{ clearTimeout(t); t=setTimeout(()=>{ t=null; exitRetail(); }, 650); };
+  const stop =()=>{ clearTimeout(t); t=null; };
+  m.addEventListener('touchstart', start, {passive:true});
+  m.addEventListener('mousedown', start);
+  ['touchend','touchmove','touchcancel','mouseup','mouseleave'].forEach(e=>
+    m.addEventListener(e, stop, {passive:true}));
+  // A long press on a logo would otherwise offer "save image" / select the text.
+  m.addEventListener('contextmenu', e=>{ if(signedIn()&&RETAIL.on) e.preventDefault(); });
+})();
 // The campaign framing IS the identity of the end-customer screen, not a
 // caption on it — go out, move your body, eat healthy, support your local
 // store, per V3-AMENDMENTS.md.
@@ -3341,6 +3419,6 @@ openSheet = function(p){
   try{ repriceSheet(); enhanceGallery(); wireOrderStepper(p); }catch(e){}
 };
 
-markWho(); retailBanner(); refreshSession();
+markWho(); retailMark(); refreshSession();
 
 </script></body></html>

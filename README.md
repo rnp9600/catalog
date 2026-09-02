@@ -81,6 +81,42 @@ The two get confused, so the admin panel now separates them explicitly.
 The Publish tab does the three steps in order: compare the draft against the
 database, download `data.json`, then open the GitHub upload page.
 
+The draft lives in this browser's `localStorage`, which means it can go stale:
+if `data.json` is updated from somewhere else while a draft is sitting open,
+every product that changed upstream shows as an unsaved change here. That is
+what "20 unsaved changes" meant after the Paxton brands were merged. Tap the
+count in the footer to see exactly what differs — product, field, old value,
+new value — and to discard the draft and take the live file instead.
+
+## One account screen
+
+There is one place a person manages their account: **Your account**, on the
+catalogue. Their photo or initials, name, shop, city, GST, the customer-facing
+price switch, links to whichever panels their role opens, and — at the very
+bottom, and nowhere else in the whole site — **Sign out**.
+
+Every other screen (admin panel, order book, dealer screen) shows that person's
+photo or first initial in the header, linking to `index.html?profile=1`. None of
+them carries a sign-out button of its own. Leaving is not the main thing anyone
+came to do.
+
+`admin.html?edit=<slug>&back=<slug>` is the other cross-page link: the
+catalogue's "Edit this product" uses it. The admin panel keeps itself hidden
+until the edit sheet is up, so it is one screen rather than a list flashing past,
+and backing out returns to the product sheet you came from. Saving keeps you in
+the admin panel instead, because the edit is not live until you Publish and that
+button is here.
+
+## Showing prices to a customer
+
+A dealer turns on "Showing to a customer" in their account screen and prices
+switch to MRP with their own discount applied. **Nothing on the screen says it
+is on.** There used to be a pill floating over the bottom of the page reading
+"Retail mode · 10% off MRP · Turn off", which told the customer standing at the
+counter exactly what the mode existed to hide. What is left is a small dot on
+the PM badge, which reads as part of the logo, and a press-and-hold on that same
+badge to switch back — both explained where the mode is turned on.
+
 ## Test accounts
 
 Five numbers sign in with a **6-digit PIN instead of a texted code**, so the
