@@ -316,6 +316,48 @@ swaps in the original JPEG. You do not normally run the script — a GitHub
 Action rebuilds thumbnails whenever `images/` changes on a push, because photos
 are uploaded through GitHub rather than from a checkout.
 
+## What people searched for, and what is missing
+
+Two things the admin panel could not tell you before, both under
+**What's missing**.
+
+**The gaps, as a queue.** The products list has had "No rate" and "No photo"
+quick filters for a while; this adds the fields a wholesaler actually gets asked
+for and treats them as work rather than a statistic. Counted from the draft in
+front of you, so they fall as you fill them in:
+
+| Missing | Products | Why it matters |
+|---|---|---|
+| No rate at all | 127 | Cannot be quoted or ordered. This is the one that costs money |
+| No MRP | 178 | Nothing to show a consumer, nothing to discount |
+| No HSN | 483 | Cannot go on a GST invoice without finishing it by hand |
+| No product code | 128 | How the supplier and the office refer to it on the phone |
+| Only one photo | 583 | A second angle is a card someone taps rather than scrolls past |
+| No description | 24 | One line saying what it is — the search reads it too |
+
+Tap any row to open that product's editor.
+
+**What people searched for and did not find.** Every empty search is either
+something to stock or something named in a way nobody types, and until now every
+one of them was thrown away.
+
+This needs one thing done once: run **`supabase/03_events.sql`** in Supabase →
+SQL Editor. Until you do, the catalogue quietly does not log and the panel says
+so rather than showing an empty list that reads as "nobody uses the site".
+
+The log is deliberately small. Four kinds of row — a search, an empty search, a
+product opened, an order placed — no device id, no IP, nothing leaving the
+database. Events queue in the page and go up in one batch, on a timer and when
+the phone backgrounds it, so browsing costs a request or two rather than one per
+tap; every insert is fire-and-forget with the failure swallowed, so logging can
+never be what breaks the catalogue.
+
+**Anyone may write to it; only admin and office may read it.** That asymmetry is
+the point — a browsing log the page can read back out is a different and worse
+thing than a browsing log, and one dealer must never be able to pull what another
+has been pricing up. The policies in `03_events.sql` are the whole of that
+guarantee, so read them before changing them.
+
 ## What to build next
 
 See `ROADMAP.md` — what was missing and why it mattered, what was built in

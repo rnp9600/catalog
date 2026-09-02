@@ -221,6 +221,7 @@ if(new URLSearchParams(location.search).get("edit")){
     <button class="tab" data-t="customers">Customers</button>
     <button class="tab" data-t="notices">Noticeboard</button>
     <button class="tab" data-t="reviews">Reviews</button>
+    <button class="tab" data-t="gaps">What's missing</button>
     <button class="tab" data-t="publish">Publish</button>
   </div>
 </header>
@@ -334,6 +335,22 @@ if(new URLSearchParams(location.search).get("edit")){
     <table class="tt"><tbody id="rvList"></tbody></table>
   </section>
 
+  <!-- WHAT'S MISSING -->
+  <section class="panel" id="p-gaps">
+    <div class="note"><b>The gaps, as a list of work rather than a number.</b>
+      Tap a row to open that product and fill it in. Counts come from the draft
+      you are looking at, so they go down as you go.</div>
+    <div class="stat" id="gapStat"></div>
+    <div class="fl" id="gapPick"></div>
+    <table class="tt"><tbody id="gapList"></tbody></table>
+
+    <div class="note" style="margin-top:22px"><b>What people searched for and did not find.</b>
+      Every one of these is either something to stock or something we have named
+      in a way nobody types.</div>
+    <div class="stat" id="searchStat"></div>
+    <table class="tt"><tbody id="searchList"></tbody></table>
+  </section>
+
   <!-- PUBLISH -->
   <section class="panel" id="p-publish">
     <div class="note"><b>Two different things, easy to confuse.</b>
@@ -395,10 +412,10 @@ if(new URLSearchParams(location.search).get("edit")){
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=32"></script>
+<script src="config.js?v=33"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=32"></script>
-<script src="pm-ui.js?v=32"></script>
+<script src="supabase-auth.js?v=33"></script>
+<script src="pm-ui.js?v=33"></script>
 <script>
 PMUI.config({firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
   site:'https://patelmarketing-catalog.vercel.app',
@@ -569,6 +586,7 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
   $('#p-'+b.dataset.t).classList.add('on');
   if(b.dataset.t==='publish') drawPublish();
   if(b.dataset.t==='reviews') loadReviews();
+  if(b.dataset.t==='gaps'){ drawGaps(); loadSearches(); }
   if(b.dataset.t==='notices') loadNotices();
   window.scrollTo(0,0);
 });
@@ -1117,6 +1135,92 @@ async function loadReviews(){
     if(error){ alert('Could not change that — '+error.message); return; }
     await loadReviews();
   };
+}
+
+/* ---------------- what's missing ----------------
+
+   The gaps were already known and already countable — the products quick-filter
+   has had "No rate" and "No photo" on it for a while. What was missing was
+   somewhere that treats them as a queue of work rather than a statistic, and
+   that covers the fields a wholesaler actually gets asked for. An HSN is not a
+   nice-to-have: without one, a product cannot go on a GST invoice.
+
+   Counts come from P, the draft in front of you, so they fall as you work. */
+const GAPS=[
+  ['norate', 'No rate at all',  p=>p.price==null && !(p.variants||[]).some(v=>v.price!=null),
+             'Cannot be quoted or ordered — this is the one that costs money.'],
+  ['nomrp',  'No MRP',          p=>p.mrp==null && !(p.variants||[]).some(v=>v.mrp!=null),
+             'No printed MRP means no retail price to show a consumer and nothing to discount.'],
+  ['nohsn',  'No HSN',          p=>!p.hsn,
+             'Needed on a GST invoice. Until it is here, the invoice has to be finished by hand.'],
+  ['nocode', 'No product code', p=>!p.code,
+             'The code is how a supplier and the office refer to it on the phone.'],
+  ['nodesc', 'No description',  p=>!p.desc,
+             'One line saying what it is. It is also what the search reads.'],
+  ['onephoto','Only one photo', p=>((p.imgs||[]).length||(p.img?1:0))<=1,
+             'A second angle is the difference between a card someone taps and one they scroll past.'],
+  ['nophoto','No photo',        p=>!p.img||p.img==='_placeholder',
+             'Shows as a dash on the card.'],
+];
+let gapPick='norate';
+
+function drawGaps(){
+  const total=P.length;
+  $('#gapPick').innerHTML=GAPS.map(([k,l,f])=>
+    '<button class="'+(gapPick===k?'on':'')+'" data-g="'+k+'">'+l+'<b>'+P.filter(f).length+'</b></button>').join('');
+  $('#gapPick').onclick=e=>{const b=e.target.closest('button'); if(!b) return;
+    gapPick=b.dataset.g; drawGaps();};
+
+  const row=GAPS.find(g=>g[0]===gapPick);
+  const list=P.filter(row[2]);
+  $('#gapStat').textContent=list.length+' of '+total+' products · '+row[3];
+  $('#gapList').innerHTML = list.length
+    ? list.slice(0,300).map(p=>
+        '<tr data-slug="'+esc(p.slug)+'"><td class="nm">'+esc(p.name)+
+        '<div class="ph">'+esc(p.brand)+(p.code?' · '+esc(p.code):'')+'</div></td>'+
+        '<td><button class="ibtn">Fill it in</button></td></tr>').join('')
+      + (list.length>300 ? '<tr><td colspan="2" class="ph">…and '+(list.length-300)+' more</td></tr>' : '')
+    : '<tr><td class="ph">Nothing missing here. </td></tr>';
+  $('#gapList').onclick=e=>{
+    const tr=e.target.closest('tr[data-slug]'); if(!tr) return;
+    const p=P.find(x=>x.slug===tr.dataset.slug);
+    if(p) edit(P.indexOf(p));
+  };
+}
+
+/* The searches that found nothing, most-asked first.
+
+   Reads catalog.searches_with_nothing, which does not exist until
+   supabase/03_events.sql has been run — so an error here is the expected
+   state on day one and says so, rather than showing an empty list that reads
+   as "nobody uses the site". */
+async function loadSearches(){
+  const stat=$('#searchStat'), list=$('#searchList');
+  stat.textContent='Loading…'; list.innerHTML='';
+  let data, error;
+  try{
+    ({data,error}=await PMAuth.sb.from('searches_with_nothing').select('*').limit(60));
+  }catch(e){ error=e; }
+  if(error){
+    const missing=/does not exist|schema cache|relation|PGRST/i.test(error.message||'');
+    stat.textContent='';
+    list.innerHTML='<tr><td class="ph">'+(missing
+      ? 'Search logging is not switched on yet. Run <b>supabase/03_events.sql</b> once in '+
+        'Supabase → SQL Editor and this fills itself in from then on. Nothing is lost '+
+        'in the meantime except the searches nobody is recording.'
+      : 'Could not read the search log — '+esc(error.message||'unknown error'))+'</td></tr>';
+    return;
+  }
+  const rows=data||[];
+  stat.textContent = rows.length
+    ? rows.length+' different searches came back empty'
+    : 'Nothing has come back empty yet.';
+  list.innerHTML = rows.length ? rows.map(r=>
+    '<tr><td class="nm">'+esc(r.query)+
+    '<div class="ph">last asked '+new Date(r.last_asked).toLocaleDateString('en-IN',
+      {day:'numeric',month:'short',year:'numeric'})+'</div></td>'+
+    '<td class="ph">'+r.times+'&times;</td></tr>').join('')
+    : '<tr><td class="ph">Either everything is being found, or nobody has searched yet.</td></tr>';
 }
 
 /* ---------------- publish ---------------- */

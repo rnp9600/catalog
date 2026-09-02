@@ -1007,11 +1007,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 32</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 33</footer>
 
-<script src="config.js?v=32"></script>
+<script src="config.js?v=33"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=32"></script>
+<script src="supabase-auth.js?v=33"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1475,6 +1475,7 @@ function recentProducts(){
   return recentSlugs().map(sl=>bySlug[sl]).filter(Boolean);
 }
 function noteRecent(p){
+  try{ logEvent('open',{slug:p.slug}); }catch(e){}
   if(!p||!p.slug) return;
   const a=recentSlugs().filter(sl=>sl!==p.slug);
   a.unshift(p.slug);
@@ -2015,7 +2016,8 @@ hov.addEventListener('click',closeHelp);
 /* ---------- controls ---------- */
 let qt;
 document.getElementById('q').addEventListener('input',e=>{
-  clearTimeout(qt);const v=e.target.value.trim();qt=setTimeout(()=>{q=v;render()},140)});
+  clearTimeout(qt);const v=e.target.value.trim();
+  qt=setTimeout(()=>{q=v;render();noteSearch(v,VIEW.length)},140)});
 document.getElementById('qx').addEventListener('click',()=>{
   document.getElementById('q').value='';q='';render()});
 const sortSel=document.getElementById('sortsel');
@@ -2696,7 +2698,10 @@ function wireOrderSheet(){
         p_items: items.map(it=>({slug:it.slug,name:it.name,size:it.size,
           unit:it.unit,qty:it.qty,price:it.price,mrp:it.mrp})),
       });
-      if(!error && data){ ref=data; recorded=true; }
+      if(!error && data){ ref=data; recorded=true;
+        try{ logEvent('order',{n:items.length,meta:{ref:ref,
+             pieces:items.reduce((a,i)=>a+i.qty,0)}}); }catch(e){}
+      }
     }catch(e){}
 
     // Hold the lines and the typed details for the follow-ups, then clear the
@@ -3840,6 +3845,69 @@ openSheet = function(p){
 };
 
 markWho(); retailMark(); refreshSession();
+
+/* ---------- what people looked for ----------
+
+   The one question worth being able to answer: what did somebody search for
+   and get nothing back? That is a product they wanted and we either do not
+   stock or have named something nobody types. Until now every one of those
+   searches was thrown away.
+
+   Three rules this keeps to:
+
+   - It never blocks and never complains. Every insert is fire-and-forget with
+     the failure swallowed. Until supabase/03_events.sql has been run the table
+     does not exist, every insert fails, and nothing about the catalogue
+     changes — which is the correct behaviour for something nobody asked for.
+
+   - It is cheap. Events queue in memory and go up in one batch, on a timer and
+     when the page is hidden, so a browsing session costs a request or two
+     rather than one per tap.
+
+   - It logs what was typed, not who is typing. The phone number is the account
+     already signed in, and there is no device id, no IP, no third party. It is
+     append-only and only admin and office can read it — see the policies in
+     03_events.sql, which are the whole of that guarantee. */
+const EVQ=[];
+let evTimer=null;
+function logEvent(kind, fields){
+  try{
+    EVQ.push(Object.assign({kind:kind, phone:(SESS&&SESS.phone)||null}, fields||{}));
+    if(EVQ.length>=25){ flushEvents(); return; }
+    if(!evTimer) evTimer=setTimeout(flushEvents, 20000);
+  }catch(e){}
+}
+function flushEvents(){
+  if(evTimer){ clearTimeout(evTimer); evTimer=null; }
+  if(!EVQ.length) return;
+  const batch=EVQ.splice(0, EVQ.length);
+  try{
+    if(!window.PMAuth || !PMAuth.sb) return;
+    PMAuth.sb.from('events').insert(batch).then(function(){}, function(){});
+  }catch(e){}
+}
+// Hidden, not unload: on a phone the page is very often backgrounded and never
+// formally unloaded, and visibilitychange is the event that actually fires.
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState==='hidden') flushEvents();
+});
+window.addEventListener('pagehide', flushEvents);
+
+/* Searches are logged on a longer settle than the 140ms that redraws the grid,
+   so what lands is the query someone finished typing rather than every prefix
+   of it. A search that found nothing is its own kind, because that is the row
+   worth reading. */
+let evSearchTimer=null, evLastQ='';
+function noteSearch(text, hits){
+  const t=String(text||'').trim();
+  clearTimeout(evSearchTimer);
+  if(t.length<2) return;
+  evSearchTimer=setTimeout(function(){
+    if(t===evLastQ) return;          // the same search redrawn is not a new search
+    evLastQ=t;
+    logEvent(hits===0?'zero':'search', {q:t, n:hits});
+  }, 1200);
+}
 
 /* ---------- installable, and readable with no signal ----------
 
