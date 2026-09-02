@@ -825,7 +825,7 @@ function drawCust(){
       (ROLE_LABEL[c.role]?'<span class="flag f">'+ROLE_LABEL[c.role]+'</span>':'')+'</div>'+
       '<div class="ph">'+(c.shop?esc(c.shop)+' · ':'')+'+'+esc(c.phone||'')+
       (c.dealer_type?' · '+TYPE_LABEL[c.dealer_type]:'')+
-      (c.city?' · '+esc(c.city):'')+
+      (c.city?' · '+esc(c.city):'')+(c.gst?' · GST '+esc(c.gst):'')+
       (c.role==='end_customer'
         ? ' · '+(c.owner_phone
             ? 'via '+esc(ownerLabel(c.owner_phone))
@@ -863,6 +863,9 @@ function editCustomer(c){
    '<div class="fg"><label>Name</label><input id="eName" value="'+esc(c.name||'')+'"></div>'+
    '<div class="fg"><label>Shop / firm</label><input id="eShop" value="'+esc(c.shop||'')+'">'+
      '<div class="hint">Their business name.</div></div>'+
+   '<div class="fg"><label>GST number</label><input id="eGst" value="'+esc(c.gst||'')+'" '+
+     'maxlength="15" placeholder="15 characters, dealers only">'+
+     '<div class="hint">Prints on their orders. Consumers do not have one.</div></div>'+
    '<div class="fg"><label>City / area</label><input id="eCity" value="'+esc(c.city||'')+'" '+
      'placeholder="e.g. Hubli">'+
      '<div class="hint">Free text — consumers search by it. Filling this in is what lists a '+
@@ -895,6 +898,7 @@ function editCustomer(c){
       p_nickname:$('#eNick').value.trim()||null,
       p_dealer_type: role==='dealer' ? $('#eType').value : null,
       p_city: $('#eCity').value.trim()||null,
+      p_gst:  $('#eGst').value.trim().toUpperCase()||null,
     });
     btn.disabled=false; btn.textContent='Save';
     if(error){ alert('Could not save — '+error.message); return; }
@@ -915,7 +919,7 @@ $('#cAdd').onclick=async function(){
     {p_phone:ph,p_name:n,p_shop:shop||null,p_role:role,
      p_nickname:nick||null,
      p_dealer_type: role==='dealer' ? $('#cType').value : null,
-     p_city: $('#cCity').value.trim()||null});
+     p_city: $('#cCity').value.trim()||null, p_gst:null});
   if(error){ alert('Could not add — '+error.message); return; }
   $('#cName').value='';$('#cShop').value='';$('#cNick').value='';$('#cPhone').value='';
   $('#cCity').value='';

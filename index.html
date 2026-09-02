@@ -665,6 +665,9 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  background:var(--sf2);border-radius:999px;padding:3px 8px}
 .groupgrid{grid-column:1/-1;display:grid;gap:14px;
  grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}
+.plab2{display:block;font-size:.66rem;font-weight:700;color:var(--tm);text-transform:uppercase;
+ letter-spacing:.07em;margin:2px 0 5px}
+.sgnin:disabled{background:var(--sf2);color:var(--tm)}
 .sgnin{width:100%;padding:13px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);
  background:var(--sf);font-size:.9rem;margin-bottom:10px}
 .linkish{border:0;background:transparent;color:inherit;text-decoration:underline;
@@ -2105,7 +2108,7 @@ async function refreshSession(){
     SESS = {ok:true, admin:!!row.is_admin, role:row.role||'dealer', name:row.name||'Signed in',
       tail: last?'…'+last.slice(-3):'', phone: full, shop: row.shop||'',
       ownerPhone: row.owner_phone||null, city: row.city||'',
-      dealerType: row.dealer_type||null};
+      dealerType: row.dealer_type||null, gst: row.gst||''};
   }
   if(isEndCustomer()) await loadShopContext();
   await loadRatings();
@@ -2595,6 +2598,7 @@ function accountHtml(){
    '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
    '<div><b>'+nm+'</b><small>'+tail+
    (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></div></div>'+
+   '<button class="sgnbtn ghost" id="sgnProfile" style="margin-top:14px">Edit your details</button>'+
    retailToggle+
    (isEndCustomer()?'<button class="sgnbtn" id="sgnShops" style="margin-top:16px">'+
      (SHOP_INFO?'Change your shop':'Find shops near you')+'</button>':'')+
@@ -2669,6 +2673,8 @@ function wireSignIn(){
   if(skip) skip.onclick=closeSignIn;
   const shops=document.getElementById('sgnShops');
   if(shops) shops.onclick=openShops;
+  const prof=document.getElementById('sgnProfile');
+  if(prof) prof.onclick=openProfile;
   const out=document.getElementById('sgnOut');
   if(out) out.onclick=async function(){
     await PMAuth.signOut();
@@ -2868,6 +2874,70 @@ async function loadDirectory_refresh(){
 function wireShops(){
   const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
   const c=document.getElementById('shopCity'); if(c) c.oninput=drawDirectory;
+}
+
+/* ---------- your own details ---------- */
+// Nobody could correct their own name, and a dealer whose firm or GST was
+// typed wrong had to ring the office. The database decides what is editable:
+// role, owner and the admin's private nickname are not sent from here and
+// update_my_profile does not accept them, so this cannot become a way to
+// promote yourself or move yourself to another dealer.
+function openProfile(){
+  const ov2=signOverlay();
+  const sh=document.getElementById('sgnSheet'); if(!sh) return;
+  const trade=!isEndCustomer();
+  sh.innerHTML=
+   '<div class="shead"><strong>Your details</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<p>Your phone number is how you sign in and cannot be changed here. '+
+   'Everything else is yours to correct.</p>'+
+   '<label class="plab2">Phone</label>'+
+   '<input class="sgnin" value="+'+esc(SESS.phone||'')+'" disabled>'+
+   '<label class="plab2">'+(trade?'Your name':'Name')+'</label>'+
+   '<input class="sgnin" id="pfName" value="'+esc(SESS.name||'')+'" autocomplete="name">'+
+   (trade
+     ? '<label class="plab2">Shop or firm</label>'+
+       '<input class="sgnin" id="pfShop" value="'+esc(SESS.shop||'')+'" autocomplete="organization">'
+     : '')+
+   '<label class="plab2">City or area</label>'+
+   '<input class="sgnin" id="pfCity" value="'+esc(SESS.city||'')+'" autocomplete="address-level2">'+
+   (trade
+     ? '<label class="plab2">GST number <span style="font-weight:500;color:var(--tm)">(optional)</span></label>'+
+       '<input class="sgnin" id="pfGst" value="'+esc(SESS.gst||'')+'" maxlength="15" '+
+       'placeholder="15 characters" autocapitalize="characters">'
+     : '')+
+   '<button class="sgnbtn" id="pfSave">Save</button>'+
+   '<button class="sgnbtn ghost" id="pfBack">Back</button>'+
+   '<div class="sgnmsg" id="sgnMsg"></div>'+
+   '<p style="margin-top:14px;font-size:.72rem;color:var(--tm);line-height:1.55">'+
+   'A profile photo is not here yet — it needs a file store setting up, which is a '+
+   'separate job. Everything above saves straight away.</p>'+
+   '</div></div>';
+  ov2.classList.add('open'); document.body.style.overflow='hidden';
+  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  document.getElementById('pfBack').onclick=openSignIn;
+  document.getElementById('pfSave').onclick=async function(){
+    const msg=document.getElementById('sgnMsg');
+    const name=(document.getElementById('pfName').value||'').trim();
+    if(!name){ msg.textContent='Please give a name.'; msg.classList.add('on'); return; }
+    const gEl=document.getElementById('pfGst');
+    const gst=gEl?(gEl.value||'').trim().toUpperCase():'';
+    if(gst && !/^[0-9A-Z]{15}$/.test(gst)){
+      msg.textContent='A GST number is 15 letters and digits.'; msg.classList.add('on'); return;
+    }
+    const b=this; b.disabled=true; b.textContent='Saving…';
+    const shEl=document.getElementById('pfShop');
+    const {error}=await PMAuth.sb.rpc('update_my_profile',{
+      p_name:name,
+      p_shop: shEl?(shEl.value||'').trim()||null:null,
+      p_city:(document.getElementById('pfCity').value||'').trim()||null,
+      p_gst: gst||null });
+    b.disabled=false; b.textContent='Save';
+    if(error){ msg.textContent='Could not save — '+error.message; msg.classList.add('on'); return; }
+    await refreshSession();
+    closeSignIn();
+    toastMsg('Details saved');
+  };
 }
 
 /* ---------- consumer sign-up ---------- */
