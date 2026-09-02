@@ -395,28 +395,17 @@ if(new URLSearchParams(location.search).get("edit")){
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=29"></script>
+<script src="config.js?v=30"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=29"></script>
+<script src="supabase-auth.js?v=30"></script>
+<script src="pm-ui.js?v=30"></script>
 <script>
-(function(){
-  const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
-    site:'https://patelmarketing-catalog.vercel.app',
-    supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
-    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s',
-    auth:{ noAccessMessage:'We do not recognise that number yet.' }};
-  const K=window.PM_CONFIG||{};
-  const M=Object.assign({},D,K);
-  M.auth=Object.assign({},D.auth,K.auth||{});
-  if(!M.whatsapp||M.whatsapp.replace(/\D/g,'').length<10) M.whatsapp=D.whatsapp;
-  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
-  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
-  window.PM_CONFIG=M;
-})();
-const C=window.PM_CONFIG, $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const money=n=>'₹'+Number(n).toLocaleString('en-IN');
-const IMG=n=>'images/'+n+'.jpg';
+PMUI.config({firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
+  site:'https://patelmarketing-catalog.vercel.app',
+  supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+  supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s',
+  auth:{ noAccessMessage:'We do not recognise that number yet.' }});
+const {$, esc, money, IMG}=PMUI;
 const DRAFT='v3_admin_draft';
 
 let P=[], LIVE='', shown=40, q='', quick='all', dirty=false;
@@ -426,104 +415,28 @@ let CUSTOMERS=[];
 
 const last10=s=>String(s||'').replace(/\D/g,'').slice(-10);
 const UNITS=['Piece','Dozen','Box','Gross','Kg','Tag'];
-let PENDING_PHONE=null;
 let ME=null, IS_ADMIN=false;
 // Who may open this panel at all. is_admin is the flag the database sets from
 // the role, so it stays the test for "full access"; staff is the second door.
 const mayOpenPanel=r=>!!r && (r.is_admin || r.role==='staff' || r.role==='admin');
 
 /* ---------------- gate ---------------- */
-$('#gp').oninput=function(){
-  const d=($('#gp').value||'').replace(/\D/g,'');
-  $('#gEcho').textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10)
-                          : (d.length? d.length+' of 10 digits':'');
-};
-$('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
-$('#gb').onclick=async function(){
-  const raw=($('#gp').value||'').replace(/\D/g,'');
-  const m=$('#gm'); m.classList.remove('on');
-  if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
-    '. Type the 10-digit number — 91 in front is fine too.'; m.classList.add('on'); return; }
-  // Test numbers carry a PIN instead of a texted code — no SMS, no cost.
-  const testNo=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(raw));
-  if(!testNo){
-    const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
-    const {error}=await PMAuth.sendOtp(raw);
-    gb.disabled=false; gb.textContent='Send code';
-    if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
-  }
-  PENDING_PHONE=raw;
-    $('#gOtpTo').textContent = testNo
-    ? 'Test account. No SMS is sent for these — type the 6-digit PIN.'
-    : 'Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
-  $('#gCode').placeholder = testNo ? '6-digit PIN' : '6-digit code';
-  $('#gStepPhone').style.display='none'; $('#gStepOtp').style.display='block';
-  $('#gCode').focus();
-};
-$('#gBack').onclick=function(){
-  PENDING_PHONE=null; $('#gm').classList.remove('on');
-  $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
-  $('#gp').focus();
-};
-$('#gCode').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gv').click()} };
-$('#gv').onclick=async function(){
-  const code=($('#gCode').value||'').replace(/\D/g,'');
-  const m=$('#gm'); m.classList.remove('on');
-  if(code.length<4){ m.textContent='Enter the code as texted to you.'; m.classList.add('on'); return; }
-  const isTest=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(PENDING_PHONE));
-  const gv=$('#gv'); gv.disabled=true; gv.textContent=isTest?'Signing in…':'Verifying…';
-  const {error}= isTest ? await PMAuth.signInWithPin(PENDING_PHONE, code)
-                        : await PMAuth.verifyOtp(PENDING_PHONE, code);
-  gv.disabled=false; gv.textContent=isTest?'Sign in':'Verify & sign in';
-  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
-  PENDING_PHONE=null;
-  const row=await PMAuth.myAllowlistRow();
-  if(!row||!mayOpenPanel(row)){
-    await PMAuth.signOut();
-    m.textContent='That number signed in, but it is not on the admin list.'; m.classList.add('on');
-    $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
-    return;
-  }
-  start(row);
-};
-(async function(){
-  const sess=await PMAuth.currentSession();
-  if(!sess) return;
-  const row=await PMAuth.myAllowlistRow();
-  if(row&&mayOpenPanel(row)) start(row); else await PMAuth.signOut();
-})();
-
 // Office staff get the catalogue work — products, brands, publishing — but
 // not the two things that are hard to undo: who is allowed in and at what
-// role, and which reviews the public sees. The tabs below are hidden for
-// them, but hiding a tab is presentation, not security; the database refuses
-// those writes for a staff row whatever the page shows.
-
-/* One account menu, built the same way on every panel screen. */
-// The header shows whose account this is, not the word "Account": the photo
-// they uploaded, or their initials. It links to the catalogue's account screen,
-// which is the only place sign out lives.
-function wireAccountMenu(row){
-  const btn=document.getElementById('acctBtn');
-  if(!btn) return;
-  const name=(row&&(row.nickname||row.name||row.shop))||'';
-  const what=row&&row.is_admin?'admin':row&&row.role==='staff'?'office'
-            :row&&(row.role==='dealer'||row.role==='shop_owner')?'dealer':'';
-  const initials=String(name).replace(/[^A-Za-z ]/g,'').trim().split(/\s+/)
-    .slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'PM';
-  const photo=row&&row.photo_url;
-  btn.innerHTML = photo
-    ? '<img src="'+String(photo).replace(/"/g,'&quot;')+'" alt="">'
-    : initials.replace(/[&<>]/g,'');
-  btn.title=(name||'Your account')+(what?' · '+what:'');
-  btn.setAttribute('aria-label', btn.title);
-}
+// role, and which reviews the public sees. The tabs are hidden for them in
+// start(), but hiding a tab is presentation, not security; the database
+// refuses those writes for a staff row whatever the page shows.
+PMUI.gate({
+  allow: mayOpenPanel,
+  refusal: 'That number signed in, but it is not on the admin list.',
+  onReady: start,
+});
 
 async function start(a){
   ME=a;
   IS_ADMIN=!!a.is_admin;
   $('#gate').style.display='none'; $('#app').style.display='block';
-  wireAccountMenu(a);
+  PMUI.accountMenu(a);
   $('#whoLine').textContent=(a.name||(IS_ADMIN?'admin':'office'))+(IS_ADMIN?'':' · office');
   if(!IS_ADMIN){
     document.querySelectorAll('.tab[data-t="customers"],.tab[data-t="reviews"]')

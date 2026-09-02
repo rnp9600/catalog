@@ -272,23 +272,15 @@ main{max-width:760px;margin:0 auto;padding:14px}
 </main>
 </div>
 
-<script src="config.js?v=29"></script>
+<script src="config.js?v=30"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=29"></script>
+<script src="supabase-auth.js?v=30"></script>
+<script src="pm-ui.js?v=30"></script>
 <script>
-(function(){
-  const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
-    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s'};
-  const M=Object.assign({},D,window.PM_CONFIG||{});
-  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
-  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
-  window.PM_CONFIG=M;
-})();
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const money=n=>n==null?'—':'₹'+Number(n).toLocaleString('en-IN');
-const dg=s=>String(s||'').replace(/\D/g,'');
-let ME=null, P=[], PENDING_PHONE=null, IS_ADMIN=false;
+PMUI.config({supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+  supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s'});
+const {$, esc, money}=PMUI;
+let ME=null, P=[], IS_ADMIN=false;
 let ORDERS=[], ITEMS={}, FILTER='open', CUSTOMERS=[], CHOSEN=null, LINES=[];
 
 /* Only Patel Marketing's own side works the order book. */
@@ -303,88 +295,17 @@ const NEXT={new:'confirmed',confirmed:'packed',packed:'sent',sent:'completed'};
 const VERB={confirmed:'Confirm',packed:'Mark packed',sent:'Mark sent',completed:'Mark completed'};
 
 /* ---------------- gate ---------------- */
-$('#gp').oninput=function(){
-  const d=dg($('#gp').value);
-  $('#gEcho').textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10) : (d.length?d.length+' of 10 digits':'');
-};
-$('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
-$('#gb').onclick=async function(){
-  const raw=dg($('#gp').value);
-  const m=$('#gm'); m.classList.remove('on');
-  if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
-    '. Type the 10-digit number.'; m.classList.add('on'); return; }
-  const testNo=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(raw));
-  if(!testNo){
-    const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
-    const {error}=await PMAuth.sendOtp(raw);
-    gb.disabled=false; gb.textContent='Send code';
-    if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
-  }
-  PENDING_PHONE=raw;
-  $('#gOtpTo').textContent = testNo
-    ? 'Test account. No SMS is sent for these — type the 6-digit PIN.'
-    : 'Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
-  $('#gCode').placeholder = testNo ? '6-digit PIN' : '6-digit code';
-  $('#gStepPhone').style.display='none'; $('#gStepOtp').style.display='block';
-  $('#gCode').focus();
-};
-$('#gBack').onclick=function(){
-  PENDING_PHONE=null; $('#gm').classList.remove('on');
-  $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block'; $('#gp').focus();
-};
-$('#gCode').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gv').click()} };
-$('#gv').onclick=async function(){
-  const code=dg($('#gCode').value);
-  const m=$('#gm'); m.classList.remove('on');
-  if(code.length<4){ m.textContent='Enter the code as texted to you.'; m.classList.add('on'); return; }
-  const isTest=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(PENDING_PHONE));
-  const gv=$('#gv'); gv.disabled=true; gv.textContent=isTest?'Signing in…':'Verifying…';
-  const {error}= isTest ? await PMAuth.signInWithPin(PENDING_PHONE, code)
-                        : await PMAuth.verifyOtp(PENDING_PHONE, code);
-  gv.disabled=false; gv.textContent=isTest?'Sign in':'Verify & sign in';
-  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
-  PENDING_PHONE=null;
-  const row=await PMAuth.myAllowlistRow();
-  if(!mayOpen(row)){
-    await PMAuth.signOut();
-    m.textContent='That number signed in, but the order book is for Patel Marketing only.';
-    m.classList.add('on');
-    $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
-    return;
-  }
-  start(row);
-};
-(async function(){
-  const sess=await PMAuth.currentSession(); if(!sess) return;
-  const row=await PMAuth.myAllowlistRow();
-  if(mayOpen(row)) start(row); else await PMAuth.signOut();
-})();
-
-
-/* One account menu, built the same way on every panel screen. */
-// The header shows whose account this is, not the word "Account": the photo
-// they uploaded, or their initials. It links to the catalogue's account screen,
-// which is the only place sign out lives.
-function wireAccountMenu(row){
-  const btn=document.getElementById('acctBtn');
-  if(!btn) return;
-  const name=(row&&(row.nickname||row.name||row.shop))||'';
-  const what=row&&row.is_admin?'admin':row&&row.role==='staff'?'office'
-            :row&&(row.role==='dealer'||row.role==='shop_owner')?'dealer':'';
-  const initials=String(name).replace(/[^A-Za-z ]/g,'').trim().split(/\s+/)
-    .slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'PM';
-  const photo=row&&row.photo_url;
-  btn.innerHTML = photo
-    ? '<img src="'+String(photo).replace(/"/g,'&quot;')+'" alt="">'
-    : initials.replace(/[&<>]/g,'');
-  btn.title=(name||'Your account')+(what?' · '+what:'');
-  btn.setAttribute('aria-label', btn.title);
-}
+/* ---------- gate ---------- */
+PMUI.gate({
+  allow: mayOpen,
+  refusal: 'That number signed in, but the order book is for Patel Marketing only.',
+  onReady: start,
+});
 
 async function start(row){
   ME=row;
   $('#gate').style.display='none'; $('#app').style.display='block';
-  wireAccountMenu(row);
+  PMUI.accountMenu(row);
   IS_ADMIN=!!row.is_admin;
   $('#whoLine').textContent=(row.name||'office')+(IS_ADMIN?' · admin':' · office');
   try{ const r=await fetch('data.json',{cache:'no-cache'}); P=await r.json(); }catch(e){ P=[]; }
@@ -700,11 +621,7 @@ function drawChosen(){
     CHOSEN=null; drawChosen(); drawRecent(); setTimeout(()=>$('#cSearch').focus(),40); };
   updateHint();
 }
-function findProduct(text){
-  const t=(text||'').split(' — ')[0].trim().toLowerCase();
-  return P.find(p=>p.name.toLowerCase()===t) ||
-    P.find(p=>((p.name+' — '+(p.code||'')).toLowerCase())===(text||'').trim().toLowerCase());
-}
+const findProduct=t=>PMUI.findProduct(t,P);
 $('#pSearch').oninput=function(){
   const p=findProduct(this.value);
   $('#pHint').textContent = p ? (p.brand+' · '+p.cat+(p.code?' · '+p.code:'')) : '';

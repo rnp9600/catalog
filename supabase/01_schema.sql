@@ -1,6 +1,20 @@
 -- ═══════════════════════════════════════════════════════════════
--- PATEL MARKETING CATALOGUE — SCHEMA
--- Run this once in Supabase → SQL Editor
+-- PATEL MARKETING CATALOGUE — THE ORIGINAL FOUR TABLES
+--
+-- ⚠ THIS IS NOT THE LIVE SCHEMA. It is the bootstrap this project started
+--   from, kept for history. The database the site actually runs against has
+--   grown well past it — allowlist, orders, order_items, notices, follows,
+--   shop_offers, stock_listings, product_reviews, five views and around a
+--   dozen functions, none of which are in this file, plus all of the
+--   row-level security that makes the roles mean anything.
+--
+--   Nothing here is wrong; it is just a quarter of the picture. Running it
+--   against a fresh project would give you a catalogue that cannot sign
+--   anyone in.
+--
+--   See SCHEMA.md for how to dump the real one. Until that dump is
+--   committed, the only complete copy of this schema is inside the Supabase
+--   project, and losing the project means rebuilding it from memory.
 -- ═══════════════════════════════════════════════════════════════
 
 create table if not exists brands (

@@ -19,6 +19,7 @@ and no longer deployed; it is still in git history if it is ever wanted back
 | `shop.html` | A dealer's own customer list and their offers |
 | `exchange.html` | Dealer-to-dealer stock exchange |
 | `config.js`, `supabase-auth.js` | Supabase URL, publishable key, shared sign-in |
+| `pm-ui.js` | The sign-in gate, account button and helpers the four signed-in pages share |
 | `data.json` | What the public catalogue reads. **Not** the database — see Publishing |
 | `images/` | Product photos |
 | `api/p.js` | Server-renders one product's `<head>` so WhatsApp shows a real link preview |
