@@ -229,6 +229,13 @@ noticeboard is for today.
 See `APP.md`. Short version: the site can be made installable to a home screen
 in about a day and for nothing, and that is worth doing before anything else.
 
+## What to build next
+
+See `ROADMAP.md` — what was missing and why it mattered, what was built in
+response, and the things that were deliberately left alone (push notifications,
+fuzzy search, automated publishing, the stock exchange) with the reasoning for
+each.
+
 ## Notes for whoever edits this next
 
 - Product names are copied exactly from supplier price lists. Do not tidy or
