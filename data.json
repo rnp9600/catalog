@@ -439,29 +439,32 @@
   "code": null,
   "gst": 18,
   "note": "Rates to be confirmed",
-  "price": null,
+  "price": 60,
   "mrp": null,
   "variants": [
    {
     "size": "No. 2",
     "rate": null,
-    "price": null,
+    "price": 60,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    },
    {
     "size": "No. 3",
     "rate": null,
-    "price": null,
+    "price": 70,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    },
    {
     "size": "No. 4",
     "rate": null,
-    "price": null,
+    "price": 80,
     "mrp": null,
-    "moq": null
+    "moq": null,
+    "unit": "Piece"
    }
   ],
   "stock": "active",
@@ -470,7 +473,8 @@
   "sizes": [],
   "alias": "modak, ukadiche modak, ganesh modak",
   "hsn": null,
-  "slug": "paxton-alu-aluminium-modak-mould"
+  "slug": "paxton-alu-aluminium-modak-mould",
+  "hidden": false
  },
  {
   "img": "paxton-kw/pxk_modak_mould_open",
