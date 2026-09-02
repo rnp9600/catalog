@@ -137,6 +137,22 @@ main{max-width:1000px;margin:0 auto;padding:14px}
 .tt .ph{font-family:var(--fm);font-size:.68rem;color:var(--tm)}
 code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11px 12px;
  font-family:var(--fm);font-size:.68rem;word-break:break-all;line-height:1.6;margin-top:8px}
+
+/* Sign out sat in every header, on every screen, as if leaving were the main
+   thing you came to do. It lives behind this one button now. */
+.acct{position:relative}
+.acctmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:60;min-width:190px;
+ background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);
+ box-shadow:0 14px 34px rgba(var(--sh),.16);padding:6px;display:none}
+.acctmenu.on{display:block}
+.acctmenu .whoami{padding:9px 11px 10px;border-bottom:1px solid var(--bd);margin-bottom:5px}
+.acctmenu .whoami b{display:block;font-size:.85rem}
+.acctmenu .whoami small{font-family:var(--fm);font-size:.66rem;color:var(--tm)}
+.acctmenu button,.acctmenu a{display:block;width:100%;text-align:left;border:0;background:transparent;
+ padding:9px 11px;font-size:.82rem;font-weight:600;color:var(--tx);border-radius:7px;
+ text-decoration:none;font-family:inherit;cursor:pointer}
+.acctmenu button:hover,.acctmenu a:hover{background:var(--sf2)}
+.acctmenu .danger{color:#8A3A32}
 </style>
 </head>
 <body data-theme="sky">
@@ -172,7 +188,13 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
     <div class="sp"></div>
     <a class="ibtn" href="index.html">Catalogue</a>
     <a class="ibtn" href="orders.html">Orders</a>
-    <button class="ibtn" id="outBtn">Sign out</button>
+    <div class="acct">
+      <button class="ibtn" id="acctBtn" aria-label="Account">Account ▾</button>
+      <div class="acctmenu" id="acctMenu">
+        <div class="whoami"></div>
+        <button class="danger" id="outBtn">Sign out</button>
+      </div>
+    </div>
   </div>
   <div class="tabs">
     <button class="tab on" data-t="products">Products</button>
@@ -316,9 +338,9 @@ code.blk{display:block;background:var(--sf2);border-radius:var(--rs);padding:11p
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=24"></script>
+<script src="config.js?v=26"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=24"></script>
+<script src="supabase-auth.js?v=26"></script>
 <script>
 (function(){
   const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
@@ -413,17 +435,35 @@ $('#gv').onclick=async function(){
   const row=await PMAuth.myAllowlistRow();
   if(row&&mayOpenPanel(row)) start(row); else await PMAuth.signOut();
 })();
-$('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
 
 // Office staff get the catalogue work — products, brands, publishing — but
 // not the two things that are hard to undo: who is allowed in and at what
 // role, and which reviews the public sees. The tabs below are hidden for
 // them, but hiding a tab is presentation, not security; the database refuses
 // those writes for a staff row whatever the page shows.
+
+/* One account menu, built the same way on every panel screen. */
+function wireAccountMenu(row){
+  const btn=document.getElementById('acctBtn'), menu=document.getElementById('acctMenu');
+  if(!btn||!menu) return;
+  const name=(row&&(row.nickname||row.shop||row.name))||'Signed in';
+  const what=row&&row.is_admin?'admin':row&&row.role==='staff'?'office'
+            :row&&(row.role==='dealer'||row.role==='shop_owner')?'dealer':'';
+  menu.querySelector('.whoami').innerHTML=
+    '<b>'+String(name).replace(/[&<>"]/g,'')+'</b><small>+'+
+    String((row&&row.phone)||'').replace(/[^0-9]/g,'')+(what?' · '+what:'')+'</small>';
+  btn.onclick=function(e){ e.stopPropagation(); menu.classList.toggle('on'); };
+  document.addEventListener('click',function(){ menu.classList.remove('on'); });
+  menu.addEventListener('click',function(e){ e.stopPropagation(); });
+  const out=document.getElementById('outBtn');
+  if(out) out.onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+}
+
 async function start(a){
   ME=a;
   IS_ADMIN=!!a.is_admin;
   $('#gate').style.display='none'; $('#app').style.display='block';
+  wireAccountMenu(a);
   $('#whoLine').textContent=(a.name||(IS_ADMIN?'admin':'office'))+(IS_ADMIN?'':' · office');
   if(!IS_ADMIN){
     document.querySelectorAll('.tab[data-t="customers"],.tab[data-t="reviews"]')
@@ -785,7 +825,7 @@ function drawCust(){
       (ROLE_LABEL[c.role]?'<span class="flag f">'+ROLE_LABEL[c.role]+'</span>':'')+'</div>'+
       '<div class="ph">'+(c.shop?esc(c.shop)+' · ':'')+'+'+esc(c.phone||'')+
       (c.dealer_type?' · '+TYPE_LABEL[c.dealer_type]:'')+
-      (c.city?' · '+esc(c.city):'')+
+      (c.city?' · '+esc(c.city):'')+(c.gst?' · GST '+esc(c.gst):'')+
       (c.role==='end_customer'
         ? ' · '+(c.owner_phone
             ? 'via '+esc(ownerLabel(c.owner_phone))
@@ -823,6 +863,9 @@ function editCustomer(c){
    '<div class="fg"><label>Name</label><input id="eName" value="'+esc(c.name||'')+'"></div>'+
    '<div class="fg"><label>Shop / firm</label><input id="eShop" value="'+esc(c.shop||'')+'">'+
      '<div class="hint">Their business name.</div></div>'+
+   '<div class="fg"><label>GST number</label><input id="eGst" value="'+esc(c.gst||'')+'" '+
+     'maxlength="15" placeholder="15 characters, dealers only">'+
+     '<div class="hint">Prints on their orders. Consumers do not have one.</div></div>'+
    '<div class="fg"><label>City / area</label><input id="eCity" value="'+esc(c.city||'')+'" '+
      'placeholder="e.g. Hubli">'+
      '<div class="hint">Free text — consumers search by it. Filling this in is what lists a '+
@@ -855,6 +898,7 @@ function editCustomer(c){
       p_nickname:$('#eNick').value.trim()||null,
       p_dealer_type: role==='dealer' ? $('#eType').value : null,
       p_city: $('#eCity').value.trim()||null,
+      p_gst:  $('#eGst').value.trim().toUpperCase()||null,
     });
     btn.disabled=false; btn.textContent='Save';
     if(error){ alert('Could not save — '+error.message); return; }
@@ -875,7 +919,7 @@ $('#cAdd').onclick=async function(){
     {p_phone:ph,p_name:n,p_shop:shop||null,p_role:role,
      p_nickname:nick||null,
      p_dealer_type: role==='dealer' ? $('#cType').value : null,
-     p_city: $('#cCity').value.trim()||null});
+     p_city: $('#cCity').value.trim()||null, p_gst:null});
   if(error){ alert('Could not add — '+error.message); return; }
   $('#cName').value='';$('#cShop').value='';$('#cNick').value='';$('#cPhone').value='';
   $('#cCity').value='';

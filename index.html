@@ -477,6 +477,13 @@ body.m-off .reveal{opacity:1;transform:none}
 .signlink:hover{text-decoration:underline}
 
 /* profile button in the header */
+/* The order was only reachable through a bar that appeared once something was
+   in it, so a dealer had no way to see or open an empty order. */
+#cartBtn{position:relative}
+#cartBtn b{position:absolute;top:-3px;right:-3px;min-width:17px;height:17px;padding:0 4px;
+ border-radius:999px;background:var(--ac);color:#fff;font-size:.6rem;font-weight:800;
+ line-height:17px;text-align:center;display:none}
+#cartBtn b.on{display:block}
 #whoBtn{position:relative}
 #whoBtn.in::after{content:'';position:absolute;top:5px;right:5px;width:7px;height:7px;
  border-radius:50%;background:var(--ac);border:1.5px solid var(--sf)}
@@ -597,13 +604,20 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
 .rev .rh{display:flex;align-items:baseline;gap:8px;font-size:.78rem;font-weight:700}
 .rev .rh small{font-weight:500;color:var(--tm);font-family:var(--fm);font-size:.64rem}
 .rev p{font-size:.82rem;margin-top:5px;line-height:1.55}
-.revform{background:var(--sf2);border-radius:var(--rs);padding:12px;margin-top:10px}
+.revform{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+ padding:16px;margin-top:12px;box-shadow:0 1px 2px rgba(var(--sh),.04)}
 .revform textarea{width:100%;min-height:64px;padding:9px 11px;border:1.5px solid var(--bd);
  border-radius:var(--rs);background:var(--sf);font-size:.85rem;resize:vertical;margin:8px 0}
-.pickstar{display:flex;gap:5px}
-.pickstar button{border:0;background:transparent;font-size:1.5rem;line-height:1;padding:0;
- color:var(--bd);transition:color .1s}
-.pickstar button.on{color:#E0A320}
+/* The stars are the control, so give them room and a plain ground to sit on
+   rather than tucking them into a tinted panel where they were hard to see. */
+.pickstar{display:flex;gap:10px;justify-content:center;background:var(--bg);
+ border-radius:var(--rs);padding:14px 10px;margin:10px 0 4px}
+.pickstar button{border:0;background:transparent;font-size:2.35rem;line-height:1;padding:0 2px;
+ color:#D9DEE5;transition:color .12s, transform .12s cubic-bezier(.2,.7,.3,1)}
+.pickstar button.on{color:#E8A317}
+.pickstar button:active{transform:scale(.88)}
+@media (hover:hover){.pickstar button:hover{transform:scale(1.12)}}
+.pickhint{text-align:center;font-size:.72rem;color:var(--tm);min-height:16px;margin-bottom:6px}
 .shoplist .shopitem{display:flex;align-items:center;gap:10px;background:var(--sf2);
  border-radius:var(--rs);padding:11px 12px;margin-bottom:8px}
 .shoplist .shopitem .t{flex:1;min-width:0}
@@ -633,6 +647,27 @@ header{backdrop-filter:saturate(1.6) blur(10px);
 /* A visible ring for anyone moving through the page by keyboard. */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
 textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-radius:6px}
+.oplaced{margin-top:16px;background:var(--act);border-radius:var(--r);padding:18px 16px;text-align:center}
+.oplaced .okmark{width:44px;height:44px;border-radius:50%;background:var(--ac);color:#fff;
+ font-size:1.5rem;line-height:44px;margin:0 auto 10px;font-weight:800}
+.oplaced b{display:block;font-size:1rem;font-weight:800}
+.oplaced .oref2{font-family:var(--fm);font-size:.8rem;color:var(--tm);margin-top:3px}
+.oplaced p{font-size:.78rem;color:var(--tm);margin-top:8px;line-height:1.55}
+/* The contact line on a saved catalogue, when the reader follows no shop. */
+.pcover .wa.nofollow{line-height:1.7}
+.pcover .wa.nofollow span{display:block;font-size:.66rem;opacity:.75;margin-top:4px;font-weight:500}
+/* Category headings when a whole brand is being browsed. The grid rules live
+   on #g, so a grouped run needs its own grid inside each heading's section. */
+.grouphd{grid-column:1/-1;display:flex;align-items:baseline;gap:9px;margin:22px 2px 2px;
+ font-size:1.02rem;font-weight:800;letter-spacing:-.02em}
+.grouphd:first-child{margin-top:6px}
+.grouphd span{font-family:var(--fm);font-size:.66rem;font-weight:600;color:var(--tm);
+ background:var(--sf2);border-radius:999px;padding:3px 8px}
+.groupgrid{grid-column:1/-1;display:grid;gap:14px;
+ grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}
+.plab2{display:block;font-size:.66rem;font-weight:700;color:var(--tm);text-transform:uppercase;
+ letter-spacing:.07em;margin:2px 0 5px}
+.sgnin:disabled{background:var(--sf2);color:var(--tm)}
 .sgnin{width:100%;padding:13px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);
  background:var(--sf);font-size:.9rem;margin-bottom:10px}
 .linkish{border:0;background:transparent;color:inherit;text-decoration:underline;
@@ -655,6 +690,13 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
     <polyline points="7 10 12 15 17 10"/>
     <line x1="12" y1="15" x2="12" y2="3"/>
    </svg>
+  </button>
+  <button class="gearbtn" id="cartBtn" aria-label="Your order" title="Your order" style="display:none">
+   <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+    <path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/>
+   </svg>
+   <b id="cartN"></b>
   </button>
   <button class="gearbtn" id="settingsBtn" aria-label="Menu" title="View & theme">
    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -845,11 +887,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 24</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 26</footer>
 
-<script src="config.js?v=24"></script>
+<script src="config.js?v=26"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=24"></script>
+<script src="supabase-auth.js?v=26"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1030,23 +1072,32 @@ function bindChips(el,onPick){
 function afterFilterChange(){ rebuildFilters(); render(); }
 
 function rebuildFilters(){
-  const catVals=orderBy([...new Set(P.map(p=>p.cat))].filter(Boolean),CAT_FIRST,CAT_LAST);
+  // Chips are built from the products still in play, not from the whole
+  // catalogue. Picking Mazda used to keep offering Cast Iron, which Mazda does
+  // not make: tapping it gave nothing and the reader had to work out why. A
+  // filter that is missing now means there is nothing of that kind here.
+  const inBrand = fb==='All' ? P : P.filter(p=>p.brand===fb);
+  const catVals=orderBy([...new Set(inBrand.map(p=>p.cat))].filter(Boolean),CAT_FIRST,CAT_LAST);
   const pickCat=v=>{fc=v;fs='All';afterFilterChange();};
 
   const railEl=document.getElementById('catrail');
-  railEl.innerHTML=chipsHTML(catVals,'cat',fc,P,'All',true);
+  railEl.innerHTML=chipsHTML(catVals,'cat',fc,inBrand,'All',true);
   bindChips(railEl,pickCat);
 
   const cfEl=document.getElementById('cf');
-  cfEl.innerHTML=chipsHTML(catVals,'cat',fc,P,'All categories',false);
+  cfEl.innerHTML=chipsHTML(catVals,'cat',fc,inBrand,'All categories',false);
   bindChips(cfEl,pickCat);
+
+  // A category that no longer exists inside the chosen brand cannot stay
+  // selected, or the screen shows nothing with no way back.
+  if(fc!=='All' && catVals.indexOf(fc)<0){ fc='All'; fs='All'; }
 
   const subwrap=document.getElementById('subwrap');
   const sfEl=document.getElementById('sf');
   if(fc==='All'){
     subwrap.style.display='none'; sfEl.innerHTML='';
   }else{
-    const scope=P.filter(p=>p.cat===fc);
+    const scope=inBrand.filter(p=>p.cat===fc);
     const subVals=[...new Set(scope.map(p=>p.sub))].filter(Boolean).sort();
     if(subVals.length<2){
       subwrap.style.display='none'; sfEl.innerHTML=''; fs='All';
@@ -1057,6 +1108,8 @@ function rebuildFilters(){
     }
   }
 
+  // The brand list stays whole: it is how you change brand, so narrowing it to
+  // the current one would strand you there.
   const brandVals=orderBy([...new Set(P.map(p=>p.brand))].filter(Boolean),BRAND_FIRST,[]);
   const bfEl=document.getElementById('bf');
   bfEl.innerHTML=chipsHTML(brandVals,'brand',fb,P,'All brands',false);
@@ -1143,12 +1196,29 @@ function priceRows(p,i){
 }
 function render(){
   VIEW=P.filter(match);
-  // The price-list view is a real table, not cards laid out to look like one:
-  // every size gets its own line with its own rate, matching the Price list PDF.
-  // Cards stay one-per-product in every other view.
-  g.innerHTML = document.body.classList.contains('v-table')
-    ? VIEW.map(priceRows).join('')
-    : VIEW.map(card).join('');
+  const table=document.body.classList.contains('v-table');
+  // Browsing a whole brand is browsing a range, and a range has shape: all the
+  // salt and pepper together, then the oil pourers. Ungrouped it was 197 cards
+  // in whatever order the file happened to be in. Only when a brand is the
+  // only thing chosen — once a category is picked the grouping would be one
+  // heading over everything.
+  const grouped = !table && fb!=='All' && fc==='All' && !q;
+  if(grouped){
+    const order=orderBy([...new Set(VIEW.map(p=>p.cat))].filter(Boolean),CAT_FIRST,CAT_LAST);
+    let out='', n=0;
+    order.forEach(cat=>{
+      const list=VIEW.filter(p=>p.cat===cat);
+      if(!list.length) return;
+      out+='<h3 class="grouphd">'+esc(cat)+'<span>'+list.length+'</span></h3>'+
+           '<div class="groupgrid">'+list.map((p,i)=>card(p,n+i)).join('')+'</div>';
+      n+=list.length;
+    });
+    // card() indexes into VIEW, so VIEW has to match the order they are drawn.
+    VIEW=order.flatMap(cat=>VIEW.filter(p=>p.cat===cat));
+    g.innerHTML=out;
+  } else {
+    g.innerHTML = table ? VIEW.map(priceRows).join('') : VIEW.map(card).join('');
+  }
   em.style.display=VIEW.length?'none':'block';
   document.getElementById('bc').textContent=VIEW.length+' of '+P.length+' shown';
   document.getElementById('bh').textContent=
@@ -1167,9 +1237,16 @@ function render(){
 // Slugs, newest first, in this browser only. Slugs rather than indexes,
 // because a product's position in data.json changes every time the catalogue
 // is republished and an index would then point at something else entirely.
-const RECENT_KEY='v3_pm_recent', RECENT_MAX=14;
+// Keyed by whoever is signed in. It used to be one list for the whole browser,
+// so signing out of a customer account and into the admin showed the admin
+// what that customer had been looking at. Different people share a phone in a
+// shop; their browsing should not follow each other around.
+const RECENT_MAX=14;
+function recentKey(){
+  return 'v3_pm_recent_' + ((SESS && SESS.phone) ? SESS.phone : 'guest');
+}
 function recentSlugs(){
-  try{ const a=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]');
+  try{ const a=JSON.parse(localStorage.getItem(recentKey())||'[]');
        return Array.isArray(a)?a:[]; }catch(e){ return []; }
 }
 function recentProducts(){
@@ -1180,7 +1257,7 @@ function noteRecent(p){
   if(!p||!p.slug) return;
   const a=recentSlugs().filter(sl=>sl!==p.slug);
   a.unshift(p.slug);
-  try{ localStorage.setItem(RECENT_KEY, JSON.stringify(a.slice(0,RECENT_MAX))); }catch(e){}
+  try{ localStorage.setItem(recentKey(), JSON.stringify(a.slice(0,RECENT_MAX))); }catch(e){}
 }
 function strip(title, list){
   return '<div class="related"><h4>'+title+'</h4><div class="rrow">'+
@@ -1203,18 +1280,33 @@ function openSheet(p){
     <div class="vt">
       <div class="vh"><span>Size / option</span><span>Rate</span><span>MRP</span><span>${ord?'Order':''}</span></div>
       ${p.variants.map(v=>`<div class="vr">
-        <span class="vsize">${v.size}${v.moq?'<small class="vmoq">MOQ '+v.moq+'</small>':''}</span>
+        <span class="vsize">${v.size}${(v.moq&&!ec)?'<small class="vmoq">MOQ '+v.moq+'</small>':''}</span>
         <span class="vprice">${v.price!=null?'₹'+v.price+'<b class="vunit">/'+unitAbbr(v.unit)+'</b>':'—'}</span>
         <span class="vmrp">${v.mrp!=null?'₹'+v.mrp:''}</span>
         <span class="vord">${ord?'<button class="qbtn" data-qm="'+v.size+'">−</button><b class="qv" data-qv="'+v.size+'">0</b><button class="qbtn" data-qp="'+v.size+'">+</button>':''}</span></div>`).join('')}
     </div>
     <p style="font-size:.7rem;color:var(--tm);margin-top:7px;line-height:1.5">
-      Rate is per unit shown (pc = piece, dz = dozen, gr = gross) including GST${p.gst?' at '+p.gst+'%':''}. MRP is the printed maximum retail price.
-      MOQ is the minimum order quantity where the supplier sets one.${ord?' Use the + button to add a size to your order.':''}</p>`
-    : (p.sizes&&p.sizes.length? `<div class="sizesplain">${p.sizes.map(s=>`<div>${s}</div>`).join('')}</div>`
-      : (p.price!=null&&ord?`<div class="singleAdd"><button class="qbtn" data-qm="Standard">−</button>
+      ${ec?'Prices include GST'+(p.gst?' at '+p.gst+'%':'')+'.'
+          :'Rate is per unit shown (pc = piece, dz = dozen, gr = gross) including GST'+(p.gst?' at '+p.gst+'%':'')+'. MRP is the printed maximum retail price. MOQ is the minimum order quantity where the supplier sets one.'}${ord?' Use the + button to add a size to your order.':''}</p>`
+    : (p.sizes&&p.sizes.length
+        // A plain text size list rather than priced rows. It used to render as
+        // a box you could only read; a dealer can now put a line against the
+        // size they want and ask for the rate.
+        ? `<div class="vt">
+             <div class="vh"><span>Size / option</span><span>Rate</span><span></span><span>${ord?'Order':''}</span></div>
+             ${p.sizes.map(z=>`<div class="vr">
+               <span class="vsize">${z}</span>
+               <span class="vprice tdim">${ec?'Ask in the shop':'Ask for rate'}</span>
+               <span class="vmrp"></span>
+               <span class="vord">${ord?'<button class="qbtn" data-qm="'+esc(z)+'">−</button><b class="qv" data-qv="'+esc(z)+'">0</b><button class="qbtn" data-qp="'+esc(z)+'">+</button>':''}</span>
+             </div>`).join('')}
+           </div>
+           <p style="font-size:.7rem;color:var(--tm);margin-top:7px;line-height:1.5">
+             ${ord?'No rate is loaded for these yet — add the size you want and we will quote it on the order.'
+                  :'Rates for these are not loaded yet.'}</p>`
+      : (ord?`<div class="singleAdd"><button class="qbtn" data-qm="Standard">−</button>
           <b class="qv" data-qv="Standard">0</b><button class="qbtn" data-qp="Standard">+</button>
-          <span style="font-size:.78rem;color:var(--tm)">Add to your order</span></div>`:''));
+          <span style="font-size:.78rem;color:var(--tm)">${p.price!=null?'Add to your order':'Add to your order — we will quote the rate'}</span></div>`:''));
 
   // Two different questions, so two strips. "Similar" answers what else is
   // like this one; "recently viewed" answers what you were just looking at.
@@ -1453,7 +1545,27 @@ function pdfCover(list){
     <div class="sub">Wholesale Kitchenware \u2014 ${pdfScopeLabel()}</div>
     <div class="meta">${list.length} products \u00b7 ${rows} sizes<br>
       ${priced} of ${list.length} products have pricing<br>${d}</div>
-    <div class="wa">WhatsApp ${WA_NUMBER.replace(/^91/,'+91 ')}</div></div>`;
+    ${pdfContactBlock()}</div>`;
+}
+
+// Who the reader of this PDF should ring. A consumer saving the catalogue must
+// not be given Patel Marketing's number — we are wholesale, they buy from a
+// shop — so it carries their own shop's name and number instead. If they have
+// not chosen a shop yet, it says so and leaves the number blank rather than
+// printing ours by default and sending retail calls to the wrong place.
+function pdfContactBlock(){
+  if(!isEndCustomer()){
+    return `<div class="wa">Patel Marketing · WhatsApp ${WA_NUMBER.replace(/^91/,'+91 ')}</div>`;
+  }
+  const shop=SHOP_INFO;
+  if(shop){
+    const nm=shop.shop||shop.name||'Your shop';
+    const ph=String(shop.phone||'').replace(/^91/,'+91 ');
+    return `<div class="wa">Buy from <b>${esc(nm)}</b>${ph?' · '+esc(ph):''}</div>`;
+  }
+  return `<div class="wa nofollow">Your shop: ________________________<br>
+    <span>You have not chosen a shop yet. Pick one in the catalogue and their
+    name, number and any discount they offer will print here.</span></div>`;
 }
 
 function pdfTable(groups){
@@ -1544,7 +1656,11 @@ function pdfRefresh(){
   const rows=P.filter(match).reduce((a,p)=>a+pdfRows(p).length,0);
   document.getElementById('pdfScope').innerHTML=
     `Exporting <b>${n} products</b> (${rows} sizes) \u2014 <b>${pdfScopeLabel()}</b>.<br>`
-    +`Change the filters behind this dialog to narrow it down.`;
+    +`Change the filters behind this dialog to narrow it down.`
+    + ((isEndCustomer() && !SHOP_INFO)
+        ? `<br><br><b>You have not chosen a shop yet.</b> Follow one and this PDF will carry
+           their name and number, and any discount they offer, instead of a blank.`
+        : '');
   document.getElementById('layoutHint').textContent = PDFO.layout==='table'
     ? 'One line per size. Compact, for office use and price checking.'
     : 'Large photos with sizes listed under each product. For sending to customers.';
@@ -1745,13 +1861,17 @@ function daysLeft(){ return daysLeftOf(allPromos().find(promoLive)); }
 // data: what customers rate highest, and what this reader was just looking at.
 function autoPromos(){
   const out=[];
+  // Patel Marketing's own side does not shop here. "Rated by customers" is
+  // still worth their while; "pick up where you left off" is a shopping aid
+  // and means nothing to someone who edits the catalogue rather than buys
+  // from it.
   const rated=P.filter(x=>RATINGS[x.slug]&&RATINGS[x.slug].n>0&&x.stock!=='out')
     .sort((a,b)=>(RATINGS[b.slug].avg-RATINGS[a.slug].avg)||(RATINGS[b.slug].n-RATINGS[a.slug].n));
   if(rated.length>=3){
     out.push({id:'top',tone:'top',title:'Rated by customers',
       note:'What people who bought these actually said', items:rated.slice(0,12)});
   }
-  const recent=(typeof recentProducts==='function'?recentProducts():[]).slice(0,12);
+  const recent=isOffice()?[]:(typeof recentProducts==='function'?recentProducts():[]).slice(0,12);
   if(recent.length>=3){
     out.push({id:'recent',tone:'new',title:'Pick up where you left off',
       note:'Products you opened recently', items:recent});
@@ -1767,6 +1887,12 @@ function mkFestive(){
   box.querySelectorAll('.fest[data-id]').forEach(f=>{
     const r=f.querySelector('.festrail'); if(r) was[f.dataset.id]=r.scrollLeft;
   });
+
+  // Once someone has filtered or searched, they have told us what they want to
+  // see. Two promo rails above the results are then just something to scroll
+  // past — worse on a phone, which is nearly all of the traffic.
+  const filtering = (fc!=='All' || fs!=='All' || fb!=='All' || !!q);
+  if(filtering){ box.innerHTML=''; return; }
 
   const strips=[];
   allPromos().forEach(pr=>{
@@ -1892,6 +2018,18 @@ const esc = s => String(s==null?'':s).replace(/[&<>"]/g,
 let SHOP_INFO=null, SHOP_OFFERS={}, SHOP_LIST=[];
 const SHOP_KEY='v3_pm_shop';
 function shopOfferFor(p){ return SHOP_OFFERS[p.slug] || null; }
+// What the shop's offer works out to on a given MRP. A dealer sets a
+// percentage off, capped at 25 in the database, rather than a price of their
+// own — so the same product is never advertised at two different prices by two
+// shops. price_offer is the older free-text field, honoured where one is still
+// stored but never written now.
+function offerPriceOn(p, mrpVal){
+  const o=shopOfferFor(p);
+  if(!o) return null;
+  if(o.discount_pct && mrpVal!=null) return Math.round(mrpVal*(1-o.discount_pct/100));
+  if(o.price_offer!=null) return o.price_offer;
+  return null;
+}
 async function loadShopContext(){
   SHOP_INFO=null; SHOP_OFFERS={}; SHOP_LIST=[];
   if(!isEndCustomer()) return;
@@ -1970,7 +2108,7 @@ async function refreshSession(){
     SESS = {ok:true, admin:!!row.is_admin, role:row.role||'dealer', name:row.name||'Signed in',
       tail: last?'…'+last.slice(-3):'', phone: full, shop: row.shop||'',
       ownerPhone: row.owner_phone||null, city: row.city||'',
-      dealerType: row.dealer_type||null};
+      dealerType: row.dealer_type||null, gst: row.gst||''};
   }
   if(isEndCustomer()) await loadShopContext();
   await loadRatings();
@@ -1994,7 +2132,16 @@ function saveBasket(){
 }
 function findLine(slug,size){ return BASKET.find(b=>b.slug===slug&&b.size===size); }
 function qtyFor(slug,size){ const l=findLine(slug,size); return l?l.qty:0; }
+// Where a supplier sets a minimum, the quantity has to be a multiple of it —
+// ordering 7 of something sold in boxes of 6 is not a thing anyone can supply.
+function moqFor(slug,size){
+  const p=P.find(x=>x.slug===slug); if(!p) return 1;
+  const v=(p.variants||[]).find(x=>x.size===size);
+  return (v && v.moq && v.moq>0) ? v.moq : 1;
+}
 function setQty(slug,size,qty){
+  const step=moqFor(slug,size);
+  if(step>1 && qty>0) qty=Math.max(step, Math.round(qty/step)*step);
   const l=findLine(slug,size);
   if(qty<=0){ if(l) BASKET.splice(BASKET.indexOf(l),1); }
   else if(l) l.qty=qty;
@@ -2003,6 +2150,12 @@ function setQty(slug,size,qty){
 }
 function basketCount(){ return BASKET.reduce((n,b)=>n+b.qty,0); }
 function obarRender(){
+  const cb=document.getElementById('cartBtn');
+  if(cb){
+    cb.style.display = canOrder() ? '' : 'none';
+    const n=basketCount(), tag=document.getElementById('cartN');
+    if(tag){ tag.textContent=n>99?'99+':n; tag.classList.toggle('on', n>0); }
+  }
   const b=document.getElementById('obar'); if(!b) return;
   // End customers browse, they don't order online — see V3-AMENDMENTS.md.
   // Nor does Patel Marketing's own side: an order they placed would be
@@ -2012,14 +2165,25 @@ function obarRender(){
   document.getElementById('obarTxt').innerHTML = '🧺 <b>'+n+'</b> in your order';
   b.classList.toggle('on', n>0);
 }
+// 130 products have no size rows and no rate — whole brands of them. They
+// could not be added to an order at all, which is backwards: not knowing the
+// rate is exactly when a dealer wants to ask for it. They go on the order with
+// the rate left open, and the message and PDF say so.
 function resolveItem(line){
   const p=P.find(x=>x.slug===line.slug); if(!p) return null;
   let v;
-  if(p.variants&&p.variants.length){ v=p.variants.find(x=>x.size===line.size); if(!v) return null; }
-  else if(line.size==='Standard'&&p.price!=null){ v={size:'Standard',price:p.price,mrp:p.mrp,unit:'Piece',moq:null}; }
-  else return null;
+  if(p.variants&&p.variants.length){
+    v=p.variants.find(x=>x.size===line.size);
+    if(!v) return null;
+  } else if((p.sizes||[]).indexOf(line.size)>=0){
+    // The plain text size list some products still carry instead of rows.
+    v={size:line.size,price:p.price,mrp:p.mrp,unit:'Piece',moq:null};
+  } else if(line.size==='Standard'){
+    v={size:'Standard',price:p.price,mrp:p.mrp,unit:'Piece',moq:null};
+  } else return null;
   return {slug:p.slug,name:p.name,brand:p.brand,code:p.code,size:v.size,unit:v.unit||'Piece',
-    price:v.price,mrp:v.mrp,moq:v.moq,qty:line.qty};
+    price:v.price==null?null:v.price,mrp:v.mrp,moq:v.moq,qty:line.qty,
+    ask: v.price==null};        // rate to be confirmed
 }
 function orderItems(){ return BASKET.map(resolveItem).filter(Boolean); }
 const orderShowPrice = () => signedIn();
@@ -2048,6 +2212,7 @@ function waOrderMessage(items, meta, ref){
     let line=it.qty+' × '+it.name+(it.size&&it.size!=='Standard'?' ('+it.size+')':'')+' — '+unitAbbr(it.unit);
     const u=orderUnitPrice(it);
     if(showP && u!=null) line+=' · ₹'+u+' = ₹'+(u*it.qty);
+    else if(showP) line+=' · rate on request';
     L.push(line);
   });
   if(showP) L.push('', 'Grand total: ₹'+orderTotal(items).toLocaleString('en-IN'));
@@ -2060,7 +2225,7 @@ function orderPdfHtml(items, meta, ref){
     return `<tr class="${i%2?'zebra':''}">
       <td class="pn2">${it.name}<div class="pcode">${it.brand}${it.code?' · '+it.code:''}</div></td>
       <td>${it.size}</td><td>${unitAbbr(it.unit)}</td><td class="num">${it.qty}</td>
-      ${showP?`<td class="num">${u!=null?'₹'+u:'—'}</td><td class="num">${u!=null?'₹'+(u*it.qty):'—'}</td>`:''}
+      ${showP?`<td class="num">${u!=null?'₹'+u:'on request'}</td><td class="num">${u!=null?'₹'+(u*it.qty):'—'}</td>`:''}
     </tr>`;
   }).join('');
   return `<div class="pcover"><h2>Order Form</h2><div class="sub">${meta.shop||meta.name}</div>
@@ -2087,9 +2252,11 @@ function orderSheetHtml(){
   const showP=orderShowPrice();
   const rows=items.map((it,idx)=>{
     const u=orderUnitPrice(it);
-    return '<div class="orow2"><div class="oi"><b>'+it.name+'</b><small>'+
-      (it.size&&it.size!=='Standard'?it.size+' · ':'')+it.qty+' '+unitAbbr(it.unit)+
-      (showP&&u!=null?' · ₹'+u+' = ₹'+(u*it.qty):'')+'</small></div>'+
+    return '<div class="orow2"><div class="oi"><b>'+esc(it.name)+'</b><small>'+
+      (it.size&&it.size!=='Standard'?esc(it.size)+' · ':'')+it.qty+' '+unitAbbr(it.unit)+
+      (it.moq&&it.moq>1?' · in '+it.moq+'s':'')+
+      (showP ? (u!=null ? ' · ₹'+u+' = ₹'+(u*it.qty) : ' · rate on request') : '')+
+      '</small></div>'+
       '<button class="orm" data-rm="'+idx+'" aria-label="Remove">×</button></div>';
   }).join('');
   const total=showP?'<div class="ototal"><span>Total</span><span>'+rupee(orderTotal(items))+'</span></div>':'';
@@ -2100,10 +2267,29 @@ function orderSheetHtml(){
    '<div class="ofg"><label>Shop</label><input id="ofShop" placeholder="Shop or firm name"></div>'+
    '<div class="ofg"><label>Phone</label><input id="ofPhone" type="tel" inputmode="numeric" maxlength="15" placeholder="98765 43210"></div>'+
    '<div class="sactions" style="margin-top:6px">'+
-     '<button id="oSend">Send order on WhatsApp</button>'+
-     '<button class="alt" id="oPdf">Download order PDF</button></div>'+
-   '<p class="oh" style="margin-top:10px">WhatsApp opens with the order listed as text — the PDF is your '+
-   'own copy for your records, it does not attach to the WhatsApp message automatically.</p></div>';
+     '<button id="oPlace">Place this order</button></div>'+
+   '<p class="oh" style="margin-top:10px">Placing it puts the order on Patel Marketing\'s books with a '+
+   'reference, so you can follow it under <b>Your orders</b>. You can send it on WhatsApp or save the PDF '+
+   'straight afterwards.</p>'+
+   '<div id="oAfter"></div></div>';
+}
+// Shown once the order is on the books. Sending it on and keeping a copy are
+// follow-ups to placing it, not substitutes for it — before this there was no
+// way to place an order at all, only ways to send a message about one.
+function orderPlacedHtml(ref, recorded){
+  return '<div class="oplaced">'+
+    '<div class="okmark">✓</div>'+
+    '<b>'+(recorded?'Order placed':'Order ready to send')+'</b>'+
+    '<div class="oref2">'+esc(ref)+'</div>'+
+    '<p>'+(recorded
+      ? 'It is on our books and you can follow it under Your orders. Send it across or keep a copy:'
+      : 'We could not reach our server just now, so it is not on the books yet — send it on WhatsApp '+
+        'and we will enter it by hand from the reference.')+'</p>'+
+    '<div class="sactions" style="margin-top:10px">'+
+      '<button id="oSend">Send on WhatsApp</button>'+
+      '<button class="alt" id="oPdf">Save the PDF</button>'+
+      '<button class="alt" id="oDone">Done</button>'+
+    '</div></div>';
 }
 function readOrderMeta(){
   const name=(document.getElementById('ofName').value||'').trim();
@@ -2126,21 +2312,15 @@ function wireOrderSheet(){
     if(it) setQty(it.slug, it.size, 0);
     openOrderSheet();
   });
-  const send=document.getElementById('oSend');
-  if(send) send.onclick=async function(){
+  const place=document.getElementById('oPlace');
+  if(place) place.onclick=async function(){
     const meta=readOrderMeta(); if(!meta) return;
     const items=orderItems(); if(!items.length) return;
+    place.disabled=true; place.textContent='Placing…';
 
-    // Open the tab now, while we are still inside the click. Awaiting first
-    // and opening after would look like a pop-up to the browser and be
-    // blocked — the order would silently never be sent.
-    const w=window.open('', '_blank');
-    send.disabled=true; send.textContent='Sending…';
-
-    // The order goes on the books as well as into WhatsApp, so the office can
-    // work it and mark it done. If recording fails we still send: a customer's
-    // order must not be lost because our database was unreachable, and the
-    // reference in the message is enough to reconcile it by hand.
+    // On the books first. If that fails we still let them send it — a
+    // customer's order must not be lost because our database was
+    // unreachable — but we say so rather than pretending it was recorded.
     let ref=orderRef(), recorded=false;
     try{
       const {data,error}=await PMAuth.sb.rpc('place_order',{
@@ -2154,21 +2334,33 @@ function wireOrderSheet(){
       if(!error && data){ ref=data; recorded=true; }
     }catch(e){}
 
+    // Hold the lines and the typed details for the follow-ups, then clear the
+    // basket: the order has been placed, so leaving it filled would invite
+    // placing it twice.
+    const sent=items.slice(), meta2=Object.assign({},meta);
+    BASKET=[]; CURRENT_ORDER_REF=null; saveBasket();
+
+    place.disabled=false; place.textContent='Place this order';
+    place.parentElement.style.display='none';
+    document.getElementById('oAfter').innerHTML=orderPlacedHtml(ref, recorded);
+    wireAfterPlaced(sent, meta2, ref);
+    toastMsg(recorded ? 'Order placed · '+ref : 'Not recorded — send it on WhatsApp');
+  };
+}
+function wireAfterPlaced(items, meta, ref){
+  const send=document.getElementById('oSend');
+  if(send) send.onclick=function(){
+    // Inside the click, so the browser treats it as a user action rather than
+    // a pop-up. Nothing is awaited before this point.
     const url='https://wa.me/'+orderTarget()+'?text='+
       encodeURIComponent(waOrderMessage(items,meta,ref));
-    if(w && !w.closed) w.location.href=url; else location.href=url;
-
-    send.disabled=false; send.textContent='Send order on WhatsApp';
-    BASKET=[]; CURRENT_ORDER_REF=null; saveBasket();
-    closeOrderSheet();
-    toastMsg(recorded ? 'Order placed · '+ref : 'Sent on WhatsApp · '+ref);
+    const w=window.open(url,'_blank');
+    if(!w) location.href=url;
   };
   const pdf=document.getElementById('oPdf');
-  if(pdf) pdf.onclick=function(){
-    const meta=readOrderMeta(); if(!meta) return;
-    const items=orderItems(); if(!items.length) return;
-    downloadOrderPdf(items, meta, orderRef());
-  };
+  if(pdf) pdf.onclick=function(){ downloadOrderPdf(items, meta, ref); };
+  const done=document.getElementById('oDone');
+  if(done) done.onclick=function(){ closeOrderSheet(); };
 }
 function orderOverlay(){ return document.getElementById('oov'); }
 function openOrderSheet(){
@@ -2192,17 +2384,20 @@ function wireOrderStepper(p){
   }
   root.querySelectorAll('[data-qp]').forEach(btn=>btn.onclick=function(e){
     e.stopPropagation();
-    setQty(p.slug, this.dataset.qp, qtyFor(p.slug, this.dataset.qp)+1);
+    const sz=this.dataset.qp, step=moqFor(p.slug,sz);
+    setQty(p.slug, sz, qtyFor(p.slug,sz)+step);
     paint();
   });
   root.querySelectorAll('[data-qm]').forEach(btn=>btn.onclick=function(e){
     e.stopPropagation();
-    setQty(p.slug, this.dataset.qm, Math.max(0, qtyFor(p.slug, this.dataset.qm)-1));
+    const sz=this.dataset.qm, step=moqFor(p.slug,sz);
+    setQty(p.slug, sz, Math.max(0, qtyFor(p.slug,sz)-step));
     paint();
   });
   paint();
 }
 const _obarBtn=document.getElementById('obar'); if(_obarBtn) _obarBtn.onclick=openOrderSheet;
+const _cartBtn=document.getElementById('cartBtn'); if(_cartBtn) _cartBtn.onclick=openOrderSheet;
 const _oov=document.getElementById('oov'); if(_oov) _oov.addEventListener('click', closeOrderSheet);
 obarRender();
 function span(nums){ const a=nums.filter(x=>x!=null); if(!a.length)return null;
@@ -2233,11 +2428,12 @@ function priceLine(p){
      customer IS signed in, and with no MRP to show they used to fall through
      to it and be shown DP. */
   if(isEndCustomer()){
-    const offer=shopOfferFor(p);
-    if(offer && offer.price_offer!=null){
+    const o=shopOfferFor(p);
+    const off=offerPriceOn(p, mrp?mrp.lo:null);
+    if(off!=null){
       return (mrp?'<span class="pmrp cut">'+fmt(mrp)+'</span> ':'')+
-             '<span class="pdp">'+rupee(offer.price_offer)+'</span>'+
-             '<span class="poff">SPECIAL</span>';
+             '<span class="pdp">'+rupee(off)+'</span>'+
+             '<span class="poff">'+(o&&o.discount_pct?o.discount_pct+'% OFF':'SPECIAL')+'</span>';
     }
     if(mrp) return '<span class="plab">Price</span><span class="pdp">'+fmt(mrp)+'</span>';
     return '<span class="ph">Ask in the shop</span>';
@@ -2312,7 +2508,17 @@ function menuSignHtml(){
         'text-decoration:none;margin-top:4px">Orders</a>'
       : '';
     const isDlr = SESS.role==='dealer'||SESS.role==='shop_owner';
-    const trade = (isDlr||SESS.admin||SESS.role==='staff')
+    // ── SHELVED: dealer-to-dealer stock exchange ──────────────────────────
+    // exchange.html and its catalog.stock_listings table are intact and the
+    // access rules still work; the way in is simply not shown. Parked in
+    // September 2026 because it was not ready to put in front of dealers —
+    // opening it flashed the sign-in gate before the screen appeared, which
+    // read as the page reloading itself. That is the gate rendering while the
+    // session is still being checked, the same shape of problem the catalogue
+    // solves by keeping its own panel closed until refreshSession() answers.
+    // Fix that before bringing it back. To restore: set SHOW_EXCHANGE = true.
+    const SHOW_EXCHANGE = false;
+    const trade = (SHOW_EXCHANGE && (isDlr||SESS.admin||SESS.role==='staff'))
       ? '<a class="sgnbtn ghost" href="exchange.html" style="display:block;text-align:center;'+
         'text-decoration:none;margin-top:4px">Stock exchange</a>'
       : '';
@@ -2392,6 +2598,7 @@ function accountHtml(){
    '<div class="who"><div class="whoav">'+(nm.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'PM')+'</div>'+
    '<div><b>'+nm+'</b><small>'+tail+
    (SESS.admin?' · admin':SESS.role==='staff'?' · office':'')+'</small></div></div>'+
+   '<button class="sgnbtn ghost" id="sgnProfile" style="margin-top:14px">Edit your details</button>'+
    retailToggle+
    (isEndCustomer()?'<button class="sgnbtn" id="sgnShops" style="margin-top:16px">'+
      (SHOP_INFO?'Change your shop':'Find shops near you')+'</button>':'')+
@@ -2466,6 +2673,8 @@ function wireSignIn(){
   if(skip) skip.onclick=closeSignIn;
   const shops=document.getElementById('sgnShops');
   if(shops) shops.onclick=openShops;
+  const prof=document.getElementById('sgnProfile');
+  if(prof) prof.onclick=openProfile;
   const out=document.getElementById('sgnOut');
   if(out) out.onclick=async function(){
     await PMAuth.signOut();
@@ -2527,10 +2736,14 @@ function renderReviewForm(p){
   }
   const r=MY_REVIEW||{};
   const picked=r.rating||0;
+  const WORD={1:'Poor',2:'Not great',3:'Fine',4:'Good',5:'Excellent'};
   box.innerHTML='<div class="revform">'+
-    '<b style="font-size:.82rem">'+(MY_REVIEW?'Your review':'Have you used this?')+'</b>'+
+    '<b style="font-size:.88rem;display:block;text-align:center">'+
+      (MY_REVIEW?'Your review':'Have you used this?')+'</b>'+
     '<div class="pickstar" id="revStars">'+[1,2,3,4,5].map(n=>
-      '<button data-n="'+n+'" class="'+(n<=picked?'on':'')+'">★</button>').join('')+'</div>'+
+      '<button data-n="'+n+'" aria-label="'+n+' star'+(n===1?'':'s')+'" class="'+
+      (n<=picked?'on':'')+'">★</button>').join('')+'</div>'+
+    '<div class="pickhint" id="revWord">'+(picked?WORD[picked]:'Tap a star')+'</div>'+
     '<textarea id="revBody" maxlength="600" placeholder="How has it held up? Anyone else deciding will read this.">'+
     esc(r.body||'')+'</textarea>'+
     '<button class="sgnbtn" id="revSave" style="margin:0">'+
@@ -2542,6 +2755,7 @@ function renderReviewForm(p){
     const b=e.target.closest('[data-n]'); if(!b) return;
     rating=+b.dataset.n;
     stars.querySelectorAll('button').forEach(x=>x.classList.toggle('on',+x.dataset.n<=rating));
+    const w=document.getElementById('revWord'); if(w) w.textContent=WORD[rating]||'';
   };
   document.getElementById('revSave').onclick=async function(){
     const msg=document.getElementById('revMsg');
@@ -2660,6 +2874,70 @@ async function loadDirectory_refresh(){
 function wireShops(){
   const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
   const c=document.getElementById('shopCity'); if(c) c.oninput=drawDirectory;
+}
+
+/* ---------- your own details ---------- */
+// Nobody could correct their own name, and a dealer whose firm or GST was
+// typed wrong had to ring the office. The database decides what is editable:
+// role, owner and the admin's private nickname are not sent from here and
+// update_my_profile does not accept them, so this cannot become a way to
+// promote yourself or move yourself to another dealer.
+function openProfile(){
+  const ov2=signOverlay();
+  const sh=document.getElementById('sgnSheet'); if(!sh) return;
+  const trade=!isEndCustomer();
+  sh.innerHTML=
+   '<div class="shead"><strong>Your details</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<p>Your phone number is how you sign in and cannot be changed here. '+
+   'Everything else is yours to correct.</p>'+
+   '<label class="plab2">Phone</label>'+
+   '<input class="sgnin" value="+'+esc(SESS.phone||'')+'" disabled>'+
+   '<label class="plab2">'+(trade?'Your name':'Name')+'</label>'+
+   '<input class="sgnin" id="pfName" value="'+esc(SESS.name||'')+'" autocomplete="name">'+
+   (trade
+     ? '<label class="plab2">Shop or firm</label>'+
+       '<input class="sgnin" id="pfShop" value="'+esc(SESS.shop||'')+'" autocomplete="organization">'
+     : '')+
+   '<label class="plab2">City or area</label>'+
+   '<input class="sgnin" id="pfCity" value="'+esc(SESS.city||'')+'" autocomplete="address-level2">'+
+   (trade
+     ? '<label class="plab2">GST number <span style="font-weight:500;color:var(--tm)">(optional)</span></label>'+
+       '<input class="sgnin" id="pfGst" value="'+esc(SESS.gst||'')+'" maxlength="15" '+
+       'placeholder="15 characters" autocapitalize="characters">'
+     : '')+
+   '<button class="sgnbtn" id="pfSave">Save</button>'+
+   '<button class="sgnbtn ghost" id="pfBack">Back</button>'+
+   '<div class="sgnmsg" id="sgnMsg"></div>'+
+   '<p style="margin-top:14px;font-size:.72rem;color:var(--tm);line-height:1.55">'+
+   'A profile photo is not here yet — it needs a file store setting up, which is a '+
+   'separate job. Everything above saves straight away.</p>'+
+   '</div></div>';
+  ov2.classList.add('open'); document.body.style.overflow='hidden';
+  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  document.getElementById('pfBack').onclick=openSignIn;
+  document.getElementById('pfSave').onclick=async function(){
+    const msg=document.getElementById('sgnMsg');
+    const name=(document.getElementById('pfName').value||'').trim();
+    if(!name){ msg.textContent='Please give a name.'; msg.classList.add('on'); return; }
+    const gEl=document.getElementById('pfGst');
+    const gst=gEl?(gEl.value||'').trim().toUpperCase():'';
+    if(gst && !/^[0-9A-Z]{15}$/.test(gst)){
+      msg.textContent='A GST number is 15 letters and digits.'; msg.classList.add('on'); return;
+    }
+    const b=this; b.disabled=true; b.textContent='Saving…';
+    const shEl=document.getElementById('pfShop');
+    const {error}=await PMAuth.sb.rpc('update_my_profile',{
+      p_name:name,
+      p_shop: shEl?(shEl.value||'').trim()||null:null,
+      p_city:(document.getElementById('pfCity').value||'').trim()||null,
+      p_gst: gst||null });
+    b.disabled=false; b.textContent='Save';
+    if(error){ msg.textContent='Could not save — '+error.message; msg.classList.add('on'); return; }
+    await refreshSession();
+    closeSignIn();
+    toastMsg('Details saved');
+  };
 }
 
 /* ---------- consumer sign-up ---------- */
@@ -2837,9 +3115,10 @@ function repriceSheet(){
       const mrpv = v.mrp!=null ? v.mrp : null;   // printed MRP only, never a guess
       const u='<b class="vunit">/'+unitAbbr(v.unit)+'</b>';
       if(ec){
-        // Never DP — the shop's own offer price if they set one, else MRP.
-        const offer=shopOfferFor(CUR);
-        if(pc) pc.innerHTML = (offer&&offer.price_offer!=null) ? '<b>'+rupee(offer.price_offer)+'</b>'+u
+        // Never DP — the shop's own discount off this size's MRP if they set
+        // one, else the MRP itself.
+        const off=offerPriceOn(CUR, mrpv);
+        if(pc) pc.innerHTML = (off!=null) ? '<b>'+rupee(off)+'</b>'+u
           : (mrpv!=null ? rupee(mrpv)+u : '—');
         if(mc) mc.innerHTML = '';
       } else if(signedIn() && RETAIL.on){

@@ -65,6 +65,22 @@ main{max-width:760px;margin:0 auto;padding:14px}
  letter-spacing:.08em;font-size:.95rem}
 .gate .msg{font-size:.8rem;color:#B4433B;margin-top:11px;display:none}
 .gate .msg.on{display:block}
+
+/* Sign out sat in every header, on every screen, as if leaving were the main
+   thing you came to do. It lives behind this one button now. */
+.acct{position:relative}
+.acctmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:60;min-width:190px;
+ background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);
+ box-shadow:0 14px 34px rgba(var(--sh),.16);padding:6px;display:none}
+.acctmenu.on{display:block}
+.acctmenu .whoami{padding:9px 11px 10px;border-bottom:1px solid var(--bd);margin-bottom:5px}
+.acctmenu .whoami b{display:block;font-size:.85rem}
+.acctmenu .whoami small{font-family:var(--fm);font-size:.66rem;color:var(--tm)}
+.acctmenu button,.acctmenu a{display:block;width:100%;text-align:left;border:0;background:transparent;
+ padding:9px 11px;font-size:.82rem;font-weight:600;color:var(--tx);border-radius:7px;
+ text-decoration:none;font-family:inherit;cursor:pointer}
+.acctmenu button:hover,.acctmenu a:hover{background:var(--sf2)}
+.acctmenu .danger{color:#8A3A32}
 </style>
 <style>
 /* order book */
@@ -83,6 +99,9 @@ main{max-width:760px;margin:0 auto;padding:14px}
 .s-sent{background:#D8F1EC;color:#0F6B5C}
 .s-completed{background:#DCF3DC;color:#2A6B2A}
 .s-cancelled{background:#F6DEDC;color:#8A3A32}
+.s-hold{background:#FFE3C7;color:#8A4B00}
+.s-ok{background:#DCF3DC;color:#2A6B2A}
+.oacts button[disabled]{opacity:.55;cursor:default}
 .tag-office{background:var(--sf2);color:var(--tm)}
 .olines{margin-top:10px;border-top:1px dashed var(--bd);padding-top:9px;display:none}
 .olines.on{display:block}
@@ -107,10 +126,24 @@ main{max-width:760px;margin:0 auto;padding:14px}
 .chosen{display:flex;align-items:center;gap:9px;background:var(--act);border-radius:var(--rs);
  padding:10px 12px;margin-bottom:12px}
 .chosen b{flex:1;font-size:.88rem}
-.lrow{display:grid;grid-template-columns:1fr 74px 84px 34px;gap:7px;align-items:center;margin-bottom:7px}
+.lrow{display:grid;grid-template-columns:1fr 108px 84px 30px;gap:8px;align-items:center;
+ background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:9px 10px;margin-bottom:8px}
 .lrow input,.lrow select{padding:9px 10px;border:1.5px solid var(--bd);border-radius:var(--rs);
  background:var(--sf);font-size:.84rem;width:100%}
-.lrow .x{border:0;background:transparent;color:#8A3A32;font-size:1.1rem;font-weight:800}
+.lrow .x{border:0;background:transparent;color:#8A3A32;font-size:1.2rem;font-weight:800}
+/* A number field alone is fiddly on a phone and lets anyone type a quantity a
+   supplier cannot fill. Steppers move by the minimum; typing is still allowed
+   and gets rounded to a multiple on the way out. */
+.qbox{display:flex;align-items:center;border:1.5px solid var(--bd);border-radius:var(--rs);
+ background:var(--sf);overflow:hidden}
+.qbox button{flex:0 0 30px;border:0;background:var(--sf2);color:var(--tx);font-size:1.05rem;
+ font-weight:800;height:36px;cursor:pointer}
+.qbox button:active{background:var(--prt)}
+.qbox input{border:0!important;text-align:center;padding:9px 2px!important;
+ font-family:var(--fm);font-weight:700;-moz-appearance:textfield}
+.qbox input::-webkit-outer-spin-button,.qbox input::-webkit-inner-spin-button{
+ -webkit-appearance:none;margin:0}
+.lmoq{font-size:.63rem;color:var(--tm);font-family:var(--fm);margin-top:3px}
 .ltot{display:flex;justify-content:space-between;align-items:baseline;
  border-top:1.5px solid var(--bd);margin-top:10px;padding-top:10px;font-weight:800}
 .filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:9px}
@@ -152,7 +185,13 @@ main{max-width:760px;margin:0 auto;padding:14px}
     <div class="sp"></div>
     <a class="ibtn" href="index.html">Catalogue</a>
     <a class="ibtn" href="admin.html">Admin</a>
-    <button class="ibtn" id="outBtn">Sign out</button>
+    <div class="acct">
+      <button class="ibtn" id="acctBtn" aria-label="Account">Account ▾</button>
+      <div class="acctmenu" id="acctMenu">
+        <div class="whoami"></div>
+        <button class="danger" id="outBtn">Sign out</button>
+      </div>
+    </div>
   </div>
   <div class="tabs">
     <button class="tab on" data-t="book">Order book</button>
@@ -205,9 +244,9 @@ main{max-width:760px;margin:0 auto;padding:14px}
 </main>
 </div>
 
-<script src="config.js?v=24"></script>
+<script src="config.js?v=26"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=24"></script>
+<script src="supabase-auth.js?v=26"></script>
 <script>
 (function(){
   const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
@@ -221,12 +260,16 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=n=>n==null?'—':'₹'+Number(n).toLocaleString('en-IN');
 const dg=s=>String(s||'').replace(/\D/g,'');
-let ME=null, P=[], PENDING_PHONE=null;
+let ME=null, P=[], PENDING_PHONE=null, IS_ADMIN=false;
 let ORDERS=[], ITEMS={}, FILTER='open', CUSTOMERS=[], CHOSEN=null, LINES=[];
 
 /* Only Patel Marketing's own side works the order book. */
 const mayOpen=r=>!!r && (r.is_admin || r.role==='staff' || r.role==='admin');
 
+// An order the office has asked the admin to look at. Until the admin says
+// yes it cannot be packed, sent or completed — the database refuses, so this
+// is a label on a real hold rather than a note to be ignored.
+const held=o=>!!o.needs_approval && !o.approved_at;
 const STATUS=['new','confirmed','packed','sent','completed','cancelled'];
 const NEXT={new:'confirmed',confirmed:'packed',packed:'sent',sent:'completed'};
 const VERB={confirmed:'Confirm',packed:'Mark packed',sent:'Mark sent',completed:'Mark completed'};
@@ -288,12 +331,31 @@ $('#gv').onclick=async function(){
   const row=await PMAuth.myAllowlistRow();
   if(mayOpen(row)) start(row); else await PMAuth.signOut();
 })();
-$('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+
+
+/* One account menu, built the same way on every panel screen. */
+function wireAccountMenu(row){
+  const btn=document.getElementById('acctBtn'), menu=document.getElementById('acctMenu');
+  if(!btn||!menu) return;
+  const name=(row&&(row.nickname||row.shop||row.name))||'Signed in';
+  const what=row&&row.is_admin?'admin':row&&row.role==='staff'?'office'
+            :row&&(row.role==='dealer'||row.role==='shop_owner')?'dealer':'';
+  menu.querySelector('.whoami').innerHTML=
+    '<b>'+String(name).replace(/[&<>"]/g,'')+'</b><small>+'+
+    String((row&&row.phone)||'').replace(/[^0-9]/g,'')+(what?' · '+what:'')+'</small>';
+  btn.onclick=function(e){ e.stopPropagation(); menu.classList.toggle('on'); };
+  document.addEventListener('click',function(){ menu.classList.remove('on'); });
+  menu.addEventListener('click',function(e){ e.stopPropagation(); });
+  const out=document.getElementById('outBtn');
+  if(out) out.onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+}
 
 async function start(row){
   ME=row;
   $('#gate').style.display='none'; $('#app').style.display='block';
-  $('#whoLine').textContent=(row.name||'office')+(row.is_admin?' · admin':' · office');
+  wireAccountMenu(row);
+  IS_ADMIN=!!row.is_admin;
+  $('#whoLine').textContent=(row.name||'office')+(IS_ADMIN?' · admin':' · office');
   try{ const r=await fetch('data.json',{cache:'no-cache'}); P=await r.json(); }catch(e){ P=[]; }
   $('#dProducts').innerHTML=P.map(p=>'<option value="'+esc(p.name)+(p.code?' — '+esc(p.code):'')+'">').join('');
   drawFilters();
@@ -312,8 +374,9 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
 
 /* ---------------- the book ---------------- */
 function drawFilters(){
-  const opts=[['open','To do'],['all','All'],['new','New'],['confirmed','Confirmed'],
-              ['packed','Packed'],['sent','Sent'],['completed','Completed'],['cancelled','Cancelled']];
+  const opts=[['open','To do'],['hold','Waiting on admin'],['all','All'],['new','New'],
+              ['confirmed','Confirmed'],['packed','Packed'],['sent','Sent'],
+              ['completed','Completed'],['cancelled','Cancelled']];
   $('#oFilters').innerHTML=opts.map(([k,l])=>
     '<button data-f="'+k+'" class="'+(FILTER===k?'on':'')+'">'+l+'</button>').join('');
   $('#oFilters').onclick=function(e){
@@ -332,6 +395,7 @@ let OQ='';
 function shown(){
   let list=ORDERS;
   if(FILTER==='open') list=list.filter(o=>o.status!=='completed'&&o.status!=='cancelled');
+  else if(FILTER==='hold') list=list.filter(o=>held(o));
   else if(FILTER!=='all') list=list.filter(o=>o.status===FILTER);
   if(OQ){
     const q=OQ.toLowerCase();
@@ -355,16 +419,27 @@ function drawOrders(){
     return '<div class="ocard'+(done?' done':'')+'" data-ref="'+esc(o.ref)+'">'+
       '<div class="ohead"><span class="ocust">'+esc(o.customer)+'</span>'+
         '<span class="chip s-'+o.status+'">'+o.status+'</span>'+
+        (held(o)?'<span class="chip s-hold">waiting on admin</span>':'')+
+        (o.approved_at?'<span class="chip s-ok">approved</span>':'')+
         (o.taken_by_office?'<span class="chip tag-office">office</span>':'')+
         '<span class="sp" style="flex:1"></span><span class="oref">'+esc(o.ref)+'</span></div>'+
       '<div class="ometa">'+o.lines+' line'+(o.lines===1?'':'s')+' · '+o.pieces+' pcs · '+
         money(o.total)+' · '+new Date(o.created_at).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})+
-        (o.note?'<br>'+esc(o.note):'')+'</div>'+
+        (o.note?'<br>'+esc(o.note):'')+
+        (held(o)&&o.approval_reason?'<br><b>Held:</b> '+esc(o.approval_reason):'')+'</div>'+
       '<div class="olines" id="ol-'+esc(o.ref)+'"></div>'+
       '<div class="oacts">'+
         '<button data-show="'+esc(o.ref)+'">Lines</button>'+
-        (nx?'<button class="go" data-next="'+esc(o.ref)+'">'+VERB[nx]+'</button>':'')+
-        '<button data-wa="'+esc(o.ref)+'">Send PO again</button>'+
+        // While it is held, the only way forward is the admin. Offering
+        // "Mark packed" here would just produce an error from the database.
+        (held(o) ? (IS_ADMIN
+              ? '<button class="go" data-approve="'+esc(o.ref)+'">Approve</button>'+
+                '<button class="warn" data-reject="'+esc(o.ref)+'">Reject</button>'
+              : '<button disabled title="An admin has to approve this first">Waiting on admin</button>')
+          : (nx?'<button class="go" data-next="'+esc(o.ref)+'">'+VERB[nx]+'</button>':''))+
+        (!held(o)&&!done?'<button data-hold="'+esc(o.ref)+'">Ask admin</button>':'')+
+        '<button data-wa="'+esc(o.ref)+'">Send PO</button>'+
+        '<button data-pdf="'+esc(o.ref)+'">PO as PDF</button>'+
         (done?'':'<button class="warn" data-cancel="'+esc(o.ref)+'">Cancel</button>')+
       '</div></div>';
   }).join('') : '<div class="empty">'+
@@ -382,8 +457,70 @@ $('#oList').onclick=async function(e){
   if(cancel){ if(confirm('Cancel '+cancel.dataset.cancel+'?')) await move(cancel.dataset.cancel,'cancelled'); return; }
   if(wa){ const o=ORDERS.find(x=>x.ref===wa.dataset.wa);
     const its=await lines(o.ref);
-    window.open('https://wa.me/'+o.customer_phone+'?text='+encodeURIComponent(poText(o,its)),'_blank'); }
+    window.open('https://wa.me/'+o.customer_phone+'?text='+encodeURIComponent(poText(o,its)),'_blank'); return; }
+  const pdf=e.target.closest('[data-pdf]');
+  if(pdf){ const o=ORDERS.find(x=>x.ref===pdf.dataset.pdf);
+    downloadPO(o, await lines(o.ref)); return; }
+  const hold=e.target.closest('[data-hold]');
+  if(hold){
+    const why=prompt('What do you want the admin to check?\n(e.g. new dealer, rate looks wrong)');
+    if(why===null) return;
+    const {error}=await PMAuth.sb.rpc('request_approval',{p_ref:hold.dataset.hold,p_reason:why.trim()||null});
+    if(error){ alert('Could not flag it — '+error.message); return; }
+    await loadOrders(); return;
+  }
+  const ap=e.target.closest('[data-approve]'), rj=e.target.closest('[data-reject]');
+  if(ap||rj){
+    const ref=(ap||rj).dataset.approve||(ap||rj).dataset.reject;
+    if(rj && !confirm('Reject '+ref+'? It will be cancelled.')) return;
+    const {error}=await PMAuth.sb.rpc('approve_order',{p_ref:ref,p_ok:!!ap});
+    if(error){ alert('Could not do that — '+error.message); return; }
+    await loadOrders(); return;
+  }
 };
+
+/* A purchase order as a printable page. The text version is fine on WhatsApp
+   but a customer filing it, or an accountant, wants something that looks like
+   a document. Uses the browser's own print-to-PDF rather than a library. */
+function downloadPO(o, items){
+  const rows=items.map((i,ix)=>'<tr class="'+(ix%2?'z':'')+'">'+
+    '<td>'+esc(i.name)+'</td><td>'+esc(i.size||'')+'</td>'+
+    '<td class="n">'+i.qty+'</td>'+
+    '<td class="n">'+(i.price!=null?'₹'+i.price:'on request')+'</td>'+
+    '<td class="n">'+(i.price!=null?'₹'+(i.price*i.qty).toLocaleString('en-IN'):'—')+'</td></tr>').join('');
+  const html='<!DOCTYPE html><html><head><meta charset="utf-8">'+
+    '<title>'+esc(o.ref)+'</title><style>'+
+    'body{font-family:Inter,-apple-system,sans-serif;color:#0D2137;margin:0;padding:34px}'+
+    'h1{font-size:1.15rem;margin:0 0 2px}.sub{color:#5B7690;font-size:.8rem}'+
+    '.top{display:flex;justify-content:space-between;align-items:flex-start;'+
+    'border-bottom:2px solid #0D2137;padding-bottom:12px;margin-bottom:16px}'+
+    '.ref{font-family:ui-monospace,monospace;font-size:.82rem;text-align:right}'+
+    'table{width:100%;border-collapse:collapse;font-size:.83rem}'+
+    'th{text-align:left;font-size:.64rem;text-transform:uppercase;letter-spacing:.06em;'+
+    'color:#5B7690;border-bottom:1px solid #D6E6F2;padding:0 8px 6px}'+
+    'td{padding:8px;border-bottom:1px solid #EEF4F9}.n{text-align:right;'+
+    'font-family:ui-monospace,monospace}tr.z td{background:#F7FBFE}'+
+    'tfoot td{font-weight:800;border-top:2px solid #0D2137}'+
+    '.note{margin-top:18px;font-size:.78rem;color:#5B7690;line-height:1.6}'+
+    '@media print{body{padding:0}}</style></head><body>'+
+    '<div class="top"><div><h1>Purchase Order</h1>'+
+    '<div class="sub">Patel Marketing · Wholesale Kitchenware</div></div>'+
+    '<div class="ref">'+esc(o.ref)+'<br>'+
+    new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})+
+    '</div></div>'+
+    '<div class="sub" style="margin-bottom:14px"><b>To:</b> '+esc(o.customer)+
+    ' · +'+esc(o.customer_phone||'')+'</div>'+
+    '<table><thead><tr><th>Product</th><th>Size</th><th class="n">Qty</th>'+
+    '<th class="n">Rate</th><th class="n">Amount</th></tr></thead><tbody>'+rows+'</tbody>'+
+    '<tfoot><tr><td colspan="4" class="n">Total</td><td class="n">'+money(o.total)+'</td></tr></tfoot>'+
+    '</table>'+(o.note?'<div class="note"><b>Note:</b> '+esc(o.note)+'</div>':'')+
+    '<div class="note">Reply on WhatsApp to change anything on this order.</div>'+
+    '</body></html>';
+  const w=window.open('','_blank');
+  if(!w){ alert('Allow pop-ups to save the PO as a PDF.'); return; }
+  w.document.write(html); w.document.close();
+  w.onload=function(){ w.focus(); w.print(); };
+}
 async function lines(ref){
   if(ITEMS[ref]) return ITEMS[ref];
   const o=ORDERS.find(x=>x.ref===ref); if(!o) return [];
@@ -455,8 +592,20 @@ $('#pSearch').oninput=function(){
   if(p){ addLine(p); this.value=''; $('#pHint').textContent=''; }
 };
 function addLine(p){
-  const vs=(p.variants&&p.variants.length)?p.variants:[{size:'Standard',price:p.price,mrp:p.mrp,unit:'Piece'}];
-  LINES.push({slug:p.slug, name:p.name, sizes:vs, six:0, qty:1});
+  const vs=(p.variants&&p.variants.length) ? p.variants
+    : ((p.sizes&&p.sizes.length)
+        // The plain text size list some products carry instead of priced rows.
+        ? p.sizes.map(z=>({size:z,price:null,mrp:null,unit:'Piece',moq:null}))
+        : [{size:'Standard',price:p.price,mrp:p.mrp,unit:'Piece',moq:null}]);
+  const moq=(vs[0]&&vs[0].moq>0)?vs[0].moq:1;
+  LINES.push({slug:p.slug, name:p.name, sizes:vs, six:0, qty:moq, price:null});
+  drawLines();
+}
+// Round to what the supplier can actually send.
+function stepQty(ix, dir){
+  const l=LINES[ix]; if(!l) return;
+  const v=l.sizes[l.six]||{}, step=(v.moq&&v.moq>1)?v.moq:1;
+  l.qty=Math.max(step, (l.qty||step) + dir*step);
   drawLines();
 }
 function drawLines(){
@@ -471,8 +620,12 @@ function drawLines(){
               (s.price!=null?' — ₹'+s.price:'')+'</option>').join('')+'</select>'
           : '<div style="font-size:.72rem;color:var(--tm)">'+esc(v.size||'Standard')+'</div>')+
       '</div>'+
-      '<input type="number" min="1" value="'+l.qty+'" data-q="'+ix+'">'+
-      '<input type="number" value="'+(v.price!=null?v.price:'')+'" data-p="'+ix+'" placeholder="rate">'+
+      '<div><div class="qbox">'+
+        '<button data-dn="'+ix+'" aria-label="Less">−</button>'+
+        '<input type="number" min="1" step="'+(v.moq||1)+'" value="'+l.qty+'" data-q="'+ix+'">'+
+        '<button data-up="'+ix+'" aria-label="More">+</button></div>'+
+        (v.moq&&v.moq>1?'<div class="lmoq">in '+v.moq+'s</div>':'')+'</div>'+
+      '<input type="number" value="'+(l.price!=null?l.price:(v.price!=null?v.price:''))+'" data-p="'+ix+'" placeholder="rate">'+
       '<button class="x" data-x="'+ix+'">×</button></div>';
   }).join('') : '<div style="font-size:.82rem;color:var(--tm);padding:6px 0">'+
       'Nothing added yet — search a product above.</div>';
@@ -486,9 +639,25 @@ $('#lines').oninput=function(e){
   const q=e.target.closest('[data-q]'), pr=e.target.closest('[data-p]'), sz=e.target.closest('[data-sz]');
   if(q){ LINES[+q.dataset.q].qty=Math.max(1,+q.value||1); $('#lTotal').textContent=money(total()); }
   if(pr){ LINES[+pr.dataset.p].price=pr.value===''?null:+pr.value; $('#lTotal').textContent=money(total()); }
-  if(sz){ const l=LINES[+sz.dataset.sz]; l.six=+sz.value; l.price=null; drawLines(); }
+  if(sz){ const l=LINES[+sz.dataset.sz];
+    l.six=+sz.value; l.price=null;
+    const v=l.sizes[l.six]||{};
+    if(v.moq&&v.moq>1) l.qty=Math.max(v.moq, Math.round(l.qty/v.moq)*v.moq);
+    drawLines(); }
 };
+// Typing is allowed while the field has focus; the multiple is enforced when
+// they leave it, so the number does not fight them mid-keystroke.
+$('#lines').addEventListener('change',function(e){
+  const q=e.target.closest('[data-q]'); if(!q) return;
+  const l=LINES[+q.dataset.q], v=l.sizes[l.six]||{};
+  const step=(v.moq&&v.moq>1)?v.moq:1;
+  l.qty=Math.max(step, Math.round((+q.value||step)/step)*step);
+  drawLines();
+});
 $('#lines').onclick=function(e){
+  const up=e.target.closest('[data-up]'), dn=e.target.closest('[data-dn]');
+  if(up){ stepQty(+up.dataset.up, +1); return; }
+  if(dn){ stepQty(+dn.dataset.dn, -1); return; }
   const x=e.target.closest('[data-x]'); if(!x) return;
   LINES.splice(+x.dataset.x,1); drawLines();
 };
