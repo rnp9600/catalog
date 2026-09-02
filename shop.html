@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>Your Customers — Patel Marketing</title>
+<title>Your Shop — Patel Marketing</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{--r:14px;--rs:9px;--fd:'Inter',-apple-system,sans-serif;--fm:'IBM Plex Mono',monospace}
@@ -90,6 +90,22 @@ main{max-width:760px;margin:0 auto;padding:14px}
  letter-spacing:.08em;font-size:.95rem}
 .gate .msg{font-size:.8rem;color:#B4433B;margin-top:11px;display:none}
 .gate .msg.on{display:block}
+
+/* Sign out sat in every header, on every screen, as if leaving were the main
+   thing you came to do. It lives behind this one button now. */
+.acct{position:relative}
+.acctmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:60;min-width:190px;
+ background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);
+ box-shadow:0 14px 34px rgba(var(--sh),.16);padding:6px;display:none}
+.acctmenu.on{display:block}
+.acctmenu .whoami{padding:9px 11px 10px;border-bottom:1px solid var(--bd);margin-bottom:5px}
+.acctmenu .whoami b{display:block;font-size:.85rem}
+.acctmenu .whoami small{font-family:var(--fm);font-size:.66rem;color:var(--tm)}
+.acctmenu button,.acctmenu a{display:block;width:100%;text-align:left;border:0;background:transparent;
+ padding:9px 11px;font-size:.82rem;font-weight:600;color:var(--tx);border-radius:7px;
+ text-decoration:none;font-family:inherit;cursor:pointer}
+.acctmenu button:hover,.acctmenu a:hover{background:var(--sf2)}
+.acctmenu .danger{color:#8A3A32}
 </style>
 </head>
 <body data-theme="sky">
@@ -120,10 +136,16 @@ main{max-width:760px;margin:0 auto;padding:14px}
 <header>
   <div class="hin">
     <div class="mark">PM</div>
-    <div><b>Your Customers</b><div class="who" id="whoLine"></div></div>
+    <div><b>Your Shop</b><div class="who" id="whoLine"></div></div>
     <div class="sp"></div>
     <a class="ibtn" href="index.html">Catalogue</a>
-    <button class="ibtn" id="outBtn">Sign out</button>
+    <div class="acct">
+      <button class="ibtn" id="acctBtn" aria-label="Account">Account ▾</button>
+      <div class="acctmenu" id="acctMenu">
+        <div class="whoami"></div>
+        <button class="danger" id="outBtn">Sign out</button>
+      </div>
+    </div>
   </div>
   <div class="tabs">
     <button class="tab on" data-t="custs">Customers</button>
@@ -163,9 +185,9 @@ main{max-width:760px;margin:0 auto;padding:14px}
   </section>
 
   <section class="panel" id="p-offers">
-    <div class="note"><b>Set what your customers see.</b>
-      Pick a product, mark it in stock / arriving / kept aside, and add a price if you're offering
-      something special. Only your own customers see this.</div>
+    <div class="note"><b>Set what your own customers see on a product.</b>
+      Mark it in stock, arriving, or kept aside, and add a discount off MRP if you want to.
+      Only the customers on your list see this — it does not change anything for anyone else.</div>
     <div class="fg"><label>Product</label>
       <input id="fProduct" list="dProducts" placeholder="Search by name, brand or code…">
       <datalist id="dProducts"></datalist>
@@ -175,11 +197,17 @@ main{max-width:760px;margin:0 auto;padding:14px}
       <div class="fg"><label>Status</label>
         <select id="fStatus"><option value="in_stock">In stock</option><option value="arriving">Arriving</option><option value="held">Kept aside</option></select>
       </div>
-      <div class="fg"><label>Offer price (₹, optional)</label><input id="fPrice" type="number" min="0"></div>
+      <div class="fg"><label>Discount off MRP (optional)</label>
+        <input id="fPct" type="number" min="0" max="25" step="1" placeholder="0">
+        <div class="hint" style="font-size:.7rem;color:var(--tm);margin-top:4px">
+          Up to 25%. You set how much you will come down, not the price itself, so the same
+          product is not advertised at two different prices by two shops.</div></div>
     </div>
     <div class="fg"><label>Note (optional)</label><input id="fNote" placeholder="e.g. 'kept aside for you until Friday'"></div>
     <button class="btn g" id="offerGo" style="width:100%">Save</button>
-    <h4 style="font-size:.8rem;margin:20px 0 8px;font-weight:800">Your current offers</h4>
+    <h4 style="font-size:.8rem;margin:20px 0 4px;font-weight:800">What you have set so far</h4>
+    <p style="font-size:.73rem;color:var(--tm);margin-bottom:9px">Everything below is live for your
+      customers right now. Tap Remove to take one down.</p>
     <div id="offerList"></div>
   </section>
 </main>
@@ -268,11 +296,29 @@ $('#gv').onclick=async function(){
   const row=await PMAuth.myAllowlistRow();
   if(row && isDealer(row)) start(row); else await PMAuth.signOut();
 })();
-$('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+
+
+/* One account menu, built the same way on every panel screen. */
+function wireAccountMenu(row){
+  const btn=document.getElementById('acctBtn'), menu=document.getElementById('acctMenu');
+  if(!btn||!menu) return;
+  const name=(row&&(row.nickname||row.shop||row.name))||'Signed in';
+  const what=row&&row.is_admin?'admin':row&&row.role==='staff'?'office'
+            :row&&(row.role==='dealer'||row.role==='shop_owner')?'dealer':'';
+  menu.querySelector('.whoami').innerHTML=
+    '<b>'+String(name).replace(/[&<>"]/g,'')+'</b><small>+'+
+    String((row&&row.phone)||'').replace(/[^0-9]/g,'')+(what?' · '+what:'')+'</small>';
+  btn.onclick=function(e){ e.stopPropagation(); menu.classList.toggle('on'); };
+  document.addEventListener('click',function(){ menu.classList.remove('on'); });
+  menu.addEventListener('click',function(e){ e.stopPropagation(); });
+  const out=document.getElementById('outBtn');
+  if(out) out.onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+}
 
 async function start(row){
   ME=row;
   $('#gate').style.display='none'; $('#app').style.display='block';
+  wireAccountMenu(row);
   $('#whoLine').textContent=(row.shop||row.nickname||row.name||'your shop')+
     (row.dealer_type==='wholesaler'?' · wholesale':'')+(row.city?' · '+row.city:'');
   const r=await fetch('data.json',{cache:'no-cache'});
@@ -412,17 +458,23 @@ $('#fProduct').oninput=function(){
 $('#offerGo').onclick=async function(){
   const p=findProduct($('#fProduct').value);
   if(!p){ alert('Pick a real product from the list — start typing its name.'); return; }
+  let pct = $('#fPct').value==='' ? null : Math.round(+$('#fPct').value);
+  if(pct!=null && (isNaN(pct) || pct<0 || pct>25)){
+    alert('A discount can be between 0 and 25 percent off MRP.'); return;
+  }
+  if(pct===0) pct=null;
   const payload={
     shop_phone: ME.phone, product_slug: p.slug, status: $('#fStatus').value,
     note: $('#fNote').value.trim()||null,
-    price_offer: $('#fPrice').value?+$('#fPrice').value:null,
+    discount_pct: pct,
+    price_offer: null,          // no longer written — see the column comment
     updated_at: new Date().toISOString(),
   };
   const go=$('#offerGo'); go.disabled=true; go.textContent='Saving…';
   const {error}=await PMAuth.sb.from('shop_offers').upsert(payload,{onConflict:'shop_phone,product_slug'});
   go.disabled=false; go.textContent='Save';
   if(error){ alert('Could not save — '+error.message); return; }
-  $('#fProduct').value=''; $('#fNote').value=''; $('#fPrice').value=''; $('#productHint').textContent='';
+  $('#fProduct').value=''; $('#fNote').value=''; $('#fPct').value=''; $('#productHint').textContent='';
   await loadOffers();
 };
 async function loadOffers(){
@@ -432,9 +484,12 @@ async function loadOffers(){
     const p=P.find(x=>x.slug===o.product_slug);
     return '<div class="item"><div class="t"><div class="n">'+(p?esc(p.name):o.product_slug)+'</div>'+
       '<div class="s">'+(STATUS_LABEL[o.status]||o.status)+
-      (o.price_offer!=null?' · '+money(o.price_offer):'')+(o.note?' · '+esc(o.note):'')+'</div></div>'+
+      (o.discount_pct?' · '+o.discount_pct+'% off MRP'
+        :(o.price_offer!=null?' · '+money(o.price_offer)+' (old style)':''))+
+      (o.note?' · '+esc(o.note):'')+'</div></div>'+
       '<button class="ibtn" data-rm="'+o.id+'">Remove</button></div>';
-  }).join('') : '<div class="empty">No offers set yet.</div>';
+  }).join('') : '<div class="empty">Nothing set yet. Pick a product above, choose whether it is '+
+      'in stock, and save — your customers will see it on that product.</div>';
   $('#offerList').onclick=async function(e){
     const b=e.target.closest('[data-rm]'); if(!b) return;
     const {error}=await PMAuth.sb.from('shop_offers').delete().eq('id',+b.dataset.rm);

@@ -653,6 +653,18 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
 .oplaced b{display:block;font-size:1rem;font-weight:800}
 .oplaced .oref2{font-family:var(--fm);font-size:.8rem;color:var(--tm);margin-top:3px}
 .oplaced p{font-size:.78rem;color:var(--tm);margin-top:8px;line-height:1.55}
+/* The contact line on a saved catalogue, when the reader follows no shop. */
+.pcover .wa.nofollow{line-height:1.7}
+.pcover .wa.nofollow span{display:block;font-size:.66rem;opacity:.75;margin-top:4px;font-weight:500}
+/* Category headings when a whole brand is being browsed. The grid rules live
+   on #g, so a grouped run needs its own grid inside each heading's section. */
+.grouphd{grid-column:1/-1;display:flex;align-items:baseline;gap:9px;margin:22px 2px 2px;
+ font-size:1.02rem;font-weight:800;letter-spacing:-.02em}
+.grouphd:first-child{margin-top:6px}
+.grouphd span{font-family:var(--fm);font-size:.66rem;font-weight:600;color:var(--tm);
+ background:var(--sf2);border-radius:999px;padding:3px 8px}
+.groupgrid{grid-column:1/-1;display:grid;gap:14px;
+ grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}
 .sgnin{width:100%;padding:13px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);
  background:var(--sf);font-size:.9rem;margin-bottom:10px}
 .linkish{border:0;background:transparent;color:inherit;text-decoration:underline;
@@ -1057,23 +1069,32 @@ function bindChips(el,onPick){
 function afterFilterChange(){ rebuildFilters(); render(); }
 
 function rebuildFilters(){
-  const catVals=orderBy([...new Set(P.map(p=>p.cat))].filter(Boolean),CAT_FIRST,CAT_LAST);
+  // Chips are built from the products still in play, not from the whole
+  // catalogue. Picking Mazda used to keep offering Cast Iron, which Mazda does
+  // not make: tapping it gave nothing and the reader had to work out why. A
+  // filter that is missing now means there is nothing of that kind here.
+  const inBrand = fb==='All' ? P : P.filter(p=>p.brand===fb);
+  const catVals=orderBy([...new Set(inBrand.map(p=>p.cat))].filter(Boolean),CAT_FIRST,CAT_LAST);
   const pickCat=v=>{fc=v;fs='All';afterFilterChange();};
 
   const railEl=document.getElementById('catrail');
-  railEl.innerHTML=chipsHTML(catVals,'cat',fc,P,'All',true);
+  railEl.innerHTML=chipsHTML(catVals,'cat',fc,inBrand,'All',true);
   bindChips(railEl,pickCat);
 
   const cfEl=document.getElementById('cf');
-  cfEl.innerHTML=chipsHTML(catVals,'cat',fc,P,'All categories',false);
+  cfEl.innerHTML=chipsHTML(catVals,'cat',fc,inBrand,'All categories',false);
   bindChips(cfEl,pickCat);
+
+  // A category that no longer exists inside the chosen brand cannot stay
+  // selected, or the screen shows nothing with no way back.
+  if(fc!=='All' && catVals.indexOf(fc)<0){ fc='All'; fs='All'; }
 
   const subwrap=document.getElementById('subwrap');
   const sfEl=document.getElementById('sf');
   if(fc==='All'){
     subwrap.style.display='none'; sfEl.innerHTML='';
   }else{
-    const scope=P.filter(p=>p.cat===fc);
+    const scope=inBrand.filter(p=>p.cat===fc);
     const subVals=[...new Set(scope.map(p=>p.sub))].filter(Boolean).sort();
     if(subVals.length<2){
       subwrap.style.display='none'; sfEl.innerHTML=''; fs='All';
@@ -1084,6 +1105,8 @@ function rebuildFilters(){
     }
   }
 
+  // The brand list stays whole: it is how you change brand, so narrowing it to
+  // the current one would strand you there.
   const brandVals=orderBy([...new Set(P.map(p=>p.brand))].filter(Boolean),BRAND_FIRST,[]);
   const bfEl=document.getElementById('bf');
   bfEl.innerHTML=chipsHTML(brandVals,'brand',fb,P,'All brands',false);
@@ -1170,12 +1193,29 @@ function priceRows(p,i){
 }
 function render(){
   VIEW=P.filter(match);
-  // The price-list view is a real table, not cards laid out to look like one:
-  // every size gets its own line with its own rate, matching the Price list PDF.
-  // Cards stay one-per-product in every other view.
-  g.innerHTML = document.body.classList.contains('v-table')
-    ? VIEW.map(priceRows).join('')
-    : VIEW.map(card).join('');
+  const table=document.body.classList.contains('v-table');
+  // Browsing a whole brand is browsing a range, and a range has shape: all the
+  // salt and pepper together, then the oil pourers. Ungrouped it was 197 cards
+  // in whatever order the file happened to be in. Only when a brand is the
+  // only thing chosen — once a category is picked the grouping would be one
+  // heading over everything.
+  const grouped = !table && fb!=='All' && fc==='All' && !q;
+  if(grouped){
+    const order=orderBy([...new Set(VIEW.map(p=>p.cat))].filter(Boolean),CAT_FIRST,CAT_LAST);
+    let out='', n=0;
+    order.forEach(cat=>{
+      const list=VIEW.filter(p=>p.cat===cat);
+      if(!list.length) return;
+      out+='<h3 class="grouphd">'+esc(cat)+'<span>'+list.length+'</span></h3>'+
+           '<div class="groupgrid">'+list.map((p,i)=>card(p,n+i)).join('')+'</div>';
+      n+=list.length;
+    });
+    // card() indexes into VIEW, so VIEW has to match the order they are drawn.
+    VIEW=order.flatMap(cat=>VIEW.filter(p=>p.cat===cat));
+    g.innerHTML=out;
+  } else {
+    g.innerHTML = table ? VIEW.map(priceRows).join('') : VIEW.map(card).join('');
+  }
   em.style.display=VIEW.length?'none':'block';
   document.getElementById('bc').textContent=VIEW.length+' of '+P.length+' shown';
   document.getElementById('bh').textContent=
@@ -1502,7 +1542,27 @@ function pdfCover(list){
     <div class="sub">Wholesale Kitchenware \u2014 ${pdfScopeLabel()}</div>
     <div class="meta">${list.length} products \u00b7 ${rows} sizes<br>
       ${priced} of ${list.length} products have pricing<br>${d}</div>
-    <div class="wa">WhatsApp ${WA_NUMBER.replace(/^91/,'+91 ')}</div></div>`;
+    ${pdfContactBlock()}</div>`;
+}
+
+// Who the reader of this PDF should ring. A consumer saving the catalogue must
+// not be given Patel Marketing's number — we are wholesale, they buy from a
+// shop — so it carries their own shop's name and number instead. If they have
+// not chosen a shop yet, it says so and leaves the number blank rather than
+// printing ours by default and sending retail calls to the wrong place.
+function pdfContactBlock(){
+  if(!isEndCustomer()){
+    return `<div class="wa">Patel Marketing · WhatsApp ${WA_NUMBER.replace(/^91/,'+91 ')}</div>`;
+  }
+  const shop=SHOP_INFO;
+  if(shop){
+    const nm=shop.shop||shop.name||'Your shop';
+    const ph=String(shop.phone||'').replace(/^91/,'+91 ');
+    return `<div class="wa">Buy from <b>${esc(nm)}</b>${ph?' · '+esc(ph):''}</div>`;
+  }
+  return `<div class="wa nofollow">Your shop: ________________________<br>
+    <span>You have not chosen a shop yet. Pick one in the catalogue and their
+    name, number and any discount they offer will print here.</span></div>`;
 }
 
 function pdfTable(groups){
@@ -1593,7 +1653,11 @@ function pdfRefresh(){
   const rows=P.filter(match).reduce((a,p)=>a+pdfRows(p).length,0);
   document.getElementById('pdfScope').innerHTML=
     `Exporting <b>${n} products</b> (${rows} sizes) \u2014 <b>${pdfScopeLabel()}</b>.<br>`
-    +`Change the filters behind this dialog to narrow it down.`;
+    +`Change the filters behind this dialog to narrow it down.`
+    + ((isEndCustomer() && !SHOP_INFO)
+        ? `<br><br><b>You have not chosen a shop yet.</b> Follow one and this PDF will carry
+           their name and number, and any discount they offer, instead of a blank.`
+        : '');
   document.getElementById('layoutHint').textContent = PDFO.layout==='table'
     ? 'One line per size. Compact, for office use and price checking.'
     : 'Large photos with sizes listed under each product. For sending to customers.';
@@ -1951,6 +2015,18 @@ const esc = s => String(s==null?'':s).replace(/[&<>"]/g,
 let SHOP_INFO=null, SHOP_OFFERS={}, SHOP_LIST=[];
 const SHOP_KEY='v3_pm_shop';
 function shopOfferFor(p){ return SHOP_OFFERS[p.slug] || null; }
+// What the shop's offer works out to on a given MRP. A dealer sets a
+// percentage off, capped at 25 in the database, rather than a price of their
+// own — so the same product is never advertised at two different prices by two
+// shops. price_offer is the older free-text field, honoured where one is still
+// stored but never written now.
+function offerPriceOn(p, mrpVal){
+  const o=shopOfferFor(p);
+  if(!o) return null;
+  if(o.discount_pct && mrpVal!=null) return Math.round(mrpVal*(1-o.discount_pct/100));
+  if(o.price_offer!=null) return o.price_offer;
+  return null;
+}
 async function loadShopContext(){
   SHOP_INFO=null; SHOP_OFFERS={}; SHOP_LIST=[];
   if(!isEndCustomer()) return;
@@ -2349,11 +2425,12 @@ function priceLine(p){
      customer IS signed in, and with no MRP to show they used to fall through
      to it and be shown DP. */
   if(isEndCustomer()){
-    const offer=shopOfferFor(p);
-    if(offer && offer.price_offer!=null){
+    const o=shopOfferFor(p);
+    const off=offerPriceOn(p, mrp?mrp.lo:null);
+    if(off!=null){
       return (mrp?'<span class="pmrp cut">'+fmt(mrp)+'</span> ':'')+
-             '<span class="pdp">'+rupee(offer.price_offer)+'</span>'+
-             '<span class="poff">SPECIAL</span>';
+             '<span class="pdp">'+rupee(off)+'</span>'+
+             '<span class="poff">'+(o&&o.discount_pct?o.discount_pct+'% OFF':'SPECIAL')+'</span>';
     }
     if(mrp) return '<span class="plab">Price</span><span class="pdp">'+fmt(mrp)+'</span>';
     return '<span class="ph">Ask in the shop</span>';
@@ -2428,7 +2505,17 @@ function menuSignHtml(){
         'text-decoration:none;margin-top:4px">Orders</a>'
       : '';
     const isDlr = SESS.role==='dealer'||SESS.role==='shop_owner';
-    const trade = (isDlr||SESS.admin||SESS.role==='staff')
+    // ── SHELVED: dealer-to-dealer stock exchange ──────────────────────────
+    // exchange.html and its catalog.stock_listings table are intact and the
+    // access rules still work; the way in is simply not shown. Parked in
+    // September 2026 because it was not ready to put in front of dealers —
+    // opening it flashed the sign-in gate before the screen appeared, which
+    // read as the page reloading itself. That is the gate rendering while the
+    // session is still being checked, the same shape of problem the catalogue
+    // solves by keeping its own panel closed until refreshSession() answers.
+    // Fix that before bringing it back. To restore: set SHOW_EXCHANGE = true.
+    const SHOW_EXCHANGE = false;
+    const trade = (SHOW_EXCHANGE && (isDlr||SESS.admin||SESS.role==='staff'))
       ? '<a class="sgnbtn ghost" href="exchange.html" style="display:block;text-align:center;'+
         'text-decoration:none;margin-top:4px">Stock exchange</a>'
       : '';
@@ -2958,9 +3045,10 @@ function repriceSheet(){
       const mrpv = v.mrp!=null ? v.mrp : null;   // printed MRP only, never a guess
       const u='<b class="vunit">/'+unitAbbr(v.unit)+'</b>';
       if(ec){
-        // Never DP — the shop's own offer price if they set one, else MRP.
-        const offer=shopOfferFor(CUR);
-        if(pc) pc.innerHTML = (offer&&offer.price_offer!=null) ? '<b>'+rupee(offer.price_offer)+'</b>'+u
+        // Never DP — the shop's own discount off this size's MRP if they set
+        // one, else the MRP itself.
+        const off=offerPriceOn(CUR, mrpv);
+        if(pc) pc.innerHTML = (off!=null) ? '<b>'+rupee(off)+'</b>'+u
           : (mrpv!=null ? rupee(mrpv)+u : '—');
         if(mc) mc.innerHTML = '';
       } else if(signedIn() && RETAIL.on){

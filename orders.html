@@ -65,6 +65,22 @@ main{max-width:760px;margin:0 auto;padding:14px}
  letter-spacing:.08em;font-size:.95rem}
 .gate .msg{font-size:.8rem;color:#B4433B;margin-top:11px;display:none}
 .gate .msg.on{display:block}
+
+/* Sign out sat in every header, on every screen, as if leaving were the main
+   thing you came to do. It lives behind this one button now. */
+.acct{position:relative}
+.acctmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:60;min-width:190px;
+ background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);
+ box-shadow:0 14px 34px rgba(var(--sh),.16);padding:6px;display:none}
+.acctmenu.on{display:block}
+.acctmenu .whoami{padding:9px 11px 10px;border-bottom:1px solid var(--bd);margin-bottom:5px}
+.acctmenu .whoami b{display:block;font-size:.85rem}
+.acctmenu .whoami small{font-family:var(--fm);font-size:.66rem;color:var(--tm)}
+.acctmenu button,.acctmenu a{display:block;width:100%;text-align:left;border:0;background:transparent;
+ padding:9px 11px;font-size:.82rem;font-weight:600;color:var(--tx);border-radius:7px;
+ text-decoration:none;font-family:inherit;cursor:pointer}
+.acctmenu button:hover,.acctmenu a:hover{background:var(--sf2)}
+.acctmenu .danger{color:#8A3A32}
 </style>
 <style>
 /* order book */
@@ -152,7 +168,13 @@ main{max-width:760px;margin:0 auto;padding:14px}
     <div class="sp"></div>
     <a class="ibtn" href="index.html">Catalogue</a>
     <a class="ibtn" href="admin.html">Admin</a>
-    <button class="ibtn" id="outBtn">Sign out</button>
+    <div class="acct">
+      <button class="ibtn" id="acctBtn" aria-label="Account">Account ▾</button>
+      <div class="acctmenu" id="acctMenu">
+        <div class="whoami"></div>
+        <button class="danger" id="outBtn">Sign out</button>
+      </div>
+    </div>
   </div>
   <div class="tabs">
     <button class="tab on" data-t="book">Order book</button>
@@ -288,11 +310,29 @@ $('#gv').onclick=async function(){
   const row=await PMAuth.myAllowlistRow();
   if(mayOpen(row)) start(row); else await PMAuth.signOut();
 })();
-$('#outBtn').onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+
+
+/* One account menu, built the same way on every panel screen. */
+function wireAccountMenu(row){
+  const btn=document.getElementById('acctBtn'), menu=document.getElementById('acctMenu');
+  if(!btn||!menu) return;
+  const name=(row&&(row.nickname||row.shop||row.name))||'Signed in';
+  const what=row&&row.is_admin?'admin':row&&row.role==='staff'?'office'
+            :row&&(row.role==='dealer'||row.role==='shop_owner')?'dealer':'';
+  menu.querySelector('.whoami').innerHTML=
+    '<b>'+String(name).replace(/[&<>"]/g,'')+'</b><small>+'+
+    String((row&&row.phone)||'').replace(/[^0-9]/g,'')+(what?' · '+what:'')+'</small>';
+  btn.onclick=function(e){ e.stopPropagation(); menu.classList.toggle('on'); };
+  document.addEventListener('click',function(){ menu.classList.remove('on'); });
+  menu.addEventListener('click',function(e){ e.stopPropagation(); });
+  const out=document.getElementById('outBtn');
+  if(out) out.onclick=async function(){ await PMAuth.signOut(); location.reload(); };
+}
 
 async function start(row){
   ME=row;
   $('#gate').style.display='none'; $('#app').style.display='block';
+  wireAccountMenu(row);
   $('#whoLine').textContent=(row.name||'office')+(row.is_admin?' · admin':' · office');
   try{ const r=await fetch('data.json',{cache:'no-cache'}); P=await r.json(); }catch(e){ P=[]; }
   $('#dProducts').innerHTML=P.map(p=>'<option value="'+esc(p.name)+(p.code?' — '+esc(p.code):'')+'">').join('');
