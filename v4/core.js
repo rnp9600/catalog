@@ -257,6 +257,44 @@ function search(q, scope){
   return {q:raw, hits:[], note:null};
 }
 
+/* ---------- 4b. promo strips --------------------------------------- */
+/* A strip in config.js matches on FIVE things: words in the name, alias or
+   sub-group, and exact sub / brand / category / code. The V4 hero used to
+   link to a search for the first word only, so "Ganesh Chaturthi" — six
+   products across two sub-groups — opened on the two called "modak" and
+   the four samosa and gujiya moulds vanished. Same rule as V3 now, in one
+   place, with a route of its own so the strip can be shared and gone back
+   to. */
+const allPromos = () => {
+  const list = (CFG.promos && CFG.promos.length) ? CFG.promos.slice()
+    : ((CFG.festive && CFG.festive.enabled) ? [Object.assign({id:'festive',tone:'festive'}, CFG.festive)] : []);
+  return list.filter(x => x && x.enabled !== false);
+};
+function promoLive(pr){
+  if(!pr) return false;
+  const now = new Date();
+  if(pr.from  && now < new Date(pr.from +'T00:00:00')) return false;
+  if(pr.until && now > new Date(pr.until+'T23:59:59')) return false;
+  return true;
+}
+function promoMatch(pr, p){
+  const m = pr.match || {};
+  if((m.codes ||[]).indexOf(p.code )>=0) return true;
+  if((m.subs  ||[]).indexOf(p.sub  )>=0) return true;
+  if((m.brands||[]).indexOf(p.brand)>=0) return true;
+  if((m.cats  ||[]).indexOf(p.cat  )>=0) return true;
+  const t = ((p.name||'')+' '+(p.alias||'')+' '+(p.sub||'')).toLowerCase();
+  return (m.words||[]).some(w => t.indexOf(String(w).toLowerCase())>=0);
+}
+const promoById   = id => allPromos().find(x => x.id === id) || null;
+const promoLiveOne= () => allPromos().find(promoLive) || null;
+const promoProducts = pr => !pr ? [] : live().filter(p => promoMatch(pr, p)).slice(0, pr.max || 48);
+function promoDaysLeft(pr){
+  if(!pr || !pr.until) return null;
+  const d = Math.ceil((new Date(pr.until+'T00:00:00') - new Date()) / 86400000);
+  return d > 0 ? d : null;
+}
+
 /* ---------- 5. sort ------------------------------------------------ */
 // "Suggested" is the hand-curated order the office maintains: the
 // categories and brands they want seen first, in the sequence they gave.
@@ -634,6 +672,7 @@ return {
   loadCatalogue, whenReady, get P(){return P}, live, bySlug,
   dpOf, mrpOf, fmtSpan, sizesOf, unitAbbr, unitOf, priceView,
   search, matches, rewriteQuery, SYN,
+  allPromos, promoLive, promoMatch, promoById, promoLiveOne, promoProducts, promoDaysLeft,
   SORTS, sortList, pricedFirst, CAT_FIRST, BRAND_FIRST,
   refreshSession, get SESS(){return SESS},
   signedIn, isEndCustomer, isOffice, isDealer, canOrder, roleLabel, sessionSettled,

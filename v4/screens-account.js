@@ -310,20 +310,57 @@ const initials = n => String(n||'?').trim().split(/\s+/).slice(0,2)
   .map(w => w[0]).join('').toUpperCase() || '?';
 
 /* ============ settings ============================================= */
+/* Two independent choices, not one list. WHICH palette (sky, teal,
+   emerald, charcoal) and whether it runs LIGHT or DARK. V3 mixed them —
+   "charcoal" was the dark theme — so picking dark meant giving up your
+   colour, and there was no way to have sky at night. Here every palette
+   has both, and Auto follows the phone.
+
+   Sky is the default because it is the colour the firm has been using.
+   Auto is the default mode. */
+const THEMES = [
+  ['sky','Sky'], ['teal','Teal'], ['emerald','Emerald'], ['charcoal','Charcoal'],
+];
+const THEME_KEY='v4_pm_theme', MODE_KEY='v4_pm_mode';
+const themeIds = THEMES.map(t => t[0]);
+
+function readTheme(){
+  let v;
+  try{ v = localStorage.getItem(THEME_KEY); }catch(e){}
+  // V4's first release stored light/dark/auto under this key. Anyone
+  // carrying one of those gets sky, and their old value becomes the mode.
+  if(v==='light'||v==='dark'||v==='auto'){
+    try{ if(!localStorage.getItem(MODE_KEY)) localStorage.setItem(MODE_KEY, v); }catch(e){}
+    v = null;
+  }
+  return themeIds.indexOf(v)>=0 ? v : 'sky';
+}
+function readMode(){
+  let v; try{ v = localStorage.getItem(MODE_KEY); }catch(e){}
+  return (v==='light'||v==='dark'||v==='auto') ? v : 'auto';
+}
+const systemDark = () => {
+  try{ return window.matchMedia('(prefers-color-scheme: dark)').matches; }catch(e){ return false; }
+};
+const resolvedMode = () => { const m = readMode(); return m==='auto' ? (systemDark()?'dark':'light') : m; };
+
+function applyTheme(){
+  const root = document.documentElement;
+  root.setAttribute('data-theme', readTheme());
+  root.setAttribute('data-mode',  resolvedMode());
+  // The browser chrome should match the bar it sits against, not a colour
+  // fixed at build time — otherwise switching to dark leaves a white strip
+  // above the header on Android.
+  const m = document.querySelector('meta[name="theme-color"]');
+  if(m){
+    const c = getComputedStyle(root).getPropertyValue('--surface').trim();
+    if(c) m.setAttribute('content', c);
+  }
+}
 const PREF = {
-  theme:  {key:'v4_pm_theme', def:'auto', apply(v){
-    const dark = v==='dark' || (v==='auto' &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    const m = document.querySelector('meta[name="theme-color"]');
-    if(m) m.setAttribute('content', dark ? '#0F1513' : '#0E6E60');
-  }},
-  fs:     {key:'v4_pm_fs',    def:'m',    apply(v){
-    document.documentElement.setAttribute('data-fs', v);
-  }},
+  fs:     {key:'v4_pm_fs',    def:'m',    apply(v){ document.documentElement.setAttribute('data-fs', v); }},
   motion: {key:'v4_pm_motion',def:'full', apply(v){
-    document.documentElement.setAttribute('data-motion', v==='off'?'off':'full');
-  }},
+    document.documentElement.setAttribute('data-motion', v==='off'?'off':'full'); }},
 };
 function pref(name){ try{ return localStorage.getItem(PREF[name].key) || PREF[name].def; }
                      catch(e){ return PREF[name].def; } }
@@ -331,13 +368,16 @@ function setPref(name, v){
   try{ localStorage.setItem(PREF[name].key, v); }catch(e){}
   PREF[name].apply(v);
 }
-function applyPrefs(){ Object.keys(PREF).forEach(k => PREF[k].apply(pref(k))); }
+function applyPrefs(){
+  applyTheme();
+  Object.keys(PREF).forEach(k => PREF[k].apply(pref(k)));
+}
 applyPrefs();
-// "Auto" has to keep following the phone after the page has loaded —
-// a dealer whose screen switches at sunset should not have to reload.
+// Auto has to keep following the phone after load — a dealer whose screen
+// switches at sunset should not have to reload to get the dark palette.
 try{
   window.matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', () => { if(pref('theme')==='auto') PREF.theme.apply('auto'); });
+    .addEventListener('change', () => { if(readMode()==='auto') applyTheme(); });
 }catch(e){}
 
 PM.route('/settings', function(){
@@ -345,12 +385,33 @@ PM.route('/settings', function(){
   const seg = (name, opts) => '<div class="segmented">'+opts.map(([v,l]) =>
     '<button data-pref="'+name+'" data-val="'+v+'"'+(pref(name)===v?' class="on"':'')+'>'+
     esc(l)+'</button>').join('')+'</div>';
+  const modeSeg = () => '<div class="segmented">'+
+    [['light','Light'],['dark','Dark'],['auto','Auto']].map(([v,l]) =>
+      '<button data-mode="'+v+'"'+(readMode()===v?' class="on"':'')+'>'+l+'</button>').join('')+
+    '</div>';
+  // Each swatch is painted by the palette it selects, so the choice is the
+  // colour rather than a word for it.
+  const swatches = () => {
+    // The mode comes from the document, not from storage. They should agree,
+    // and when they do not it is the document the reader is looking at — a
+    // swatch that previews itself in light while the screen is dark is worse
+    // than useless.
+    const m = document.documentElement.getAttribute('data-mode') || 'light';
+    return '<div class="swatchrow">'+THEMES.map(([id,label]) =>
+      '<button class="swatch'+(readTheme()===id?' on':'')+'" data-theme-pick="'+id+'" '+
+      'data-theme="'+id+'" data-mode="'+m+'" aria-label="'+esc(label)+'">'+
+      '<span class="swatch-dot"></span><span class="swatch-name">'+esc(label)+'</span></button>').join('')+
+      '</div>';
+  };
 
   view().innerHTML =
     '<div class="card card-pad" style="margin-top:16px">'+
-      '<div class="setrow"><div class="grow"><b>Appearance</b>'+
-        '<small>Auto follows your phone</small></div>'+
-        seg('theme',[['light','Light'],['dark','Dark'],['auto','Auto']])+'</div>'+
+      '<div class="setrow" style="display:block"><div class="grow" style="margin-bottom:10px">'+
+        '<b>Colour</b><small>Four palettes, each with a light and a dark</small></div>'+
+        swatches()+'</div>'+
+      '<div class="setrow"><div class="grow"><b>Light or dark</b>'+
+        '<small>Auto follows your phone — right now it is '+resolvedMode()+'</small></div>'+
+        modeSeg()+'</div>'+
       '<div class="setrow"><div class="grow"><b>Text size</b>'+
         '<small>Everything scales together</small></div>'+
         seg('fs',[['s','S'],['m','M'],['l','L'],['xl','XL']])+'</div>'+
@@ -381,6 +442,15 @@ PM.route('/settings', function(){
     setPref(b.getAttribute('data-pref'), b.getAttribute('data-val'));
     b.parentElement.querySelectorAll('button').forEach(x => x.classList.remove('on'));
     b.classList.add('on');
+  });
+  const repaint = () => { applyTheme(); PM.dispatch(); };
+  view().querySelectorAll('[data-theme-pick]').forEach(b => b.onclick = () => {
+    try{ localStorage.setItem(THEME_KEY, b.getAttribute('data-theme-pick')); }catch(e){}
+    repaint();
+  });
+  view().querySelectorAll('.segmented [data-mode]').forEach(b => b.onclick = () => {
+    try{ localStorage.setItem(MODE_KEY, b.getAttribute('data-mode')); }catch(e){}
+    repaint();
   });
   document.getElementById('setInstall').onclick = () => {
     if(window.PM_INSTALL){ window.PM_INSTALL.prompt(); window.PM_INSTALL = null; toast('Follow the prompt'); }
@@ -434,5 +504,5 @@ PM.route('/help', function(){
   };
 });
 
-window.PM_PREFS = {pref, setPref, applyPrefs};
+window.PM_PREFS = {pref, setPref, applyPrefs, applyTheme, readTheme, readMode, THEMES};
 })();

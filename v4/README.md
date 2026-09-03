@@ -104,6 +104,22 @@ page. A build step would end that.
 going Back to, it is a route. The size picker and the sort menu are
 sheets because dismissing them should not consume a Back press.
 
+**Four palettes, each in light and dark.** `data-theme` picks the palette
+(sky, teal, emerald, charcoal), `data-mode` picks light or dark, and
+every one of the eight blocks sets the same token list — so a component
+may assume every token exists in every combination, and a theme can
+never half-apply. Sky is the default because it is the colour the firm
+has been using; Auto follows the phone. V3 mixed the two ideas —
+"charcoal" *was* the dark theme — so choosing dark meant giving up your
+colour and there was no way to have sky at night. Copper is retired.
+
+A component never hard-codes a colour for a mode. `--on-brand` is the
+text colour on a brand-filled surface, and it inverts with the palette:
+white on a dark brand in light mode, near-black on a light brand in
+dark mode. The hero button uses it as its *background* with `--brand`
+as its text, which is why it reads both ways round without a single
+`[data-mode="dark"]` override.
+
 **One button.** `.btn` with four intents and three sizes. Nothing else
 in the app styles a `<button>` a person presses to do something. V3
 learned this the hard way: renaming one selector left its entire
