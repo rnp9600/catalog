@@ -77,8 +77,29 @@ main{max-width:1320px;margin:0 auto;padding:0 18px}
 .eb{font-family:var(--fm);font-size:.64rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--pr);margin-bottom:8px;display:block}
 h1{font-size:1.85rem;font-weight:800;letter-spacing:-.028em;line-height:1.1;margin-bottom:8px}
 .hero p{color:var(--tm);font-size:.88rem;max-width:62ch;margin-bottom:17px}
-.sb{display:flex;align-items:center;gap:10px;background:var(--sf);border:1.5px solid var(--bd);
- border-radius:var(--r);padding:12px 16px;max-width:540px;transition:border-color .2s}
+.sb{position:relative;display:flex;align-items:center;gap:10px;background:var(--sf);
+ border:1.5px solid var(--bd);border-radius:var(--r);padding:12px 16px;max-width:540px;
+ transition:border-color .2s}
+/* Suggestions while typing. Anchored to the box and above everything on the
+   page, but below the sheets — opening a product must cover it. */
+.sugg{position:absolute;left:-1.5px;right:-1.5px;top:calc(100% + 6px);z-index:90;
+ background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--r);
+ box-shadow:0 16px 40px rgba(var(--sh),.18);overflow:hidden;max-height:60vh;overflow-y:auto}
+.sugg[hidden]{display:none}
+.sugg .shd{padding:9px 14px 5px;font-size:.62rem;font-weight:800;text-transform:uppercase;
+ letter-spacing:.07em;color:var(--tm)}
+.sugg button{display:flex;align-items:center;gap:11px;width:100%;padding:10px 14px;border:0;
+ background:transparent;text-align:left;cursor:pointer;font-family:var(--fd);color:var(--tx)}
+.sugg button:hover,.sugg button.on{background:var(--sf2)}
+.sugg .sthumb{width:38px;height:38px;flex-shrink:0;border-radius:8px;background:#fff;
+ border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.sugg .sthumb img{max-width:100%;max-height:100%;object-fit:contain}
+.sugg .st{flex:1;min-width:0}
+.sugg .st b{display:block;font-size:.83rem;font-weight:700;line-height:1.3;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sugg .st small{display:block;font-size:.68rem;color:var(--tm);font-family:var(--fm);margin-top:1px}
+.sugg .sgo{font-size:.72rem;color:var(--tm);flex-shrink:0}
+.sugg mark{background:var(--prt);color:inherit;border-radius:3px;padding:0 1px}
 .sb:focus-within{border-color:var(--pr)}
 .sb svg{flex-shrink:0;color:var(--tm)}
 .sb input{border:0;outline:0;background:transparent;font-family:var(--fd);font-size:.89rem;color:var(--tx);width:100%}
@@ -126,6 +147,13 @@ h1{font-size:1.85rem;font-weight:800;letter-spacing:-.028em;line-height:1.1;marg
    broke into "Saved" as a heading, then a chip that also said "Saved 2", then
    the sort box, then the count — four things at four indents saying roughly
    the same thing, pushing the products down the page. */
+/* Sits between the filters and the grid, so it is read before the results it
+   is explaining rather than after them. */
+.searchnote{margin:14px 0 0;padding:10px 13px;border-radius:var(--rs);background:var(--act);
+ display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:.79rem;line-height:1.5}
+.searchnote[hidden]{display:none}
+.searchnote b{font-weight:800}
+.searchnote .linkish{color:var(--pr);font-size:.77rem}
 .bar{margin:20px 0 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .barhd{display:flex;flex-direction:column;gap:1px;min-width:0}
 .barhd h2{font-size:1.06rem;font-weight:800;line-height:1.25}
@@ -949,8 +977,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
   <p>Search by product or by brand — or both. Type "kadhai" for every kadhai we carry across all brands, "Paxton" for the full Paxton range, or "Paxton tawa" to narrow to one.</p>
   <div class="sb">
    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-   <input id="q" type="text" placeholder="Try 'kadhai', 'tawa', 'Paxton', 'triply', 'appam', 'pickle set'…" autocomplete="off">
+   <input id="q" type="text" placeholder="Try 'kadhai', 'tawa', 'Paxton', 'triply', 'appam', 'pickle set'…"
+     autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+     role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="sugg">
    <button class="sbx" id="qx" title="Clear">×</button>
+   <div class="sugg" id="sugg" role="listbox" hidden></div>
   </div>
   <div class="hintstrip" id="hintStrip" style="display:none">
    <span>👋 <strong>New here?</strong> Search by whatever you call it — "kadhai" finds Vadachatti, "appam" finds Paniyarakal. Tap <strong>?</strong> at the top for the full guide.</span>
@@ -964,6 +995,7 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  </section>
  <div id="campaignBanner"></div>
  <div id="fest"></div>
+ <div class="searchnote" id="searchNote" hidden></div>
  <div class="bar">
   <div class="barhd"><h2 id="bh">All products</h2><span id="bc"></span></div>
   <div class="barctl" id="barctl" hidden>
@@ -1132,11 +1164,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 37</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 38</footer>
 
-<script src="config.js?v=37"></script>
+<script src="config.js?v=38"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=37"></script>
+<script src="supabase-auth.js?v=38"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1298,6 +1330,39 @@ function toggleSaved(slug){
   if(SAVED.has(slug)) SAVED.delete(slug); else SAVED.add(slug);
   saveSaved(); drawSavedTog();
 }
+/* "Showing results for tawa — search instead for tawaa."
+
+   Never silent. If the catalogue quietly searched for something other than
+   what was typed, it has to say so and it has to offer the way back, or the
+   reader has no way to tell a helpful correction from a broken search. */
+function drawSearchNote(){
+  const el=document.getElementById('searchNote'); if(!el) return;
+  if(!SEARCHNOTE){ el.hidden=true; el.innerHTML=''; return; }
+  el.hidden=false;
+  el.innerHTML = SEARCHNOTE.auto
+    ? '<span>Showing results for <b>'+esc(SEARCHNOTE.shown)+'</b></span>'+
+      '<button class="linkish" id="snExact">Search instead for &ldquo;'+esc(SEARCHNOTE.typed)+'&rdquo;</button>'
+    : '<span>Did you mean <b>'+esc(SEARCHNOTE.shown)+'</b>?</span>'+
+      '<button class="linkish" id="snTake">Show all '+SEARCHNOTE.more+'</button>';
+  const take=document.getElementById('snTake');
+  if(take) take.onclick=function(){
+    const box=document.getElementById('q');
+    q=SEARCHNOTE.shown;
+    if(box) box.value=q;
+    render();
+  };
+  const b=document.getElementById('snExact');
+  if(b) b.onclick=function(){
+    // Force the literal search through, empty result and all — that is what
+    // they asked for the second time.
+    const typed=SEARCHNOTE.typed;
+    SEARCHNOTE=null; NOFIX=true; q=typed;
+    const box=document.getElementById('q'); if(box) box.value=typed;
+    render(); NOFIX=false;
+  };
+}
+let NOFIX=false;
+
 function drawSavedTog(){
   const t=document.getElementById('savedTog'); if(!t) return;
   const n=SAVED.size;
@@ -1341,6 +1406,124 @@ function sortView(){
     if(y==null) return -1;
     return (x-y)*dir;
   });
+}
+
+/* ---------- typo-tolerant search ----------
+
+   Two layers, and the cheap one does most of the work.
+
+   1. A "soft key" folds away the spelling variance this trade actually
+      produces. Indian English writes the same object several ways — tawa and
+      tava, kadhai and kadai, phulka and fulka — and people double letters when
+      they are unsure (tawaa, kadhaii, modakk, triplyy). Folding both the typed
+      word and every word in the catalogue to the same key makes those
+      identical, with no distance calculation at all.
+
+      One rule that is deliberately NOT here: ch → c. It looks like it belongs
+      next to sh → s, but this catalogue sells both a copper vessel and a
+      chopper, and folding them means someone typing "coper" is shown 33
+      choppers.
+
+   2. Anything the folding does not catch is a real typo, so an edit distance
+      (Damerau, so a transposition costs one) against the catalogue's own
+      vocabulary. Candidates are ranked rather than nearest-wins: a change to
+      the FIRST letter is a much worse guess than one in the middle, which is
+      the difference between "bottel" finding bottles and finding hotels.
+
+   Both run only when a search would otherwise come back empty, so ordinary
+   typing never pays for them. Measured at about a third of a millisecond for
+   a two-word query against the 1,031 distinct words in this catalogue. */
+function softKey(w){
+  let s=String(w).toLowerCase().replace(/[^a-z0-9]/g,'');
+  if(!s) return '';
+  s=s.replace(/ph/g,'f').replace(/sh/g,'s');   // phulka→fulka
+  s=s.replace(/([bdgjkpt])h/g,'$1');           // kadhai→kadai, thali→tali
+  s=s.replace(/w/g,'v');                       // tawa→tava
+  s=s.replace(/ee/g,'i').replace(/oo/g,'u');   // steel→stil
+  s=s.replace(/(.)\1+/g,'$1');                 // tawaa→tawa, modakk→modak
+  return s;
+}
+// Bounded Damerau-Levenshtein: gives up as soon as every path exceeds max.
+function editDist(a,b,max){
+  const la=a.length, lb=b.length;
+  if(Math.abs(la-lb)>max) return max+1;
+  let prev=Array.from({length:lb+1},(_,i)=>i), cur=new Array(lb+1);
+  for(let i=1;i<=la;i++){
+    cur[0]=i; let best=i;
+    for(let j=1;j<=lb;j++){
+      const cost=a[i-1]===b[j-1]?0:1;
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+cost);
+      if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]) cur[j]=Math.min(cur[j],prev[j-1]);
+      if(cur[j]<best) best=cur[j];
+    }
+    if(best>max) return max+1;
+    const t=prev; prev=cur; cur=t;
+  }
+  return prev[lb];
+}
+/* softKey -> { word: how often that spelling appears }. Built once, lazily,
+   because a signed-out visitor who never searches should not pay for it. */
+let SIDX=null;
+function searchIndex(){
+  if(SIDX) return SIDX;
+  SIDX=new Map();
+  P.forEach(function(p){
+    const text=[p.name,p.brand,p.cat,p.sub,p.alias,p.desc].filter(Boolean).join(' ');
+    text.toLowerCase().split(/[^a-z0-9]+/).forEach(function(w){
+      if(w.length<3) return;
+      const k=softKey(w); if(!k) return;
+      if(!SIDX.has(k)) SIDX.set(k,new Map());
+      const m=SIDX.get(k); m.set(w,(m.get(w)||0)+1);
+    });
+  });
+  // The synonym table is vocabulary too — "vadachatti" should be reachable
+  // from a misspelling even if no product name contains it.
+  Object.keys(SYN).forEach(function(key){
+    SYN[key].concat([key]).forEach(function(w){
+      String(w).toLowerCase().split(/[^a-z0-9]+/).forEach(function(t){
+        if(t.length<3) return;
+        const k=softKey(t); if(!k) return;
+        if(!SIDX.has(k)) SIDX.set(k,new Map());
+        const m=SIDX.get(k); if(!m.has(t)) m.set(t,1);
+      });
+    });
+  });
+  return SIDX;
+}
+const commonest = m => { let top=null,f=0; m.forEach((n,w)=>{ if(n>f){top=w;f=n;} }); return {word:top,freq:f}; };
+const distAllowed = k => k.length<=3 ? 0 : k.length<=5 ? 1 : 2;
+
+/* The catalogue's own spelling of a typed word, or null if it has none. */
+function bestWord(word){
+  const idx=searchIndex(), k=softKey(word);
+  if(!k) return null;
+  if(idx.has(k)) return commonest(idx.get(k)).word;
+  const max=distAllowed(k);
+  if(!max) return null;
+  let best=null, bestScore=Infinity;
+  idx.forEach(function(words,key){
+    const d=editDist(k,key,max);
+    if(d>max) return;
+    const c=commonest(words);
+    // First letter wrong is a much weaker match than a middle transposition;
+    // without this "bottel" corrects to "hotel" rather than "bottle".
+    const score=d*100 + (key[0]===k[0]?0:40) + Math.abs(key.length-k.length)*3 - Math.min(c.freq,9);
+    if(score<bestScore){ bestScore=score; best=c.word; }
+  });
+  return best;
+}
+/* The whole query, respelt. Returns null when nothing needed changing. */
+function rewriteQuery(ql){
+  const parts=String(ql||'').toLowerCase().split(/\s+/).filter(Boolean);
+  if(!parts.length) return null;
+  let changed=false;
+  const out=parts.map(function(w){
+    if(SYN[w]) return w;                       // already a word we understand
+    const b=bestWord(w);
+    if(b && b!==w){ changed=true; return b; }
+    return w;
+  });
+  return changed ? out.join(' ') : null;
 }
 
 function match(p){
@@ -1568,8 +1751,35 @@ function priceRows(p,i){
     <span class="tmr${v.mrp==null?' tdim':''}">${v.mrp!=null?'\u20b9'+v.mrp:'\u2014'}</span>
   </div>`).join('');
 }
+/* What the reader typed, versus what was actually searched for. Read by the
+   note above the grid and by the zero-result event log. */
+let SEARCHNOTE=null;
+
 function render(){
   VIEW=P.filter(match);
+  // Nothing found for what they typed — try the catalogue's own spelling of it
+  // before showing them an empty page. Only on the empty path, so a search
+  // that works is never quietly rewritten under them.
+  SEARCHNOTE=null;
+  if(q && !fsav && !NOFIX){
+    const fixed=rewriteQuery(q);
+    if(fixed && fixed!==q.toLowerCase()){
+      const typed=q, had=VIEW.length;
+      q=fixed;
+      const tryView=P.filter(match);
+      q=typed;
+      if(!had && tryView.length){
+        // Nothing for what they typed, so search the respelling instead and
+        // say so above the results.
+        q=fixed; VIEW=tryView; SEARCHNOTE={shown:fixed, typed:typed, auto:true};
+      } else if(had && tryView.length >= had*3 && tryView.length-had >= 5){
+        // It found something, but a respelling finds a great deal more —
+        // "apam" matches one product by luck where "appam" matches 34. Offer
+        // it, do not take the decision away: they may have meant the one.
+        SEARCHNOTE={shown:fixed, typed:typed, auto:false, more:tryView.length};
+      }
+    }
+  }
   sortView();
   const table=document.body.classList.contains('v-table');
   // Browsing a whole brand is browsing a range, and a range has shape: all the
@@ -1596,6 +1806,7 @@ function render(){
   }
   em.style.display=VIEW.length?'none':'block';
   document.getElementById('bc').textContent=VIEW.length+' of '+P.length+' shown';
+  drawSearchNote();
   // Nothing to sort or filter while the catalogue is still arriving, and a
   // sort box over an empty page was one more thing pushing the products down.
   const bctl=document.getElementById('barctl');
@@ -2217,13 +2428,141 @@ hov.addEventListener('click',closeHelp);
   });
 })();
 
+/* ---------- suggestions while typing ----------
+
+   Three kinds, in the order they are useful: the respelling if what is being
+   typed is not a word this catalogue knows, then whole categories and brands
+   worth jumping straight to, then the products themselves.
+
+   Built from what is already in memory, so it costs nothing extra, and capped
+   so it cannot become a wall of text on a phone. */
+const SUGG_MAX=6;
+let SUGGS=[], SUGGI=-1;
+
+function buildSuggestions(text){
+  const t=String(text||'').trim().toLowerCase();
+  if(t.length<2) return [];
+  const out=[];
+  const seen=new Set();
+
+  // A respelling, but only when it would actually change the answer.
+  const direct=P.filter(p=>!p.hidden && hay(p).includes(t)).length;
+  if(direct===0){
+    const fixed=rewriteQuery(t);
+    if(fixed && fixed!==t) out.push({kind:'fix', label:fixed, note:'search for this instead'});
+  }
+
+  // Whole groups first — "cast iron" should offer the category, not 40 pans.
+  const groups=[];
+  [['cat','Category'],['sub','Type'],['brand','Brand']].forEach(function(pair){
+    const vals=new Set();
+    P.forEach(p=>{ if(!p.hidden && p[pair[0]] && String(p[pair[0]]).toLowerCase().includes(t)) vals.add(p[pair[0]]); });
+    vals.forEach(v=>{ if(groups.length<3) groups.push({kind:pair[0], label:v, note:pair[1]}); });
+  });
+  groups.forEach(g=>out.push(g));
+
+  // Then products, name matches before description matches.
+  const byName=[], byRest=[];
+  for(const p of P){
+    if(p.hidden) continue;
+    if(String(p.name).toLowerCase().includes(t)) byName.push(p);
+    else if(hay(p).includes(t)) byRest.push(p);
+    if(byName.length>=SUGG_MAX) break;
+  }
+  byName.concat(byRest).slice(0, SUGG_MAX).forEach(function(p){
+    if(seen.has(p.slug)) return;
+    seen.add(p.slug);
+    out.push({kind:'product', product:p, label:p.name, note:p.brand+(p.sub?' · '+p.sub:'')});
+  });
+  return out.slice(0, SUGG_MAX+4);
+}
+
+function hiLite(label, t){
+  const i=String(label).toLowerCase().indexOf(t);
+  if(i<0) return esc(label);
+  return esc(label.slice(0,i))+'<mark>'+esc(label.slice(i,i+t.length))+'</mark>'+esc(label.slice(i+t.length));
+}
+
+function drawSuggestions(text){
+  const box=document.getElementById('sugg'), input=document.getElementById('q');
+  if(!box) return;
+  const t=String(text||'').trim().toLowerCase();
+  SUGGS=buildSuggestions(t); SUGGI=-1;
+  if(!SUGGS.length){ closeSuggestions(); return; }
+  box.innerHTML=SUGGS.map(function(sg,i){
+    if(sg.kind==='product'){
+      const im=sg.product.img?'<img src="'+THUMB(sg.product.img)+'" alt="" loading="lazy" '+
+        'onerror="pmThumbFallback(this)" data-full="'+IMG(sg.product.img)+'">':'';
+      return '<button role="option" data-i="'+i+'"><span class="sthumb">'+im+'</span>'+
+        '<span class="st"><b>'+hiLite(sg.label,t)+'</b><small>'+esc(sg.note)+'</small></span>'+
+        '<span class="sgo">Open</span></button>';
+    }
+    const icon = sg.kind==='fix' ? '↳' : '⌕';
+    return '<button role="option" data-i="'+i+'"><span class="sthumb">'+icon+'</span>'+
+      '<span class="st"><b>'+(sg.kind==='fix'?esc(sg.label):hiLite(sg.label,t))+'</b>'+
+      '<small>'+esc(sg.note)+'</small></span></button>';
+  }).join('');
+  box.hidden=false;
+  if(input) input.setAttribute('aria-expanded','true');
+  box.querySelectorAll('button').forEach(b=>b.onclick=()=>takeSuggestion(+b.dataset.i));
+}
+function closeSuggestions(){
+  const box=document.getElementById('sugg'), input=document.getElementById('q');
+  if(box){ box.hidden=true; box.innerHTML=''; }
+  if(input) input.setAttribute('aria-expanded','false');
+  SUGGS=[]; SUGGI=-1;
+}
+function takeSuggestion(i){
+  const sg=SUGGS[i]; if(!sg) return;
+  const input=document.getElementById('q');
+  closeSuggestions();
+  if(sg.kind==='product'){ openSheet(sg.product); if(input) input.blur(); return; }
+  if(sg.kind==='cat'||sg.kind==='sub'||sg.kind==='brand'){
+    // Jump to the group rather than searching its name — a filter is exact
+    // where a search is a guess.
+    if(sg.kind==='brand'){ fb=sg.label; fc='All'; fs='All'; }
+    else if(sg.kind==='cat'){ fc=sg.label; fs='All'; }
+    else { fs=sg.label; }
+    q=''; if(input){ input.value=''; input.blur(); }
+    afterFilterChange();
+    return;
+  }
+  q=sg.label; if(input) input.value=sg.label;
+  render(); noteSearch(sg.label, VIEW.length);
+  if(input) input.blur();
+}
+function moveSuggestion(step){
+  if(!SUGGS.length) return false;
+  const box=document.getElementById('sugg');
+  SUGGI=(SUGGI+step+SUGGS.length+1)%(SUGGS.length+1)-0;
+  if(SUGGI>=SUGGS.length) SUGGI=-1;
+  box.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on', i===SUGGI));
+  return true;
+}
+
 /* ---------- controls ---------- */
 let qt;
-document.getElementById('q').addEventListener('input',e=>{
+const qBox=document.getElementById('q');
+qBox.addEventListener('input',e=>{
   clearTimeout(qt);const v=e.target.value.trim();
+  drawSuggestions(v);
   qt=setTimeout(()=>{q=v;render();noteSearch(v,VIEW.length)},140)});
+qBox.addEventListener('focus',()=>{ if(qBox.value.trim().length>=2) drawSuggestions(qBox.value); });
+qBox.addEventListener('keydown',function(e){
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    if(moveSuggestion(e.key==='ArrowDown'?1:-1)) e.preventDefault();
+  } else if(e.key==='Enter'){
+    if(SUGGI>=0){ e.preventDefault(); takeSuggestion(SUGGI); }
+    else { closeSuggestions(); qBox.blur(); }
+  } else if(e.key==='Escape'){ closeSuggestions(); }
+});
+// Tapping anywhere else puts the list away; inside it, the button's own
+// handler has already run by then.
+document.addEventListener('click',function(e){
+  if(!e.target.closest || !e.target.closest('.sb')) closeSuggestions();
+});
 document.getElementById('qx').addEventListener('click',()=>{
-  document.getElementById('q').value='';q='';render()});
+  qBox.value='';q='';closeSuggestions();render()});
 const sortSel=document.getElementById('sortsel');
 if(sortSel){
   sortSel.value=SORTBY;
@@ -4273,7 +4612,11 @@ function noteSearch(text, hits){
   evSearchTimer=setTimeout(function(){
     if(t===evLastQ) return;          // the same search redrawn is not a new search
     evLastQ=t;
-    logEvent(hits===0?'zero':'search', {q:t, n:hits});
+    // A search that only worked because it was respelt is not a zero-result
+    // search — but the misspelling is still worth having, because a word people
+    // keep typing is a word worth adding to "also called".
+    const fixed = SEARCHNOTE && SEARCHNOTE.typed===t ? SEARCHNOTE.shown : null;
+    logEvent(hits===0?'zero':'search', {q:t, n:hits, meta: fixed?{fixed:fixed}:null});
   }, 1200);
 }
 
