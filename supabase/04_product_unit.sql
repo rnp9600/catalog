@@ -1,7 +1,10 @@
 -- ═══════════════════════════════════════════════════════════════
 -- products.unit and products.moq
 --
--- Run once in Supabase → SQL Editor.
+-- ✅ APPLIED to the Chandler project (vcrzauuxvgpsbforiszz) on 2026-09-03,
+--    as migration `products_unit_and_moq`. That migration added the two
+--    columns AND updated admin_upsert_product, which this file used to leave
+--    as a note for someone to do by hand.
 --
 -- WHY
 -- variants already carries unit and moq, so a product priced by size rows has
@@ -9,15 +12,6 @@
 -- priced as a single line could not: there was no field for it, so the
 -- catalogue hard-coded "Piece" for all 130 of them and the order pad stepped
 -- them one at a time.
---
--- The admin panel now has Unit and MOQ next to Rate and MRP for exactly those
--- products. This is where the database catches up.
---
--- UNTIL YOU RUN THIS, nothing breaks and the site is correct: the public
--- catalogue reads data.json, not this database, and data.json carries both
--- fields the moment you publish. What you lose by waiting is the database copy
--- — so the Publish tab's "compare with the database" will keep reporting these
--- two fields as different, and a sync_from_site() would drop them.
 -- ═══════════════════════════════════════════════════════════════
 
 alter table catalog.products
@@ -31,14 +25,36 @@ comment on column catalog.products.moq is
   'Minimum order quantity for a single-line product. The order pad steps in '
   'multiples of it. Null means one.';
 
--- The admin panel writes through admin_upsert_product(payload jsonb), so that
--- function has to read the two new keys before the database will store them.
--- It is not redefined here because it is yours and this file cannot see it —
--- open it in Supabase → Database → Functions and add the two columns to its
--- insert/update lists, alongside price and mrp:
+-- The admin panel writes through admin_upsert_product(payload jsonb), so the
+-- function has to read the two new keys or the columns stay empty forever.
+-- The applied migration re-created the whole function with these two lines
+-- added to its insert list and its ON CONFLICT update list:
 --
---     unit = coalesce(payload->>'unit', 'Piece'),
---     moq  = nullif(payload->>'moq','')::int,
+--     unit = coalesce(nullif(payload->>'unit',''),'Piece'),
+--     moq  = nullif(payload->>'moq','')::int
 --
--- Then re-export data.json (node supabase/export.mjs) so the file and the
--- database agree, and the Publish tab stops reporting a difference.
+-- Take the current definition from the database rather than copying an old one
+-- from here — it is long, and this file would go stale:
+--
+--   select pg_get_functiondef(p.oid) from pg_proc p
+--     join pg_namespace n on n.oid = p.pronamespace
+--    where n.nspname='catalog' and p.proname='admin_upsert_product';
+
+
+-- ───────────────────────────────────────────────────────────────
+-- WORTH KNOWING, found while applying this
+--
+-- catalog.products has no price, mrp, hsn or alias columns. Rates live only in
+-- catalog.variants, so a product with no size rows has NO RATE IN THE DATABASE
+-- AT ALL — its rate exists only in data.json, which is what the public site
+-- reads, so nothing is broken today. But:
+--
+--   * admin_upsert_product accepts 'price', 'mrp', 'hsn' and 'alias' in its
+--     payload and silently discards all four;
+--   * a rebuild from the database alone would lose the rate of every
+--     single-line product, and every HSN.
+--
+-- That is a bigger change than adding two columns and was left alone
+-- deliberately. If it is ever worth closing, it is four more columns here and
+-- four more lines in the same function.
+-- ───────────────────────────────────────────────────────────────

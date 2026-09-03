@@ -269,10 +269,15 @@ the unit dropdown about forty pixels wide, which is why it read as missing.
 Below 560px a row is now two lines, and the column headings give way to the
 placeholders the inputs already carried.
 
-Run `supabase/04_product_unit.sql` to add the two columns to the database. Until
-you do, the site is still correct — it reads `data.json`, which carries both
-fields as soon as you publish — but the Publish tab's compare will keep
-reporting them as different.
+`supabase/04_product_unit.sql` has been applied, and `admin_upsert_product` now
+writes both fields, so the database and `data.json` agree.
+
+One thing that surfaced while applying it: `catalog.products` has no `price`,
+`mrp`, `hsn` or `alias` columns at all — rates live only in `catalog.variants`.
+So a product with **no size rows has no rate in the database**, only in
+`data.json`. Nothing is broken, because `data.json` is what the site serves, but
+a rebuild from the database alone would lose the rate of every single-line
+product and every HSN. See the note at the foot of `04_product_unit.sql`.
 
 ## Ordering the same things again
 
@@ -411,9 +416,9 @@ Tap any row to open that product's editor.
 something to stock or something named in a way nobody types, and until now every
 one of them was thrown away.
 
-This needs one thing done once: run **`supabase/03_events.sql`** in Supabase →
-SQL Editor. Until you do, the catalogue quietly does not log and the panel says
-so rather than showing an empty list that reads as "nobody uses the site".
+This is live — `supabase/03_events.sql` has been applied. The panel still says
+so plainly if the table is ever missing, rather than showing an empty list that
+reads as "nobody uses the site".
 
 The log is deliberately small. Four kinds of row — a search, an empty search, a
 product opened, an order placed — no device id, no IP, nothing leaving the
