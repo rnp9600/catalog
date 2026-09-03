@@ -306,8 +306,17 @@ they order for other people, from the order book.
 
 ## Saved, and sorting
 
-The heart on a product card saves it. **Saved** next to the product count
-filters to that list, and only appears once there is something in it.
+The heart **beside the button** saves a product. **Saved** next to the product
+count filters to that list, and only appears once there is something in it.
+
+Beside the button, not on the photo, and that matters. It started at the photo's
+top-right — which is exactly where the FEATURED badge sits, so the two drew on
+top of each other and read as "FEATU♥". Worse, it put a save button in the
+middle of the biggest tap target on the card: in Compact view, a 146px card with
+a 118px image, aiming for the product and catching the corner saved it instead
+of opening it — and because the whole card takes the pressed state, it looked
+like the product was about to open. Beside the button it is unmistakably its own
+control and the photo is entirely "open this product" again.
 
 It lives in `localStorage`, keyed by phone like recently-viewed — no table, no
 policy, and it still works with no signal. The trade-off is that it is per

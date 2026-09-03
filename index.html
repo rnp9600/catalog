@@ -121,25 +121,46 @@ h1{font-size:1.85rem;font-weight:800;letter-spacing:-.028em;line-height:1.1;marg
 .fsection h4{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
  color:var(--tm);margin-bottom:9px}
 
-.bar{margin:20px 0 12px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.bar h2{font-size:1.06rem;font-weight:800}
-.bar span{font-size:.74rem;color:var(--tm)}
-
-/* Sort and the saved-list toggle sit with the count, because that is the line
-   that already says what you are looking at. */
-.barctl{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+/* Heading and count stack on the left, the two controls sit on the right, one
+   row. They used to be strung along a single wrapping line, which on a phone
+   broke into "Saved" as a heading, then a chip that also said "Saved 2", then
+   the sort box, then the count — four things at four indents saying roughly
+   the same thing, pushing the products down the page. */
+.bar{margin:20px 0 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.barhd{display:flex;flex-direction:column;gap:1px;min-width:0}
+.barhd h2{font-size:1.06rem;font-weight:800;line-height:1.25}
+.barhd span{font-size:.74rem;color:var(--tm)}
+.barctl{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.barctl[hidden]{display:none}
+/* Both are the same shape as the filter chips above them, so they read as
+   part of the same row of controls rather than as a second system. */
 .sortsel{font-family:var(--fd);font-size:.72rem;font-weight:600;color:var(--tx);
- background:var(--sf);border:1px solid var(--bd);border-radius:999px;padding:5px 9px;cursor:pointer}
-.savetog{font-family:var(--fd);font-size:.72rem;font-weight:600;padding:5px 10px;border-radius:999px;
- background:var(--sf);color:var(--tm);border:1px solid var(--bd);cursor:pointer;display:inline-flex;gap:5px}
+ background:var(--sf);border:1px solid var(--bd);border-radius:999px;padding:7px 9px;cursor:pointer;
+ max-width:150px}
+.savetog{font-family:var(--fd);font-size:.72rem;font-weight:600;padding:7px 11px;border-radius:999px;
+ background:var(--sf);color:var(--tm);border:1px solid var(--bd);cursor:pointer;
+ display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 .savetog.on{background:var(--pr);border-color:var(--pr);color:#fff}
 .savetog[hidden]{display:none}
-/* The heart sits over the photo, top-right, where it does not cover a badge. */
-.savedot{position:absolute;top:7px;right:7px;z-index:3;width:29px;height:29px;border-radius:50%;
- border:1px solid var(--bd);background:var(--sf);color:var(--tm);font-size:.86rem;line-height:1;
+/* The save control sits beside the button, not on the photo — see saveDot().
+   38px so it is a real touch target, and clearly separate from the card. */
+.cardact{display:flex;gap:6px;align-items:stretch;margin-top:8px}
+.cardact .cta{margin-top:0;flex:1;width:auto}
+.savedot{flex:0 0 auto;width:38px;border-radius:var(--rs);
+ border:1.5px solid var(--bd);background:var(--sf);color:var(--tm);font-size:.95rem;line-height:1;
  cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .savedot.on{background:var(--pr);border-color:var(--pr);color:#fff}
-.savedot:active{transform:scale(.92)}
+.savedot:active{transform:scale(.94)}
+/* List view lays the card out on a grid, so the pair has to take the cell the
+   button used to hold. */
+body.v-list .cardact{grid-column:4;grid-row:1/4;align-self:center;margin-top:0}
+/* Compact hides the button, so the heart is the only thing in the row — put
+   it on the right, small, under the price. This is the view most people leave
+   the site on, so losing the ability to save from it was not an option; what
+   had to go was the heart sitting on the photo, where a 118px-tall image and a
+   146px card made catching it by accident almost the default. */
+body.v-compact .cardact{display:flex;justify-content:flex-end;margin-top:6px}
+body.v-compact .savedot{width:34px;height:30px;font-size:.85rem}
 
 /* ---------- Your orders ---------- */
 .ocard{border:1px solid var(--bd);border-radius:var(--rs);padding:11px 12px;margin-bottom:9px;background:var(--sf)}
@@ -242,7 +263,7 @@ body.v-list .vcount{grid-column:2;grid-row:3;justify-self:start}
 body.v-list .szbtn,body.v-list .szlist,body.v-list .refnote{display:none}
 body.v-list .br{grid-column:1;grid-row:3;margin-top:-6px}
 body.v-list .pw{grid-column:3;grid-row:1/4;align-self:center;margin:0;padding:0;text-align:right}
-body.v-list .cta{grid-column:4;grid-row:1/4;align-self:center;margin:0;width:100%}
+body.v-list .cta{margin:0;width:100%}
 body.v-list .card:hover{transform:none;box-shadow:0 4px 14px rgba(var(--sh),.1)}
 
 /* ---------- COMPACT view ---------- */
@@ -448,7 +469,14 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
 }
 @media(max-width:900px){
   body.v-list .bd_{grid-template-columns:1fr;gap:6px}
-  body.v-list .sp,body.v-list .pw,body.v-list .cta,body.v-list .vcount{grid-column:1;grid-row:auto;text-align:left}
+  /* .cardact and not .cta: the button is wrapped now, so the wrapper is the
+     grid child. Without it here the wrapper kept grid-column:4 in a one-column
+     grid, which forced an implicit fourth column and squeezed every product
+     name down to one word per line. */
+  body.v-list .sp,body.v-list .pw,body.v-list .cardact,body.v-list .vcount{
+    grid-column:1;grid-row:auto;text-align:left}
+  body.v-list .cardact{justify-content:flex-start}
+  body.v-list .cardact .cta{flex:0 1 auto;min-width:150px}
 }
 @media(max-width:560px){
   h1{font-size:1.4rem}
@@ -674,6 +702,9 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  padding:10px 16px;border-radius:999px;font-size:.78rem;font-weight:700;cursor:pointer;
  box-shadow:0 8px 24px rgba(0,0,0,.25);display:none;align-items:center;gap:8px;border:0;font-family:var(--fd)}
 .obar.on{display:flex}
+/* The basket pill floats over the page, so the page has to end above it —
+   otherwise it sits on top of whatever the last row happens to be. */
+body.has-obar{padding-bottom:104px}
 .obar b{font-family:var(--fm)}
 .orow2{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--bd)}
 .orow2:last-child{border-bottom:0}
@@ -888,8 +919,9 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  </section>
  <div id="campaignBanner"></div>
  <div id="fest"></div>
- <div class="bar"><h2 id="bh">All products</h2>
-  <div class="barctl">
+ <div class="bar">
+  <div class="barhd"><h2 id="bh">All products</h2><span id="bc"></span></div>
+  <div class="barctl" id="barctl" hidden>
    <button class="savetog" id="savedTog" hidden>♥ Saved <b id="savedN">0</b></button>
    <select class="sortsel" id="sortsel" aria-label="Sort products">
     <option value="suggested">Suggested order</option>
@@ -898,7 +930,6 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
     <option value="name">Name A–Z</option>
     <option value="rated">Best rated</option>
    </select>
-   <span id="bc"></span>
   </div></div>
  <div id="tableHead"><span>Product</span><span>Size</span><span>Rate</span><span>MRP</span></div>
  <div class="grid" id="g"></div>
@@ -1056,11 +1087,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 34</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 35</footer>
 
-<script src="config.js?v=34"></script>
+<script src="config.js?v=35"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=34"></script>
+<script src="supabase-auth.js?v=35"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1417,6 +1448,23 @@ function specHtml(p){
       +(h.ref?'<div class="refnote">Photo shown is the 27F pan — reference only</div>':'');}
   return p.spec?`<div class="sp">${p.spec}</div>`:'';
 }
+/* The save control.
+
+   It used to sit on the photo at top-right — which is exactly where the
+   FEATURED badge sits (.bg.tr is top:8px right:8px), so the two drew on top
+   of each other and read as "FEATU♥". Worse, it put a 29px save button in the
+   middle of the biggest tap target on the card: aiming for the product and
+   catching the corner saved it instead of opening it, and because the whole
+   card takes the pressed state it looked like the product was about to open.
+
+   Beside the button it is unmistakably its own control, and the photo is
+   entirely "open this product" again. */
+function saveDot(p){
+  const on=SAVED.has(p.slug);
+  return '<button class="savedot'+(on?' on':'')+'" data-save="'+esc(p.slug)+'" '+
+    'aria-label="'+(on?'Saved':'Save for later')+'" '+
+    'title="'+(on?'Saved — tap to remove':'Save for later')+'">'+(on?'\u2665':'\u2661')+'</button>';
+}
 function card(p,i){
   const b=[];
   if(p.stock==='out')b.push('<span class="bg tr oos">Out of stock</span>');
@@ -1434,13 +1482,14 @@ function card(p,i){
   const statusChip=isEndCustomer()&&shopOfferFor(p)&&shopOfferFor(p).status
     ?`<span class="statuschip ${shopOfferFor(p).status}">${STATUS_LABEL[shopOfferFor(p).status]||shopOfferFor(p).status}</span>`:'';
   return `<div class="card ${p.stock==='out'?'out':''}" data-open="${i}" style="animation-delay:${Math.min(i,14)*.028}s">
-   <div class="med">${b.join('')}${im}<button class="savedot${SAVED.has(p.slug)?' on':''}" data-save="${p.slug}" aria-label="${SAVED.has(p.slug)?'Saved':'Save for later'}" title="${SAVED.has(p.slug)?'Saved — tap to remove':'Save for later'}">${SAVED.has(p.slug)?'\u2665':'\u2661'}</button></div>
+   <div class="med">${b.join('')}${im}</div>
    <div class="bd_"><div class="nm">${p.name}</div>
     ${p.desc?`<div class="ds">${p.desc}</div>`:''}
     ${specHtml(p)}${vc}${sz}
     <span class="br">${p.brand}${p.code?' · <span class="cd">'+p.code+'</span>':''}</span>
     ${starsHtml(p.slug)}
-    <div class="pw">${priceLine(p)}${statusChip}</div>${cta}</div></div>`;
+    <div class="pw">${priceLine(p)}${statusChip}</div>
+    <div class="cardact">${cta}${saveDot(p)}</div></div></div>`;
 }
 
 let VIEW=[];
@@ -1490,6 +1539,10 @@ function render(){
   }
   em.style.display=VIEW.length?'none':'block';
   document.getElementById('bc').textContent=VIEW.length+' of '+P.length+' shown';
+  // Nothing to sort or filter while the catalogue is still arriving, and a
+  // sort box over an empty page was one more thing pushing the products down.
+  const bctl=document.getElementById('barctl');
+  if(bctl) bctl.hidden = !P.length;
   drawSavedTog();
   document.getElementById('bh').textContent= fsav ? 'Saved' :
     (fs!=='All'?fs:(fc!=='All'?fc:(fb!=='All'?fb:(q?'Search results':'All products'))));
@@ -2621,10 +2674,11 @@ function obarRender(){
   // End customers browse, they don't order online — see V3-AMENDMENTS.md.
   // Nor does Patel Marketing's own side: an order they placed would be
   // addressed to themselves.
-  if(!canOrder()){ b.classList.remove('on'); return; }
+  if(!canOrder()){ b.classList.remove('on'); document.body.classList.remove('has-obar'); return; }
   const n=basketCount();
   document.getElementById('obarTxt').innerHTML = '🧺 <b>'+n+'</b> in your order';
   b.classList.toggle('on', n>0);
+  document.body.classList.toggle('has-obar', n>0);
 }
 // 130 products have no size rows and no rate — whole brands of them. They
 // could not be added to an order at all, which is backwards: not knowing the
