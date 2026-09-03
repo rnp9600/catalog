@@ -1,6 +1,6 @@
 [
  {
-  "img": "paxton-ci/px_dosa_tawa",
+  "img": "paxton/px_dosa_tawa",
   "name": "Cast Iron Dosa Tawa",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -18,7 +18,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_dosa_tawa"
+   "paxton/px_dosa_tawa"
   ],
   "variants": [],
   "gst": 18,
@@ -30,7 +30,7 @@
   "hidden": false
  },
  {
-  "img": "paxton-ci/px_appam_pan",
+  "img": "paxton/px_appam_pan",
   "name": "Cast Iron Appam Pan",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -48,7 +48,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_appam_pan"
+   "paxton/px_appam_pan"
   ],
   "variants": [],
   "gst": 18,
@@ -60,7 +60,7 @@
   "hidden": false
  },
  {
-  "img": "paxton-ci/px_sq_grill",
+  "img": "paxton/px_sq_grill",
   "name": "Cast Iron 2-in-1 Square Grill Pan",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -76,7 +76,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_sq_grill"
+   "paxton/px_sq_grill"
   ],
   "variants": [],
   "gst": null,
@@ -87,7 +87,7 @@
   "slug": "paxton-ci-cast-iron-2-in-1-square-grill-pan"
  },
  {
-  "img": "paxton-ci/px_rd_grill",
+  "img": "paxton/px_rd_grill",
   "name": "Cast Iron 2-in-1 Round Grill Pan",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -103,7 +103,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_rd_grill"
+   "paxton/px_rd_grill"
   ],
   "variants": [],
   "gst": null,
@@ -114,7 +114,7 @@
   "slug": "paxton-ci-cast-iron-2-in-1-round-grill-pan"
  },
  {
-  "img": "paxton-ci/px_fry_pan",
+  "img": "paxton/px_fry_pan",
   "name": "Cast Iron Fry Pan",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -130,7 +130,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_fry_pan"
+   "paxton/px_fry_pan"
   ],
   "variants": [],
   "gst": null,
@@ -141,7 +141,7 @@
   "slug": "paxton-ci-cast-iron-fry-pan"
  },
  {
-  "img": "paxton-ci/px_kadhai",
+  "img": "paxton/px_kadhai",
   "name": "Cast Iron Kadhai",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -159,7 +159,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_kadhai"
+   "paxton/px_kadhai"
   ],
   "variants": [],
   "gst": null,
@@ -170,7 +170,7 @@
   "slug": "paxton-ci-cast-iron-kadhai"
  },
  {
-  "img": "paxton-ci/px_deep_kadhai",
+  "img": "paxton/px_deep_kadhai",
   "name": "Cast Iron Deep Kadhai",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -186,7 +186,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_deep_kadhai"
+   "paxton/px_deep_kadhai"
   ],
   "variants": [],
   "gst": null,
@@ -197,7 +197,7 @@
   "slug": "paxton-ci-cast-iron-deep-kadhai"
  },
  {
-  "img": "paxton-ci/px_roti_concave",
+  "img": "paxton/px_roti_concave",
   "name": "Cast Iron Roti Tawa (Concave)",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -213,7 +213,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_roti_concave"
+   "paxton/px_roti_concave"
   ],
   "variants": [],
   "gst": null,
@@ -224,7 +224,7 @@
   "slug": "paxton-ci-cast-iron-roti-tawa-concave"
  },
  {
-  "img": "paxton-ci/px_flat_roti",
+  "img": "paxton/px_flat_roti",
   "name": "Cast Iron Flat Roti Tawa",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -240,7 +240,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_flat_roti"
+   "paxton/px_flat_roti"
   ],
   "variants": [],
   "gst": null,
@@ -251,7 +251,7 @@
   "slug": "paxton-ci-cast-iron-flat-roti-tawa"
  },
  {
-  "img": "paxton-ci/px_oven_skillet",
+  "img": "paxton/px_oven_skillet",
   "name": "Cast Iron Oven Skillet",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -267,7 +267,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_oven_skillet"
+   "paxton/px_oven_skillet"
   ],
   "variants": [],
   "gst": null,
@@ -278,7 +278,7 @@
   "slug": "paxton-ci-cast-iron-oven-skillet"
  },
  {
-  "img": "paxton-ci/px_fish_fry",
+  "img": "paxton/px_fish_fry",
   "name": "Cast Iron Fish Fry Pan",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -294,7 +294,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_fish_fry"
+   "paxton/px_fish_fry"
   ],
   "variants": [],
   "gst": null,
@@ -305,7 +305,7 @@
   "slug": "paxton-ci-cast-iron-fish-fry-pan"
  },
  {
-  "img": "paxton-ci/px_grilled_pan",
+  "img": "paxton/px_grilled_pan",
   "name": "Cast Iron Grilled Pan",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -321,7 +321,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_grilled_pan"
+   "paxton/px_grilled_pan"
   ],
   "variants": [],
   "gst": null,
@@ -332,7 +332,7 @@
   "slug": "paxton-ci-cast-iron-grilled-pan"
  },
  {
-  "img": "paxton-ci/px_sh_dosa_tawa",
+  "img": "paxton/px_sh_dosa_tawa",
   "name": "Cast Iron Single Handle Dosa Tawa",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -348,7 +348,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_sh_dosa_tawa"
+   "paxton/px_sh_dosa_tawa"
   ],
   "variants": [],
   "gst": null,
@@ -359,7 +359,7 @@
   "slug": "paxton-ci-cast-iron-single-handle-dosa-tawa"
  },
  {
-  "img": "paxton-ci/px_cassrole",
+  "img": "paxton/px_cassrole",
   "name": "Cast Iron Casserole",
   "brand": "Paxton",
   "cat": "Cast Iron",
@@ -375,7 +375,7 @@
   ],
   "code": null,
   "imgs": [
-   "paxton-ci/px_cassrole"
+   "paxton/px_cassrole"
   ],
   "variants": [],
   "gst": null,
@@ -386,11 +386,11 @@
   "slug": "paxton-ci-cast-iron-casserole"
  },
  {
-  "img": "paxton-alu/pxa_samosa_mould_fancy_open",
+  "img": "paxton/pxa_samosa_mould_fancy_open",
   "imgs": [
-   "paxton-alu/pxa_samosa_mould_fancy_open",
-   "paxton-alu/pxa_samosa_mould_fancy_closed",
-   "paxton-alu/pxa_samosa_mould_fancy_half"
+   "paxton/pxa_samosa_mould_fancy_open",
+   "paxton/pxa_samosa_mould_fancy_closed",
+   "paxton/pxa_samosa_mould_fancy_half"
   ],
   "name": "Aluminium Samosa Mould — Fancy (Gujiya / Karanji)",
   "brand": "Paxton",
@@ -423,12 +423,12 @@
   "hidden": false
  },
  {
-  "img": "paxton-alu/pxa_modak_mould_open",
+  "img": "paxton/pxa_modak_mould_open",
   "imgs": [
-   "paxton-alu/pxa_modak_mould_open",
-   "paxton-alu/pxa_modak_mould_flat",
-   "paxton-alu/pxa_modak_mould_closed",
-   "paxton-alu/pxa_modak_mould_top"
+   "paxton/pxa_modak_mould_open",
+   "paxton/pxa_modak_mould_flat",
+   "paxton/pxa_modak_mould_closed",
+   "paxton/pxa_modak_mould_top"
   ],
   "name": "Aluminium Modak Mould",
   "brand": "Paxton",
@@ -477,11 +477,11 @@
   "hidden": false
  },
  {
-  "img": "paxton-kw/pxk_modak_mould_open",
+  "img": "paxton/pxk_modak_mould_open",
   "imgs": [
-   "paxton-kw/pxk_modak_mould_open",
-   "paxton-kw/pxk_modak_mould_closed",
-   "paxton-kw/pxk_modak_mould_half"
+   "paxton/pxk_modak_mould_open",
+   "paxton/pxk_modak_mould_closed",
+   "paxton/pxk_modak_mould_half"
   ],
   "name": "Plastic Modak Mould",
   "brand": "Paxton",
@@ -519,11 +519,11 @@
   "slug": "paxton-kw-plastic-modak-mould"
  },
  {
-  "img": "paxton-kw/pxk_sansa_jumbo",
+  "img": "paxton/pxk_sansa_jumbo",
   "imgs": [
-   "paxton-kw/pxk_sansa_jumbo",
-   "paxton-kw/pxk_sansa_jumbo_crimp",
-   "paxton-kw/pxk_sansa_jumbo_closed"
+   "paxton/pxk_sansa_jumbo",
+   "paxton/pxk_sansa_jumbo_crimp",
+   "paxton/pxk_sansa_jumbo_closed"
   ],
   "name": "Plastic Samosa / Gujiya Maker — Jumbo",
   "brand": "Paxton",
@@ -554,11 +554,11 @@
   "slug": "paxton-kw-plastic-samosa-gujiya-maker-jumbo"
  },
  {
-  "img": "paxton-kw/yellow-samosa-royal-open",
+  "img": "paxton/yellow-samosa-royal-open",
   "imgs": [
-   "paxton-kw/yellow-samosa-royal-open",
-   "paxton-kw/yellow-samosa-royal-front",
-   "paxton-kw/yellow-samosa-royal-side"
+   "paxton/yellow-samosa-royal-open",
+   "paxton/yellow-samosa-royal-front",
+   "paxton/yellow-samosa-royal-side"
   ],
   "name": "Plastic Samosa / Gujiya Maker — Royal",
   "brand": "Paxton",
@@ -589,11 +589,11 @@
   "slug": "paxton-kw-plastic-samosa-gujiya-maker-royal"
  },
  {
-  "img": "paxton-kw/yellow-samosa-triangle-open",
+  "img": "paxton/yellow-samosa-triangle-open",
   "imgs": [
-   "paxton-kw/yellow-samosa-triangle-open",
-   "paxton-kw/yellow-samosa-triangle-front",
-   "paxton-kw/yellow-samosa-triangle-side"
+   "paxton/yellow-samosa-triangle-open",
+   "paxton/yellow-samosa-triangle-front",
+   "paxton/yellow-samosa-triangle-side"
   ],
   "name": "Plastic Samosa / Gujiya Maker — Triangle",
   "brand": "Paxton",

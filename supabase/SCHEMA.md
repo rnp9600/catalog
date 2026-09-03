@@ -108,6 +108,8 @@ with no date is a dump nobody trusts.
 | `02_seed.sql` | Sample rows for a fresh project | only on a fresh project |
 | `03_events.sql` | The search/event log | ✅ applied 2026-09-03 |
 | `04_product_unit.sql` | `products.unit` / `products.moq`, and the RPC that writes them | ✅ applied 2026-09-03 |
+| `05_signup_approvals.sql` | Signing up, departments, who may approve what, notification routing | ✅ applied 2026-09-03 |
+| `06_catalogue_live.sql` | The columns the catalogue view was missing, so the app can read it instead of `data.json` | ✅ applied 2026-09-03 |
 
 Both were applied as Supabase migrations (`events_log_reshape_and_searches_view`
 and `products_unit_and_moq`), so `supabase migration list` is the authority on

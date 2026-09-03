@@ -394,8 +394,16 @@ PM.route('/settings', function(){
         '<div class="setrow"><div class="grow"><b>Refresh the catalogue</b>'+
           '<small>Pull the newest rates and photos now</small></div>'+
           '<button class="btn btn-secondary btn-sm" id="setRefresh">Refresh</button></div>'+
+        '<div class="setrow"><div class="grow"><b>Live catalogue</b>'+
+          '<small>Read straight from the database, so an edit in the admin panel '+
+          'shows here at once. Off means the published file.</small></div>'+
+          '<div class="switch'+(PM.source()==='live'?' on':'')+'" id="setLive" role="switch" '+
+          'aria-checked="'+(PM.source()==='live')+'" tabindex="0"></div></div>'+
         '<div class="setrow"><div class="grow"><b>Version</b>'+
-          '<small>v4 · build '+(window.PMAuth?PMAuth.BUILD:'?')+'</small></div>'+
+          '<small>v4 · build '+(window.PMAuth?PMAuth.BUILD:'?')+' · reading '+
+          esc(PM.SOURCE_USED==='live' ? 'the database'
+            : PM.SOURCE_USED==='file-fallback' ? 'the file (database unreachable)'
+            : 'the published file')+'</small></div>'+
           '<a class="btn btn-quiet btn-sm" href="v3/index.html">Old catalogue</a></div>'+
       '</div></section>'+
 
@@ -418,6 +426,20 @@ PM.route('/settings', function(){
     try{ localStorage.setItem(MODE_KEY, b.getAttribute('data-mode')); }catch(e){}
     repaint();
   });
+  const liveSw = document.getElementById('setLive');
+  if(liveSw){
+    const flip = async () => {
+      const next = PM.source()==='live' ? 'file' : 'live';
+      PM.setSource(next);
+      liveSw.classList.toggle('on', next==='live');
+      liveSw.setAttribute('aria-checked', String(next==='live'));
+      toast(next==='live' ? 'Loading from the database…' : 'Back on the published file');
+      try{ await PM.loadCatalogue(); }catch(e){}
+      PM.dispatch();
+    };
+    liveSw.onclick = flip;
+    liveSw.onkeydown = e => { if(e.key===' '||e.key==='Enter'){ e.preventDefault(); flip(); } };
+  }
   document.getElementById('setInstall').onclick = () => {
     if(window.PM_INSTALL){ window.PM_INSTALL.prompt(); window.PM_INSTALL = null; toast('Follow the prompt'); }
     else sheet({title:'Install this app',

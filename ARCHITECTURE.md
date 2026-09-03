@@ -73,6 +73,7 @@ screens-account.js    sign in, account, settings, help
 screens-signup.js     join, the application form, approvals, notifications
 sw.js                 the service worker (scope /)
 manifest.webmanifest  installable app metadata
+v4.1/index.html       the trial door: one switch, not a second copy of the app
 v3/                   the archived previous build, with its own sw and manifest
 ```
 
@@ -222,6 +223,43 @@ self.addEventListener('activate', async () => {
 
 Every installed copy tears itself out on the next visit, with nobody
 having to clear a browser.
+
+## V4.1 — the catalogue live from the database
+
+Publishing is: edit in the admin panel, download `data.json`, upload it to
+GitHub, wait for Vercel. Understood and reversible, but a rate change is
+not on the site until someone remembers to publish it.
+
+V4.1 reads `catalog.catalogue` instead — a view already shaped like a
+`data.json` row — so an edit is on the site the moment it is saved.
+
+**It is a switch, not a second copy of the app.** Copying two thousand
+lines into a folder to try one changed function would mean every future
+fix landing twice. `/v4.1/` is a small page that sets
+`localStorage.v4_pm_source = 'live'` and sends you to `/`; `/v4.1/?off=1`
+sets it back, and Settings has the same toggle. Promoting it is flipping
+the default in `core.js` and deleting the folder.
+
+Making the view actually match the file needed five columns `products`
+did not have — `alias`, `hsn`, `mrp`, `sr`, and `price` for the four
+products that carry a rate with no size rows at all. `sync_from_site()`
+carries all five now, so the file and the tables stay in step both ways.
+`unit` and `moq` are deliberately not carried: they live on the product
+and `data.json` does not export them, so mapping them would blank all
+743 on the next sync. See `supabase/06_catalogue_live.sql`.
+
+A failure falls back to `data.json` rather than to an empty shop —
+tested against both a refused call and an empty result.
+
+**Photos stay on the CDN, on purpose.** The obvious next step is to read
+them from Supabase Storage too, and it would make the app worse today:
+the bucket holds none of the 904 generated thumbnails, so every grid
+card would pull a ~25KB JPEG instead of a ~3KB WebP — roughly eight
+times the data on a dealer's phone — and six real photos are missing
+from it. Photos are static, content-addressed by filename, cached for a
+year and served from Vercel's edge; the database is for what changes.
+Moving them later means uploading the six missing files plus the
+`thumb/` mirror, then pointing `IMG`/`THUMB` at the bucket.
 
 ## Where this is going
 

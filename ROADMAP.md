@@ -219,10 +219,12 @@ zero-result search — but which misspellings to handle is a guess until the
 search log has run for a few weeks. That is the sequencing: measure first, then
 build. Come back to this once the zero-result list has a month in it.
 
-**Automating publish.** Download `data.json`, upload it to GitHub, Vercel
-redeploys. It is manual, and it is also understood, reversible and visible in
-git history. An Action could do it. Nothing is currently going wrong that this
-would fix.
+**Automating publish.** Half done, and from the other end than expected. Rather
+than automating download-and-upload, the app can now read `catalog.catalogue`
+directly, so an edit in the admin panel is on the site the moment it is saved
+with no publish step at all. It is opt-in at `/v4.1/` while it is tried, and
+falls back to `data.json` if the database is unreachable. `data.json` stays as
+the default, as the fallback, and as the thing git has a history of.
 
 **Finishing the stock exchange.** `exchange.html` works but is thin:
 `contact_pref` is collected and never shown, `expires_at` is displayed but never

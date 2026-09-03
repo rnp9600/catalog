@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en-IN" data-theme="sky" data-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Patel Marketing — V4.1 trial</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FFFFFF">
+
+<!-- V4.1 is not a copy of the app. It is the same app reading the catalogue
+     from Supabase instead of from the published data.json, which is a switch,
+     not a rewrite — so copying two thousand lines into a folder to try it
+     would mean every future fix landing twice.
+
+     This page is the door: it turns the switch on and sends you to the app.
+     /v4.1/ is therefore a real, shareable trial URL with one copy of the code
+     behind it. Turning it off again is one tap in Settings, or /v4.1/?off=1.
+
+     Promoting V4.1 means flipping the default in core.js and deleting this
+     folder. -->
+
+<link rel="stylesheet" href="../app.css?v=41">
+<style>
+  .door{max-width:420px;margin:0 auto;padding:48px 20px;text-align:center}
+  .door .brandmark{width:52px;height:52px;margin:0 auto 16px;font-size:1rem}
+  .door h1{font-size:1.25rem;font-weight:760;letter-spacing:-.03em;margin-bottom:8px}
+  .door p{font-size:.86rem;color:var(--ink-2);line-height:1.6;margin-bottom:18px}
+  .door .card-pad{text-align:left}
+</style>
+</head>
+<body>
+<div class="door">
+  <div class="brandmark">PM</div>
+  <h1 id="h">Turning on V4.1…</h1>
+  <p id="p">The catalogue comes straight from the database, so an edit in the
+     admin panel shows up here the moment it is saved.</p>
+  <div class="card card-pad" style="margin-bottom:16px">
+    <div class="sumline"><span class="muted">Catalogue</span><span>Live from Supabase</span></div>
+    <div class="sumline"><span class="muted">Photos</span><span>From the CDN, as before</span></div>
+    <div class="sumline"><span class="muted">Everything else</span><span>Unchanged</span></div>
+  </div>
+  <a class="btn btn-primary btn-block" id="go" href="../">Open the app</a>
+  <p style="margin-top:14px;font-size:.76rem">
+    <a class="link" href="?off=1">Go back to the published file</a>
+  </p>
+</div>
+
+<script>
+(function(){
+  var off = new URLSearchParams(location.search).get('off') === '1';
+  try{ localStorage.setItem('v4_pm_source', off ? 'file' : 'live'); }catch(e){}
+  if(off){
+    document.getElementById('h').textContent = 'Back on the published file';
+    document.getElementById('p').textContent =
+      'The catalogue is served from data.json again, the same as everyone else.';
+  }
+  // Straight through unless someone wants to read the page.
+  setTimeout(function(){ location.replace('../'); }, off ? 1400 : 900);
+})();
+</script>
+</body>
+</html>

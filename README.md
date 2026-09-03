@@ -33,6 +33,7 @@ in the right place.
 | `screens-order.js` | Cart, checkout, placed, orders, order, repeat |
 | `screens-account.js` | Sign in, account, settings, help |
 | `screens-signup.js` | Joining, the application form, approvals, notifications |
+| `v4.1/` | The trial door for reading the catalogue live from Supabase |
 | `ARCHITECTURE.md` | How the app is put together and the rules its code keeps |
 | `admin.html` | Admin panel — products, contacts, reviews, publishing |
 | `shop.html` | A dealer's own customer list and their offers |
@@ -41,7 +42,7 @@ in the right place.
 | `pm-ui.js` | The sign-in gate, account button and helpers the four signed-in pages share |
 | `sw.js`, `manifest.webmanifest`, `assets/icon-*` | What makes it installable and work offline |
 | `tools/thumbs.mjs` | Builds the 300px WebP grid thumbnails into `images/thumb/` |
-| `data.json` | What the public catalogue reads. **Not** the database — see Publishing |
+| `data.json` | What the public catalogue reads by default. The database can now serve it instead — see `ARCHITECTURE.md` |
 | `images/` | Product photos |
 | `api/p.js` | Server-renders one product's `<head>` so WhatsApp shows a real link preview |
 | `supabase/` | Edge function for OTP delivery, plus schema notes |

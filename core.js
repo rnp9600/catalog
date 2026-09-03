@@ -60,10 +60,76 @@ const bySlug = s => BY_SLUG[s] || null;
 // they never appear in a listing.
 const live = () => P.filter(p => !p.hidden);
 
-async function loadCatalogue(){
+/* Where the catalogue comes from. Two answers, and the app cannot tell them
+   apart afterwards — catalog.catalogue is a view shaped exactly like a
+   data.json row, checked field by field against the published file.
+
+     'file'  data.json, published by hand through the admin panel and served
+             from the CDN. What every visitor gets today.
+     'live'  read straight from Supabase, so an edit in the admin panel is on
+             the site the moment it is saved, with no export-and-upload step.
+
+   'live' is the V4.1 trial and is opt-in, because it swaps a file on a CDN
+   for a database round trip on every cold load. Turn it on at /v4.1/ or in
+   Settings. A failure falls back to the file rather than to an empty shop. */
+const SOURCE_KEY = 'v4_pm_source';
+const source = () => { try{ return localStorage.getItem(SOURCE_KEY)==='live' ? 'live' : 'file'; }
+                       catch(e){ return 'file'; } };
+function setSource(v){
+  try{ localStorage.setItem(SOURCE_KEY, v==='live' ? 'live' : 'file'); }catch(e){}
+}
+let SOURCE_USED = 'file';
+
+async function loadFromFile(){
   const r = await fetch('data.json', {cache:'no-cache'});
   if(!r.ok) throw new Error('data.json '+r.status);
-  P = await r.json();
+  return r.json();
+}
+async function loadFromSupabase(){
+  if(!window.PMAuth || !PMAuth.sb) throw new Error('no supabase client');
+  // PostgREST caps a response at 1,000 rows, so page it. At 743 products this
+  // is one request; the loop is what stops it silently truncating at 1,000.
+  const PAGE = 1000, out = [];
+  for(let from = 0; ; from += PAGE){
+    const {data, error} = await PMAuth.sb.from('catalogue').select('*').range(from, from+PAGE-1);
+    if(error) throw new Error(error.message || 'catalogue read failed');
+    out.push(...(data||[]));
+    if(!data || data.length < PAGE) break;
+  }
+  if(out.length < 50) throw new Error('only '+out.length+' products came back');
+  // The view returns variants as JSON and numerics as strings over the wire.
+  // Normalise once here so nothing downstream has to know which source it
+  // came from.
+  return out.map(r => Object.assign({}, r, {
+    price: r.price==null ? null : Number(r.price),
+    mrp:   r.mrp==null   ? null : Number(r.mrp),
+    gst:   r.gst==null   ? null : Number(r.gst),
+    sizes: r.sizes || [],
+    imgs:  r.imgs  || [],
+    variants: (r.variants || []).map(v => Object.assign({}, v, {
+      price: v.price==null ? null : Number(v.price),
+      mrp:   v.mrp==null   ? null : Number(v.mrp),
+      rate:  v.rate==null  ? null : Number(v.rate),
+      moq:   v.moq==null   ? null : Number(v.moq),
+    })),
+  }));
+}
+
+async function loadCatalogue(){
+  const want = source();
+  if(want === 'live'){
+    try{
+      P = await loadFromSupabase();
+      SOURCE_USED = 'live';
+    }catch(e){
+      // Never leave the shop empty because the database was unreachable.
+      P = await loadFromFile();
+      SOURCE_USED = 'file-fallback';
+    }
+  } else {
+    P = await loadFromFile();
+    SOURCE_USED = 'file';
+  }
   indexProducts();
   READY = true;
   while(readyWaiters.length) readyWaiters.shift()();
@@ -743,6 +809,7 @@ return {
   VERSION, CFG,
   esc, rupee, money, dg, plural, IMG, THUMB,
   loadCatalogue, whenReady, get P(){return P}, live, bySlug,
+  source, setSource, get SOURCE_USED(){return SOURCE_USED},
   dpOf, mrpOf, fmtSpan, sizesOf, unitAbbr, unitOf, priceView,
   search, matches, rewriteQuery, SYN,
   allPromos, promoLive, promoMatch, promoById, promoLiveOne, promoProducts, promoDaysLeft,
