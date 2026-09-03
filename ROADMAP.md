@@ -169,6 +169,38 @@ a script nobody runs.
 read. A browsing log that the page can read back out is a different and worse
 thing than a browsing log.
 
+## V4 — the shop
+
+Everything above improved the catalogue. V4 changes what it is.
+
+The trigger was a customer, not a wishlist. He opened a product link we had
+shared on WhatsApp, did not notice the small × in the corner, and pressed Back
+to see the rest of the shop. The browser closed. He opened the link again, was
+told about the ×, browsed on from one product to another, pressed Back — and
+the browser closed again.
+
+Nothing threw an error. A shared link loads a page with exactly one history
+entry, and opening a product sheet never added one, so Back and the edge-swipe
+had nothing to return to and left the site. The root version has since been
+given a router that pushes an entry for each of its twelve overlays, and that
+fixes the reported case. But it is a router retrofitted onto overlays that were
+each written assuming they were the only thing on screen, and every new overlay
+is another chance to forget.
+
+V4 removes the shape of the problem. Every destination — home, a category, a
+search, a product, the cart, the checkout, an order, a repeat, the account — is
+its own address, so Back walks the reader's actual route without a line of code
+simulating it. On top of that it is built mobile-first: a bottom tab bar in
+thumb reach, sheets that rise from the bottom, safe areas honoured, and a 44px
+floor on anything you press.
+
+It shares the catalogue, the photos, the settings, the sign-in wiring, the
+database and even the `localStorage` keys with the root version, so there is one
+copy of each to keep current and a dealer can move between the two mid-order.
+It lives at `/v4/` while it is tried, exactly as `/v2/` did, so a bad day there
+costs nothing. `v4/README.md` has the module list, the rules the code keeps, the
+service-worker kill switch and what promoting it would involve.
+
 ## Not done, and why
 
 **Push notifications for order status.** `APP.md` is right that this is the
