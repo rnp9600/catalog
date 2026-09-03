@@ -67,15 +67,30 @@ PM.route('/', function(){
   scrollTop();
 
   const nb = document.getElementById('hdrNotices');
-  if(nb) nb.onclick = noticesSheet;
+  // The same bell means two things depending on who is holding the phone: the
+  // office's own queue, or the noticeboard everyone else reads.
+  if(nb) nb.onclick = () => { if(PM.CAN_APPROVE) PM.go('/notifications'); else noticesSheet(); };
+  if(nb && PM.CAN_APPROVE) PM.loadNotifications().then(rows => {
+    const n = rows.filter(x => !x.is_read).length;
+    if(n && document.getElementById('hdrNotices'))
+      nb.insertAdjacentHTML('beforeend', '<span class="dot num">'+(n>9?'9+':n)+'</span>');
+  }).catch(()=>{});
   drawBuyAgain();
 });
 
 function heroHtml(){
-  const promo = (PM.CFG.promos||[]).find(p => p.enabled && liveNow(p));
-  if(promo) return '<div class="hero"><span class="eyebrow">'+esc(promo.tone||'offer')+'</span>'+
-    '<h2>'+esc(promo.title)+'</h2><p>'+esc(promo.note||'')+'</p>'+
-    '<a class="btn" href="#/search?q='+encodeURIComponent((promo.match&&promo.match.words||[])[0]||promo.title)+'">See the range</a></div>';
+  const promo = PM.promoLiveOne();
+  if(promo){
+    // The whole match rule, not the first keyword. Linking to a search for
+    // words[0] showed 2 of the 6 Ganesh Chaturthi products and quietly lost
+    // every samosa and gujiya mould.
+    const n = PM.promoProducts(promo).length;
+    const days = PM.promoDaysLeft(promo);
+    return '<div class="hero"><span class="eyebrow">'+esc(promo.tone||'offer')+
+      (days ? ' · '+days+' '+PM.plural(days,'day')+' to go' : '')+'</span>'+
+      '<h2>'+esc(promo.title)+'</h2><p>'+esc(promo.note||'')+'</p>'+
+      '<a class="btn" href="#/promo/'+encodeURIComponent(promo.id||'festive')+'">See all '+n+'</a></div>';
+  }
   if(PM.canOrder()) return '<div class="hero"><span class="eyebrow">Trade account</span>'+
     '<h2>Your rates are showing</h2>'+
     '<p>Add sizes to your order from any product, change the quantities, and send it when you are ready.</p>'+
@@ -85,12 +100,6 @@ function heroHtml(){
     '<h2>Trade rates for dealers</h2>'+
     '<p>Sign in with your phone number to see rates, build an order and send it straight to us.</p>'+
     '<a class="btn" href="#/signin">Sign in</a></div>';
-}
-function liveNow(pr){
-  const t = new Date().toISOString().slice(0,10);
-  if(pr.from && t < pr.from) return false;
-  if(pr.until && t > pr.until) return false;
-  return true;
 }
 function catCounts(list){
   const m = new Map();
@@ -140,6 +149,30 @@ function noticesSheet(){
           '</div>').join('')
       : '<p class="muted tiny">Nothing new right now.</p>'});
 }
+
+/* A promo strip as a screen of its own: shareable, and somewhere Back can
+   return to. */
+PM.route('/promo/:id', function(params){
+  const pr = PM.promoById(params.id);
+  if(!pr){ PM.go('/', true); return; }
+  const list = PM.promoProducts(pr);
+  const days = PM.promoDaysLeft(pr);
+  header({back:true, title:pr.title||'Offer'});
+  view().innerHTML =
+    '<div class="hero" style="margin-top:12px">'+
+      '<span class="eyebrow">'+esc(pr.tone||'offer')+
+        (days ? ' · '+days+' '+PM.plural(days,'day')+' to go' : '')+'</span>'+
+      '<h2>'+esc(pr.title||'')+'</h2>'+
+      (pr.note ? '<p>'+esc(pr.note)+'</p>' : '')+
+    '</div>'+
+    (list.length
+      ? '<p class="tiny muted" style="margin:14px 2px 10px">'+list.length+' '+
+        PM.plural(list.length,'product')+'</p>'+grid(PM.sortList(list,'suggested'))
+      : empty('tag','Nothing in this one yet',
+          'The strip is set up but no product matches it. Check the words and groups in config.js.',
+          '<a class="btn btn-primary" href="#/shop">Browse the catalogue</a>'));
+  scrollTop();
+});
 
 /* ============ shop ================================================= */
 PM.route('/shop', function(){

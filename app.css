@@ -14,63 +14,134 @@
    ------------------------------------------------------------------ */
 
 /* ============ 1. tokens ============================================ */
-/* One accent, two surfaces, one line colour. V3 shipped four themes and
-   the cost was that no component could assume anything. Here light and
-   dark are the same palette at two brightnesses, so a card looks like a
-   card in both. */
+/* Four palettes, each in light and dark — eight blocks, one shape.
+   Sky is the default because it is the colour the firm has been using;
+   Teal is the one V4 was built in; Emerald and Charcoal are the other
+   two people asked to keep. Copper is retired: it never got picked and
+   Teal covers the same warm-neutral ground better.
+
+   Two attributes on <html> decide everything:
+     data-theme   sky | teal | emerald | charcoal
+     data-mode    light | dark        (resolved from the setting; "auto"
+                                       is never stamped, it is resolved)
+
+   Every block sets the SAME token list. A component may therefore assume
+   every token exists in every combination, which is what stops a theme
+   from half-applying.
+
+     --brand        the accent: buttons, links, the active tab
+     --brand-ink    a step darker, for hover
+     --brand-wash   a tint, for chips and quiet notices
+     --on-brand     text on a brand-FILLED surface
+     --gold         the second colour: offers, ratings, MRP
+     --bg --surface --surface-2         page, cards, insets
+     --line --line-strong               borders
+     --ink --ink-2 --ink-3              body, secondary, tertiary
+     --ok --warn --bad  (+ -wash)       states
+*/
 :root{
-  --brand:#0E6E60;      /* deep teal — the firm's colour, darkened for AA */
-  --brand-ink:#0A5348;
-  --brand-wash:#E4F2EF;
-  --gold:#B0842B;       /* the second colour: offers, ratings, MRP */
-  --gold-wash:#F7EEDA;
-
-  --bg:#F6F7F6;         /* the page */
-  --surface:#FFFFFF;    /* cards, sheets, bars */
-  --surface-2:#EFF2F1;  /* inset: chips, fields, image wells */
-  --line:#E1E6E4;
-  --line-strong:#CBD3D0;
-
-  --ink:#12211E;        /* body */
-  --ink-2:#5A6B67;      /* secondary */
-  --ink-3:#8B9A96;      /* tertiary, placeholders */
-
-  --ok:#1B7A4B;   --ok-wash:#E3F3EA;
-  --warn:#9A6212; --warn-wash:#FBEFDC;
-  --bad:#B3261E;  --bad-wash:#FBE9E7;
-
-  --shadow-1:0 1px 2px rgba(16,36,32,.06), 0 1px 3px rgba(16,36,32,.05);
-  --shadow-2:0 4px 12px rgba(16,36,32,.08), 0 1px 3px rgba(16,36,32,.05);
-  --shadow-3:0 12px 32px rgba(16,36,32,.14), 0 2px 8px rgba(16,36,32,.06);
-
   --r-sm:8px; --r:12px; --r-lg:18px; --r-xl:26px; --r-full:999px;
-
   --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
 
-  /* Bars the layout has to reserve room for. Set once here, read by
-     everything that sits at an edge, so nothing ever lands underneath
-     the tab bar again. */
+  /* Bars the layout has to reserve room for. Set once, read by everything
+     that sits at an edge, so nothing ever lands under the tab bar again. */
   --tabbar:58px;
   --safe-b:env(safe-area-inset-bottom,0px);
   --safe-t:env(safe-area-inset-top,0px);
   --header:56px;
   --dock:0px;           /* raised by the cart bar when one is showing */
   --page:1180px;        /* desktop cap; phones never reach it */
-}
 
-[data-theme="dark"]{
-  --brand:#4FC4B0; --brand-ink:#7ADACA; --brand-wash:#123832;
-  --gold:#DFB55E;  --gold-wash:#33290F;
-  --bg:#0F1513; --surface:#171F1D; --surface-2:#1F2A27;
-  --line:#26332F; --line-strong:#35443F;
-  --ink:#E8EEEC; --ink-2:#9FB0AB; --ink-3:#7A8A85;
-  --ok:#5BC98B; --ok-wash:#14301F;
-  --warn:#E0B168; --warn-wash:#332612;
-  --bad:#F2857C; --bad-wash:#3A1C19;
+  --shadow-1:0 1px 2px rgba(16,30,40,.06), 0 1px 3px rgba(16,30,40,.05);
+  --shadow-2:0 4px 12px rgba(16,30,40,.08), 0 1px 3px rgba(16,30,40,.05);
+  --shadow-3:0 12px 32px rgba(16,30,40,.14), 0 2px 8px rgba(16,30,40,.06);
+}
+[data-mode="dark"]{
   --shadow-1:0 1px 2px rgba(0,0,0,.4);
   --shadow-2:0 4px 12px rgba(0,0,0,.45);
   --shadow-3:0 12px 32px rgba(0,0,0,.55);
+}
+
+/* ---- sky (default) ---------------------------------------------- */
+:root,
+[data-theme="sky"]{
+  --brand:#2F6FA8; --brand-ink:#245880; --brand-wash:#E3F0FB;
+  --on-brand:#fff;  --gold:#0E8C7E; --gold-wash:#D9F2EE;
+  --bg:#F2F8FD; --surface:#FFFFFF; --surface-2:#E8F3FC;
+  --line:#D6E6F2; --line-strong:#B9D3E8;
+  --ink:#0D2137; --ink-2:#556F87; --ink-3:#829BB1;
+  --ok:#1B7A4B; --ok-wash:#E1F3E8; --warn:#96600F; --warn-wash:#FBEEDA;
+  --bad:#B3261E; --bad-wash:#FBE9E7;
+}
+[data-theme="sky"][data-mode="dark"]{
+  --brand:#6FBAEB; --brand-ink:#9AD1F4; --brand-wash:#12293C;
+  --on-brand:#0A1C2A; --gold:#4FC9B7; --gold-wash:#0E2E2A;
+  --bg:#0C1319; --surface:#141C24; --surface-2:#1C262F;
+  --line:#24313C; --line-strong:#354553;
+  --ink:#E6EFF6; --ink-2:#9BB0C1; --ink-3:#75899A;
+  --ok:#5BC98B; --ok-wash:#12301F; --warn:#E0B168; --warn-wash:#332612;
+  --bad:#F2857C; --bad-wash:#3A1C19;
+}
+
+/* ---- teal (what V4 was built in; replaces copper) ---------------- */
+[data-theme="teal"]{
+  --brand:#0E6E60; --brand-ink:#0A5348; --brand-wash:#E4F2EF;
+  --on-brand:#fff;  --gold:#B0842B; --gold-wash:#F7EEDA;
+  --bg:#F6F7F6; --surface:#FFFFFF; --surface-2:#EFF2F1;
+  --line:#E1E6E4; --line-strong:#CBD3D0;
+  --ink:#12211E; --ink-2:#5A6B67; --ink-3:#8B9A96;
+  --ok:#1B7A4B; --ok-wash:#E3F3EA; --warn:#9A6212; --warn-wash:#FBEFDC;
+  --bad:#B3261E; --bad-wash:#FBE9E7;
+}
+[data-theme="teal"][data-mode="dark"]{
+  --brand:#4FC4B0; --brand-ink:#7ADACA; --brand-wash:#123832;
+  --on-brand:#06231E; --gold:#DFB55E; --gold-wash:#33290F;
+  --bg:#0F1513; --surface:#171F1D; --surface-2:#1F2A27;
+  --line:#26332F; --line-strong:#35443F;
+  --ink:#E8EEEC; --ink-2:#9FB0AB; --ink-3:#7A8A85;
+  --ok:#5BC98B; --ok-wash:#14301F; --warn:#E0B168; --warn-wash:#332612;
+  --bad:#F2857C; --bad-wash:#3A1C19;
+}
+
+/* ---- emerald ----------------------------------------------------- */
+[data-theme="emerald"]{
+  --brand:#157F4B; --brand-ink:#0E6339; --brand-wash:#DEF0E5;
+  --on-brand:#fff;  --gold:#A98833; --gold-wash:#F1E7C9;
+  --bg:#F3F8F5; --surface:#FFFFFF; --surface-2:#E3EFE8;
+  --line:#DBE8E0; --line-strong:#C0D4C8;
+  --ink:#11251D; --ink-2:#5A7065; --ink-3:#89A093;
+  --ok:#1B7A4B; --ok-wash:#E1F2E8; --warn:#8F5E10; --warn-wash:#F8EDD8;
+  --bad:#B3261E; --bad-wash:#FBE9E7;
+}
+[data-theme="emerald"][data-mode="dark"]{
+  --brand:#5FD08A; --brand-ink:#8AE0AB; --brand-wash:#0F3020;
+  --on-brand:#05230F; --gold:#D8B45F; --gold-wash:#30280F;
+  --bg:#0D1310; --surface:#151D18; --surface-2:#1D2822;
+  --line:#253129; --line-strong:#344338;
+  --ink:#E7EFE9; --ink-2:#9CB2A5; --ink-3:#78907F;
+  --ok:#5BC98B; --ok-wash:#12301F; --warn:#E0B168; --warn-wash:#332612;
+  --bad:#F2857C; --bad-wash:#3A1C19;
+}
+
+/* ---- charcoal (the quiet one: no colour but the accent) ---------- */
+[data-theme="charcoal"]{
+  --brand:#3F4C57; --brand-ink:#2B353E; --brand-wash:#E7EBEE;
+  --on-brand:#fff;  --gold:#8A6A2C; --gold-wash:#F3EBD9;
+  --bg:#F5F6F7; --surface:#FFFFFF; --surface-2:#EDEFF1;
+  --line:#E0E4E7; --line-strong:#C7CDD2;
+  --ink:#171C21; --ink-2:#57616A; --ink-3:#87919A;
+  --ok:#1B7A4B; --ok-wash:#E3F2E9; --warn:#8A5E13; --warn-wash:#F7EEDB;
+  --bad:#B3261E; --bad-wash:#FBE9E7;
+}
+[data-theme="charcoal"][data-mode="dark"]{
+  --brand:#9FB4C4; --brand-ink:#C3D3DF; --brand-wash:#232C34;
+  --on-brand:#111820; --gold:#D2AE68; --gold-wash:#2E2716;
+  --bg:#101418; --surface:#181D22; --surface-2:#20272D;
+  --line:#29323A; --line-strong:#3A454E;
+  --ink:#E9EDF1; --ink-2:#A2ADB6; --ink-3:#7E8992;
+  --ok:#5BC98B; --ok-wash:#12301F; --warn:#E0B168; --warn-wash:#332612;
+  --bad:#F2857C; --bad-wash:#3A1C19;
 }
 
 /* Reading size. Everything is in rem so one root change scales headings,
@@ -126,7 +197,7 @@ a{color:inherit;text-decoration:none}
 .brandmark{
   width:34px;height:34px;border-radius:10px;flex:0 0 auto;
   background:linear-gradient(140deg,var(--brand),var(--brand-ink));
-  color:#fff;display:grid;place-items:center;font-weight:800;font-size:.8rem;letter-spacing:-.02em;
+  color:var(--on-brand);display:grid;place-items:center;font-weight:800;font-size:.8rem;letter-spacing:-.02em;
 }
 .brandname{font-weight:750;font-size:1rem;letter-spacing:-.02em;line-height:1.15}
 .brandname small{display:block;font-size:.62rem;font-weight:500;color:var(--ink-2);letter-spacing:.01em}
@@ -147,7 +218,7 @@ a{color:inherit;text-decoration:none}
 .iconbtn.on{color:var(--brand)}
 .iconbtn .dot{
   position:absolute;top:5px;right:5px;min-width:17px;height:17px;padding:0 4px;
-  border-radius:var(--r-full);background:var(--brand);color:#fff;
+  border-radius:var(--r-full);background:var(--brand);color:var(--on-brand);
   font-size:.6rem;font-weight:800;display:grid;place-items:center;
   border:2px solid var(--surface);
 }
@@ -167,7 +238,7 @@ main{
 }
 .tabbar a{
   height:var(--tabbar);display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:2px;color:var(--ink-3);font-size:.62rem;font-weight:600;
+  justify-content:center;gap:2px;color:var(--ink-2);font-size:.62rem;font-weight:600;
   position:relative;transition:color .15s;
 }
 .tabbar a svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.85;
@@ -176,7 +247,7 @@ main{
 .tabbar a.on svg{stroke-width:2.15}
 .tabbar .dot{
   position:absolute;top:6px;left:calc(50% + 6px);min-width:16px;height:16px;padding:0 4px;
-  border-radius:var(--r-full);background:var(--brand);color:#fff;font-size:.58rem;
+  border-radius:var(--r-full);background:var(--brand);color:var(--on-brand);font-size:.58rem;
   font-weight:800;display:grid;place-items:center;border:2px solid var(--surface);
 }
 
@@ -197,9 +268,8 @@ main{
   stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
 .btn[disabled]{opacity:.5;pointer-events:none}
 
-.btn-primary{background:var(--brand);color:#fff}
+.btn-primary{background:var(--brand);color:var(--on-brand)}
 .btn-primary:hover{background:var(--brand-ink)}
-[data-theme="dark"] .btn-primary{color:#06231E}
 
 .btn-secondary{background:var(--surface);color:var(--ink);border-color:var(--line-strong)}
 .btn-secondary:hover{border-color:var(--brand);color:var(--brand)}
@@ -254,8 +324,7 @@ textarea.input{height:auto;padding:11px 13px;min-height:80px;resize:vertical;lin
   transition:all .15s;
 }
 .chip:hover{border-color:var(--line-strong);color:var(--ink)}
-.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
-[data-theme="dark"] .chip.on{color:#06231E}
+.chip.on{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
 .chip .n{font-size:.68rem;opacity:.7;font-variant-numeric:tabular-nums}
 .chiprow{display:flex;gap:7px;overflow-x:auto;padding:2px 12px;margin:0 -12px;
   scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -271,7 +340,7 @@ textarea.input{height:auto;padding:11px 13px;min-height:80px;resize:vertical;lin
 .badge-bad{background:var(--bad-wash);color:var(--bad)}
 .badge-gold{background:var(--gold-wash);color:var(--gold)}
 .badge-brand{background:var(--brand-wash);color:var(--brand-ink)}
-[data-theme="dark"] .badge-brand{color:var(--brand)}
+[data-mode="dark"] .badge-brand{color:var(--brand)}
 .badge-quiet{background:var(--surface-2);color:var(--ink-2)}
 
 /* Card and section */
@@ -394,7 +463,7 @@ textarea.input{height:auto;padding:11px 13px;min-height:80px;resize:vertical;lin
   backdrop-filter:blur(6px);display:grid;place-items:center;color:var(--ink-2);
   box-shadow:var(--shadow-1);transition:color .15s,transform .12s;
 }
-[data-theme="dark"] .psave{background:rgba(23,31,29,.86)}
+[data-mode="dark"] .psave{background:rgba(23,31,29,.86)}
 .psave svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2}
 .psave:active{transform:scale(.88)}
 .psave.on{color:var(--bad)}
@@ -471,7 +540,7 @@ textarea.input{height:auto;padding:11px 13px;min-height:80px;resize:vertical;lin
 /* Home hero */
 .hero{
   margin:12px 0 4px;padding:16px;border-radius:var(--r-lg);
-  background:linear-gradient(135deg,var(--brand),var(--brand-ink));color:#fff;
+  background:linear-gradient(135deg,var(--brand),var(--brand-ink));color:var(--on-brand);
   position:relative;overflow:hidden;
 }
 .hero::after{content:'';position:absolute;right:-40px;top:-40px;width:170px;height:170px;
@@ -480,8 +549,8 @@ textarea.input{height:auto;padding:11px 13px;min-height:80px;resize:vertical;lin
   text-transform:uppercase;opacity:.8}
 .hero h2{font-size:1.3rem;font-weight:780;letter-spacing:-.03em;margin:5px 0 4px;line-height:1.15}
 .hero p{font-size:.8rem;opacity:.88;line-height:1.5;max-width:38ch}
-.hero .btn{margin-top:12px;background:#fff;color:#0A5348}
-.hero .btn:hover{background:rgba(255,255,255,.9)}
+.hero .btn{margin-top:12px;background:var(--on-brand);color:var(--brand);font-weight:700}
+.hero .btn:hover{opacity:.9}
 
 /* Promo strip (config.js promos) */
 .promo{padding:12px 14px;border-radius:var(--r-lg);border:1px solid var(--line);
@@ -493,7 +562,7 @@ textarea.input{height:auto;padding:11px 13px;min-height:80px;resize:vertical;lin
 /* Notice from the office */
 .notice{padding:11px 13px;border-radius:var(--r);background:var(--brand-wash);
   color:var(--brand-ink);font-size:.78rem;line-height:1.5}
-[data-theme="dark"] .notice{color:var(--ink)}
+[data-mode="dark"] .notice{color:var(--ink)}
 
 /* Product screen */
 .pdp-gallery{position:relative;background:var(--surface-2);border-radius:var(--r-lg);
@@ -535,7 +604,7 @@ textarea.input{height:auto;padding:11px 13px;min-height:80px;resize:vertical;lin
    any screen can hide underneath it — the collision V3 kept producing. */
 .cartbar{
   position:fixed;left:0;right:0;bottom:calc(var(--tabbar) + var(--safe-b));z-index:80;
-  background:var(--brand);color:#fff;
+  background:var(--brand);color:var(--on-brand);
   display:flex;align-items:center;gap:12px;padding:10px 14px;
   /* It sits a tab bar's height up from the bottom, so hiding it needs to
      clear its own height AND that offset — translateY(110%) alone left a
@@ -547,10 +616,9 @@ textarea.input{height:auto;padding:11px 13px;min-height:80px;resize:vertical;lin
   box-shadow:0 -4px 18px rgba(16,36,32,.14);
 }
 .cartbar.on{transform:translateY(0);visibility:visible;transition-delay:0s,0s}
-[data-theme="dark"] .cartbar{color:#06231E}
 .cartbar .grow b{display:block;font-size:.88rem;font-weight:750;letter-spacing:-.01em}
 .cartbar .grow span{display:block;font-size:.7rem;opacity:.85}
-.cartbar .btn{background:#fff;color:#0A5348;height:38px;font-size:.82rem}
+.cartbar .btn{background:var(--on-brand);color:var(--brand);height:38px;font-size:.82rem;font-weight:700}
 body.has-cartbar{--dock:58px}
 
 /* Checkout summary */
@@ -580,7 +648,7 @@ body.has-cartbar{--dock:58px}
 .menurow .chev{margin-left:auto;color:var(--ink-3);flex:0 0 auto}
 
 .avatar{width:52px;height:52px;border-radius:var(--r-full);background:var(--brand);
-  color:#fff;display:grid;place-items:center;font-weight:800;font-size:1.15rem;
+  color:var(--on-brand);display:grid;place-items:center;font-weight:800;font-size:1.15rem;
   flex:0 0 auto;overflow:hidden}
 .avatar img{width:100%;height:100%;object-fit:cover}
 
@@ -612,5 +680,24 @@ body.has-cartbar{--dock:58px}
   background:var(--brand-wash);color:var(--brand-ink);font-size:.78rem;font-weight:600;
   margin-top:12px;
 }
-[data-theme="dark"] .strip{color:var(--ink)}
+[data-mode="dark"] .strip{color:var(--ink)}
 .strip .btn{margin-left:auto;flex:0 0 auto}
+
+/* Theme swatches. Each button carries its own data-theme/data-mode, so it
+   paints itself in the palette it selects — the choice is the colour, not
+   a word for it. */
+.swatchrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
+.swatch{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);
+  padding:9px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  transition:border-color .15s,transform .1s;
+}
+.swatch:active{transform:scale(.96)}
+.swatch.on{border-color:var(--brand);border-width:2px;padding:8px 3px 6px}
+.swatch-dot{
+  width:26px;height:26px;border-radius:var(--r-full);
+  background:linear-gradient(135deg,var(--brand),var(--brand-ink));
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);
+}
+.swatch-name{font-size:.62rem;font-weight:650;color:var(--ink-2)}
+.swatch.on .swatch-name{color:var(--brand)}

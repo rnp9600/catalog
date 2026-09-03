@@ -195,11 +195,15 @@ thumb reach, sheets that rise from the bottom, safe areas honoured, and a 44px
 floor on anything you press.
 
 It shares the catalogue, the photos, the settings, the sign-in wiring, the
-database and even the `localStorage` keys with the root version, so there is one
-copy of each to keep current and a dealer can move between the two mid-order.
-It lives at `/v4/` while it is tried, exactly as `/v2/` did, so a bad day there
-costs nothing. `v4/README.md` has the module list, the rules the code keeps, the
-service-worker kill switch and what promoting it would involve.
+database and even the `localStorage` keys with the previous build, so there is
+one copy of each to keep current and nothing was lost in the move.
+
+It was tried at `/v4/` and **is now the site**. The previous build is archived
+at `/v3/` and still works; `/v2/` is retired, because it existed as a fallback
+for OTP trouble and a second sign-in path is now more liability than insurance;
+`/v4/…` redirects to the root so links from the trial still work.
+`ARCHITECTURE.md` has the module list, the rules the code keeps and the
+service-worker kill switch.
 
 ## Not done, and why
 
@@ -215,10 +219,12 @@ zero-result search — but which misspellings to handle is a guess until the
 search log has run for a few weeks. That is the sequencing: measure first, then
 build. Come back to this once the zero-result list has a month in it.
 
-**Automating publish.** Download `data.json`, upload it to GitHub, Vercel
-redeploys. It is manual, and it is also understood, reversible and visible in
-git history. An Action could do it. Nothing is currently going wrong that this
-would fix.
+**Automating publish.** Half done, and from the other end than expected. Rather
+than automating download-and-upload, the app can now read `catalog.catalogue`
+directly, so an edit in the admin panel is on the site the moment it is saved
+with no publish step at all. It is opt-in at `/v4.1/` while it is tried, and
+falls back to `data.json` if the database is unreachable. `data.json` stays as
+the default, as the fallback, and as the thing git has a history of.
 
 **Finishing the stock exchange.** `exchange.html` works but is thin:
 `contact_pref` is collected and never shown, `expires_at` is displayed but never
@@ -232,10 +238,9 @@ is. That is a business decision, not a technical one.
 deliberately deferred — this is the one to raise next time someone asks what to
 build.*
 
-Everything renders in one pass. `render()` in the root version builds all 743
-cards at once; V4 caps the home screen at 12 but a category draws every product
-in it, a search draws every hit, and "Show all" on the search screen draws all
-743. At today's size that is fine and measurably so.
+Everything renders in one pass. The app caps the home screen at 12, but a
+category draws every product in it, a search draws every hit, and "Show all" on
+the search screen draws all 743. At today's size that is fine and measurably so.
 
 First, a correction to the reason this came up. **The catalogue never reads
 products from Supabase.** `data.json` is a static file served from Vercel's CDN,

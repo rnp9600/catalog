@@ -3,24 +3,38 @@
 One live site. `patelmarketing-catalog.vercel.app` serves it from the repo root;
 Vercel redeploys on every push to `main`.
 
-The root **is** the live catalogue. `/v3/…` redirects to it, so links and
-bookmarks from testing still work. `/v2/` is kept as a fallback — the older
-build with the old plain-text sign-in, in case OTP sign-in ever fails for
-someone. v1 is retired and no longer deployed; it is still in git history if it
-is ever wanted back (`git log --diff-filter=D -- index.html`).
+**The root is V4** — the catalogue rebuilt as a shop, where every screen is its
+own address so the phone's Back button and the edge-swipe work because they *are*
+Back, not because code simulates them. `ARCHITECTURE.md` is its guide.
 
-**`/v4/` is the next version, being tried alongside this one.** It is the same
-catalogue, the same photos, the same database and the same sign-in, rebuilt as
-a proper mobile shop: every screen is its own address, so the phone's Back
-button and the edge-swipe walk the route the reader took instead of leaving the
-site. Nothing at the root changes while it is there. See `v4/README.md` for
-what it is, what it shares, and how it would be promoted.
+The build before it is archived at **`/v3/`** and still works: same catalogue,
+same photos, same database, same sign-in, reading them all from the root. It is
+there so there is something to fall back to and something to compare against,
+not because anyone should be sent to it.
+
+`/v2/` is **retired** — it was the old plain-text sign-in kept as a fallback for
+OTP trouble, and OTP has been reliable long enough that a second sign-in path is
+a liability rather than insurance. `/v2` now redirects to the site. v1 was
+retired earlier. Both are in git history if they are ever wanted back
+(`git log --diff-filter=D -- v2/index.html`).
+
+`/v4/…` redirects to the root, so bookmarks and links from the trial still land
+in the right place.
 
 ## Files
 
 | Path | What it is |
 |---|---|
-| `index.html` | The catalogue everyone sees |
+| `index.html` | The app shell — header, view, tab bar, print styles |
+| `app.css` | The whole design system: four palettes, light and dark |
+| `core.js` | Data, price, search, cart, session, router |
+| `ui.js` | Icons, product card, stepper, sheet, toast, the bars |
+| `screens-browse.js` | Home, shop, category, search, product, saved, promo |
+| `screens-order.js` | Cart, checkout, placed, orders, order, repeat |
+| `screens-account.js` | Sign in, account, settings, help |
+| `screens-signup.js` | Joining, the application form, approvals, notifications |
+| `v4.1/` | The trial door for reading the catalogue live from Supabase |
+| `ARCHITECTURE.md` | How the app is put together and the rules its code keeps |
 | `admin.html` | Admin panel — products, contacts, reviews, publishing |
 | `shop.html` | A dealer's own customer list and their offers |
 | `exchange.html` | Dealer-to-dealer stock exchange |
@@ -28,12 +42,11 @@ what it is, what it shares, and how it would be promoted.
 | `pm-ui.js` | The sign-in gate, account button and helpers the four signed-in pages share |
 | `sw.js`, `manifest.webmanifest`, `assets/icon-*` | What makes it installable and work offline |
 | `tools/thumbs.mjs` | Builds the 300px WebP grid thumbnails into `images/thumb/` |
-| `data.json` | What the public catalogue reads. **Not** the database — see Publishing |
+| `data.json` | What the public catalogue reads by default. The database can now serve it instead — see `ARCHITECTURE.md` |
 | `images/` | Product photos |
 | `api/p.js` | Server-renders one product's `<head>` so WhatsApp shows a real link preview |
 | `supabase/` | Edge function for OTP delivery, plus schema notes |
-| `v2/` | The previous build, kept as a fallback |
-| `v4/` | The next version, live at `/v4/` for trial — see `v4/README.md` |
+| `v3/` | The previous build, archived and still working |
 
 ## The three levels
 
@@ -582,12 +595,11 @@ static file on the CDN, not a database read — but at 10,000 SKUs the download
 size and the one-pass render both start to hurt. `ROADMAP.md` has the four
 pieces and the thresholds that say when to stop deferring it.
 
-The largest thing in flight is **V4**, at `/v4/`. It answers a complaint this
-root version could only patch: a customer who opened a shared product link and
-pressed Back had the browser close on him, twice, because a shared link loads
-with one history entry and an overlay never added another. The root has since
-been given a router that fixes the reported case; V4 removes the shape of the
-problem by making every screen a real address. `v4/README.md` has the detail.
+**V4 has landed and is the root.** It answers a complaint the previous version
+could only patch: a customer who opened a shared product link and pressed Back
+had the browser close on him, twice, because a shared link loads with one
+history entry and an overlay never added another. `ARCHITECTURE.md` has the
+detail, and `/v3/` is the archived build if anything needs comparing.
 
 ## Notes for whoever edits this next
 

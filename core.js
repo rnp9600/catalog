@@ -5,14 +5,13 @@
    hung off one global, PM, because this app has no bundler and adding
    one would mean nobody but a developer could ship a change.
 
-   Shared with V3 on purpose:
-     ../data.json      one catalogue, one file, no copy to keep in step
-     ../images/**      including the generated thumbnails
-     ../config.js      firm details, WhatsApp number, promo strips
-     ../supabase-auth.js   phone OTP, the allowlist row, the build number
-     localStorage keys the two versions genuinely share (saved list,
-     recently viewed, the order in progress) so a dealer can move
-     between /v4/ and / mid-order and lose nothing.
+   Shared with the archived V3 at /v3/ and with the four office panels:
+     data.json         one catalogue, one file, no copy to keep in step
+     images/**         including the generated thumbnails
+     config.js         firm details, WhatsApp number, promo strips
+     supabase-auth.js  phone OTP, the allowlist row, the build number
+     localStorage keys both versions read (saved list, recently viewed,
+     the order in progress), so nothing was lost when V4 took the root.
    ------------------------------------------------------------------ */
 window.PM = (function(){
 'use strict';
@@ -36,8 +35,8 @@ const plural = (n,one,many) => n===1 ? one : (many||one+'s');
    one falls back to the full JPEG at runtime rather than showing the
    browser's broken-image icon — a <picture> element does NOT fall back
    on a 404, which is how V3 shipped 900 broken thumbnails once. */
-const IMG   = n => n ? '../images/'+n+'.jpg' : '';
-const THUMB = n => n ? '../images/thumb/'+n+'.webp' : '';
+const IMG   = n => n ? 'images/'+n+'.jpg' : '';
+const THUMB = n => n ? 'images/thumb/'+n+'.webp' : '';
 window.pmImgFallback = function(img){
   img.onerror = null;                       // one retry, never a loop
   const full = img.getAttribute('data-full');
@@ -61,10 +60,76 @@ const bySlug = s => BY_SLUG[s] || null;
 // they never appear in a listing.
 const live = () => P.filter(p => !p.hidden);
 
-async function loadCatalogue(){
-  const r = await fetch('../data.json', {cache:'no-cache'});
+/* Where the catalogue comes from. Two answers, and the app cannot tell them
+   apart afterwards — catalog.catalogue is a view shaped exactly like a
+   data.json row, checked field by field against the published file.
+
+     'file'  data.json, published by hand through the admin panel and served
+             from the CDN. What every visitor gets today.
+     'live'  read straight from Supabase, so an edit in the admin panel is on
+             the site the moment it is saved, with no export-and-upload step.
+
+   'live' is the V4.1 trial and is opt-in, because it swaps a file on a CDN
+   for a database round trip on every cold load. Turn it on at /v4.1/ or in
+   Settings. A failure falls back to the file rather than to an empty shop. */
+const SOURCE_KEY = 'v4_pm_source';
+const source = () => { try{ return localStorage.getItem(SOURCE_KEY)==='live' ? 'live' : 'file'; }
+                       catch(e){ return 'file'; } };
+function setSource(v){
+  try{ localStorage.setItem(SOURCE_KEY, v==='live' ? 'live' : 'file'); }catch(e){}
+}
+let SOURCE_USED = 'file';
+
+async function loadFromFile(){
+  const r = await fetch('data.json', {cache:'no-cache'});
   if(!r.ok) throw new Error('data.json '+r.status);
-  P = await r.json();
+  return r.json();
+}
+async function loadFromSupabase(){
+  if(!window.PMAuth || !PMAuth.sb) throw new Error('no supabase client');
+  // PostgREST caps a response at 1,000 rows, so page it. At 743 products this
+  // is one request; the loop is what stops it silently truncating at 1,000.
+  const PAGE = 1000, out = [];
+  for(let from = 0; ; from += PAGE){
+    const {data, error} = await PMAuth.sb.from('catalogue').select('*').range(from, from+PAGE-1);
+    if(error) throw new Error(error.message || 'catalogue read failed');
+    out.push(...(data||[]));
+    if(!data || data.length < PAGE) break;
+  }
+  if(out.length < 50) throw new Error('only '+out.length+' products came back');
+  // The view returns variants as JSON and numerics as strings over the wire.
+  // Normalise once here so nothing downstream has to know which source it
+  // came from.
+  return out.map(r => Object.assign({}, r, {
+    price: r.price==null ? null : Number(r.price),
+    mrp:   r.mrp==null   ? null : Number(r.mrp),
+    gst:   r.gst==null   ? null : Number(r.gst),
+    sizes: r.sizes || [],
+    imgs:  r.imgs  || [],
+    variants: (r.variants || []).map(v => Object.assign({}, v, {
+      price: v.price==null ? null : Number(v.price),
+      mrp:   v.mrp==null   ? null : Number(v.mrp),
+      rate:  v.rate==null  ? null : Number(v.rate),
+      moq:   v.moq==null   ? null : Number(v.moq),
+    })),
+  }));
+}
+
+async function loadCatalogue(){
+  const want = source();
+  if(want === 'live'){
+    try{
+      P = await loadFromSupabase();
+      SOURCE_USED = 'live';
+    }catch(e){
+      // Never leave the shop empty because the database was unreachable.
+      P = await loadFromFile();
+      SOURCE_USED = 'file-fallback';
+    }
+  } else {
+    P = await loadFromFile();
+    SOURCE_USED = 'file';
+  }
   indexProducts();
   READY = true;
   while(readyWaiters.length) readyWaiters.shift()();
@@ -257,6 +322,44 @@ function search(q, scope){
   return {q:raw, hits:[], note:null};
 }
 
+/* ---------- 4b. promo strips --------------------------------------- */
+/* A strip in config.js matches on FIVE things: words in the name, alias or
+   sub-group, and exact sub / brand / category / code. The V4 hero used to
+   link to a search for the first word only, so "Ganesh Chaturthi" — six
+   products across two sub-groups — opened on the two called "modak" and
+   the four samosa and gujiya moulds vanished. Same rule as V3 now, in one
+   place, with a route of its own so the strip can be shared and gone back
+   to. */
+const allPromos = () => {
+  const list = (CFG.promos && CFG.promos.length) ? CFG.promos.slice()
+    : ((CFG.festive && CFG.festive.enabled) ? [Object.assign({id:'festive',tone:'festive'}, CFG.festive)] : []);
+  return list.filter(x => x && x.enabled !== false);
+};
+function promoLive(pr){
+  if(!pr) return false;
+  const now = new Date();
+  if(pr.from  && now < new Date(pr.from +'T00:00:00')) return false;
+  if(pr.until && now > new Date(pr.until+'T23:59:59')) return false;
+  return true;
+}
+function promoMatch(pr, p){
+  const m = pr.match || {};
+  if((m.codes ||[]).indexOf(p.code )>=0) return true;
+  if((m.subs  ||[]).indexOf(p.sub  )>=0) return true;
+  if((m.brands||[]).indexOf(p.brand)>=0) return true;
+  if((m.cats  ||[]).indexOf(p.cat  )>=0) return true;
+  const t = ((p.name||'')+' '+(p.alias||'')+' '+(p.sub||'')).toLowerCase();
+  return (m.words||[]).some(w => t.indexOf(String(w).toLowerCase())>=0);
+}
+const promoById   = id => allPromos().find(x => x.id === id) || null;
+const promoLiveOne= () => allPromos().find(promoLive) || null;
+const promoProducts = pr => !pr ? [] : live().filter(p => promoMatch(pr, p)).slice(0, pr.max || 48);
+function promoDaysLeft(pr){
+  if(!pr || !pr.until) return null;
+  const d = Math.ceil((new Date(pr.until+'T00:00:00') - new Date()) / 86400000);
+  return d > 0 ? d : null;
+}
+
 /* ---------- 5. sort ------------------------------------------------ */
 // "Suggested" is the hand-curated order the office maintains: the
 // categories and brands they want seen first, in the sequence they gave.
@@ -326,6 +429,17 @@ const roleLabel    = () => !signedIn() ? 'Browsing' :
 
 let RATINGS = {}, NOTICES = [], SHOP_OFFERS = {}, SHOP_INFO = null;
 
+/* Where an applicant stands, for a number the allowlist does not know.
+   'member'   already set up — the ordinary case
+   'pending'  applied, waiting for someone in the office to decide
+   'rejected' turned down, with a reason if one was given
+   'none'     signed in, never applied
+   Without this a proven phone with no row was a dead end: the old screen
+   said "we do not recognise that number" and stopped. */
+let SIGNUP = null;
+let CAN_APPROVE = false;
+let DEPARTMENTS = [];
+
 /* False until the first session lookup has come back, either way. It
    matters because the app paints before it knows who is looking — that
    is deliberate, the catalogue is public and nobody should watch a
@@ -348,14 +462,17 @@ async function doRefreshSession(){
   if(!A || !A.sb){ SESS=null; return null; }
   let sess=null;
   try{ sess = await A.currentSession(); }catch(e){}
-  if(!sess){ SESS=null; loadSaved(); return null; }
+  if(!sess){ SESS=null; SIGNUP=null; loadSaved(); return null; }
   let row = null;
   try{ row = await A.myAllowlistRow(); }catch(e){}
   if(!row){
     // A lookup that failed is our fault, not theirs. Keep the Supabase
     // session — signing them out would cost another paid SMS to get back
-    // to the same point.
+    // to the same point. Then ask where they stand: applied and waiting,
+    // turned down, or never applied. That is the difference between a
+    // dead end and a queue.
     SESS = null;
+    await loadSignupStatus();
   } else {
     const full = dg(sess.user && sess.user.phone), last = full.slice(-10);
     SESS = {ok:true, admin:!!row.is_admin, role:row.role||'dealer',
@@ -364,8 +481,68 @@ async function doRefreshSession(){
       dealerType:row.dealer_type||null, gst:row.gst||'', photo:row.photo_url||''};
   }
   loadSaved();
-  await Promise.all([loadRatings(), loadNotices(), loadShopOffers()]);
+  await Promise.all([loadRatings(), loadNotices(), loadShopOffers(), loadApprovalRights()]);
   return SESS;
+}
+
+/* ---------- signing up, and being approved ------------------------ */
+async function loadSignupStatus(){
+  SIGNUP = null;
+  if(!window.PMAuth || !PMAuth.sb) return null;
+  try{
+    const {data, error} = await PMAuth.sb.rpc('my_signup_status');
+    if(error) return null;
+    SIGNUP = (Array.isArray(data) ? data[0] : data) || null;
+  }catch(e){}
+  return SIGNUP;
+}
+async function loadApprovalRights(){
+  CAN_APPROVE = false;
+  if(!signedIn() || !window.PMAuth || !PMAuth.sb) return;
+  try{
+    const {data, error} = await PMAuth.sb.rpc('can_approve_any');
+    CAN_APPROVE = !error && !!data;
+  }catch(e){}
+}
+async function loadDepartments(){
+  if(DEPARTMENTS.length) return DEPARTMENTS;
+  try{
+    const {data} = await PMAuth.sb.from('departments').select('*').order('sort');
+    DEPARTMENTS = data || [];
+  }catch(e){ DEPARTMENTS = []; }
+  return DEPARTMENTS;
+}
+// The phone is never sent: submit_signup reads it from the token, so a form
+// cannot apply on somebody else's behalf.
+async function submitSignup(payload){
+  const {data, error} = await PMAuth.sb.rpc('submit_signup', {payload});
+  if(error) throw new Error(error.message || 'Could not send that just now.');
+  await loadSignupStatus();
+  return data;
+}
+async function loadApprovals(){
+  // The view filters itself to what this caller may act on, so there is no
+  // second place for that rule to drift out of step.
+  const {data, error} = await PMAuth.sb.from('approval_queue').select('*').limit(120);
+  if(error) throw error;
+  return data || [];
+}
+async function decideSignup(id, ok, note){
+  const {data, error} = await PMAuth.sb.rpc('decide_signup',
+    {p_id:id, p_ok:!!ok, p_note:note||null});
+  if(error) throw new Error(error.message || 'Could not record that.');
+  return data;
+}
+async function loadNotifications(){
+  try{
+    const {data, error} = await PMAuth.sb.from('my_notifications').select('*').limit(40);
+    if(error) return [];
+    return data || [];
+  }catch(e){ return []; }
+}
+async function markNotificationsRead(ids){
+  if(!ids || !ids.length) return;
+  try{ await PMAuth.sb.rpc('mark_notifications_read', {p_ids:ids}); }catch(e){}
 }
 async function loadRatings(){
   try{
@@ -632,11 +809,16 @@ return {
   VERSION, CFG,
   esc, rupee, money, dg, plural, IMG, THUMB,
   loadCatalogue, whenReady, get P(){return P}, live, bySlug,
+  source, setSource, get SOURCE_USED(){return SOURCE_USED},
   dpOf, mrpOf, fmtSpan, sizesOf, unitAbbr, unitOf, priceView,
   search, matches, rewriteQuery, SYN,
+  allPromos, promoLive, promoMatch, promoById, promoLiveOne, promoProducts, promoDaysLeft,
   SORTS, sortList, pricedFirst, CAT_FIRST, BRAND_FIRST,
   refreshSession, get SESS(){return SESS},
   signedIn, isEndCustomer, isOffice, isDealer, canOrder, roleLabel, sessionSettled,
+  get SIGNUP(){return SIGNUP}, get CAN_APPROVE(){return CAN_APPROVE},
+  loadSignupStatus, loadDepartments, get DEPARTMENTS(){return DEPARTMENTS},
+  submitSignup, loadApprovals, decideSignup, loadNotifications, markNotificationsRead,
   get RATINGS(){return RATINGS}, get NOTICES(){return NOTICES},
   get SHOP_INFO(){return SHOP_INFO}, offerFor,
   loadSaved, toggleSaved, isSaved, savedProducts,

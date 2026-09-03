@@ -1,159 +1,122 @@
-/* Patel Marketing catalogue — service worker.
+/* Patel Marketing V4 — service worker.
+   ------------------------------------------------------------------
+   The one genuinely dangerous file in the repo: a bad worker pins a
+   stale copy of the shop onto every dealer's phone and no amount of
+   reloading shifts it. So the rules here are deliberately narrow.
 
-   Read this before changing it. This repository already has a scar from
-   stale files: the build number in the footer and the ?v= on every script
-   exist because phones kept serving a cached old file and a fix looked like
-   it had done nothing. A service worker is the same failure with a longer
-   memory — it can pin a whole site until someone clears their browser, and
-   the people affected are dealers in shops, not developers with DevTools.
+     · The cache is NAMED FOR THE BUILD. Shipping a build makes a new
+       cache and deletes every older one, so a stale shell cannot
+       survive a deploy. The build number is already bumped on every
+       change — this adds nothing new to remember.
+     · data.json is NETWORK-FIRST. The published catalogue must never be
+       pinned to an old copy; the cached one is a fallback for when the
+       network fails, which is what makes offline browsing work without
+       freezing prices.
+     · NOTHING to Supabase, and nothing that is not a GET, is ever
+       cached or even inspected. Sessions, orders, reviews and the
+       noticeboard go straight to the network, always. That is an
+       explicit early return below, not an omission.
+     · NO skipWaiting on install. A new worker waits; the page shows a
+       strip and the reader picks the moment. Swapping code under an
+       open order pad is exactly the failure worth avoiding.
 
-   So four rules, and every one of them matters:
+   Kill switch: if a worker ever goes wrong, replace this whole file
+   with the four lines in ARCHITECTURE.md and push. Every phone unregisters
+   itself on the next load, with nobody having to clear a browser.
+   ------------------------------------------------------------------ */
+const BUILD = 41;
+const CACHE = 'pm-v4-' + BUILD;
 
-   1. THE CACHE NAME IS THE BUILD NUMBER, and the build number is not written
-      here. The page registers this file as sw.js?v=<PMAuth.BUILD>, and it is
-      read back off our own URL below. There is exactly one build number in
-      this project, in supabase-auth.js, and it is already bumped on every
-      change — this adds no second thing to remember. Activation deletes every
-      cache that is not the current one, so a bump is a clean slate.
-
-   2. data.json IS NEVER SERVED FROM CACHE WHILE THE NETWORK WORKS. It is the
-      published catalogue; a stale copy is wrong prices in front of a customer.
-      Cache is the fallback for no signal, nothing more.
-
-   3. NOTHING CROSS-ORIGIN AND NOTHING THAT IS NOT A GET IS TOUCHED. Supabase
-      carries sign-in, orders, reviews and the noticeboard. Those are somebody's
-      live data and a cached answer is a wrong answer. This is an explicit
-      early return, not an omission — see the fetch handler.
-
-   4. THERE IS NO skipWaiting(). A new version waits until the reader chooses
-      it. Swapping the code under a half-written order is not worth the speed.
-
-   If this ever does go wrong, the fix is a normal push, not a message asking
-   every dealer to clear their browser. Replace this whole file with:
-
-       self.addEventListener('install', () => self.skipWaiting());
-       self.addEventListener('activate', async () => {
-         for (const k of await caches.keys()) await caches.delete(k);
-         await self.registration.unregister();
-       });
-
-   and every installed copy tears itself out on the next visit. */
-
-const BUILD = new URL(self.location.href).searchParams.get('v') || 'dev';
-const CACHE = 'pm-v' + BUILD;
-
-/* The shell: enough to open the catalogue with no signal. Deliberately not
-   data.json — that is fetched and cached at runtime, under rule 2, so a
-   failed install cannot be caused by the largest file in the project. */
+// The shell: what the app needs to open at all. Photos and data.json
+// are cached as they are used, not up front — precaching 2.7MB of
+// thumbnails on first visit would cost a dealer their data for nothing.
 const SHELL = [
-  './',
-  './index.html',
-  './config.js?v=' + BUILD,
-  './supabase-auth.js?v=' + BUILD,
-  './pm-ui.js?v=' + BUILD,
-  './manifest.webmanifest',
-  './assets/icon-192.png',
-  './assets/icon-512.png',
-  './assets/apple-touch-icon.png',
+  './', './index.html', './app.css?v=41',
+  './core.js?v=41', './ui.js?v=41',
+  './screens-browse.js?v=41', './screens-order.js?v=41', './screens-account.js?v=41',
+  './screens-signup.js?v=41',
+  './app.js?v=41', './manifest.webmanifest',
+  './config.js?v=41', './supabase-auth.js?v=41',
+  './assets/icon-192.png', './assets/favicon-32.png',
 ];
 
-self.addEventListener('install', event => {
-  event.waitUntil((async () => {
-    const cache = await caches.open(CACHE);
-    // One at a time and forgiving: addAll() rejects the whole install if a
-    // single file 404s, which would leave the reader with no worker at all
-    // over one renamed asset.
-    await Promise.all(SHELL.map(url =>
-      cache.add(new Request(url, { cache: 'reload' })).catch(() => {})));
-  })());
-  // No skipWaiting — rule 4.
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c =>
+    // addAll fails the whole install if any one URL 404s. Individually,
+    // so one renamed asset cannot stop the worker installing at all.
+    Promise.all(SHELL.map(u => c.add(u).catch(() => {})))
+  ));
 });
 
-// Only OUR OWN older caches. /v4/ has a worker of its own whose caches are
-// named pm-v4-<build>; deleting everything that is not this build's cache
-// wiped it on every activation, and the v4 worker wiped this one right back,
-// so whichever version was opened second lost its offline copy.
-const MINE = /^pm-v\d+$/;
-self.addEventListener('activate', event => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE && MINE.test(k)).map(k => caches.delete(k)));
-    await self.clients.claim();
-  })());
+// Ours, plus the legacy family. This worker owns the root now; the caches
+// named pm-v<build> were made by the old root worker, which no longer exists,
+// so nobody would ever clear them. The archived build at /v3/ has a worker of
+// its own under pm-v3-<build> and is deliberately not matched here.
+const MINE = /^pm-v4-\d+$/, LEGACY = /^pm-v\d+$/;
+const sweepable = k => k !== CACHE && (MINE.test(k) || LEGACY.test(k));
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(sweepable).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
 });
 
-/* The page asks for this when the reader taps Reload on the update strip.
-   That is the only thing that can promote a waiting worker. */
-self.addEventListener('message', event => {
-  if (event.data === 'skip-waiting') self.skipWaiting();
+self.addEventListener('message', e => {
+  if(e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
-const isImage = url =>
-  url.pathname.includes('/images/') || url.pathname.includes('/assets/');
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if(req.method !== 'GET') return;
 
-self.addEventListener('fetch', event => {
-  const req = event.request;
+  let url;
+  try{ url = new URL(req.url); }catch(err){ return; }
 
-  // Rule 3, and it comes first so nothing below can undo it.
-  if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;
+  // Never touch anything that is not ours, and never anything to
+  // Supabase. Sessions and orders are not cacheable at any price.
+  if(url.origin !== self.location.origin) return;
+  if(/supabase\.co$/i.test(url.hostname)) return;
 
-  // /v4/ is a separate app with a worker of its own. This one is registered
-  // at scope "/" and so would otherwise handle v4's requests until that
-  // worker takes over — serving THIS index.html as the offline fallback for
-  // a v4 page, which is the wrong app.
-  if (url.pathname.startsWith('/v4/')) return;
-
-  // Rule 2: the published catalogue is network-first, always.
-  if (url.pathname.endsWith('/data.json') || url.pathname === '/data.json') {
-    event.respondWith(networkFirst(req));
+  // The catalogue: network first, cache as a fallback.
+  if(url.pathname.endsWith('/data.json')){
+    e.respondWith(
+      fetch(req).then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+        return res;
+      }).catch(() => caches.match(req).then(hit => hit || Response.error()))
+    );
     return;
   }
 
-  // A page load is network-first too, so a deploy shows up the moment someone
-  // has signal, and falls back to the cached catalogue when they do not.
-  if (req.mode === 'navigate') {
-    event.respondWith(networkFirst(req, './index.html'));
+  // Photos: cache first. They are content-addressed by filename and
+  // change only when someone uploads a new one under a new name.
+  if(/\/images\//.test(url.pathname)){
+    e.respondWith(
+      caches.match(req).then(hit => hit || fetch(req).then(res => {
+        if(res.ok){
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      }).catch(() => hit))
+    );
     return;
   }
 
-  // Photos change by being replaced under a new name, so cache-first is safe
-  // and is most of what makes the catalogue usable on a bad connection.
-  if (isImage(url)) {
-    event.respondWith(cacheFirst(req));
-    return;
-  }
-
-  // Everything else same-origin — the scripts — already carries ?v=<build> in
-  // its URL, so a new build is a different URL and cache-first cannot serve a
-  // stale one. That is the whole reason the ?v= convention was worth keeping.
-  event.respondWith(cacheFirst(req));
+  // Everything else in the shell: cache first, refreshed in the
+  // background so the next load is current without this one waiting.
+  e.respondWith(
+    caches.match(req).then(hit => {
+      const net = fetch(req).then(res => {
+        if(res.ok){
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      }).catch(() => hit);
+      return hit || net;
+    })
+  );
 });
-
-async function networkFirst(req, fallbackUrl) {
-  const cache = await caches.open(CACHE);
-  try {
-    const fresh = await fetch(req);
-    if (fresh && fresh.ok) cache.put(req, fresh.clone());
-    return fresh;
-  } catch (e) {
-    const hit = await cache.match(req);
-    if (hit) return hit;
-    if (fallbackUrl) {
-      const fb = await cache.match(fallbackUrl);
-      if (fb) return fb;
-    }
-    throw e;
-  }
-}
-
-async function cacheFirst(req) {
-  const cache = await caches.open(CACHE);
-  const hit = await cache.match(req);
-  if (hit) return hit;
-  const fresh = await fetch(req);
-  // Opaque responses (no-cors) have status 0 and are not worth storing.
-  if (fresh && fresh.ok) cache.put(req, fresh.clone());
-  return fresh;
-}

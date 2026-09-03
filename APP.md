@@ -1,3 +1,8 @@
+> **Written before V4.** The app it argues for now exists and is the site —
+> installable, offline, one screen per address. See `ARCHITECTURE.md` for what
+> was built and `ROADMAP.md` for what is still open. The reasoning below is
+> kept because it is still why the app is shaped as it is.
+
 # Turning this into an app
 
 Nothing here is built yet — this is the map. Three routes, cheapest first. The

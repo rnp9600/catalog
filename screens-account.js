@@ -44,10 +44,10 @@ function drawPhoneStep(){
           : '')+'</p>'+
     '</div>'+
     '<div class="menulist" style="margin-top:14px">'+
-      '<button class="menurow" id="siNew">'+icon('user')+
-        '<div class="grow"><b>Shopping for yourself?</b>'+
-        '<small>Sign up as a customer of a shop near you</small></div>'+
-        '<span class="chev">'+icon('chev')+'</span></button>'+
+      '<a class="menurow" href="#/join">'+icon('plus')+
+        '<div class="grow"><b>New here?</b>'+
+        '<small>Dealer, customer or staff — put your number in above, then tell us who you are</small></div>'+
+        '<span class="chev">'+icon('chev')+'</span></a>'+
       '<a class="menurow" href="#/help">'+icon('info')+
         '<div class="grow"><b>Trouble signing in?</b><small>What to check, and how to reach us</small></div>'+
         '<span class="chev">'+icon('chev')+'</span></a>'+
@@ -81,12 +81,6 @@ function drawPhoneStep(){
     }
     drawOtpStep(digits);
   };
-  document.getElementById('siNew').onclick = () => sheet({
-    title:'Shopping for yourself?',
-    body:'<p class="muted" style="line-height:1.6">Put in your phone number above and continue. '+
-      'If we do not know it yet, the next screen lets you sign up as a customer — '+
-      'you will see the shop’s prices and offers rather than trade rates.</p>',
-    foot:'<button class="btn btn-primary btn-block" data-sheet-close>Got it</button>'});
 }
 
 function drawOtpStep(digits){
@@ -143,64 +137,21 @@ function wireCodeStep(digits, isPin){
     const s = await PM.refreshSession();
     UI.cartbar(); UI.tabbar();
     if(!s){
-      // The token is real but there is no allowlist row — a number
-      // Supabase accepted that we do not know yet. Offer the sign-up
-      // rather than dead-ending on "we do not recognise that number".
+      // The token is real but there is no allowlist row — a number Supabase
+      // accepted that we do not know yet. Where they go depends on whether
+      // they have already applied, which the session lookup has just found
+      // out. Either way it is a screen, not the dead end this used to be.
+      window.__PM_PHONE_TAIL = digits;
       btn.disabled = false; btn.textContent = 'Sign in';
-      drawSignupStep(digits);
+      await PM.loadDepartments();
+      const st = PM.SIGNUP;
+      PM.go((st && st.status && st.status !== 'none') ? '/join/status' : '/join', true);
       return;
     }
     toast('Signed in — '+PM.roleLabel().toLowerCase());
     PM.go('/account', true);
   };
   const fail = m => '<div class="strip" style="background:var(--bad-wash);color:var(--bad)">'+esc(m)+'</div>';
-}
-
-function drawSignupStep(digits){
-  view().innerHTML =
-    '<div class="card card-pad" style="margin-top:16px">'+
-      '<h2 style="font-size:1.1rem;font-weight:750;letter-spacing:-.02em">Nearly there</h2>'+
-      '<p class="tiny muted" style="margin:6px 0 14px;line-height:1.55">'+
-        'Your number checked out, but we do not have you on our list yet. '+
-        'Tell us who you are and you can start browsing as a customer. '+
-        'A dealer account is set up by us — send us a message and we will do it.</p>'+
-      '<label class="field"><span>Your name</span>'+
-        '<input class="input" id="suName" autocomplete="name" placeholder="Name"></label>'+
-      '<label class="field"><span>City</span>'+
-        '<input class="input" id="suCity" autocomplete="address-level2" placeholder="Hubli"></label>'+
-      '<div id="siErr"></div>'+
-      '<button class="btn btn-primary btn-lg btn-block" id="suGo">Create my account</button>'+
-      '<button class="btn btn-quiet btn-block" id="suWa" style="margin-top:8px">'+
-        icon('wa')+'Ask for a dealer account</button>'+
-    '</div>';
-  document.getElementById('suGo').onclick = async function(){
-    const name = document.getElementById('suName').value.trim();
-    const city = document.getElementById('suCity').value.trim();
-    const err = document.getElementById('siErr');
-    if(!name){ err.innerHTML = '<div class="strip" style="background:var(--bad-wash);'+
-      'color:var(--bad)">Please put in your name.</div>'; return; }
-    this.disabled = true; this.textContent = 'Creating…';
-    try{
-      const {error} = await PMAuth.sb.rpc('self_signup_end_customer',
-        {p_name:name, p_city:city||null});
-      if(error) throw error;
-    }catch(e){
-      this.disabled = false; this.textContent = 'Create my account';
-      err.innerHTML = '<div class="strip" style="background:var(--bad-wash);color:var(--bad)">'+
-        esc((e && e.message) || 'Could not create the account just now.')+'</div>';
-      return;
-    }
-    await PM.refreshSession();
-    UI.cartbar(); UI.tabbar();
-    toast('Welcome');
-    PM.go('/account', true);
-  };
-  document.getElementById('suWa').onclick = () => {
-    const n = String(PM.CFG.whatsapp||'917892967505').replace(/\D/g,'');
-    window.open('https://wa.me/'+n+'?text='+encodeURIComponent(
-      'Hello Patel Marketing, I would like a dealer account. My number is +91'+digits+'.'),
-      '_blank','noopener');
-  };
 }
 
 /* ============ account ============================================== */
@@ -252,14 +203,19 @@ PM.route('/account', function(){
       row('heart','Saved','Products you kept on this phone','#/saved')+
     '</div>'+
 
+    (PM.CAN_APPROVE ? '<div class="menulist" style="margin-top:14px" id="acOffice">'+
+      row('shield','Approvals','New dealers, customers and staff waiting','#/approvals')+
+      row('bell','Notifications','What your department needs to know','#/notifications')+
+      '</div>' : '')+
+
     (PM.isOffice() ? '<div class="menulist" style="margin-top:14px">'+
-      row('receipt','Order book','Every order that came in','../orders.html')+
-      row('edit','Admin panel','Rates, photos, stock and people','../admin.html')+
+      row('receipt','Order book','Every order that came in','orders.html')+
+      row('edit','Admin panel','Rates, photos, stock and people','admin.html')+
       '</div>' : '')+
 
     (PM.isDealer() ? '<div class="menulist" style="margin-top:14px">'+
-      row('tag','Your shop screen','Offers you show your own customers','../shop.html')+
-      row('repeat','Exchange','Stock other dealers are offering','../exchange.html')+
+      row('tag','Your shop screen','Offers you show your own customers','shop.html')+
+      row('repeat','Exchange','Stock other dealers are offering','exchange.html')+
       '</div>' : '')+
 
     '<div class="menulist" style="margin-top:14px">'+
@@ -273,6 +229,16 @@ PM.route('/account', function(){
     '<p class="tiny muted" style="text-align:center;margin-top:14px">'+
       'Patel Marketing · v4 · build '+(window.PMAuth?PMAuth.BUILD:'?')+'</p>';
   scrollTop();
+
+  if(PM.CAN_APPROVE) PM.loadApprovals().then(rows => {
+    const n = rows.filter(r => r.status === 'pending').length;
+    const box = document.getElementById('acOffice');
+    if(!n || !box) return;
+    const small = box.querySelector('.menurow small');
+    if(small) small.textContent = n + ' ' + PM.plural(n,'application') + ' waiting';
+    const b = box.querySelector('.menurow b');
+    if(b) b.innerHTML = 'Approvals <span class="badge badge-brand num">'+n+'</span>';
+  }).catch(()=>{});
 
   const wa = view().querySelector('[data-wa]');
   if(wa) wa.onclick = e => {
@@ -310,20 +276,57 @@ const initials = n => String(n||'?').trim().split(/\s+/).slice(0,2)
   .map(w => w[0]).join('').toUpperCase() || '?';
 
 /* ============ settings ============================================= */
+/* Two independent choices, not one list. WHICH palette (sky, teal,
+   emerald, charcoal) and whether it runs LIGHT or DARK. V3 mixed them —
+   "charcoal" was the dark theme — so picking dark meant giving up your
+   colour, and there was no way to have sky at night. Here every palette
+   has both, and Auto follows the phone.
+
+   Sky is the default because it is the colour the firm has been using.
+   Auto is the default mode. */
+const THEMES = [
+  ['sky','Sky'], ['teal','Teal'], ['emerald','Emerald'], ['charcoal','Charcoal'],
+];
+const THEME_KEY='v4_pm_theme', MODE_KEY='v4_pm_mode';
+const themeIds = THEMES.map(t => t[0]);
+
+function readTheme(){
+  let v;
+  try{ v = localStorage.getItem(THEME_KEY); }catch(e){}
+  // V4's first release stored light/dark/auto under this key. Anyone
+  // carrying one of those gets sky, and their old value becomes the mode.
+  if(v==='light'||v==='dark'||v==='auto'){
+    try{ if(!localStorage.getItem(MODE_KEY)) localStorage.setItem(MODE_KEY, v); }catch(e){}
+    v = null;
+  }
+  return themeIds.indexOf(v)>=0 ? v : 'sky';
+}
+function readMode(){
+  let v; try{ v = localStorage.getItem(MODE_KEY); }catch(e){}
+  return (v==='light'||v==='dark'||v==='auto') ? v : 'auto';
+}
+const systemDark = () => {
+  try{ return window.matchMedia('(prefers-color-scheme: dark)').matches; }catch(e){ return false; }
+};
+const resolvedMode = () => { const m = readMode(); return m==='auto' ? (systemDark()?'dark':'light') : m; };
+
+function applyTheme(){
+  const root = document.documentElement;
+  root.setAttribute('data-theme', readTheme());
+  root.setAttribute('data-mode',  resolvedMode());
+  // The browser chrome should match the bar it sits against, not a colour
+  // fixed at build time — otherwise switching to dark leaves a white strip
+  // above the header on Android.
+  const m = document.querySelector('meta[name="theme-color"]');
+  if(m){
+    const c = getComputedStyle(root).getPropertyValue('--surface').trim();
+    if(c) m.setAttribute('content', c);
+  }
+}
 const PREF = {
-  theme:  {key:'v4_pm_theme', def:'auto', apply(v){
-    const dark = v==='dark' || (v==='auto' &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    const m = document.querySelector('meta[name="theme-color"]');
-    if(m) m.setAttribute('content', dark ? '#0F1513' : '#0E6E60');
-  }},
-  fs:     {key:'v4_pm_fs',    def:'m',    apply(v){
-    document.documentElement.setAttribute('data-fs', v);
-  }},
+  fs:     {key:'v4_pm_fs',    def:'m',    apply(v){ document.documentElement.setAttribute('data-fs', v); }},
   motion: {key:'v4_pm_motion',def:'full', apply(v){
-    document.documentElement.setAttribute('data-motion', v==='off'?'off':'full');
-  }},
+    document.documentElement.setAttribute('data-motion', v==='off'?'off':'full'); }},
 };
 function pref(name){ try{ return localStorage.getItem(PREF[name].key) || PREF[name].def; }
                      catch(e){ return PREF[name].def; } }
@@ -331,13 +334,16 @@ function setPref(name, v){
   try{ localStorage.setItem(PREF[name].key, v); }catch(e){}
   PREF[name].apply(v);
 }
-function applyPrefs(){ Object.keys(PREF).forEach(k => PREF[k].apply(pref(k))); }
+function applyPrefs(){
+  applyTheme();
+  Object.keys(PREF).forEach(k => PREF[k].apply(pref(k)));
+}
 applyPrefs();
-// "Auto" has to keep following the phone after the page has loaded —
-// a dealer whose screen switches at sunset should not have to reload.
+// Auto has to keep following the phone after load — a dealer whose screen
+// switches at sunset should not have to reload to get the dark palette.
 try{
   window.matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', () => { if(pref('theme')==='auto') PREF.theme.apply('auto'); });
+    .addEventListener('change', () => { if(readMode()==='auto') applyTheme(); });
 }catch(e){}
 
 PM.route('/settings', function(){
@@ -345,12 +351,33 @@ PM.route('/settings', function(){
   const seg = (name, opts) => '<div class="segmented">'+opts.map(([v,l]) =>
     '<button data-pref="'+name+'" data-val="'+v+'"'+(pref(name)===v?' class="on"':'')+'>'+
     esc(l)+'</button>').join('')+'</div>';
+  const modeSeg = () => '<div class="segmented">'+
+    [['light','Light'],['dark','Dark'],['auto','Auto']].map(([v,l]) =>
+      '<button data-mode="'+v+'"'+(readMode()===v?' class="on"':'')+'>'+l+'</button>').join('')+
+    '</div>';
+  // Each swatch is painted by the palette it selects, so the choice is the
+  // colour rather than a word for it.
+  const swatches = () => {
+    // The mode comes from the document, not from storage. They should agree,
+    // and when they do not it is the document the reader is looking at — a
+    // swatch that previews itself in light while the screen is dark is worse
+    // than useless.
+    const m = document.documentElement.getAttribute('data-mode') || 'light';
+    return '<div class="swatchrow">'+THEMES.map(([id,label]) =>
+      '<button class="swatch'+(readTheme()===id?' on':'')+'" data-theme-pick="'+id+'" '+
+      'data-theme="'+id+'" data-mode="'+m+'" aria-label="'+esc(label)+'">'+
+      '<span class="swatch-dot"></span><span class="swatch-name">'+esc(label)+'</span></button>').join('')+
+      '</div>';
+  };
 
   view().innerHTML =
     '<div class="card card-pad" style="margin-top:16px">'+
-      '<div class="setrow"><div class="grow"><b>Appearance</b>'+
-        '<small>Auto follows your phone</small></div>'+
-        seg('theme',[['light','Light'],['dark','Dark'],['auto','Auto']])+'</div>'+
+      '<div class="setrow" style="display:block"><div class="grow" style="margin-bottom:10px">'+
+        '<b>Colour</b><small>Four palettes, each with a light and a dark</small></div>'+
+        swatches()+'</div>'+
+      '<div class="setrow"><div class="grow"><b>Light or dark</b>'+
+        '<small>Auto follows your phone — right now it is '+resolvedMode()+'</small></div>'+
+        modeSeg()+'</div>'+
       '<div class="setrow"><div class="grow"><b>Text size</b>'+
         '<small>Everything scales together</small></div>'+
         seg('fs',[['s','S'],['m','M'],['l','L'],['xl','XL']])+'</div>'+
@@ -367,9 +394,17 @@ PM.route('/settings', function(){
         '<div class="setrow"><div class="grow"><b>Refresh the catalogue</b>'+
           '<small>Pull the newest rates and photos now</small></div>'+
           '<button class="btn btn-secondary btn-sm" id="setRefresh">Refresh</button></div>'+
+        '<div class="setrow"><div class="grow"><b>Live catalogue</b>'+
+          '<small>Read straight from the database, so an edit in the admin panel '+
+          'shows here at once. Off means the published file.</small></div>'+
+          '<div class="switch'+(PM.source()==='live'?' on':'')+'" id="setLive" role="switch" '+
+          'aria-checked="'+(PM.source()==='live')+'" tabindex="0"></div></div>'+
         '<div class="setrow"><div class="grow"><b>Version</b>'+
-          '<small>v4 · build '+(window.PMAuth?PMAuth.BUILD:'?')+'</small></div>'+
-          '<a class="btn btn-quiet btn-sm" href="../index.html">Old catalogue</a></div>'+
+          '<small>v4 · build '+(window.PMAuth?PMAuth.BUILD:'?')+' · reading '+
+          esc(PM.SOURCE_USED==='live' ? 'the database'
+            : PM.SOURCE_USED==='file-fallback' ? 'the file (database unreachable)'
+            : 'the published file')+'</small></div>'+
+          '<a class="btn btn-quiet btn-sm" href="v3/index.html">Old catalogue</a></div>'+
       '</div></section>'+
 
     '<p class="tiny muted" style="text-align:center;margin-top:16px;line-height:1.6">'+
@@ -382,6 +417,29 @@ PM.route('/settings', function(){
     b.parentElement.querySelectorAll('button').forEach(x => x.classList.remove('on'));
     b.classList.add('on');
   });
+  const repaint = () => { applyTheme(); PM.dispatch(); };
+  view().querySelectorAll('[data-theme-pick]').forEach(b => b.onclick = () => {
+    try{ localStorage.setItem(THEME_KEY, b.getAttribute('data-theme-pick')); }catch(e){}
+    repaint();
+  });
+  view().querySelectorAll('.segmented [data-mode]').forEach(b => b.onclick = () => {
+    try{ localStorage.setItem(MODE_KEY, b.getAttribute('data-mode')); }catch(e){}
+    repaint();
+  });
+  const liveSw = document.getElementById('setLive');
+  if(liveSw){
+    const flip = async () => {
+      const next = PM.source()==='live' ? 'file' : 'live';
+      PM.setSource(next);
+      liveSw.classList.toggle('on', next==='live');
+      liveSw.setAttribute('aria-checked', String(next==='live'));
+      toast(next==='live' ? 'Loading from the database…' : 'Back on the published file');
+      try{ await PM.loadCatalogue(); }catch(e){}
+      PM.dispatch();
+    };
+    liveSw.onclick = flip;
+    liveSw.onkeydown = e => { if(e.key===' '||e.key==='Enter'){ e.preventDefault(); flip(); } };
+  }
   document.getElementById('setInstall').onclick = () => {
     if(window.PM_INSTALL){ window.PM_INSTALL.prompt(); window.PM_INSTALL = null; toast('Follow the prompt'); }
     else sheet({title:'Install this app',
@@ -434,5 +492,5 @@ PM.route('/help', function(){
   };
 });
 
-window.PM_PREFS = {pref, setPref, applyPrefs};
+window.PM_PREFS = {pref, setPref, applyPrefs, applyTheme, readTheme, readMode, THEMES};
 })();

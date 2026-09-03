@@ -1,9 +1,10 @@
-# V4 — the catalogue as a shop
+# The app — V4, the catalogue as a shop
 
-V3 is a catalogue with an order pad bolted on: one 4,800-line HTML file
-where every screen is an overlay drawn on top of one long product grid.
-It works, and it is still what `/` serves. But it had a failure that no
-amount of patching fixes, and that failure is why this folder exists.
+This is what `/` serves. Before it, V3 was a catalogue with an order pad
+bolted on: one 4,800-line HTML file where every screen was an overlay
+drawn on top of one long product grid. It worked, and it is archived at
+`/v3/`. But it had a failure that no amount of patching fixes, and that
+failure is why V4 exists.
 
 ## The bug that started it
 
@@ -23,10 +24,10 @@ sheet did not add one. So the phone's Back button and the edge-swipe
 gesture had nothing to go back to and did the only thing left: they left
 the site.
 
-V3 has since been given a router that pushes a history entry for each of
-its overlays, and that fixes the reported case. But it is a router
+V3 was given a router that pushes a history entry for each of its
+overlays, and that fixed the reported case. But it was a router
 retrofitted onto twelve overlays that were each written assuming they
-were the only thing on screen, and every new overlay is a chance to
+were the only thing on screen, and every new overlay was a chance to
 forget. The durable fix is for a screen to *be* a screen.
 
 ## What V4 is
@@ -41,18 +42,19 @@ Mobile first, because essentially every customer is on a phone: a bottom
 tab bar within thumb reach, sheets that rise from the bottom, safe-area
 insets honoured, and a 44px floor on anything you press.
 
-## What it shares with V3
+## What it shares
 
-Nothing important is duplicated. V4 reads:
+Nothing important is duplicated. The app, the archived V3 at `/v3/` and
+the four office panels all read the same:
 
 | | |
 |---|---|
-| `../data.json` | the 743 products — one catalogue, not a copy to keep in step |
-| `../images/**` | photos and the generated 300px WebP thumbnails |
-| `../config.js` | firm details, WhatsApp number, promo strips |
-| `../supabase-auth.js` | phone OTP, the allowlist row, the build number |
+| `data.json` | the 743 products — one catalogue, not a copy to keep in step |
+| `images/**` | photos and the generated 300px WebP thumbnails |
+| `config.js` | firm details, WhatsApp number, promo strips |
+| `supabase-auth.js` | phone OTP, the allowlist row, the build number |
 | Supabase | the same tables, policies and RPCs — no schema change at all |
-| `localStorage` | the saved list, recently viewed and the order in progress use **V3's keys**, so a dealer can move between `/` and `/v4/` mid-order and lose nothing |
+| `localStorage` | the saved list, recently viewed and the order in progress use **V3's keys**, so nothing was lost when V4 took the root |
 
 Shared product links stay on `/p/:slug`, which Vercel rewrites to the API
 route that renders the WhatsApp preview card. V4 accepts that link, and
@@ -65,12 +67,21 @@ index.html            the shell: header, view, tab bar, print styles
 app.css               the whole design system, in reading order
 core.js               data, price, search, cart, session, router
 ui.js                 icons, product card, stepper, sheet, toast, bars
-screens-browse.js     home, shop, category, search, product, saved
+screens-browse.js     home, shop, category, search, product, saved, promo
 screens-order.js      cart, checkout, placed, orders, order, repeat
 screens-account.js    sign in, account, settings, help
-sw.js                 the service worker
+screens-signup.js     join, the application form, approvals, notifications
+sw.js                 the service worker (scope /)
 manifest.webmanifest  installable app metadata
+v4.1/index.html       the trial door: one switch, not a second copy of the app
+v3/                   the archived previous build, with its own sw and manifest
 ```
+
+Two service workers live on this origin and must never fight. The root
+one caches under `pm-v4-<build>` and sweeps its own family plus the
+legacy `pm-v<build>` names the pre-V4 root left behind; `/v3/`'s caches
+under `pm-v3-<build>` and sweeps only that. Verified by upgrading a
+browser that had the old root caches: legacy gone, archive untouched.
 
 Eight files instead of one. No bundler and no `package.json`: the whole
 point of this repo is that a person who is not a developer can open a
@@ -82,6 +93,7 @@ page. A build step would end that.
 | Module | Where | Notes |
 |---|---|---|
 | Home | `#/` | search, notices, promo hero, categories, **buy again**, featured, recently viewed |
+| Promo | `#/promo/:id` | one config.js strip, matched on all five of its rules |
 | Catalogue | `#/shop`, `#/shop/:cat` | categories → sub-groups → grid, with sort |
 | Search | `#/search?q=` | typo-tolerant, live suggestions, recent searches, popular groups |
 | Product | `#/product/:slug` | swipe gallery, role-aware price, size rows with steppers, specs, ratings, share, related |
@@ -92,7 +104,10 @@ page. A build step would end that.
 | Repeat | `#/repeat/:id` | every line back with a stepper and a remove, at today's rates |
 | Saved | `#/saved` | per-account, on the phone, works offline |
 | Account | `#/account` | profile, role, links into admin / order book / shop / exchange |
-| Sign in | `#/signin` | phone OTP, the PIN path for test numbers, end-customer sign-up |
+| Sign in | `#/signin` | phone OTP, and the PIN path for test numbers |
+| Join | `#/join`, `#/join/form`, `#/join/status` | a proven number with no account tells us who it is |
+| Approvals | `#/approvals`, `#/approve/:id` | the queue, filtered to what this person may decide |
+| Notifications | `#/notifications` | routed by department, not broadcast to everyone |
 | Settings | `#/settings` | light/dark/auto, four text sizes, motion, install, force refresh |
 | Help | `#/help` | the six questions people actually ask |
 | PWA | `sw.js` | installable, offline catalogue, build-numbered cache |
@@ -103,6 +118,22 @@ page. A build step would end that.
 **A screen is a route; a sheet is a decision.** If it has state worth
 going Back to, it is a route. The size picker and the sort menu are
 sheets because dismissing them should not consume a Back press.
+
+**Four palettes, each in light and dark.** `data-theme` picks the palette
+(sky, teal, emerald, charcoal), `data-mode` picks light or dark, and
+every one of the eight blocks sets the same token list — so a component
+may assume every token exists in every combination, and a theme can
+never half-apply. Sky is the default because it is the colour the firm
+has been using; Auto follows the phone. V3 mixed the two ideas —
+"charcoal" *was* the dark theme — so choosing dark meant giving up your
+colour and there was no way to have sky at night. Copper is retired.
+
+A component never hard-codes a colour for a mode. `--on-brand` is the
+text colour on a brand-filled surface, and it inverts with the palette:
+white on a dark brand in light mode, near-black on a light brand in
+dark mode. The hero button uses it as its *background* with `--brand`
+as its text, which is why it reads both ways round without a single
+`[data-mode="dark"]` override.
 
 **One button.** `.btn` with four intents and three sizes. Nothing else
 in the app styles a `<button>` a person presses to do something. V3
@@ -124,6 +155,29 @@ stepper; an end customer sees their shop's offer or the printed MRP;
 Patel Marketing's own staff see neither, because an order they placed
 would be addressed to themselves.
 
+**Getting in is a queue, not a wall.** The OTP proves a phone and nothing
+more. A number with no allowlist row used to be told "we do not
+recognise that number" and that was the end of it — every dealer and
+every member of staff had to be typed in by an admin, one at a time.
+Now they fill a form, it lands in `catalog.signup_requests` as pending,
+and somebody in the office decides. They can browse the whole catalogue
+while they wait; they simply cannot trade.
+
+**Who may approve is data, not code.** `catalog.departments` carries
+three booleans per department — may approve a dealer, staff, a customer
+— and `catalog.can_approve(kind)` is the only thing that reads them. So
+"only an admin or an office manager lets new staff in" is a row someone
+can change, and a screen that got it wrong would still be refused by the
+database. The same table routes notifications through
+`catalog.notify_routes`, which is why a delivery driver is not told
+about a dealer application.
+
+**The nickname rule.** Optional, and the only blank on an otherwise
+filled form. Where it is set the office sees it; where it is not they
+see "Firm name (Area)" — because two shops called Sharma Traders is the
+normal case, and the area is what tells them apart. One SQL function,
+`catalog.display_name`, so the app never re-implements it.
+
 **Never cache anything to Supabase.** Sessions, orders, reviews and the
 noticeboard go straight to the network. That is an explicit early return
 in `sw.js`, not an omission.
@@ -132,7 +186,7 @@ in `sw.js`, not an omission.
 
 ```
 python3 -m http.server 8000     # from the repo root
-# then open http://localhost:8000/v4/
+# then open http://localhost:8000/
 ```
 
 Test numbers are on the five accounts documented in the root README, PIN
@@ -143,7 +197,7 @@ read-only view, a stepper, and a shop price respectively.
 Worth checking by hand on a phone, because these are the things that
 were wrong before:
 
-1. Open `/v4/?p=paxton-ci-cast-iron-dosa-tawa` cold. Press Back. You
+1. Open `/?p=paxton-ci-cast-iron-dosa-tawa` cold. Press Back. You
    should land on the catalogue, not out of the browser.
 2. Product → product → cart → Back → Back → Back. Each step should
    retrace, and the last should be home.
@@ -170,17 +224,48 @@ self.addEventListener('activate', async () => {
 Every installed copy tears itself out on the next visit, with nobody
 having to clear a browser.
 
+## V4.1 — the catalogue live from the database
+
+Publishing is: edit in the admin panel, download `data.json`, upload it to
+GitHub, wait for Vercel. Understood and reversible, but a rate change is
+not on the site until someone remembers to publish it.
+
+V4.1 reads `catalog.catalogue` instead — a view already shaped like a
+`data.json` row — so an edit is on the site the moment it is saved.
+
+**It is a switch, not a second copy of the app.** Copying two thousand
+lines into a folder to try one changed function would mean every future
+fix landing twice. `/v4.1/` is a small page that sets
+`localStorage.v4_pm_source = 'live'` and sends you to `/`; `/v4.1/?off=1`
+sets it back, and Settings has the same toggle. Promoting it is flipping
+the default in `core.js` and deleting the folder.
+
+Making the view actually match the file needed five columns `products`
+did not have — `alias`, `hsn`, `mrp`, `sr`, and `price` for the four
+products that carry a rate with no size rows at all. `sync_from_site()`
+carries all five now, so the file and the tables stay in step both ways.
+`unit` and `moq` are deliberately not carried: they live on the product
+and `data.json` does not export them, so mapping them would blank all
+743 on the next sync. See `supabase/06_catalogue_live.sql`.
+
+A failure falls back to `data.json` rather than to an empty shop —
+tested against both a refused call and an empty result.
+
+**Photos stay on the CDN, on purpose.** The obvious next step is to read
+them from Supabase Storage too, and it would make the app worse today:
+the bucket holds none of the 904 generated thumbnails, so every grid
+card would pull a ~25KB JPEG instead of a ~3KB WebP — roughly eight
+times the data on a dealer's phone — and six real photos are missing
+from it. Photos are static, content-addressed by filename, cached for a
+year and served from Vercel's edge; the database is for what changes.
+Moving them later means uploading the six missing files plus the
+`thumb/` mirror, then pointing `IMG`/`THUMB` at the bucket.
+
 ## Where this is going
 
-V4 lives at `/v4/` while it is being tried, exactly as `/v2/` did before
-it. Nothing at `/` changes, so a bad day here costs nothing.
-
-When it has been used for real — a few orders placed, a few dealers
-asked — promoting it is a folder move plus a redirect: `/v4/*` becomes
-`/`, today's root becomes `/v3/`, and `vercel.json` gains the redirect
-pair that `/v2` and `/v3` already have. The relative paths (`../data.json`,
-`../images`) are the only thing that changes, and they change in one
-place each.
+V4 was tried at `/v4/` and is now the root. The previous build moved to
+`/v3/`, `/v2/` was retired, and `/v4/…` redirects here so links from the
+trial still land in the right place.
 
 Not built yet, and deliberately:
 
