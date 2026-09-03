@@ -3,12 +3,18 @@
 One live site. `patelmarketing-catalog.vercel.app` serves it from the repo root;
 Vercel redeploys on every push to `main`.
 
-There is no v1, v2 or v3 to choose between any more. What used to be v3 **is**
-the site. `/v3/…` redirects to the root, so links and bookmarks from testing
-still work. `/v2/` is kept as a fallback — the older build with the old
-plain-text sign-in, in case OTP sign-in ever fails for someone. v1 is retired
-and no longer deployed; it is still in git history if it is ever wanted back
-(`git log --diff-filter=D -- index.html`).
+The root **is** the live catalogue. `/v3/…` redirects to it, so links and
+bookmarks from testing still work. `/v2/` is kept as a fallback — the older
+build with the old plain-text sign-in, in case OTP sign-in ever fails for
+someone. v1 is retired and no longer deployed; it is still in git history if it
+is ever wanted back (`git log --diff-filter=D -- index.html`).
+
+**`/v4/` is the next version, being tried alongside this one.** It is the same
+catalogue, the same photos, the same database and the same sign-in, rebuilt as
+a proper mobile shop: every screen is its own address, so the phone's Back
+button and the edge-swipe walk the route the reader took instead of leaving the
+site. Nothing at the root changes while it is there. See `v4/README.md` for
+what it is, what it shares, and how it would be promoted.
 
 ## Files
 
@@ -27,6 +33,7 @@ and no longer deployed; it is still in git history if it is ever wanted back
 | `api/p.js` | Server-renders one product's `<head>` so WhatsApp shows a real link preview |
 | `supabase/` | Edge function for OTP delivery, plus schema notes |
 | `v2/` | The previous build, kept as a fallback |
+| `v4/` | The next version, live at `/v4/` for trial — see `v4/README.md` |
 
 ## The three levels
 
@@ -567,6 +574,13 @@ See `ROADMAP.md` — what was missing and why it mattered, what was built in
 response, and the things that were deliberately left alone (push notifications,
 fuzzy search, automated publishing, the stock exchange) with the reasoning for
 each.
+
+The largest thing in flight is **V4**, at `/v4/`. It answers a complaint this
+root version could only patch: a customer who opened a shared product link and
+pressed Back had the browser close on him, twice, because a shared link loads
+with one history entry and an overlay never added another. The root has since
+been given a router that fixes the reported case; V4 removes the shape of the
+problem by making every screen a real address. `v4/README.md` has the detail.
 
 ## Notes for whoever edits this next
 

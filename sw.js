@@ -69,10 +69,15 @@ self.addEventListener('install', event => {
   // No skipWaiting — rule 4.
 });
 
+// Only OUR OWN older caches. /v4/ has a worker of its own whose caches are
+// named pm-v4-<build>; deleting everything that is not this build's cache
+// wiped it on every activation, and the v4 worker wiped this one right back,
+// so whichever version was opened second lost its offline copy.
+const MINE = /^pm-v\d+$/;
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
+    await Promise.all(keys.filter(k => k !== CACHE && MINE.test(k)).map(k => caches.delete(k)));
     await self.clients.claim();
   })());
 });
@@ -93,6 +98,12 @@ self.addEventListener('fetch', event => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+
+  // /v4/ is a separate app with a worker of its own. This one is registered
+  // at scope "/" and so would otherwise handle v4's requests until that
+  // worker takes over — serving THIS index.html as the offline fallback for
+  // a v4 page, which is the wrong app.
+  if (url.pathname.startsWith('/v4/')) return;
 
   // Rule 2: the published catalogue is network-first, always.
   if (url.pathname.endsWith('/data.json') || url.pathname === '/data.json') {
