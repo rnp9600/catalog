@@ -203,6 +203,52 @@ is not in customer-facing mode. The rounding still applies either way — the
 quantity is still forced to a multiple, it is just not labelled where a consumer
 would read it.
 
+## Searching, and getting it wrong
+
+Someone types **tawaa** and means tawa. **kadii** and means kadhai. The
+catalogue used to show them an empty page.
+
+Two layers, and the cheap one does most of the work.
+
+**A soft key** folds away the spelling variance this trade actually produces.
+Indian English writes the same object several ways — tawa and tava, kadhai and
+kadai, phulka and fulka — and people double letters when they are unsure
+(tawaa, kadhaii, modakk, triplyy). Folding both the typed word and every word
+in the catalogue to the same key makes those identical, with no distance
+calculation at all.
+
+One rule that is deliberately **not** in there: `ch → c`. It looks like it
+belongs next to `sh → s`, but this catalogue sells both a **copper** vessel and
+a **chopper**, and folding them means someone typing "coper" gets 33 choppers.
+
+**An edit distance** covers what is left, which is real typos. Damerau, so a
+transposition costs one, and candidates are *ranked* rather than nearest-wins: a
+change to the first letter is a much worse guess than one in the middle. That
+is the difference between "bottel" finding bottles and finding hotels.
+
+Both run **only when a search would otherwise come back empty**, so ordinary
+typing never pays for them. Measured: 0.29 ms for a search that works, 3 ms for
+one that needs respelling, 8.5 ms once to build the index — and the index is not
+built at all until somebody searches.
+
+It never corrects silently. A rescued search says **"Showing results for tawa —
+search instead for 'tawaa'"**, and that second link forces the literal search
+through, empty result and all. Where a search *did* find something but a
+respelling would find a great deal more — "apam" matches one product by luck,
+"appam" matches 34 — it offers **"Did you mean appam? Show all 35"** and leaves
+the choice alone.
+
+The misspelling is still logged. A word people keep typing is a word worth
+adding to a product's "also called".
+
+## Suggestions while typing
+
+From two characters, under the search box: the respelling if what is being typed
+is not a word the catalogue knows, then whole categories, types and brands worth
+jumping straight to, then the products themselves with their photos. Arrow keys
+and Enter work; tapping a product opens it, tapping a group filters to it —
+a filter is exact where a search is a guess.
+
 ## Promo strips
 
 `config.js` takes a list of `promos` — a title, an optional date window, a
