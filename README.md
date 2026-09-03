@@ -306,17 +306,40 @@ they order for other people, from the order book.
 
 ## Saved, and sorting
 
-The heart **beside the button** saves a product. **Saved** next to the product
-count filters to that list, and only appears once there is something in it.
+The heart at the **top-left of the photo** saves a product. **Saved** next to the
+product count filters to that list, and only appears once there is something in
+it.
 
-Beside the button, not on the photo, and that matters. It started at the photo's
-top-right — which is exactly where the FEATURED badge sits, so the two drew on
-top of each other and read as "FEATU♥". Worse, it put a save button in the
-middle of the biggest tap target on the card: in Compact view, a 146px card with
-a 118px image, aiming for the product and catching the corner saved it instead
-of opening it — and because the whole card takes the pressed state, it looked
-like the product was about to open. Beside the button it is unmistakably its own
-control and the photo is entirely "open this product" again.
+Getting that one control placed took three goes, and the reasoning is worth
+keeping. It began at the photo's top-**right** — which is exactly where the
+FEATURED badge sat, so the two drew on top of each other and read as "FEATU♥",
+and it put a save button in the middle of the card's biggest tap target: aiming
+for the product and catching the corner saved it instead of opening it. Moving
+it beside the button fixed the accidents but left it stranded in the card's
+footer. What was actually wrong was the **badges**, not the heart: they were
+absolutely positioned over the photo, covering the one thing the card exists to
+show, and the top-right one ran off the edge of a narrow card. They are a chip
+row under the photo now, the photo carries exactly one overlay, and both top
+corners are free again.
+
+## The card
+
+One shape, in every view:
+
+- **The photo is the product.** Nothing on it but the save control.
+- **Badges** (Featured, Out of stock, Hotel size, N photos) are a chip row under
+  the photo, in the display font, so nothing overlaps and nothing clips.
+- **Name and description clamp to two lines each.** Before this a two-line name
+  and a three-line name gave two different card heights side by side.
+- **The action row is pinned to the foot** (`margin-top:auto`), so every card in
+  a row is the same height and every button lines up.
+
+## The basket
+
+One basket, floating bottom-right, where a thumb rests. It shows for anyone who
+can order — empty or not, quieter when empty — because the header used to carry
+a **second** cart purely so an empty order was still reachable, and two baskets
+on one screen is one too many.
 
 It lives in `localStorage`, keyed by phone like recently-viewed — no table, no
 policy, and it still works with no signal. The trade-off is that it is per
