@@ -103,6 +103,16 @@ photo or first initial in the header, linking to `index.html?profile=1`. None of
 them carries a sign-out button of its own. Leaving is not the main thing anyone
 came to do.
 
+The product sheet's action row — Edit this product, Enquire on WhatsApp, or
+the consumer's "ask the shop" — depends on who is signed in, and the sheet is
+routinely on screen before the allowlist lookup comes back. So it is drawn by
+one function, `sheetActionsHtml()`, and redrawn by `repriceSheet()` the moment
+the session lands. Without that, coming back here from the admin panel showed
+the admin **Enquire on WhatsApp** — an order pad they are deliberately not
+supposed to have, on their own product — and a dealer opening a shared product
+link got no order steppers at all. The size table already worked this way; the
+buttons do now too.
+
 `admin.html?edit=<slug>&back=<slug>` is the other cross-page link: the
 catalogue's "Edit this product" uses it. The admin panel keeps itself hidden
 until the edit sheet is up, so it is one screen rather than a list flashing past,
@@ -212,6 +222,57 @@ quantity, and sends it to their WhatsApp as a purchase order.
 Admin and office deliberately have no order pad on the catalogue — an order
 placed by the admin would go to Patel Marketing's own number. They see "Edit
 this product" instead.
+
+## Buttons
+
+There is one set, defined once in `index.html` and mirrored in the four
+signed-in pages. Four kinds, and the rule for picking one:
+
+| | When |
+|---|---|
+| `primary` | The one thing this screen is for. One per screen |
+| `secondary` | A real alternative to it — same weight, less shouting |
+| `quiet` | Supporting actions. **Still a button**: bordered, on a surface |
+| `danger` | Destructive. Outlined red, not a solid red block |
+
+Every one is at least 44px tall, because this is used one-handed on a phone in
+a shop, and all four take their colours from the theme so nothing is hard-coded.
+
+This exists because there was no system and it showed. **Sign out, Orders and
+Your customers were `.sgnbtn.ghost` — transparent, no border — so the three
+things a signed-in dealer most needs to tap rendered as grey text.** "Open admin
+panel" was the same shape painted green with an inline style, so the account
+screen had a green button, a blue button and three pieces of text all meaning
+"tap me". In the four panel pages `.btn.g` (g for green) was the *primary*
+action, which is why Done and Save were green there while the primary action on
+the catalogue was blue.
+
+`.g`, `.o` and `.r` still work — `.g` is now an alias for `primary`, so there is
+one primary colour instead of two — and no existing markup had to change.
+
+## Units, and products without size rows
+
+A product priced by size rows has always been able to say it is sold by the
+dozen or in boxes of six: `variants` carries `unit` and `moq`. A product priced
+as a single line could not — there was no field for it, so the catalogue
+hard-coded "Piece" for all 130 of them and the order pad stepped them one at a
+time. Someone looking for the unit ended up typing "Piece" into **Pack / spec
+line**, which is not what that field is for.
+
+The admin panel now has **Unit** and **MOQ** next to Rate and MRP, shown only
+when a product has no size rows — with rows, all four come from the rows, so
+there is one answer rather than two that can disagree. The catalogue reads
+`p.unit` and `p.moq` with Piece and one as the fallbacks.
+
+The size rows themselves were unusable on a phone: six columns in a modal left
+the unit dropdown about forty pixels wide, which is why it read as missing.
+Below 560px a row is now two lines, and the column headings give way to the
+placeholders the inputs already carried.
+
+Run `supabase/04_product_unit.sql` to add the two columns to the database. Until
+you do, the site is still correct — it reads `data.json`, which carries both
+fields as soon as you publish — but the Publish tab's compare will keep
+reporting them as different.
 
 ## Ordering the same things again
 

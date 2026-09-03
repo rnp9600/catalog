@@ -100,6 +100,15 @@ Copy the single cell it returns into **`supabase/02_live_schema.sql`** and
 commit it. Add a line at the top saying which date it was taken on — a dump
 with no date is a dump nobody trusts.
 
+## Files to run, in order
+
+| File | What it does | Run it? |
+|---|---|---|
+| `01_schema.sql` | The original four tables. History only — **not** the live schema | no |
+| `02_seed.sql` | Sample rows for a fresh project | only on a fresh project |
+| `03_events.sql` | The search/event log. Until it runs, nothing is logged | **yes** |
+| `04_product_unit.sql` | `products.unit` and `products.moq` for single-line products | **yes** |
+
 ## Keeping it honest
 
 A schema dump is only worth what its freshness is worth. Re-run it whenever a

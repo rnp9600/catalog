@@ -26,6 +26,7 @@ header{position:sticky;top:0;z-index:40;background:var(--sf);border-bottom:1px s
 .hin .who{font-family:var(--fm);font-size:.62rem;color:var(--tm)}
 .sp{flex:1}
 .ibtn{border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:999px;
+ min-height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
  padding:7px 12px;font-size:.72rem;font-weight:700;text-decoration:none;display:inline-block}
 .ibtn:hover{border-color:var(--pr);color:var(--pr)}
 .tabs{display:flex;gap:4px;padding:0 14px 9px;max-width:1000px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
@@ -38,12 +39,41 @@ main{max-width:1000px;margin:0 auto;padding:14px}
 .bar{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
 .bar input.s{flex:1;min-width:170px;padding:10px 13px;border:1.5px solid var(--bd);border-radius:var(--rs);
  background:var(--sf);font-size:.88rem}
-.btn{padding:10px 14px;border:0;border-radius:var(--rs);background:var(--pr);color:#fff;
- font-weight:700;font-size:.83rem}
-.btn.g{background:var(--ac)}
-.btn.o{background:var(--sf);color:var(--tx);border:1.5px solid var(--bd)}
-.btn.r{background:#B4433B;color:#fff}
-.btn:disabled{opacity:.45}
+/* ---------- BUTTONS ----------
+   The same four kinds as the catalogue (see the long note in index.html):
+
+     primary    the one thing this screen is for. One per screen.
+     secondary  a real alternative to it
+     quiet      supporting actions — bordered, on a surface, never bare text
+     danger     destructive
+
+   .g .o .r are the older names kept so existing markup keeps working:
+   g was "green", and it was used for the primary action — which is why Done
+   and Save were green here while the primary action on the catalogue was
+   blue. It is an alias for primary now, so the site has one primary colour
+   instead of two. o is quiet, r is danger.
+
+   Everything is at least 44px tall: this is used one-handed on a phone. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ min-height:44px;padding:11px 16px;border-radius:var(--rs);
+ font-family:var(--fd);font-weight:700;font-size:.83rem;line-height:1.2;
+ text-align:center;text-decoration:none;cursor:pointer;
+ border:1.5px solid var(--pr);background:var(--pr);color:#fff;
+ transition:transform .08s,filter .15s}
+.btn:active{transform:scale(.985)}
+.btn:hover{filter:brightness(1.07)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.btn:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+.btn.primary,.btn.g{background:var(--pr);border-color:var(--pr);color:#fff}
+.btn.secondary{background:var(--sf);color:var(--pr);border-color:var(--pr)}
+.btn.quiet,.btn.o{background:var(--sf);color:var(--tx);border-color:var(--bd);font-weight:600}
+.btn.quiet:hover,.btn.o:hover{filter:none;border-color:var(--pr);color:var(--pr)}
+.btn.danger,.btn.r{background:var(--sf);color:#B3261E;border-color:#E7C4C0;font-weight:600}
+.btn.danger:hover,.btn.r:hover{filter:none;background:#FDEDEB}
+.btn.wide,.btn.block{display:flex;width:100%}
+.btn.sm{min-height:36px;padding:8px 12px;font-size:.76rem}
+.btnstack{display:flex;flex-direction:column;gap:8px}
+.btnstack .btn{width:100%}
 .fl{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
 .fl button{border:1px solid var(--bd);background:var(--sf);border-radius:999px;padding:5px 11px;
  font-size:.71rem;font-weight:600;color:var(--tx)}
@@ -97,6 +127,19 @@ main{max-width:1000px;margin:0 auto;padding:14px}
 .tg input:checked+i::after{transform:translateX(19px)}
 .tg.danger input:checked+i{background:#B4433B}
 .vrow{display:grid;grid-template-columns:1.1fr .7fr .7fr .5fr .8fr auto;gap:6px;margin-bottom:6px;align-items:center}
+/* Six columns is fine on a laptop and unusable on a phone — the unit dropdown
+   ends up about forty pixels wide, which is why it read as missing. Below
+   560px the row becomes two lines: size across the top, then the numbers and
+   the unit under it. */
+@media(max-width:560px){
+  .vrow{grid-template-columns:1fr 1fr 1fr auto;gap:5px;
+    padding:8px;border:1px solid var(--bd);border-radius:9px;margin-bottom:8px}
+  .vrow>:first-child{grid-column:1/-1}
+  .vrow>select{grid-column:span 2}
+  /* The column headings cannot line up with a two-line row, and the inputs
+     already carry the same words as placeholders. */
+  .vrow.vhead{display:none}
+}
 .vrow input,.vrow select{padding:8px 9px;border:1.5px solid var(--bd);border-radius:7px;background:var(--sf);
  font-family:var(--fm);font-size:.79rem;min-width:0}
 .mini{border:0;background:var(--sf2);color:var(--tx);border-radius:7px;width:31px;height:31px;
@@ -412,10 +455,10 @@ if(new URLSearchParams(location.search).get("edit")){
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=33"></script>
+<script src="config.js?v=34"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=33"></script>
-<script src="pm-ui.js?v=33"></script>
+<script src="supabase-auth.js?v=34"></script>
+<script src="pm-ui.js?v=34"></script>
 <script>
 PMUI.config({firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
   site:'https://patelmarketing-catalog.vercel.app',
@@ -722,8 +765,24 @@ function edit(i){
     '<div class="two" id="singleWrap" style="margin-top:12px">'+
       '<div class="fg"><label>Rate</label><input id="fPrice" type="number" value="'+(p.price??'')+'"></div>'+
       '<div class="fg"><label>MRP</label><input id="fMrp" type="number" value="'+(p.mrp??'')+'"></div></div>'+
+    /* A product with no size rows still has a unit and a minimum. Until now
+       there was nowhere to say so: the unit dropdown only existed on a size
+       row, so 130 products — every one priced as a single line, Cast Iron Dosa
+       Tawa among them — were shown as "/pc" because the catalogue hard-coded
+       Piece for them. Someone looking for the unit ended up typing "Piece"
+       into Pack / spec line, which is not what that field is. */
+    '<div class="two" id="singleWrap2" style="margin-top:10px">'+
+      '<div class="fg"><label>Unit</label><select id="fUnit">'+
+        UNITS.map(u=>'<option value="'+u+'"'+((p.unit||'Piece')===u?' selected':'')+'>'+u+'</option>').join('')+
+      '</select></div>'+
+      '<div class="fg"><label>MOQ <span style="font-weight:400;color:var(--tm)">(optional)</span></label>'+
+        '<input id="fMoq" type="number" min="1" placeholder="e.g. 6" value="'+(p.moq??'')+'"></div></div>'+
+    '<div class="hint" id="singleHint" style="margin-top:6px">'+
+      'How this product is sold and counted when it has no size rows. '+
+      'The unit shows on the catalogue as /pc, /dz, /kg and so on; MOQ steps the '+
+      'order quantity.</div>'+
     '<div class="hint" id="singleNote" style="margin-top:8px;display:none">'+
-      'Rate and MRP come from the size rows above.</div>'+
+      'Rate, MRP, unit and MOQ come from the size rows above.</div>'+
 
     '<button class="btn g" id="saveP" style="width:100%;margin-top:18px">Done</button>'+
    '</div>';
@@ -751,8 +810,9 @@ function edit(i){
   };
 
   function drawV(){
-    $('#vl').innerHTML = vs.length ? ('<div class="vrow" style="font-size:.6rem;color:var(--tm);'+
-      'text-transform:uppercase;letter-spacing:.07em"><span>Size</span><span>DP</span><span>MRP</span>'+
+    $('#vl').innerHTML = vs.length ? ('<div class="vrow vhead" style="font-size:.6rem;color:var(--tm);'+
+      'text-transform:uppercase;letter-spacing:.07em">'+
+      '<span>Size</span><span>DP</span><span>MRP</span>'+
       '<span>MOQ</span><span>Unit</span><span></span></div>') + vs.map((v,ix)=>
       '<div class="vrow">'+
       '<input placeholder="Size" value="'+esc(v.size||'')+'" data-k="size" data-i="'+ix+'">'+
@@ -774,8 +834,10 @@ function edit(i){
     // One place shows the rate, never two. With size rows the single fields
     // are hidden and derived on save; with none they are the only source.
     const has=vs.length>0;
-    $('#singleWrap').style.display = has ? 'none' : 'grid';
-    $('#singleNote').style.display = has ? 'block' : 'none';
+    $('#singleWrap').style.display  = has ? 'none' : 'grid';
+    $('#singleWrap2').style.display = has ? 'none' : 'grid';
+    $('#singleHint').style.display  = has ? 'none' : 'block';
+    $('#singleNote').style.display  = has ? 'block' : 'none';
   }
   drawV();
   $('#addV').onclick=function(){vs.push({size:'',rate:null,price:null,mrp:null,moq:null,unit:'Piece'});drawV()};
@@ -817,6 +879,10 @@ function edit(i){
       hsn:$('#fHsn').value.trim()||null, note:$('#fNote').value.trim()||null,
       price: keptVs.length ? low('price') : num('#fPrice'),
       mrp:   keptVs.length ? low('mrp')   : num('#fMrp'),
+      // Same rule as rate and MRP: with size rows these come from the rows, so
+      // there is one answer rather than two that can disagree.
+      unit:  keptVs.length ? (keptVs[0].unit||'Piece') : ($('#fUnit').value||'Piece'),
+      moq:   keptVs.length ? low('moq')   : num('#fMoq'),
       hidden:$('#fHidden').checked, feat:$('#fFeat').checked,
       stock:$('#fOut').checked?'out':'active',
       imgs:imgs.slice(), img:imgs[0]||'_placeholder',
