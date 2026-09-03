@@ -289,8 +289,21 @@ newest first, with where each one has got to. It reads the same
 `order_summary` and `order_items` the office reads in `orders.html` and a dealer
 reads in `shop.html` — same rows, same policies, nothing new in the database.
 
-**Order again** puts that order's lines back in the order pad. Two things about
-it are worth knowing:
+**Order again** opens that order as a list you can edit before any of it
+reaches the pad: change any quantity, drop anything you do not want this time,
+see what it comes to at today's rates, then add it.
+
+It used to tip the whole order straight into the basket. That is wrong for how
+this is actually used — a dealer repeats last month's order and then wants two
+of this, none of that, six instead of twelve, and doing that afterwards means
+hunting each line down again in a full basket, which is the exact job repeating
+was supposed to save.
+
+Quantities step by the supplier's minimum, the same rule the pad follows, so a
+repeat cannot produce a quantity the pad would then silently round. The order
+pad itself has the same steppers now; before, it could only remove a line.
+
+Two more things worth knowing:
 
 - **It repeats at today's rates, not the rates on the old order.** That is not
   a special case; the basket has only ever stored `{slug, size, qty}` and looks
@@ -303,8 +316,9 @@ it are worth knowing:
   disappearing.
 
 Repeating an order twice adds to the existing lines instead of listing the same
-size twice. An empty order pad offers the same list, because an empty pad is
-exactly when someone wants last month's order.
+size twice. An empty order pad offers **Repeat a past order**, because an empty
+pad is exactly when someone wants last month's — nothing is shown until that
+button is tapped, and from there it is the same list and the same review.
 
 Admin and office do not get this, for the same reason they have no order pad:
 they order for other people, from the order book.
@@ -338,6 +352,18 @@ One shape, in every view:
   and a three-line name gave two different card heights side by side.
 - **The action row is pinned to the foot** (`margin-top:auto`), so every card in
   a row is the same height and every button lines up.
+
+## The bottom of the screen
+
+Three things live down there — the basket, the "a new version is ready" strip
+and the toast — and each used to be positioned on its own. With the basket
+showing, the update strip drew straight underneath it: the message half hidden
+and its **Reload** button behind the basket entirely.
+
+One variable settles it. `--dock` is the height the basket takes when it is
+showing and `--swdock` the height of the update strip; everything below stacks
+above whatever is under it. Add a fourth thing down here and give it the same
+treatment.
 
 ## The basket
 
