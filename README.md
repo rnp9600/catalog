@@ -575,6 +575,13 @@ response, and the things that were deliberately left alone (push notifications,
 fuzzy search, automated publishing, the stock exchange) with the reasoning for
 each.
 
+The item to raise first is **paging the catalogue and holding any one list to
+1,000 products**, with a full-catalogue download for anyone who wants the lot.
+It is not urgent — browsing costs nothing on Supabase, because `data.json` is a
+static file on the CDN, not a database read — but at 10,000 SKUs the download
+size and the one-pass render both start to hurt. `ROADMAP.md` has the four
+pieces and the thresholds that say when to stop deferring it.
+
 The largest thing in flight is **V4**, at `/v4/`. It answers a complaint this
 root version could only patch: a customer who opened a shared product link and
 pressed Back had the browser close on him, twice, because a shared link loads

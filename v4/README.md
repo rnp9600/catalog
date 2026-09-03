@@ -189,5 +189,11 @@ Not built yet, and deliberately:
   and it is best done once the order book is in daily use.
 - **Reviews written from V4.** They are shown; writing one still happens
   in V3.
-- **Grid virtualisation.** `render` builds every card at once. Fine at
-  743; revisit past about 2,000.
+- **Paging, and a 1,000-product ceiling.** Asked for and agreed, then
+  deferred — the item to raise first next time. Home caps at 12, but a
+  category draws every product in it and "Show all" draws all 743. Fine
+  now; at 10,000 SKUs the 7MB download and the one-pass render both
+  hurt. Note that browsing costs *nothing* on Supabase — `data.json` is
+  a static file on the CDN — so the fix is about payload and render, not
+  database cost. `ROADMAP.md` has the four pieces, the order to do them
+  in and the thresholds that say when.

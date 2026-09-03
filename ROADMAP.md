@@ -228,9 +228,53 @@ stock never learns anyone asked. Either it matters and wants a real enquiry
 record, or it does not and should be left as the brokered thing it currently
 is. That is a business decision, not a technical one.
 
-**Grid virtualisation.** `render()` builds all 743 cards in one pass. That is
-fine at this size. Revisit somewhere past 2,000 products, or when a cheap
-Android starts to stutter on the unfiltered view.
+**Paging the catalogue, and a 1,000-product ceiling.** *Asked for, agreed, and
+deliberately deferred — this is the one to raise next time someone asks what to
+build.*
+
+Everything renders in one pass. `render()` in the root version builds all 743
+cards at once; V4 caps the home screen at 12 but a category draws every product
+in it, a search draws every hit, and "Show all" on the search screen draws all
+743. At today's size that is fine and measurably so.
+
+First, a correction to the reason this came up. **The catalogue never reads
+products from Supabase.** `data.json` is a static file served from Vercel's CDN,
+so browsing costs no database reads and no rows, whatever the SKU count. Only
+sign-in, orders, ratings and the noticeboard touch Supabase. The worry that
+10,000 SKUs would make browsing expensive on the database side does not apply.
+
+What *is* real is the payload and the render. 743 products is 509KB; 10,000
+would be roughly 7MB downloaded on every first visit, on a phone, on Indian
+mobile data — and building 10,000 cards in one pass would stutter a cheap
+Android badly. Both get worse smoothly, not suddenly, which is exactly why this
+is easy to keep putting off.
+
+Four pieces, in the order they earn their keep:
+
+1. **Render in pages of about 48**, with a sentinel element at the bottom of
+   the grid that draws the next batch as it scrolls into view. This is the one
+   that fixes the render cost at any catalogue size and it changes no data and
+   no publish step. Cheap. Worth doing before it is needed.
+2. **A hard ceiling of 1,000 on any one list**, with a line saying "showing the
+   first 1,000 of N — narrow it down with a category or a search" rather than
+   silently truncating. 1,000 is the number the office wants dealers held to for
+   a smooth screen.
+3. **Split `data.json` in two**: a small index carrying only what a card needs
+   (name, brand, cat, sub, price, slug, img) and per-product detail fetched when
+   a product is opened. This is what actually caps the *download*, and it is the
+   only piece that touches `admin.html`'s publish step, so it wants its own
+   change and its own testing.
+4. **"Download the full catalogue"** — a button that produces the whole thing as
+   a PDF for the dealer who genuinely wants everything, so the ceiling in (2) is
+   a nudge rather than a wall. The PDF machinery already exists in
+   `index.html`'s catalogue sheet.
+
+**When to do it.** Items 1 and 2 help today and are a day's work between them.
+Item 3 does not pay for itself until the catalogue is past roughly 2,000
+products — before that, splitting the file adds a round trip per product open
+for no saving worth having. Item 4 whenever (2) lands. The signal to stop
+waiting on any of them: `data.json` past about 1.5MB, or the unfiltered grid
+taking more than a beat to appear on a mid-range Android.
 
 ## The one thing that is not a feature
 
