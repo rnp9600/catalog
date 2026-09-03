@@ -1,0 +1,54 @@
+# Build the grid thumbnails whenever a photo changes.
+#
+# Photos are added through GitHub's own upload page, not a local checkout —
+# that is how the publish flow works and it is fine. But it means nobody is
+# sitting at a terminal to run tools/thumbs.mjs afterwards, and a step that
+# depends on somebody remembering is a step that stops happening. So this runs
+# it and commits the result.
+#
+# Cheap by construction: the script only rebuilds thumbnails that are missing
+# or older than their photo, so a push that adds one product converts one file.
+name: Thumbnails
+
+on:
+  push:
+    paths:
+      - 'images/**'
+      - '!images/thumb/**'      # our own output must not retrigger us
+      - 'tools/thumbs.mjs'
+  workflow_dispatch:            # and a button, for a rebuild after --all
+
+permissions:
+  contents: write
+
+concurrency:
+  group: thumbs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install sharp
+        run: npm install --no-save sharp
+
+      - name: Build the thumbnails
+        run: node tools/thumbs.mjs
+
+      - name: Commit anything new
+        run: |
+          if [ -z "$(git status --porcelain images/thumb)" ]; then
+            echo "Every thumbnail was already current."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/thumb
+          git commit -m "Build thumbnails for the photos in ${GITHUB_SHA:0:7}"
+          git push

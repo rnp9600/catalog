@@ -22,6 +22,7 @@ header{position:sticky;top:0;z-index:40;background:var(--sf);border-bottom:1px s
 .hin .who{font-family:var(--fm);font-size:.62rem;color:var(--tm)}
 .sp{flex:1}
 .ibtn{border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:999px;
+ min-height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
  padding:7px 12px;font-size:.72rem;font-weight:700;text-decoration:none;display:inline-block}
 .tabs{display:flex;gap:4px;padding:0 14px 9px;max-width:760px;margin:0 auto;overflow-x:auto}
 .tab{flex:0 0 auto;border:0;background:var(--sf2);color:var(--tm);border-radius:999px;
@@ -41,12 +42,41 @@ main{max-width:760px;margin:0 auto;padding:14px}
 .fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bd);
  border-radius:var(--rs);background:var(--sf);font-size:.88rem}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{padding:10px 14px;border:0;border-radius:var(--rs);background:var(--pr);color:#fff;
- font-weight:700;font-size:.83rem}
-.btn.g{background:var(--ac)}
-.btn.o{background:var(--sf);color:var(--tx);border:1.5px solid var(--bd)}
-.btn.r{background:#B4433B;color:#fff}
-.btn:disabled{opacity:.45}
+/* ---------- BUTTONS ----------
+   The same four kinds as the catalogue (see the long note in index.html):
+
+     primary    the one thing this screen is for. One per screen.
+     secondary  a real alternative to it
+     quiet      supporting actions — bordered, on a surface, never bare text
+     danger     destructive
+
+   .g .o .r are the older names kept so existing markup keeps working:
+   g was "green", and it was used for the primary action — which is why Done
+   and Save were green here while the primary action on the catalogue was
+   blue. It is an alias for primary now, so the site has one primary colour
+   instead of two. o is quiet, r is danger.
+
+   Everything is at least 44px tall: this is used one-handed on a phone. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ min-height:44px;padding:11px 16px;border-radius:var(--rs);
+ font-family:var(--fd);font-weight:700;font-size:.83rem;line-height:1.2;
+ text-align:center;text-decoration:none;cursor:pointer;
+ border:1.5px solid var(--pr);background:var(--pr);color:#fff;
+ transition:transform .08s,filter .15s}
+.btn:active{transform:scale(.985)}
+.btn:hover{filter:brightness(1.07)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.btn:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+.btn.primary,.btn.g{background:var(--pr);border-color:var(--pr);color:#fff}
+.btn.secondary{background:var(--sf);color:var(--pr);border-color:var(--pr)}
+.btn.quiet,.btn.o{background:var(--sf);color:var(--tx);border-color:var(--bd);font-weight:600}
+.btn.quiet:hover,.btn.o:hover{filter:none;border-color:var(--pr);color:var(--pr)}
+.btn.danger,.btn.r{background:var(--sf);color:#B3261E;border-color:#E7C4C0;font-weight:600}
+.btn.danger:hover,.btn.r:hover{filter:none;background:#FDEDEB}
+.btn.wide,.btn.block{display:flex;width:100%}
+.btn.sm{min-height:36px;padding:8px 12px;font-size:.76rem}
+.btnstack{display:flex;flex-direction:column;gap:8px}
+.btnstack .btn{width:100%}
 .item{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--bd);
  border-radius:var(--rs);padding:9px 11px;margin-bottom:7px}
 .item .t{flex:1;min-width:0}
@@ -203,23 +233,15 @@ main{max-width:760px;margin:0 auto;padding:14px}
 </main>
 </div>
 
-<script src="config.js?v=29"></script>
+<script src="config.js?v=35"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=29"></script>
+<script src="supabase-auth.js?v=35"></script>
+<script src="pm-ui.js?v=35"></script>
 <script>
-(function(){
-  const D={supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
-    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s'};
-  const K=window.PM_CONFIG||{};
-  const M=Object.assign({},D,K);
-  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
-  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
-  window.PM_CONFIG=M;
-})();
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const money=n=>n==null?'':'₹'+Number(n).toLocaleString('en-IN');
-let ME=null, P=[], PENDING_PHONE=null, MINE=new Set();
+PMUI.config({supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+  supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s'});
+const {$, esc, money}=PMUI;
+let ME=null, P=[], MINE=new Set();
 const STATUS_LABEL={in_stock:'In stock',arriving:'Arriving',held:'Kept aside'};
 /* Level 2 is one role — a shop owner IS a dealer whose dealer_type is
    'retailer'. 'shop_owner' is the older spelling of the same thing and is
@@ -227,91 +249,16 @@ const STATUS_LABEL={in_stock:'In stock',arriving:'Arriving',held:'Kept aside'};
 const isDealer=r=>!!r && (r.role==='dealer'||r.role==='shop_owner');
 
 /* ---------------- gate ---------------- */
-$('#gp').oninput=function(){
-  const d=($('#gp').value||'').replace(/\D/g,'');
-  $('#gEcho').textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10) : (d.length?d.length+' of 10 digits':'');
-};
-$('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
-$('#gb').onclick=async function(){
-  const raw=($('#gp').value||'').replace(/\D/g,'');
-  const m=$('#gm'); m.classList.remove('on');
-  if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
-    '. Type the 10-digit number — 91 in front is fine too.'; m.classList.add('on'); return; }
-  // Test numbers carry a PIN instead of a texted code — no SMS, no cost.
-  const testNo=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(raw));
-  if(!testNo){
-    const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
-    const {error}=await PMAuth.sendOtp(raw);
-    gb.disabled=false; gb.textContent='Send code';
-    if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
-  }
-  PENDING_PHONE=raw;
-    $('#gOtpTo').textContent = testNo
-    ? 'Test account. No SMS is sent for these — type the 6-digit PIN.'
-    : 'Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
-  $('#gCode').placeholder = testNo ? '6-digit PIN' : '6-digit code';
-  $('#gStepPhone').style.display='none'; $('#gStepOtp').style.display='block';
-  $('#gCode').focus();
-};
-$('#gBack').onclick=function(){
-  PENDING_PHONE=null; $('#gm').classList.remove('on');
-  $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
-  $('#gp').focus();
-};
-$('#gCode').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gv').click()} };
-$('#gv').onclick=async function(){
-  const code=($('#gCode').value||'').replace(/\D/g,'');
-  const m=$('#gm'); m.classList.remove('on');
-  if(code.length<4){ m.textContent='Enter the code as texted to you.'; m.classList.add('on'); return; }
-  const isTest=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(PENDING_PHONE));
-  const gv=$('#gv'); gv.disabled=true; gv.textContent=isTest?'Signing in…':'Verifying…';
-  const {error}= isTest ? await PMAuth.signInWithPin(PENDING_PHONE, code)
-                        : await PMAuth.verifyOtp(PENDING_PHONE, code);
-  gv.disabled=false; gv.textContent=isTest?'Sign in':'Verify & sign in';
-  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
-  PENDING_PHONE=null;
-  const row=await PMAuth.myAllowlistRow();
-  if(!row || !isDealer(row)){
-    await PMAuth.signOut();
-    m.textContent='That number signed in, but this screen is for Patel Marketing dealers.';
-    m.classList.add('on');
-    $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
-    return;
-  }
-  start(row);
-};
-(async function(){
-  const sess=await PMAuth.currentSession();
-  if(!sess) return;
-  const row=await PMAuth.myAllowlistRow();
-  if(row && isDealer(row)) start(row); else await PMAuth.signOut();
-})();
-
-
-/* One account menu, built the same way on every panel screen. */
-// The header shows whose account this is, not the word "Account": the photo
-// they uploaded, or their initials. It links to the catalogue's account screen,
-// which is the only place sign out lives.
-function wireAccountMenu(row){
-  const btn=document.getElementById('acctBtn');
-  if(!btn) return;
-  const name=(row&&(row.nickname||row.name||row.shop))||'';
-  const what=row&&row.is_admin?'admin':row&&row.role==='staff'?'office'
-            :row&&(row.role==='dealer'||row.role==='shop_owner')?'dealer':'';
-  const initials=String(name).replace(/[^A-Za-z ]/g,'').trim().split(/\s+/)
-    .slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'PM';
-  const photo=row&&row.photo_url;
-  btn.innerHTML = photo
-    ? '<img src="'+String(photo).replace(/"/g,'&quot;')+'" alt="">'
-    : initials.replace(/[&<>]/g,'');
-  btn.title=(name||'Your account')+(what?' · '+what:'');
-  btn.setAttribute('aria-label', btn.title);
-}
+PMUI.gate({
+  allow: isDealer,
+  refusal: 'That number signed in, but this screen is for Patel Marketing dealers.',
+  onReady: start,
+});
 
 async function start(row){
   ME=row;
   $('#gate').style.display='none'; $('#app').style.display='block';
-  wireAccountMenu(row);
+  PMUI.accountMenu(row);
   $('#whoLine').textContent=(row.shop||row.nickname||row.name||'your shop')+
     (row.dealer_type==='wholesaler'?' · wholesale':'')+(row.city?' · '+row.city:'');
   const r=await fetch('data.json',{cache:'no-cache'});
@@ -439,11 +386,7 @@ async function loadMyOrders(){
 }
 
 /* ---------------- offers ---------------- */
-function findProduct(text){
-  const t=(text||'').split(' — ')[0].trim().toLowerCase();
-  return P.find(p=>p.name.toLowerCase()===t) ||
-    P.find(p=>(p.name+' — '+(p.code||'')).toLowerCase()===text.trim().toLowerCase());
-}
+const findProduct=t=>PMUI.findProduct(t,P);
 $('#fProduct').oninput=function(){
   const p=findProduct(this.value);
   $('#productHint').textContent = p ? (p.brand+' · '+p.cat+(p.code?' · '+p.code:'')) : '';

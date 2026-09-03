@@ -3,6 +3,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Patel Marketing — Wholesale Kitchenware Catalogue</title>
 <meta name="description" content="Browse our wholesale kitchenware range by brand, search by product type, and enquire directly on WhatsApp.">
+<!-- Installable. The manifest and the service worker turn this into something
+     a dealer keeps on their home screen, which is also what makes it open
+     with no signal. iOS ignores most of the manifest, so the apple-* tags
+     below are not duplicates of it. -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2F6FA8">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Patel Marketing">
 <!-- Link preview card shown when the catalogue itself is shared (WhatsApp,
      Facebook, Telegram, iMessage). Individual products get their own card
      from /api/p.js — see vercel.json. -->
@@ -110,9 +121,69 @@ h1{font-size:1.85rem;font-weight:800;letter-spacing:-.028em;line-height:1.1;marg
 .fsection h4{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
  color:var(--tm);margin-bottom:9px}
 
-.bar{margin:20px 0 12px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.bar h2{font-size:1.06rem;font-weight:800}
-.bar span{font-size:.74rem;color:var(--tm)}
+/* Heading and count stack on the left, the two controls sit on the right, one
+   row. They used to be strung along a single wrapping line, which on a phone
+   broke into "Saved" as a heading, then a chip that also said "Saved 2", then
+   the sort box, then the count — four things at four indents saying roughly
+   the same thing, pushing the products down the page. */
+.bar{margin:20px 0 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.barhd{display:flex;flex-direction:column;gap:1px;min-width:0}
+.barhd h2{font-size:1.06rem;font-weight:800;line-height:1.25}
+.barhd span{font-size:.74rem;color:var(--tm)}
+.barctl{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.barctl[hidden]{display:none}
+/* Both are the same shape as the filter chips above them, so they read as
+   part of the same row of controls rather than as a second system. */
+.sortsel{font-family:var(--fd);font-size:.72rem;font-weight:600;color:var(--tx);
+ background:var(--sf);border:1px solid var(--bd);border-radius:999px;padding:7px 9px;cursor:pointer;
+ max-width:150px}
+.savetog{font-family:var(--fd);font-size:.72rem;font-weight:600;padding:7px 11px;border-radius:999px;
+ background:var(--sf);color:var(--tm);border:1px solid var(--bd);cursor:pointer;
+ display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.savetog.on{background:var(--pr);border-color:var(--pr);color:#fff}
+.savetog[hidden]{display:none}
+/* The save control sits beside the button, not on the photo — see saveDot().
+   38px so it is a real touch target, and clearly separate from the card. */
+.cardact{display:flex;gap:6px;align-items:stretch;margin-top:8px}
+.cardact .cta{margin-top:0;flex:1;width:auto}
+.savedot{flex:0 0 auto;width:38px;border-radius:var(--rs);
+ border:1.5px solid var(--bd);background:var(--sf);color:var(--tm);font-size:.95rem;line-height:1;
+ cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.savedot.on{background:var(--pr);border-color:var(--pr);color:#fff}
+.savedot:active{transform:scale(.94)}
+/* List view lays the card out on a grid, so the pair has to take the cell the
+   button used to hold. */
+body.v-list .cardact{grid-column:4;grid-row:1/4;align-self:center;margin-top:0}
+/* Compact hides the button, so the heart is the only thing in the row — put
+   it on the right, small, under the price. This is the view most people leave
+   the site on, so losing the ability to save from it was not an option; what
+   had to go was the heart sitting on the photo, where a 118px-tall image and a
+   146px card made catching it by accident almost the default. */
+body.v-compact .cardact{display:flex;justify-content:flex-end;margin-top:6px}
+body.v-compact .savedot{width:34px;height:30px;font-size:.85rem}
+
+/* ---------- Your orders ---------- */
+.ocard{border:1px solid var(--bd);border-radius:var(--rs);padding:11px 12px;margin-bottom:9px;background:var(--sf)}
+.ocard.done{opacity:.66}
+.ohead{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.ochip{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+ padding:3px 8px;border-radius:999px;background:var(--act);color:var(--tx)}
+.oref{margin-left:auto;font-family:var(--fm);font-size:.68rem;color:var(--tm)}
+.osteps{display:flex;gap:3px;margin-bottom:7px}
+.osteps i{flex:1;height:3px;border-radius:2px;background:var(--bd)}
+.osteps i.on{background:var(--pr)}
+.ometa{font-size:.72rem;color:var(--tm)}
+.olines{display:none;margin-top:8px;border-top:1px solid var(--bd);padding-top:7px}
+.olines.on{display:block}
+.oline{display:flex;gap:7px;font-size:.76rem;padding:3px 0;align-items:baseline}
+.oline .q{font-family:var(--fm);color:var(--tm);flex:0 0 34px}
+.oline .n{flex:1}
+.oline .p{font-family:var(--fm);color:var(--tm)}
+.obtns{display:flex;gap:7px;margin-top:9px}
+.obtn{flex:1;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);border-radius:var(--rs);
+ padding:8px;font-family:var(--fd);font-weight:700;font-size:.74rem;cursor:pointer}
+.obtn.pri{background:var(--pr);border-color:var(--pr);color:#fff}
+.obtn:disabled{opacity:.6}
 
 /* ---------- GRID (default) ---------- */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(226px,1fr));gap:15px}
@@ -192,7 +263,7 @@ body.v-list .vcount{grid-column:2;grid-row:3;justify-self:start}
 body.v-list .szbtn,body.v-list .szlist,body.v-list .refnote{display:none}
 body.v-list .br{grid-column:1;grid-row:3;margin-top:-6px}
 body.v-list .pw{grid-column:3;grid-row:1/4;align-self:center;margin:0;padding:0;text-align:right}
-body.v-list .cta{grid-column:4;grid-row:1/4;align-self:center;margin:0;width:100%}
+body.v-list .cta{margin:0;width:100%}
 body.v-list .card:hover{transform:none;box-shadow:0 4px 14px rgba(var(--sh),.1)}
 
 /* ---------- COMPACT view ---------- */
@@ -251,13 +322,14 @@ body.v-compact .ph{font-size:.66rem}
 .vt .vh span:last-child,.vt .vr span:last-child{text-align:right}
 .sizesplain{margin-top:16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;
  font-family:var(--fm);font-size:.74rem;line-height:1.75}
+/* The sheet's action row now draws its buttons with .btn, so this only has to
+   lay them out: the one that matters gets its own line, the rest share the
+   next. */
 .sactions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
-.sactions button{flex:1;min-width:140px;border:0;border-radius:var(--rs);padding:12px;font-family:var(--fd);
- font-weight:700;font-size:.8rem;cursor:pointer;background:var(--pr);color:#fff}
-.sactions button.alt{background:var(--sf2);color:var(--tx);border:1px solid var(--bd)}
-/* Enquiry is the primary action — own row, full width. Share + Copy share
-   the row beneath it. */
-.sactions #waBtn{flex:1 1 100%}
+.sactions .btn{flex:1 1 calc(50% - 4px);min-width:130px}
+.sactions .btn.wide{flex:1 1 100%}
+.snoteline{font-size:.74rem;color:var(--tm);margin-top:10px;line-height:1.55}
+.snoteline a{color:var(--pr);font-weight:700}
 .related{margin-top:24px}
 .related h4{font-size:.8rem;font-weight:800;margin-bottom:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--tm)}
 .rrow{display:flex;gap:9px;overflow-x:auto;padding-bottom:6px}
@@ -397,7 +469,14 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
 }
 @media(max-width:900px){
   body.v-list .bd_{grid-template-columns:1fr;gap:6px}
-  body.v-list .sp,body.v-list .pw,body.v-list .cta,body.v-list .vcount{grid-column:1;grid-row:auto;text-align:left}
+  /* .cardact and not .cta: the button is wrapped now, so the wrapper is the
+     grid child. Without it here the wrapper kept grid-column:4 in a one-column
+     grid, which forced an implicit fourth column and squeezed every product
+     name down to one word per line. */
+  body.v-list .sp,body.v-list .pw,body.v-list .cardact,body.v-list .vcount{
+    grid-column:1;grid-row:auto;text-align:left}
+  body.v-list .cardact{justify-content:flex-start}
+  body.v-list .cardact .cta{flex:0 1 auto;min-width:150px}
 }
 @media(max-width:560px){
   h1{font-size:1.4rem}
@@ -498,9 +577,57 @@ body.m-off .reveal{opacity:1;transform:none}
 .sgnrow input{flex:1;min-width:0;padding:13px 12px;border:1.5px solid var(--bd);border-left:0;
  border-radius:0 var(--rs) var(--rs) 0;background:var(--sf);font-family:var(--fm);
  letter-spacing:.08em;color:var(--tx);font-size:.95rem}
-.sgnbtn{width:100%;padding:13px;border:0;border-radius:var(--rs);background:var(--pr);color:#fff;
- font-weight:700;font-size:.9rem;font-family:var(--fd)}
-.sgnbtn.ghost{background:transparent;color:var(--tm);font-weight:600;font-size:.82rem;margin-top:4px}
+/* ---------- BUTTONS ----------
+   One set of buttons for the whole site, because there was not one: Sign out,
+   Orders and Your customers were `.sgnbtn.ghost`, which is transparent with no
+   border, so the three things a signed-in dealer most needs to tap rendered as
+   grey text. "Open admin panel" was the same shape but painted green with an
+   inline style, so the account screen had a green button, a blue button and
+   three pieces of text all meaning "tap me".
+
+   Four kinds, and the rule for picking one:
+
+     primary    the single thing this screen is for. One per screen.
+     secondary  a real alternative to it — same weight, less shouting.
+     quiet      supporting actions. STILL A BUTTON: bordered, on a surface,
+                44px tall. Never bare text.
+     danger     destructive, and only ever as `quiet danger` unless the whole
+                screen is about deleting something.
+
+   Everything is at least 44px tall because this is used one-handed on a phone
+   in a shop. Colours come from the theme, so all four themes get this free and
+   nothing is hard-coded green again. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ min-height:44px;padding:12px 16px;border-radius:var(--rs);
+ font-family:var(--fd);font-weight:700;font-size:.84rem;line-height:1.2;
+ text-align:center;text-decoration:none;cursor:pointer;border:1.5px solid transparent;
+ background:var(--sf2);color:var(--tx);transition:transform .08s,filter .15s}
+.btn:active{transform:scale(.985)}
+.btn:disabled,.btn[aria-disabled="true"]{opacity:.5;cursor:default}
+.btn:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+.btn.primary{background:var(--pr);color:#fff;border-color:var(--pr)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.secondary{background:var(--sf);color:var(--pr);border-color:var(--pr)}
+.btn.quiet{background:var(--sf);color:var(--tx);border-color:var(--bd);font-weight:600}
+.btn.quiet:hover{border-color:var(--pr);color:var(--pr)}
+.btn.danger{background:var(--sf);color:#B3261E;border-color:#E7C4C0;font-weight:600}
+.btn.danger:hover{background:#FDEDEB}
+.btn.wide{width:100%}
+.btn.block{display:flex;width:100%}
+.btn.sm{min-height:36px;padding:8px 12px;font-size:.76rem}
+/* A stack of full-width buttons, which is what every sheet on this site is. */
+.btnstack{display:flex;flex-direction:column;gap:8px}
+.btnstack .btn{width:100%}
+
+.sgnbtn{width:100%;min-height:48px;padding:13px;border:1.5px solid var(--pr);border-radius:var(--rs);
+ background:var(--pr);color:#fff;font-weight:700;font-size:.9rem;font-family:var(--fd);cursor:pointer;
+ display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none}
+/* Kept as a name because a lot of markup uses it, but it is a real button now
+   rather than transparent text. */
+.sgnbtn.ghost{background:var(--sf);color:var(--tx);border-color:var(--bd);
+ font-weight:600;font-size:.84rem;margin-top:8px}
+.sgnbtn.ghost:hover{border-color:var(--pr);color:var(--pr)}
+.sgnbtn.danger{background:var(--sf);color:#B3261E;border-color:#E7C4C0;font-weight:600}
 .sgnmsg{font-size:.8rem;margin-top:12px;padding:11px 13px;border-radius:var(--rs);
  background:var(--act);color:var(--tx);line-height:1.55;display:none}
 .sgnmsg.on{display:block}
@@ -575,6 +702,9 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
  padding:10px 16px;border-radius:999px;font-size:.78rem;font-weight:700;cursor:pointer;
  box-shadow:0 8px 24px rgba(0,0,0,.25);display:none;align-items:center;gap:8px;border:0;font-family:var(--fd)}
 .obar.on{display:flex}
+/* The basket pill floats over the page, so the page has to end above it —
+   otherwise it sits on top of whatever the last row happens to be. */
+body.has-obar{padding-bottom:104px}
 .obar b{font-family:var(--fm)}
 .orow2{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--bd)}
 .orow2:last-child{border-bottom:0}
@@ -715,7 +845,23 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  background:var(--sf);font-size:.9rem;margin-bottom:10px}
 .linkish{border:0;background:transparent;color:inherit;text-decoration:underline;
  font:inherit;font-weight:700;padding:0;cursor:pointer}
+/* Shown only when a new version is sitting waiting. Never automatic — see
+   rule 4 in sw.js. */
+.swbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:120;display:none;
+ align-items:center;gap:10px;padding:11px 13px;border-radius:var(--rs);
+ background:var(--pr);color:#fff;box-shadow:0 10px 30px rgba(var(--sh),.28);
+ font-size:.8rem;font-weight:600}
+.swbar.on{display:flex}
+.swbar b{flex:1;font-weight:600}
+.swbar button{border:0;border-radius:999px;padding:7px 13px;font-family:var(--fd);
+ font-weight:800;font-size:.76rem;cursor:pointer;background:#fff;color:var(--pr)}
+.swbar .later{background:transparent;color:#fff;text-decoration:underline;padding:7px 4px}
 </style></head><body data-theme="sky" class="v-grid">
+<div class="swbar" id="swbar" role="status">
+  <b>A new version of the catalogue is ready.</b>
+  <button id="swGo">Reload</button>
+  <button class="later" id="swLater">Later</button>
+</div>
 <header><div class="hin">
  <div class="brandbox"><div class="mark">PM</div>
   <div><div class="bn">Patel Marketing</div><div class="bs">Wholesale Kitchenware</div></div></div>
@@ -773,7 +919,18 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  </section>
  <div id="campaignBanner"></div>
  <div id="fest"></div>
- <div class="bar"><h2 id="bh">All products</h2><span id="bc"></span></div>
+ <div class="bar">
+  <div class="barhd"><h2 id="bh">All products</h2><span id="bc"></span></div>
+  <div class="barctl" id="barctl" hidden>
+   <button class="savetog" id="savedTog" hidden>♥ Saved <b id="savedN">0</b></button>
+   <select class="sortsel" id="sortsel" aria-label="Sort products">
+    <option value="suggested">Suggested order</option>
+    <option value="rate-asc">Rate — low to high</option>
+    <option value="rate-desc">Rate — high to low</option>
+    <option value="name">Name A–Z</option>
+    <option value="rated">Best rated</option>
+   </select>
+  </div></div>
  <div id="tableHead"><span>Product</span><span>Size</span><span>Rate</span><span>MRP</span></div>
  <div class="grid" id="g"></div>
  <div class="empty" id="em" style="display:none"><strong>Nothing matches that.</strong>Try a shorter word — "pickle", "pourer", "mug", "dabbi".</div>
@@ -930,11 +1087,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 29</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 35</footer>
 
-<script src="config.js?v=29"></script>
+<script src="config.js?v=35"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=29"></script>
+<script src="supabase-auth.js?v=35"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -976,6 +1133,38 @@ const g=document.getElementById('g'),em=document.getElementById('em');
 const IMAGE_SOURCE = 'local'; // 'local' | 'supabase'
 const SUPABASE_IMAGE_BASE = 'https://vcrzauuxvgpsbforiszz.supabase.co/storage/v1/object/public/catalog-images';
 const IMG=n=>IMAGE_SOURCE==='supabase' ? `${SUPABASE_IMAGE_BASE}/${n}.jpg` : `images/${n}.jpg`;
+/* The 300px WebP built by tools/thumbs.mjs, mirroring images/ under
+   images/thumb/. Only for the small renderings — grid cards, the sheet's
+   thumbnail strip, the related-product rows — never the hero image or the
+   lightbox, which want the real photo.
+
+   Returns null when the photos are being served from Supabase Storage
+   instead, because the thumbnails are built in this repository and are not
+   up there. Then the original JPEG is used and nothing looks different. */
+const THUMB=n=>IMAGE_SOURCE==='supabase' ? null : `images/thumb/${n}.webp`;
+
+/* A plain <img> at the thumbnail, with the original as an onerror fallback.
+
+   NOT <picture><source type="image/webp">, which was the first attempt and is
+   wrong for this: a browser that supports WebP picks the <source> and, if
+   that file 404s, shows a broken image — it does not fall back to the <img>
+   inside. Since the whole point is that a photo added through the GitHub
+   upload page is safe before its thumbnail has been built, that is the one
+   case that had to work. onerror covers both of the ways a thumbnail can
+   fail — not built yet, or a browser that cannot decode WebP — with one
+   mechanism, and lands on exactly the old behaviour. */
+function pic(n, alt){
+  const t=THUMB(n), full=IMG(n);
+  const a=String(alt||'').replace(/"/g,'&quot;');
+  if(!t) return '<img src="'+full+'" alt="'+a+'" loading="lazy" decoding="async">';
+  return '<img src="'+t+'" data-full="'+full+'" alt="'+a+'" loading="lazy" decoding="async" '+
+         'onerror="pmThumbFallback(this)">';
+}
+window.pmThumbFallback=function(img){
+  img.onerror=null;                       // the original gets one try, not a loop
+  const full=img.getAttribute('data-full');
+  if(full) img.src=full;
+};
 
 /* ---------- unit ---------- */
 // What a basket quantity actually means. Piece is the default for products
@@ -1043,8 +1232,75 @@ function hay(p){
    (p.sizes||[]).join(' ')+(p.hotel?` ${p.hotel.pits} pits ${p.hotel.base} ${p.hotel.dia} ${p.hotel.kg}`:'')).toLowerCase();
   return p._h;
 }
+/* ---------- saved list ----------
+   A dealer buys roughly the same forty things every month. Recently-viewed
+   already remembers what they looked at; this remembers what they meant to
+   keep. Same per-account localStorage shape as recentKey() — it needs no
+   table, no policy, and it still works with no signal, which matters now the
+   catalogue runs offline. If it turns out people want it across their phones,
+   promoting it to a Supabase table is a small change on its own. */
+const SAVED_MAX=300;
+const savedKey = () => 'v3_pm_saved_'+((SESS&&SESS.phone)||'guest');
+let SAVED=new Set(), fsav=false;
+function loadSaved(){
+  try{ SAVED=new Set(JSON.parse(localStorage.getItem(savedKey())||'[]')); }catch(e){ SAVED=new Set(); }
+}
+function saveSaved(){
+  try{ localStorage.setItem(savedKey(),JSON.stringify([...SAVED].slice(-SAVED_MAX))); }catch(e){}
+}
+loadSaved();   // the guest list, until refreshSession() says who this is
+function toggleSaved(slug){
+  if(SAVED.has(slug)) SAVED.delete(slug); else SAVED.add(slug);
+  saveSaved(); drawSavedTog();
+}
+function drawSavedTog(){
+  const t=document.getElementById('savedTog'); if(!t) return;
+  const n=SAVED.size;
+  // Nothing saved and not filtering by it: the control has nothing to say.
+  t.hidden = !n && !fsav;
+  t.classList.toggle('on',fsav);
+  const b=document.getElementById('savedN'); if(b) b.textContent=n;
+}
+
+/* ---------- sort ----------
+   Until now the only order was the hand-curated CAT_FIRST/BRAND_FIRST one,
+   which is the right default — it leads with what the business leads with —
+   so it stays as "Suggested". */
+const SORT_KEY='v3_pm_sort';
+let SORTBY='suggested';
+try{ SORTBY=localStorage.getItem(SORT_KEY)||'suggested'; }catch(e){}
+// The lowest rate a product can actually be bought at, since that is the
+// number a card shows and the one a person means when they sort by price.
+function rateOf(p){
+  const ns=(p.variants||[]).map(v=>v.price).filter(x=>x!=null);
+  if(ns.length) return Math.min.apply(null,ns);
+  return p.price!=null?p.price:null;
+}
+function sortView(){
+  if(SORTBY==='suggested') return;
+  if(SORTBY==='name'){ VIEW.sort((a,b)=>String(a.name).localeCompare(String(b.name),'en')); return; }
+  if(SORTBY==='rated'){
+    VIEW.sort((a,b)=>{
+      const A=RATINGS[a.slug]||{}, B=RATINGS[b.slug]||{};
+      return (B.avg||0)-(A.avg||0) || (B.n||0)-(A.n||0);
+    });
+    return;
+  }
+  // 127 products carry no rate at all. They sort last whichever way the sort
+  // runs — an unpriced product is not the cheapest thing we sell.
+  const dir = SORTBY==='rate-desc' ? -1 : 1;
+  VIEW.sort((a,b)=>{
+    const x=rateOf(a), y=rateOf(b);
+    if(x==null&&y==null) return 0;
+    if(x==null) return 1;
+    if(y==null) return -1;
+    return (x-y)*dir;
+  });
+}
+
 function match(p){
   if(p.hidden) return false;
+  if(fsav && !SAVED.has(p.slug)) return false;
   if(fc!=='All'&&p.cat!==fc)return false;
   if(fs!=='All'&&p.sub!==fs)return false;
   if(fb!=='All'&&p.brand!==fb)return false;
@@ -1192,6 +1448,23 @@ function specHtml(p){
       +(h.ref?'<div class="refnote">Photo shown is the 27F pan — reference only</div>':'');}
   return p.spec?`<div class="sp">${p.spec}</div>`:'';
 }
+/* The save control.
+
+   It used to sit on the photo at top-right — which is exactly where the
+   FEATURED badge sits (.bg.tr is top:8px right:8px), so the two drew on top
+   of each other and read as "FEATU♥". Worse, it put a 29px save button in the
+   middle of the biggest tap target on the card: aiming for the product and
+   catching the corner saved it instead of opening it, and because the whole
+   card takes the pressed state it looked like the product was about to open.
+
+   Beside the button it is unmistakably its own control, and the photo is
+   entirely "open this product" again. */
+function saveDot(p){
+  const on=SAVED.has(p.slug);
+  return '<button class="savedot'+(on?' on':'')+'" data-save="'+esc(p.slug)+'" '+
+    'aria-label="'+(on?'Saved':'Save for later')+'" '+
+    'title="'+(on?'Saved — tap to remove':'Save for later')+'">'+(on?'\u2665':'\u2661')+'</button>';
+}
 function card(p,i){
   const b=[];
   if(p.stock==='out')b.push('<span class="bg tr oos">Out of stock</span>');
@@ -1205,7 +1478,7 @@ function card(p,i){
       <div class="szlist" id="sz${i}">${p.sizes.map(s=>`<span>${s}</span>`).join('')}</div>`:'';
   const cta=p.stock==='out'?'<button class="cta dis">Currently unavailable</button>'
     :'<button class="cta" data-open="'+i+'">'+(isEndCustomer()?'See details':'View sizes &amp; rates')+'</button>';
-  const im=p.img?`<img src="${IMG(p.img)}" alt="${p.name}" loading="lazy">`:`<span class="noimg">—</span>`;
+  const im=p.img?pic(p.img,p.name):`<span class="noimg">—</span>`;
   const statusChip=isEndCustomer()&&shopOfferFor(p)&&shopOfferFor(p).status
     ?`<span class="statuschip ${shopOfferFor(p).status}">${STATUS_LABEL[shopOfferFor(p).status]||shopOfferFor(p).status}</span>`:'';
   return `<div class="card ${p.stock==='out'?'out':''}" data-open="${i}" style="animation-delay:${Math.min(i,14)*.028}s">
@@ -1215,7 +1488,8 @@ function card(p,i){
     ${specHtml(p)}${vc}${sz}
     <span class="br">${p.brand}${p.code?' · <span class="cd">'+p.code+'</span>':''}</span>
     ${starsHtml(p.slug)}
-    <div class="pw">${priceLine(p)}${statusChip}</div>${cta}</div></div>`;
+    <div class="pw">${priceLine(p)}${statusChip}</div>
+    <div class="cardact">${cta}${saveDot(p)}</div></div></div>`;
 }
 
 let VIEW=[];
@@ -1239,6 +1513,7 @@ function priceRows(p,i){
 }
 function render(){
   VIEW=P.filter(match);
+  sortView();
   const table=document.body.classList.contains('v-table');
   // Browsing a whole brand is browsing a range, and a range has shape: all the
   // salt and pepper together, then the oil pourers. Ungrouped it was 197 cards
@@ -1264,8 +1539,13 @@ function render(){
   }
   em.style.display=VIEW.length?'none':'block';
   document.getElementById('bc').textContent=VIEW.length+' of '+P.length+' shown';
-  document.getElementById('bh').textContent=
-    fs!=='All'?fs:(fc!=='All'?fc:(fb!=='All'?fb:(q?'Search results':'All products')));
+  // Nothing to sort or filter while the catalogue is still arriving, and a
+  // sort box over an empty page was one more thing pushing the products down.
+  const bctl=document.getElementById('barctl');
+  if(bctl) bctl.hidden = !P.length;
+  drawSavedTog();
+  document.getElementById('bh').textContent= fsav ? 'Saved' :
+    (fs!=='All'?fs:(fc!=='All'?fc:(fb!=='All'?fb:(q?'Search results':'All products'))));
   document.getElementById('qx').classList.toggle('on',!!q);
   g.querySelectorAll('[data-open]').forEach(el=>el.addEventListener('click',e=>{
     e.stopPropagation();openSheet(VIEW[+el.dataset.open]);}));
@@ -1297,6 +1577,7 @@ function recentProducts(){
   return recentSlugs().map(sl=>bySlug[sl]).filter(Boolean);
 }
 function noteRecent(p){
+  try{ logEvent('open',{slug:p.slug}); }catch(e){}
   if(!p||!p.slug) return;
   const a=recentSlugs().filter(sl=>sl!==p.slug);
   a.unshift(p.slug);
@@ -1305,8 +1586,50 @@ function noteRecent(p){
 function strip(title, list){
   return '<div class="related"><h4>'+title+'</h4><div class="rrow">'+
     list.map(r=>'<div class="rcard" data-rel="'+P.indexOf(r)+'">'+
-      '<div class="rimg">'+(r.img?'<img src="'+IMG(r.img)+'" loading="lazy" alt="">':'—')+'</div>'+
+      '<div class="rimg">'+(r.img?pic(r.img,r.name):'—')+'</div>'+
       '<span>'+esc(r.name)+'</span></div>').join('')+'</div></div>';
+}
+
+/* ---------- the sheet's action row ----------
+
+   This is its own function, and gets redrawn by repriceSheet(), because the
+   row it draws depends on WHO IS SIGNED IN and the sheet is very often on
+   screen before the session has come back.
+
+   That is not hypothetical — it is the bug this fixes. Tapping "Edit this
+   product" goes to admin.html and coming back lands on index.html?p=<slug>,
+   which opens the sheet from the deep link as soon as data.json lands. The
+   allowlist lookup is a network round trip and has not finished, so isOffice()
+   is still false and the admin was shown "Enquire on WhatsApp" — an order pad
+   they are deliberately not supposed to have, on their own product. The same
+   thing happened coming back from Orders, and on any plain reload of a
+   product link.
+
+   The size table already had this problem and already solves it this way
+   (see the MOQ comment in repriceSheet). The action row now does too: drawn
+   once at open, drawn again the moment the session lands, from one function so
+   the two can never disagree. */
+function sheetActionsHtml(p){
+  const ec=isEndCustomer(), off=isOffice();
+  const sv='<button class="btn quiet" id="svBtn">'+
+    (SAVED.has(p.slug)?'♥ Saved':'♡ Save')+'</button>';
+  if(ec) return '<div class="visitshop"><b>Visit the shop to buy</b>'+
+    "No online ordering here — see what's on offer, then head over."+
+    '<button class="btn primary" id="holdBtn" style="margin-top:10px;width:100%">'+
+    'Ask the shop to hold one</button></div>';
+  if(off) return '<div class="sactions">'+
+    '<button class="btn primary wide" id="edBtn">✎ Edit this product</button>'+
+    '<button class="btn quiet" id="shBtn">Share product</button>'+
+    '<button class="btn quiet" id="cpBtn">Copy details</button>'+
+    sv+'</div>'+
+    '<p class="snoteline">You are signed in on Patel Marketing’s side, so there is '+
+    'no order pad here. To write an order for a customer, open '+
+    '<a href="orders.html">Orders</a>.</p>';
+  return '<div class="sactions">'+
+    '<button class="btn primary wide" id="waBtn">Enquire on WhatsApp</button>'+
+    '<button class="btn quiet" id="shBtn">Share product</button>'+
+    '<button class="btn quiet" id="cpBtn">Copy details</button>'+
+    sv+'</div>';
 }
 
 /* ---------- detail sheet ---------- */
@@ -1317,9 +1640,13 @@ function strip(title, list){
 function sheetRows(p){
   if(!p) return [];
   if(p.variants && p.variants.length) return p.variants;
+  // unit and moq used to be hard-coded to Piece and nothing here, because
+  // there was nowhere in the admin panel to set them for a product with no
+  // size rows. There is now, so they are read — and Piece stays the fallback
+  // for the products nobody has been through yet.
   if(p.sizes && p.sizes.length) return p.sizes.map(z=>({
     size:z, price:(p.price!=null?p.price:null), mrp:(p.mrp!=null?p.mrp:null),
-    unit:'Piece', moq:null }));
+    unit:(p.unit||'Piece'), moq:(p.moq!=null?p.moq:null) }));
   return [];
 }
 // The line under the size table. Written once, because openSheet() draws it and
@@ -1407,7 +1734,7 @@ function openSheet(p){
    <div class="sbody">
      <div class="hero-img" id="heroimg">${imgs.length?`<img id="hi" src="${IMG(imgs[0])}" alt="${p.name}">`:'<span class="noimg">No photo yet</span>'}</div>
      ${imgs.length>1?`<div class="thumbs" id="thumbs">${imgs.map((n,i)=>
-        `<button class="${i?'':'on'}" data-i="${i}" data-n="${n}"><img src="${IMG(n)}" alt="" loading="lazy"></button>`).join('')}</div>`:''}
+        `<button class="${i?'':'on'}" data-i="${i}" data-n="${n}">${pic(n,'')}</button>`).join('')}</div>`:''}
      <div class="meta">
        <span class="tag pri">${p.brand}</span>
        <span class="tag">${p.cat}</span>
@@ -1421,22 +1748,7 @@ function openSheet(p){
      ${p.hotel?specHtml(p):(p.spec?`<div class="sp">${p.spec}</div>`:'')}
      ${p.note?`<div class="snote">ℹ️ ${p.note}</div>`:''}
      ${vt}
-     ${ec?`<div class="visitshop"><b>Visit the shop to buy</b>
-       No online ordering here — see what's on offer, then head over.
-       <button class="cta" id="holdBtn" style="margin-top:10px;width:100%">Ask the shop to hold one</button></div>`
-     :off?`<div class="sactions">
-       <button id="edBtn">✎ Edit this product</button>
-       <button class="alt" id="shBtn">Share product</button>
-       <button class="alt" id="cpBtn">Copy details</button>
-     </div>
-     <p style="font-size:.72rem;color:var(--tm);margin-top:8px;line-height:1.5">
-       You are signed in on Patel Marketing's side, so there is no order pad here.
-       To write an order for a customer, open <a href="orders.html" style="color:var(--pr);font-weight:700">Orders</a>.</p>`
-     :`<div class="sactions">
-       <button id="waBtn">Enquire on WhatsApp</button>
-       <button class="alt" id="shBtn">Share product</button>
-       <button class="alt" id="cpBtn">Copy details</button>
-     </div>`}
+     <div id="sactWrap">${sheetActionsHtml(p)}</div>
      <div class="revwrap" id="revwrap">
        <h4>What buyers say</h4>
        <div class="rsum" id="revSum">Loading reviews…</div>
@@ -1459,40 +1771,63 @@ function openSheet(p){
     th.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
     b.classList.add('on');document.getElementById('hi').src=IMG(b.dataset.n);});
   sheet.querySelectorAll('[data-rel]').forEach(c=>c.onclick=()=>openSheet(P[+c.dataset.rel]));
+  noteRecent(p);
+  loadReviews(p);
+  wireSheetActions(p);
+}
+
+/* Wired separately from openSheet() for the same reason the markup is drawn
+   separately: when the session lands the row is rebuilt, and a rebuilt button
+   has no handler on it. Both halves are called together, always. */
+function wireSheetActions(p){
   const holdBtn=document.getElementById('holdBtn');
   if(holdBtn) holdBtn.onclick=()=>{
     const target=currentShopPhone()||WA_NUMBER;
     const msg='Hi, is "'+p.name+'" available? Could you keep one for me?';
-    window.open(`https://wa.me/${target}?text=`+encodeURIComponent(msg),'_blank');};
+    window.open('https://wa.me/'+target+'?text='+encodeURIComponent(msg),'_blank');};
+
   const edBtn=document.getElementById('edBtn');
   // Carry the way back with us. Without it, closing the edit sheet strands the
   // admin on the admin product list — a screen they never asked for — instead
   // of the product sheet they were reading a second ago.
   if(edBtn) edBtn.onclick=()=>{ const sl=p.slug||slugOf(p);
     location.href='admin.html?edit='+encodeURIComponent(sl)+'&back='+encodeURIComponent(sl); };
+
   const waBtn=document.getElementById('waBtn');
   if(waBtn) waBtn.onclick=()=>{
-    window.open(`https://wa.me/${orderTarget()}?text=`+encodeURIComponent(waMessage(p)),'_blank');};
+    window.open('https://wa.me/'+orderTarget()+'?text='+encodeURIComponent(waMessage(p)),'_blank');};
+
   const shBtn=document.getElementById('shBtn');
   if(shBtn) shBtn.onclick=async()=>{
-    const b=document.getElementById('shBtn'),url=shareUrl(p);
+    const b=document.getElementById('shBtn'), url=shareUrl(p);
     // Native share sheet on phones (WhatsApp, SMS, Mail all appear here).
     if(navigator.share){
-      try{await navigator.share({title:`${p.name} — ${p.brand}`,url});return}
-      catch(e){if(e&&e.name==='AbortError')return}
+      try{ await navigator.share({title:p.name+' — '+p.brand, url}); return; }
+      catch(e){ if(e&&e.name==='AbortError') return; }
     }
-    try{await navigator.clipboard.writeText(url);b.textContent='Link copied ✓';}
-    catch(e){b.textContent=url;}
-    setTimeout(()=>b.textContent='Share product',1800);};
-  noteRecent(p);
-  loadReviews(p);
+    try{ await navigator.clipboard.writeText(url); b.textContent='Link copied ✓'; }
+    catch(e){ b.textContent=url; }
+    setTimeout(()=>{ if(b.isConnected) b.textContent='Share product'; },1800);};
+
   const cpBtn=document.getElementById('cpBtn');
   if(cpBtn) cpBtn.onclick=()=>{
-    const lines=[p.name,p.brand+' · '+p.cat+(p.code?' · '+p.code:'')];
-    (p.variants||[]).forEach(v=>lines.push(`  ${v.size} — ₹${v.price}/${unitAbbr(v.unit)} incl GST${v.mrp?` (MRP ₹${v.mrp})`:''}${v.moq?` · MOQ ${v.moq}`:''}`));
+    const lines=[p.name, p.brand+' · '+p.cat+(p.code?' · '+p.code:'')];
+    (p.variants||[]).forEach(v=>lines.push('  '+v.size+' — ₹'+v.price+'/'+unitAbbr(v.unit)+
+      ' incl GST'+(v.mrp?' (MRP ₹'+v.mrp+')':'')+(v.moq?' · MOQ '+v.moq:'')));
     navigator.clipboard.writeText(lines.join('\n')).then(()=>{
-      const b=document.getElementById('cpBtn');b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy details',1600);});};
+      const b=document.getElementById('cpBtn');
+      if(!b) return;
+      b.textContent='Copied ✓'; setTimeout(()=>{ if(b.isConnected) b.textContent='Copy details'; },1600);});};
+
+  const svBtn=document.getElementById('svBtn');
+  if(svBtn) svBtn.onclick=()=>{
+    toggleSaved(p.slug);
+    const on=SAVED.has(p.slug);
+    svBtn.textContent = on ? '♥ Saved' : '♡ Save';
+    render();   // the card behind the sheet has a heart on it too
+  };
 }
+
 function closeSheet(){ov.classList.remove('open');document.body.style.overflow='';CUR=null;
   try{history.replaceState(null,'',location.pathname)}catch(e){}}
 ov.addEventListener('click',closeSheet);
@@ -1828,9 +2163,51 @@ hov.addEventListener('click',closeHelp);
 /* ---------- controls ---------- */
 let qt;
 document.getElementById('q').addEventListener('input',e=>{
-  clearTimeout(qt);const v=e.target.value.trim();qt=setTimeout(()=>{q=v;render()},140)});
+  clearTimeout(qt);const v=e.target.value.trim();
+  qt=setTimeout(()=>{q=v;render();noteSearch(v,VIEW.length)},140)});
 document.getElementById('qx').addEventListener('click',()=>{
   document.getElementById('q').value='';q='';render()});
+const sortSel=document.getElementById('sortsel');
+if(sortSel){
+  sortSel.value=SORTBY;
+  sortSel.addEventListener('change',()=>{
+    SORTBY=sortSel.value;
+    try{ localStorage.setItem(SORT_KEY,SORTBY); }catch(e){}
+    render();
+  });
+}
+const savedTog=document.getElementById('savedTog');
+if(savedTog) savedTog.addEventListener('click',()=>{ fsav=!fsav; render(); });
+
+/* The heart is wired once, on the document, in the capture phase.
+
+   Not per-card after each render, because card() does not only fill the grid:
+   the promo strips and the related-product rows are built from the same
+   function, and hearts drawn there had no handler at all — the tap fell
+   through to the card and opened the product instead. Capture also puts this
+   ahead of the card's own click handler, which is the only way to stop the
+   sheet opening underneath.
+
+   One product can be on screen more than once (grid and a strip), so every
+   copy of the tapped slug is repainted, not just the one under the thumb. */
+document.addEventListener('click', function(e){
+  const b = e.target && e.target.closest && e.target.closest('[data-save]');
+  if(!b) return;
+  e.stopPropagation(); e.preventDefault();
+  const slug=b.dataset.save;
+  toggleSaved(slug);
+  const on=SAVED.has(slug);
+  document.querySelectorAll('[data-save="'+(window.CSS&&CSS.escape?CSS.escape(slug):slug)+'"]')
+    .forEach(function(el){
+      el.classList.toggle('on',on);
+      el.textContent = on ? '\u2665' : '\u2661';
+      el.title = on ? 'Saved — tap to remove' : 'Save for later';
+      el.setAttribute('aria-label', el.title);
+    });
+  // Unless the saved list is what is being shown, in which case it really did
+  // just leave the list.
+  if(fsav) render();
+}, true);
 document.querySelectorAll('#tsw button').forEach(b=>b.addEventListener('click',()=>{
   document.body.dataset.theme=b.dataset.t;
   try{localStorage.setItem('v3_pm_theme',b.dataset.t)}catch(e){}
@@ -2197,6 +2574,7 @@ async function refreshSession(){
   const sess = await PMAuth.currentSession();
   if(!sess){
     SESS=null; SHOP_INFO=null; SHOP_OFFERS={}; SHOP_LIST=[];
+    loadSaved();
     // Reviews are public, so a signed-out visitor sees the stars too, and a
     // notice for "everyone" reaches them as well.
     await Promise.all([loadRatings(), loadNotices()]);
@@ -2228,6 +2606,7 @@ async function refreshSession(){
       ownerPhone: row.owner_phone||null, city: row.city||'',
       dealerType: row.dealer_type||null, gst: row.gst||'', photo: row.photo_url||''};
   }
+  loadSaved();
   if(isEndCustomer()) await loadShopContext();
   await Promise.all([loadRatings(), loadNotices()]);
   markWho(); retailMark(); campaignBanner(); render(); if(CUR) repriceSheet();
@@ -2268,7 +2647,11 @@ function qtyFor(slug,size){ const l=findLine(slug,size); return l?l.qty:0; }
 function moqFor(slug,size){
   const p=P.find(x=>x.slug===slug); if(!p) return 1;
   const v=(p.variants||[]).find(x=>x.size===size);
-  return (v && v.moq && v.moq>0) ? v.moq : 1;
+  if(v) return (v.moq && v.moq>0) ? v.moq : 1;
+  // No size row for this line, so the product's own minimum applies — the one
+  // set alongside its rate in the admin panel. Without this a product sold in
+  // boxes of six could be ordered in ones from its plain-text size list.
+  return (p.moq && p.moq>0) ? p.moq : 1;
 }
 function setQty(slug,size,qty){
   const step=moqFor(slug,size);
@@ -2291,10 +2674,11 @@ function obarRender(){
   // End customers browse, they don't order online — see V3-AMENDMENTS.md.
   // Nor does Patel Marketing's own side: an order they placed would be
   // addressed to themselves.
-  if(!canOrder()){ b.classList.remove('on'); return; }
+  if(!canOrder()){ b.classList.remove('on'); document.body.classList.remove('has-obar'); return; }
   const n=basketCount();
   document.getElementById('obarTxt').innerHTML = '🧺 <b>'+n+'</b> in your order';
   b.classList.toggle('on', n>0);
+  document.body.classList.toggle('has-obar', n>0);
 }
 // 130 products have no size rows and no rate — whole brands of them. They
 // could not be added to an order at all, which is backwards: not knowing the
@@ -2308,9 +2692,9 @@ function resolveItem(line){
     if(!v) return null;
   } else if((p.sizes||[]).indexOf(line.size)>=0){
     // The plain text size list some products still carry instead of rows.
-    v={size:line.size,price:p.price,mrp:p.mrp,unit:'Piece',moq:null};
+    v={size:line.size,price:p.price,mrp:p.mrp,unit:(p.unit||'Piece'),moq:(p.moq!=null?p.moq:null)};
   } else if(line.size==='Standard'){
-    v={size:'Standard',price:p.price,mrp:p.mrp,unit:'Piece',moq:null};
+    v={size:'Standard',price:p.price,mrp:p.mrp,unit:(p.unit||'Piece'),moq:(p.moq!=null?p.moq:null)};
   } else return null;
   return {slug:p.slug,name:p.name,brand:p.brand,code:p.code,size:v.size,unit:v.unit||'Piece',
     price:v.price==null?null:v.price,mrp:v.mrp,moq:v.moq,qty:line.qty,
@@ -2379,7 +2763,11 @@ function orderSheetHtml(){
   const items=orderItems();
   if(!items.length) return '<div class="shead"><strong>Your order</strong><button class="sx" id="oxb">×</button></div>'+
     '<div class="sbody"><div class="oempty">Nothing in your order yet. Open a product and use the '+
-    '<b>+</b> next to a size to add it.</div></div>';
+    '<b>+</b> next to a size to add it.</div>'+
+    // An empty pad is exactly the moment someone wants last month's order back.
+    (canOrder()?'<button class="obtn pri" id="oAgain" style="width:100%;margin-top:14px">'+
+      'Repeat one of your past orders</button>':'')+
+    '</div>';
   const showP=orderShowPrice();
   const rows=items.map((it,idx)=>{
     const u=orderUnitPrice(it);
@@ -2462,7 +2850,10 @@ function wireOrderSheet(){
         p_items: items.map(it=>({slug:it.slug,name:it.name,size:it.size,
           unit:it.unit,qty:it.qty,price:it.price,mrp:it.mrp})),
       });
-      if(!error && data){ ref=data; recorded=true; }
+      if(!error && data){ ref=data; recorded=true;
+        try{ logEvent('order',{n:items.length,meta:{ref:ref,
+             pieces:items.reduce((a,i)=>a+i.qty,0)}}); }catch(e){}
+      }
     }catch(e){}
 
     // Hold the lines and the typed details for the follow-ups, then clear the
@@ -2499,6 +2890,8 @@ function openOrderSheet(){
   document.getElementById('osheet').innerHTML=orderSheetHtml();
   ov2.classList.add('open'); document.body.style.overflow='hidden';
   wireOrderSheet();
+  const again=document.getElementById('oAgain');
+  if(again) again.onclick=function(){ closeOrderSheet(); openMyOrders(); };
 }
 function closeOrderSheet(){
   const ov2=orderOverlay(); if(ov2) ov2.classList.remove('open');
@@ -2630,16 +3023,18 @@ function openSignIn(){
 function menuSignHtml(){
   if(signedIn()){
     // Office staff open the same panel; it hides the two tabs they cannot use.
+    // This was the one green button on a site whose primary colour is blue —
+    // painted with an inline background:var(--ac) rather than by meaning. It
+    // is a secondary action here (the settings sheet is not about the admin
+    // panel), so it looks like one, in the theme's own colours.
     const adm = (SESS.admin || SESS.role==='staff')
-      ? '<a class="sgnbtn" href="admin.html" style="display:block;text-align:center;'+
-        'text-decoration:none;margin-top:10px;background:var(--ac)">'+
+      ? '<a class="btn secondary block" href="admin.html" style="margin-top:10px">'+
         (SESS.admin?'Open admin panel':'Edit the catalogue')+'</a>'
       : '';
     // Level 2 is one role: every dealer trades and every dealer keeps their
     // own customer list. 'shop_owner' is the older spelling of a retail dealer.
     const orders = isOffice()
-      ? '<a class="sgnbtn ghost" href="orders.html" style="display:block;text-align:center;'+
-        'text-decoration:none;margin-top:4px">Orders</a>'
+      ? '<a class="btn quiet block" href="orders.html" style="margin-top:8px">Order book</a>'
       : '';
     const isDlr = SESS.role==='dealer'||SESS.role==='shop_owner';
     // ── SHELVED: dealer-to-dealer stock exchange ──────────────────────────
@@ -2745,22 +3140,32 @@ function accountExtrasHtml(){
    '<input type="number" id="rtlOff" min="0" max="90" value="'+(RETAIL.off||0)+'"><label>%</label></div>'+
    '</div>';
   const isDlr = SESS.role==='dealer'||SESS.role==='shop_owner';
-  const link=(href,label,cls)=>'<a class="sgnbtn'+(cls||' ghost')+'" href="'+href+'" '+
-    'style="display:block;text-align:center;text-decoration:none;margin-top:8px">'+label+'</a>';
+  // Every one of these is a place to go, so every one of them is a button.
+  // They used to be `.sgnbtn.ghost`, which was transparent with no border —
+  // Open admin panel, Orders, Your customers and Sign out all rendered as grey
+  // text under a heading, and the only thing that looked tappable on the
+  // screen was Save.
+  const link=(href,label,cls)=>'<a class="btn '+(cls||'quiet')+'" href="'+href+'">'+label+'</a>';
   const links =
     ((SESS.admin||SESS.role==='staff')
-      ? link('admin.html', SESS.admin?'Open admin panel':'Edit the catalogue','') : '')+
-    (isOffice() ? link('orders.html','Orders') : '')+
+      ? link('admin.html', SESS.admin?'Open admin panel':'Edit the catalogue','secondary') : '')+
+    (isOffice() ? link('orders.html','Order book') : '')+
     (isDlr ? link('shop.html','Your customers') : '');
+  // Anyone who can place an order can look at the ones they placed. Admin and
+  // office order for other people, from the order book, so this is not theirs.
+  const mine = canOrder()
+    ? '<button class="btn secondary" id="sgnMine">Your orders</button>' : '';
   return retailToggle+
-   (links?'<div style="margin-top:18px">'+links+'</div>':'')+
-   (isEndCustomer()?'<button class="sgnbtn" id="sgnShops" style="margin-top:18px">'+
+   ((links||mine)?'<div class="btnstack" style="margin-top:18px">'+mine+links+'</div>':'')+
+   (isEndCustomer()?'<button class="btn primary wide" id="sgnShops" style="margin-top:18px">'+
      (SHOP_INFO?'Change your shop':'Find shops near you')+'</button>':'')+
-   '<div class="pfout"><button class="sgnbtn ghost" id="sgnOut">Sign out</button></div>';
+   '<div class="pfout"><button class="btn danger wide" id="sgnOut">Sign out</button></div>';
 }
 function wireAccountExtras(){
   const shops=document.getElementById('sgnShops');
   if(shops) shops.onclick=openShops;
+  const mine=document.getElementById('sgnMine');
+  if(mine) mine.onclick=openMyOrders;
   const out=document.getElementById('sgnOut');
   if(out) out.onclick=async function(){
     await PMAuth.signOut();
@@ -3032,6 +3437,148 @@ function wireShops(){
 // role, owner and the admin's private nickname are not sent from here and
 // update_my_profile does not accept them, so this cannot become a way to
 // promote yourself or move yourself to another dealer.
+/* ---------- your orders ----------
+   The office has had an order book since orders.html; the dealer who placed
+   the order could only see it on shop.html, read-only. But the catalogue is
+   where they already are, and it is where the basket lives — which is the
+   whole point, because the useful thing to do with a past order is to place
+   it again.
+
+   Reads the same two sources shop.html and orders.html read, so there is no
+   new table and no new policy: order_summary for the headers, order_items for
+   the lines. */
+const OFLOW=['new','confirmed','packed','sent','completed'];
+const OSAID={new:'Received',confirmed:'Confirmed',packed:'Packed',
+             sent:'On its way',completed:'Delivered',cancelled:'Cancelled'};
+let MYORDERS=[], MYITEMS={};
+
+function openMyOrders(){
+  const ov2=signOverlay();
+  const sh=document.getElementById('sgnSheet'); if(!sh) return;
+  sh.innerHTML=
+   '<div class="shead"><strong>Your orders</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn">'+
+   '<p>Every order you have sent, newest first. <b>Order again</b> puts the same '+
+   'items back in your order pad at today&rsquo;s rates &mdash; change the quantities '+
+   'before you send it.</p>'+
+   '<div id="myOrders"><p style="font-size:.8rem;color:var(--tm)">Loading your orders…</p></div>'+
+   '</div></div>';
+  ov2.classList.add('open'); document.body.style.overflow='hidden';
+  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  loadMyOrders();
+}
+
+async function loadMyOrders(){
+  const box=document.getElementById('myOrders'); if(!box) return;
+  try{
+    const {data,error}=await PMAuth.sb.from('order_summary').select('*')
+      .order('created_at',{ascending:false}).limit(60);
+    if(error) throw error;
+    MYORDERS=data||[];
+  }catch(e){
+    box.innerHTML='<p style="font-size:.8rem;color:var(--tm)">Could not load your orders just now. '+
+      'They are safe — try again in a moment.</p>';
+    return;
+  }
+  drawMyOrders();
+}
+
+function drawMyOrders(){
+  const box=document.getElementById('myOrders'); if(!box) return;
+  if(!MYORDERS.length){
+    box.innerHTML='<p style="font-size:.8rem;color:var(--tm)">No orders yet. '+
+      'Add sizes to your order from any product, then send it.</p>';
+    return;
+  }
+  box.innerHTML=MYORDERS.map(o=>{
+    const done=o.status==='completed'||o.status==='cancelled';
+    const at=OFLOW.indexOf(o.status);
+    return '<div class="ocard'+(done?' done':'')+'">'+
+      '<div class="ohead"><span class="ochip">'+esc(OSAID[o.status]||o.status)+'</span>'+
+        '<span class="oref">'+esc(o.ref)+'</span></div>'+
+      (o.status==='cancelled'?'':'<div class="osteps">'+OFLOW.map((_,i)=>
+        '<i class="'+(at>=0&&i<=at?'on':'')+'"></i>').join('')+'</div>')+
+      '<div class="ometa">'+o.lines+' line'+(o.lines===1?'':'s')+' · '+o.pieces+' pcs · '+
+        rupee(o.total||0)+' · '+new Date(o.created_at).toLocaleDateString('en-IN',
+          {day:'numeric',month:'short',year:'numeric'})+'</div>'+
+      '<div class="olines" id="ol-'+esc(o.ref)+'"></div>'+
+      '<div class="obtns">'+
+        '<button class="obtn" data-lines="'+esc(o.ref)+'">What was on it</button>'+
+        '<button class="obtn pri" data-again="'+esc(o.ref)+'">Order again</button>'+
+      '</div></div>';
+  }).join('');
+  box.onclick=async function(e){
+    const l=e.target.closest('[data-lines]');
+    const a=e.target.closest('[data-again]');
+    if(l){
+      const ref=l.dataset.lines, panel=document.getElementById('ol-'+ref);
+      if(panel.classList.contains('on')){
+        panel.classList.remove('on'); l.textContent='What was on it'; return;
+      }
+      const its=await orderLines(MYORDERS.find(x=>x.ref===ref));
+      panel.innerHTML = its.length ? its.map(i=>
+        '<div class="oline"><span class="q">'+i.qty+'×</span><span class="n">'+esc(i.name)+
+        (i.size&&i.size!=='Standard'?' <span style="color:var(--tm)">('+esc(i.size)+')</span>':'')+
+        '</span><span class="p">'+(i.price!=null?rupee(i.price):'—')+'</span></div>').join('')
+        : '<div class="oline">No lines recorded.</div>';
+      panel.classList.add('on'); l.textContent='Hide';
+    } else if(a){
+      await orderAgain(a.dataset.again, a);
+    }
+  };
+}
+
+async function orderLines(o){
+  if(!o) return [];
+  if(MYITEMS[o.ref]) return MYITEMS[o.ref];
+  try{
+    const {data}=await PMAuth.sb.from('order_items').select('*').eq('order_id',o.id).order('sort');
+    MYITEMS[o.ref]=data||[];
+  }catch(e){ MYITEMS[o.ref]=[]; }
+  return MYITEMS[o.ref];
+}
+
+/* Put a past order back in the pad.
+
+   The basket has only ever held {slug,size,qty} and resolves the name, rate
+   and unit from P at render time — so a repeated order is priced at today's
+   rate, not the rate it was placed at, without anything here saying so.
+
+   A line is only added if resolveItem() can still price it. That is the same
+   test the order pad itself uses, so a repeat can never leave a line in the
+   basket the pad would silently drop: if a product has gone, or that size has,
+   it is reported instead of vanishing. */
+async function orderAgain(ref, btn){
+  const o=MYORDERS.find(x=>x.ref===ref); if(!o) return;
+  if(btn){ btn.disabled=true; btn.textContent='Adding…'; }
+  const its=await orderLines(o);
+  let added=0; const gone=[];
+  its.forEach(it=>{
+    const qty=Math.max(1, +it.qty||1);
+    // order_items may or may not carry the slug depending on when it was
+    // written, so fall back to the name the order was placed under.
+    const p=(it.slug && P.find(x=>x.slug===it.slug)) ||
+            P.find(x=>x.name===it.name && !x.hidden) || null;
+    const label=it.name+(it.size&&it.size!=='Standard'?' ('+it.size+')':'');
+    if(!p || p.hidden){ gone.push(label); return; }
+    const cand={slug:p.slug, size:it.size||'Standard', qty:qty};
+    if(!resolveItem(cand)){ gone.push(label); return; }
+    const line=findLine(cand.slug,cand.size);
+    if(line) line.qty+=qty; else BASKET.push(cand);
+    added++;
+  });
+  saveBasket();
+  if(btn){ btn.disabled=false; btn.textContent='Order again'; }
+  if(!added){
+    toastMsg('Nothing from that order is still in the catalogue');
+    return;
+  }
+  closeSignIn();
+  openOrderSheet();
+  toastMsg(added+' item'+(added===1?'':'s')+' added'+
+    (gone.length?' · '+gone.length+' no longer in the catalogue':''));
+}
+
 function openProfile(){
   const ov2=signOverlay();
   const sh=document.getElementById('sgnSheet'); if(!sh) return;
@@ -3349,6 +3896,15 @@ const _wb=document.getElementById('whoBtn'); if(_wb) _wb.addEventListener('click
 /* ---------- the sheet's size table has to follow the same rules ---------- */
 function repriceSheet(){
   if(!CUR) return;
+  // Who is signed in decides which action row this product gets, and the sheet
+  // is routinely drawn before the allowlist lookup comes back — so redraw it
+  // here, where every other session-dependent part of the sheet is redrawn.
+  const act=document.getElementById('sactWrap');
+  if(act){
+    const want=sheetActionsHtml(CUR);
+    if(act.innerHTML!==want){ act.innerHTML=want; wireSheetActions(CUR); }
+  }
+  let needSteppers=false;
   const vt=sheet.querySelector('.vt');
   if(vt){
     const ec=isEndCustomer();
@@ -3364,6 +3920,7 @@ function repriceSheet(){
       if(cells[2]) cells[2].textContent = ec?''
                                         : (signedIn()&&RETAIL.on)?'MRP'
                                         : (signedIn()?'MRP':'');
+      if(cells[3]) cells[3].textContent = canOrder()?'Order':'';
     }
     vt.querySelectorAll('.vr').forEach(function(row,i){
       const v=rows[i]; if(!v) return;
@@ -3373,6 +3930,18 @@ function repriceSheet(){
       const sz=row.querySelector('.vsize');
       if(sz) sz.innerHTML = esc(v.size)+
         ((v.moq&&trade)?'<small class="vmoq">MOQ '+v.moq+'</small>':'');
+      // And the quantity steppers, which were the worse half of the same bug:
+      // a dealer opening a shared product link got no way to order at all,
+      // because canOrder() was still false when the sheet was drawn.
+      const od=row.querySelector('.vord');
+      if(od){
+        const want = canOrder()
+          ? '<button class="qbtn" data-qm="'+esc(v.size)+'">\u2212</button>'+
+            '<b class="qv" data-qv="'+esc(v.size)+'">0</b>'+
+            '<button class="qbtn" data-qp="'+esc(v.size)+'">+</button>'
+          : '';
+        if(od.innerHTML.trim()!==want){ od.innerHTML=want; needSteppers=true; }
+      }
       const mrpv = v.mrp!=null ? v.mrp : null;   // printed MRP only, never a guess
       const u='<b class="vunit">/'+unitAbbr(v.unit)+'</b>';
       // A missing rate says so in words. "\u2014" in the rate column read as a
@@ -3404,6 +3973,10 @@ function repriceSheet(){
     const note=vt.nextElementSibling;
     if(note && note.tagName==='P') note.innerHTML = sheetNote(CUR, rows);
   }
+  // Steppers that were just drawn have no handler on them yet, and the basket
+  // bar has to appear for a dealer whose session arrived after the page did.
+  if(needSteppers){ try{ wireOrderStepper(CUR); }catch(e){} }
+  obarRender();
 }
 
 /* ---------- swipeable hero photo with dots ---------- */
@@ -3456,5 +4029,123 @@ openSheet = function(p){
 };
 
 markWho(); retailMark(); refreshSession();
+
+/* ---------- what people looked for ----------
+
+   The one question worth being able to answer: what did somebody search for
+   and get nothing back? That is a product they wanted and we either do not
+   stock or have named something nobody types. Until now every one of those
+   searches was thrown away.
+
+   Three rules this keeps to:
+
+   - It never blocks and never complains. Every insert is fire-and-forget with
+     the failure swallowed. Until supabase/03_events.sql has been run the table
+     does not exist, every insert fails, and nothing about the catalogue
+     changes — which is the correct behaviour for something nobody asked for.
+
+   - It is cheap. Events queue in memory and go up in one batch, on a timer and
+     when the page is hidden, so a browsing session costs a request or two
+     rather than one per tap.
+
+   - It logs what was typed, not who is typing. The phone number is the account
+     already signed in, and there is no device id, no IP, no third party. It is
+     append-only and only admin and office can read it — see the policies in
+     03_events.sql, which are the whole of that guarantee. */
+const EVQ=[];
+let evTimer=null;
+function logEvent(kind, fields){
+  try{
+    EVQ.push(Object.assign({kind:kind, phone:(SESS&&SESS.phone)||null}, fields||{}));
+    if(EVQ.length>=25){ flushEvents(); return; }
+    if(!evTimer) evTimer=setTimeout(flushEvents, 20000);
+  }catch(e){}
+}
+function flushEvents(){
+  if(evTimer){ clearTimeout(evTimer); evTimer=null; }
+  if(!EVQ.length) return;
+  const batch=EVQ.splice(0, EVQ.length);
+  try{
+    if(!window.PMAuth || !PMAuth.sb) return;
+    PMAuth.sb.from('events').insert(batch).then(function(){}, function(){});
+  }catch(e){}
+}
+// Hidden, not unload: on a phone the page is very often backgrounded and never
+// formally unloaded, and visibilitychange is the event that actually fires.
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState==='hidden') flushEvents();
+});
+window.addEventListener('pagehide', flushEvents);
+
+/* Searches are logged on a longer settle than the 140ms that redraws the grid,
+   so what lands is the query someone finished typing rather than every prefix
+   of it. A search that found nothing is its own kind, because that is the row
+   worth reading. */
+let evSearchTimer=null, evLastQ='';
+function noteSearch(text, hits){
+  const t=String(text||'').trim();
+  clearTimeout(evSearchTimer);
+  if(t.length<2) return;
+  evSearchTimer=setTimeout(function(){
+    if(t===evLastQ) return;          // the same search redrawn is not a new search
+    evLastQ=t;
+    logEvent(hits===0?'zero':'search', {q:t, n:hits});
+  }, 1200);
+}
+
+/* ---------- installable, and readable with no signal ----------
+
+   The worker is registered as sw.js?v=<build>, which is what ties its cache
+   to the build number already printed in the footer — see the long comment at
+   the top of sw.js. Registrations are keyed by scope, so bumping the build
+   points this same scope at a new script and the browser installs it.
+
+   Nothing is swapped underneath anyone. A new worker installs and then waits;
+   the strip at the bottom of the page is the only thing that promotes it, and
+   only when the reader taps Reload. */
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  // file:// has no worker, and neither should a page opened by double-click.
+  if(location.protocol!=='http:' && location.protocol!=='https:') return;
+
+  const build=(window.PMAuth && PMAuth.BUILD) || 'dev';
+  const bar=document.getElementById('swbar');
+  let waiting=null;
+
+  function offer(sw){
+    if(!sw || !bar) return;
+    waiting=sw;
+    bar.classList.add('on');
+  }
+  if(bar){
+    const go=document.getElementById('swGo'), later=document.getElementById('swLater');
+    if(go) go.onclick=function(){
+      bar.classList.remove('on');
+      if(!waiting){ location.reload(); return; }
+      // The page reloads when the new worker takes over, not before — so the
+      // reader never sees half of one version and half of the next.
+      navigator.serviceWorker.addEventListener('controllerchange',function(){
+        location.reload();
+      },{once:true});
+      waiting.postMessage('skip-waiting');
+    };
+    if(later) later.onclick=function(){ bar.classList.remove('on'); };
+  }
+
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js?v='+build).then(function(reg){
+      if(reg.waiting && navigator.serviceWorker.controller) offer(reg.waiting);
+      reg.addEventListener('updatefound',function(){
+        const nw=reg.installing;
+        if(!nw) return;
+        nw.addEventListener('statechange',function(){
+          // A worker that reaches "installed" with nothing controlling the
+          // page is the very first install, not an update. Nothing to offer.
+          if(nw.state==='installed' && navigator.serviceWorker.controller) offer(nw);
+        });
+      });
+    }).catch(function(){ /* no worker is a working site, just a slower one */ });
+  });
+})();
 
 </script></body></html>

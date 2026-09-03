@@ -26,6 +26,7 @@ header{position:sticky;top:0;z-index:40;background:var(--sf);border-bottom:1px s
 .hin .who{font-family:var(--fm);font-size:.62rem;color:var(--tm)}
 .sp{flex:1}
 .ibtn{border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:999px;
+ min-height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
  padding:7px 12px;font-size:.72rem;font-weight:700;text-decoration:none;display:inline-block}
 .ibtn:hover{border-color:var(--pr);color:var(--pr)}
 .tabs{display:flex;gap:4px;padding:0 14px 9px;max-width:1000px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
@@ -38,12 +39,41 @@ main{max-width:1000px;margin:0 auto;padding:14px}
 .bar{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
 .bar input.s{flex:1;min-width:170px;padding:10px 13px;border:1.5px solid var(--bd);border-radius:var(--rs);
  background:var(--sf);font-size:.88rem}
-.btn{padding:10px 14px;border:0;border-radius:var(--rs);background:var(--pr);color:#fff;
- font-weight:700;font-size:.83rem}
-.btn.g{background:var(--ac)}
-.btn.o{background:var(--sf);color:var(--tx);border:1.5px solid var(--bd)}
-.btn.r{background:#B4433B;color:#fff}
-.btn:disabled{opacity:.45}
+/* ---------- BUTTONS ----------
+   The same four kinds as the catalogue (see the long note in index.html):
+
+     primary    the one thing this screen is for. One per screen.
+     secondary  a real alternative to it
+     quiet      supporting actions — bordered, on a surface, never bare text
+     danger     destructive
+
+   .g .o .r are the older names kept so existing markup keeps working:
+   g was "green", and it was used for the primary action — which is why Done
+   and Save were green here while the primary action on the catalogue was
+   blue. It is an alias for primary now, so the site has one primary colour
+   instead of two. o is quiet, r is danger.
+
+   Everything is at least 44px tall: this is used one-handed on a phone. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ min-height:44px;padding:11px 16px;border-radius:var(--rs);
+ font-family:var(--fd);font-weight:700;font-size:.83rem;line-height:1.2;
+ text-align:center;text-decoration:none;cursor:pointer;
+ border:1.5px solid var(--pr);background:var(--pr);color:#fff;
+ transition:transform .08s,filter .15s}
+.btn:active{transform:scale(.985)}
+.btn:hover{filter:brightness(1.07)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.btn:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+.btn.primary,.btn.g{background:var(--pr);border-color:var(--pr);color:#fff}
+.btn.secondary{background:var(--sf);color:var(--pr);border-color:var(--pr)}
+.btn.quiet,.btn.o{background:var(--sf);color:var(--tx);border-color:var(--bd);font-weight:600}
+.btn.quiet:hover,.btn.o:hover{filter:none;border-color:var(--pr);color:var(--pr)}
+.btn.danger,.btn.r{background:var(--sf);color:#B3261E;border-color:#E7C4C0;font-weight:600}
+.btn.danger:hover,.btn.r:hover{filter:none;background:#FDEDEB}
+.btn.wide,.btn.block{display:flex;width:100%}
+.btn.sm{min-height:36px;padding:8px 12px;font-size:.76rem}
+.btnstack{display:flex;flex-direction:column;gap:8px}
+.btnstack .btn{width:100%}
 .fl{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
 .fl button{border:1px solid var(--bd);background:var(--sf);border-radius:999px;padding:5px 11px;
  font-size:.71rem;font-weight:600;color:var(--tx)}
@@ -97,6 +127,19 @@ main{max-width:1000px;margin:0 auto;padding:14px}
 .tg input:checked+i::after{transform:translateX(19px)}
 .tg.danger input:checked+i{background:#B4433B}
 .vrow{display:grid;grid-template-columns:1.1fr .7fr .7fr .5fr .8fr auto;gap:6px;margin-bottom:6px;align-items:center}
+/* Six columns is fine on a laptop and unusable on a phone — the unit dropdown
+   ends up about forty pixels wide, which is why it read as missing. Below
+   560px the row becomes two lines: size across the top, then the numbers and
+   the unit under it. */
+@media(max-width:560px){
+  .vrow{grid-template-columns:1fr 1fr 1fr auto;gap:5px;
+    padding:8px;border:1px solid var(--bd);border-radius:9px;margin-bottom:8px}
+  .vrow>:first-child{grid-column:1/-1}
+  .vrow>select{grid-column:span 2}
+  /* The column headings cannot line up with a two-line row, and the inputs
+     already carry the same words as placeholders. */
+  .vrow.vhead{display:none}
+}
 .vrow input,.vrow select{padding:8px 9px;border:1.5px solid var(--bd);border-radius:7px;background:var(--sf);
  font-family:var(--fm);font-size:.79rem;min-width:0}
 .mini{border:0;background:var(--sf2);color:var(--tx);border-radius:7px;width:31px;height:31px;
@@ -221,6 +264,7 @@ if(new URLSearchParams(location.search).get("edit")){
     <button class="tab" data-t="customers">Customers</button>
     <button class="tab" data-t="notices">Noticeboard</button>
     <button class="tab" data-t="reviews">Reviews</button>
+    <button class="tab" data-t="gaps">What's missing</button>
     <button class="tab" data-t="publish">Publish</button>
   </div>
 </header>
@@ -334,6 +378,22 @@ if(new URLSearchParams(location.search).get("edit")){
     <table class="tt"><tbody id="rvList"></tbody></table>
   </section>
 
+  <!-- WHAT'S MISSING -->
+  <section class="panel" id="p-gaps">
+    <div class="note"><b>The gaps, as a list of work rather than a number.</b>
+      Tap a row to open that product and fill it in. Counts come from the draft
+      you are looking at, so they go down as you go.</div>
+    <div class="stat" id="gapStat"></div>
+    <div class="fl" id="gapPick"></div>
+    <table class="tt"><tbody id="gapList"></tbody></table>
+
+    <div class="note" style="margin-top:22px"><b>What people searched for and did not find.</b>
+      Every one of these is either something to stock or something we have named
+      in a way nobody types.</div>
+    <div class="stat" id="searchStat"></div>
+    <table class="tt"><tbody id="searchList"></tbody></table>
+  </section>
+
   <!-- PUBLISH -->
   <section class="panel" id="p-publish">
     <div class="note"><b>Two different things, easy to confuse.</b>
@@ -395,28 +455,17 @@ if(new URLSearchParams(location.search).get("edit")){
 
 <div class="ov" id="ov"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
 
-<script src="config.js?v=29"></script>
+<script src="config.js?v=35"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=29"></script>
+<script src="supabase-auth.js?v=35"></script>
+<script src="pm-ui.js?v=35"></script>
 <script>
-(function(){
-  const D={firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
-    site:'https://patelmarketing-catalog.vercel.app',
-    supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
-    supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s',
-    auth:{ noAccessMessage:'We do not recognise that number yet.' }};
-  const K=window.PM_CONFIG||{};
-  const M=Object.assign({},D,K);
-  M.auth=Object.assign({},D.auth,K.auth||{});
-  if(!M.whatsapp||M.whatsapp.replace(/\D/g,'').length<10) M.whatsapp=D.whatsapp;
-  if(!M.supabaseUrl) M.supabaseUrl=D.supabaseUrl;
-  if(!M.supabaseAnonKey) M.supabaseAnonKey=D.supabaseAnonKey;
-  window.PM_CONFIG=M;
-})();
-const C=window.PM_CONFIG, $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const money=n=>'₹'+Number(n).toLocaleString('en-IN');
-const IMG=n=>'images/'+n+'.jpg';
+PMUI.config({firm:'Patel Marketing',tagline:'Wholesale Kitchenware',whatsapp:'917892967505',
+  site:'https://patelmarketing-catalog.vercel.app',
+  supabaseUrl:'https://vcrzauuxvgpsbforiszz.supabase.co',
+  supabaseAnonKey:'sb_publishable_HMTnoyLJiLTvtnoKad3koQ_CaKKj-5s',
+  auth:{ noAccessMessage:'We do not recognise that number yet.' }});
+const {$, esc, money, IMG}=PMUI;
 const DRAFT='v3_admin_draft';
 
 let P=[], LIVE='', shown=40, q='', quick='all', dirty=false;
@@ -426,104 +475,28 @@ let CUSTOMERS=[];
 
 const last10=s=>String(s||'').replace(/\D/g,'').slice(-10);
 const UNITS=['Piece','Dozen','Box','Gross','Kg','Tag'];
-let PENDING_PHONE=null;
 let ME=null, IS_ADMIN=false;
 // Who may open this panel at all. is_admin is the flag the database sets from
 // the role, so it stays the test for "full access"; staff is the second door.
 const mayOpenPanel=r=>!!r && (r.is_admin || r.role==='staff' || r.role==='admin');
 
 /* ---------------- gate ---------------- */
-$('#gp').oninput=function(){
-  const d=($('#gp').value||'').replace(/\D/g,'');
-  $('#gEcho').textContent = d.length>=10 ? 'Signing in as +91 '+d.slice(-10)
-                          : (d.length? d.length+' of 10 digits':'');
-};
-$('#gp').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gb').click()} };
-$('#gb').onclick=async function(){
-  const raw=($('#gp').value||'').replace(/\D/g,'');
-  const m=$('#gm'); m.classList.remove('on');
-  if(raw.length<10){ m.textContent='That is only '+raw.length+' digit'+(raw.length===1?'':'s')+
-    '. Type the 10-digit number — 91 in front is fine too.'; m.classList.add('on'); return; }
-  // Test numbers carry a PIN instead of a texted code — no SMS, no cost.
-  const testNo=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(raw));
-  if(!testNo){
-    const gb=$('#gb'); gb.disabled=true; gb.textContent='Sending…';
-    const {error}=await PMAuth.sendOtp(raw);
-    gb.disabled=false; gb.textContent='Send code';
-    if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
-  }
-  PENDING_PHONE=raw;
-    $('#gOtpTo').textContent = testNo
-    ? 'Test account. No SMS is sent for these — type the 6-digit PIN.'
-    : 'Sent by SMS to +91 '+raw.slice(-10)+'. It can take a minute to arrive.';
-  $('#gCode').placeholder = testNo ? '6-digit PIN' : '6-digit code';
-  $('#gStepPhone').style.display='none'; $('#gStepOtp').style.display='block';
-  $('#gCode').focus();
-};
-$('#gBack').onclick=function(){
-  PENDING_PHONE=null; $('#gm').classList.remove('on');
-  $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
-  $('#gp').focus();
-};
-$('#gCode').onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();$('#gv').click()} };
-$('#gv').onclick=async function(){
-  const code=($('#gCode').value||'').replace(/\D/g,'');
-  const m=$('#gm'); m.classList.remove('on');
-  if(code.length<4){ m.textContent='Enter the code as texted to you.'; m.classList.add('on'); return; }
-  const isTest=!!(PMAuth.isTestNumber && PMAuth.isTestNumber(PENDING_PHONE));
-  const gv=$('#gv'); gv.disabled=true; gv.textContent=isTest?'Signing in…':'Verifying…';
-  const {error}= isTest ? await PMAuth.signInWithPin(PENDING_PHONE, code)
-                        : await PMAuth.verifyOtp(PENDING_PHONE, code);
-  gv.disabled=false; gv.textContent=isTest?'Sign in':'Verify & sign in';
-  if(error){ m.textContent=PMAuth.friendlyAuthError(error); m.classList.add('on'); return; }
-  PENDING_PHONE=null;
-  const row=await PMAuth.myAllowlistRow();
-  if(!row||!mayOpenPanel(row)){
-    await PMAuth.signOut();
-    m.textContent='That number signed in, but it is not on the admin list.'; m.classList.add('on');
-    $('#gStepOtp').style.display='none'; $('#gStepPhone').style.display='block';
-    return;
-  }
-  start(row);
-};
-(async function(){
-  const sess=await PMAuth.currentSession();
-  if(!sess) return;
-  const row=await PMAuth.myAllowlistRow();
-  if(row&&mayOpenPanel(row)) start(row); else await PMAuth.signOut();
-})();
-
 // Office staff get the catalogue work — products, brands, publishing — but
 // not the two things that are hard to undo: who is allowed in and at what
-// role, and which reviews the public sees. The tabs below are hidden for
-// them, but hiding a tab is presentation, not security; the database refuses
-// those writes for a staff row whatever the page shows.
-
-/* One account menu, built the same way on every panel screen. */
-// The header shows whose account this is, not the word "Account": the photo
-// they uploaded, or their initials. It links to the catalogue's account screen,
-// which is the only place sign out lives.
-function wireAccountMenu(row){
-  const btn=document.getElementById('acctBtn');
-  if(!btn) return;
-  const name=(row&&(row.nickname||row.name||row.shop))||'';
-  const what=row&&row.is_admin?'admin':row&&row.role==='staff'?'office'
-            :row&&(row.role==='dealer'||row.role==='shop_owner')?'dealer':'';
-  const initials=String(name).replace(/[^A-Za-z ]/g,'').trim().split(/\s+/)
-    .slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'PM';
-  const photo=row&&row.photo_url;
-  btn.innerHTML = photo
-    ? '<img src="'+String(photo).replace(/"/g,'&quot;')+'" alt="">'
-    : initials.replace(/[&<>]/g,'');
-  btn.title=(name||'Your account')+(what?' · '+what:'');
-  btn.setAttribute('aria-label', btn.title);
-}
+// role, and which reviews the public sees. The tabs are hidden for them in
+// start(), but hiding a tab is presentation, not security; the database
+// refuses those writes for a staff row whatever the page shows.
+PMUI.gate({
+  allow: mayOpenPanel,
+  refusal: 'That number signed in, but it is not on the admin list.',
+  onReady: start,
+});
 
 async function start(a){
   ME=a;
   IS_ADMIN=!!a.is_admin;
   $('#gate').style.display='none'; $('#app').style.display='block';
-  wireAccountMenu(a);
+  PMUI.accountMenu(a);
   $('#whoLine').textContent=(a.name||(IS_ADMIN?'admin':'office'))+(IS_ADMIN?'':' · office');
   if(!IS_ADMIN){
     document.querySelectorAll('.tab[data-t="customers"],.tab[data-t="reviews"]')
@@ -656,6 +629,7 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=function(){
   $('#p-'+b.dataset.t).classList.add('on');
   if(b.dataset.t==='publish') drawPublish();
   if(b.dataset.t==='reviews') loadReviews();
+  if(b.dataset.t==='gaps'){ drawGaps(); loadSearches(); }
   if(b.dataset.t==='notices') loadNotices();
   window.scrollTo(0,0);
 });
@@ -791,8 +765,24 @@ function edit(i){
     '<div class="two" id="singleWrap" style="margin-top:12px">'+
       '<div class="fg"><label>Rate</label><input id="fPrice" type="number" value="'+(p.price??'')+'"></div>'+
       '<div class="fg"><label>MRP</label><input id="fMrp" type="number" value="'+(p.mrp??'')+'"></div></div>'+
+    /* A product with no size rows still has a unit and a minimum. Until now
+       there was nowhere to say so: the unit dropdown only existed on a size
+       row, so 130 products — every one priced as a single line, Cast Iron Dosa
+       Tawa among them — were shown as "/pc" because the catalogue hard-coded
+       Piece for them. Someone looking for the unit ended up typing "Piece"
+       into Pack / spec line, which is not what that field is. */
+    '<div class="two" id="singleWrap2" style="margin-top:10px">'+
+      '<div class="fg"><label>Unit</label><select id="fUnit">'+
+        UNITS.map(u=>'<option value="'+u+'"'+((p.unit||'Piece')===u?' selected':'')+'>'+u+'</option>').join('')+
+      '</select></div>'+
+      '<div class="fg"><label>MOQ <span style="font-weight:400;color:var(--tm)">(optional)</span></label>'+
+        '<input id="fMoq" type="number" min="1" placeholder="e.g. 6" value="'+(p.moq??'')+'"></div></div>'+
+    '<div class="hint" id="singleHint" style="margin-top:6px">'+
+      'How this product is sold and counted when it has no size rows. '+
+      'The unit shows on the catalogue as /pc, /dz, /kg and so on; MOQ steps the '+
+      'order quantity.</div>'+
     '<div class="hint" id="singleNote" style="margin-top:8px;display:none">'+
-      'Rate and MRP come from the size rows above.</div>'+
+      'Rate, MRP, unit and MOQ come from the size rows above.</div>'+
 
     '<button class="btn g" id="saveP" style="width:100%;margin-top:18px">Done</button>'+
    '</div>';
@@ -820,8 +810,9 @@ function edit(i){
   };
 
   function drawV(){
-    $('#vl').innerHTML = vs.length ? ('<div class="vrow" style="font-size:.6rem;color:var(--tm);'+
-      'text-transform:uppercase;letter-spacing:.07em"><span>Size</span><span>DP</span><span>MRP</span>'+
+    $('#vl').innerHTML = vs.length ? ('<div class="vrow vhead" style="font-size:.6rem;color:var(--tm);'+
+      'text-transform:uppercase;letter-spacing:.07em">'+
+      '<span>Size</span><span>DP</span><span>MRP</span>'+
       '<span>MOQ</span><span>Unit</span><span></span></div>') + vs.map((v,ix)=>
       '<div class="vrow">'+
       '<input placeholder="Size" value="'+esc(v.size||'')+'" data-k="size" data-i="'+ix+'">'+
@@ -843,8 +834,10 @@ function edit(i){
     // One place shows the rate, never two. With size rows the single fields
     // are hidden and derived on save; with none they are the only source.
     const has=vs.length>0;
-    $('#singleWrap').style.display = has ? 'none' : 'grid';
-    $('#singleNote').style.display = has ? 'block' : 'none';
+    $('#singleWrap').style.display  = has ? 'none' : 'grid';
+    $('#singleWrap2').style.display = has ? 'none' : 'grid';
+    $('#singleHint').style.display  = has ? 'none' : 'block';
+    $('#singleNote').style.display  = has ? 'block' : 'none';
   }
   drawV();
   $('#addV').onclick=function(){vs.push({size:'',rate:null,price:null,mrp:null,moq:null,unit:'Piece'});drawV()};
@@ -886,6 +879,10 @@ function edit(i){
       hsn:$('#fHsn').value.trim()||null, note:$('#fNote').value.trim()||null,
       price: keptVs.length ? low('price') : num('#fPrice'),
       mrp:   keptVs.length ? low('mrp')   : num('#fMrp'),
+      // Same rule as rate and MRP: with size rows these come from the rows, so
+      // there is one answer rather than two that can disagree.
+      unit:  keptVs.length ? (keptVs[0].unit||'Piece') : ($('#fUnit').value||'Piece'),
+      moq:   keptVs.length ? low('moq')   : num('#fMoq'),
       hidden:$('#fHidden').checked, feat:$('#fFeat').checked,
       stock:$('#fOut').checked?'out':'active',
       imgs:imgs.slice(), img:imgs[0]||'_placeholder',
@@ -1204,6 +1201,92 @@ async function loadReviews(){
     if(error){ alert('Could not change that — '+error.message); return; }
     await loadReviews();
   };
+}
+
+/* ---------------- what's missing ----------------
+
+   The gaps were already known and already countable — the products quick-filter
+   has had "No rate" and "No photo" on it for a while. What was missing was
+   somewhere that treats them as a queue of work rather than a statistic, and
+   that covers the fields a wholesaler actually gets asked for. An HSN is not a
+   nice-to-have: without one, a product cannot go on a GST invoice.
+
+   Counts come from P, the draft in front of you, so they fall as you work. */
+const GAPS=[
+  ['norate', 'No rate at all',  p=>p.price==null && !(p.variants||[]).some(v=>v.price!=null),
+             'Cannot be quoted or ordered — this is the one that costs money.'],
+  ['nomrp',  'No MRP',          p=>p.mrp==null && !(p.variants||[]).some(v=>v.mrp!=null),
+             'No printed MRP means no retail price to show a consumer and nothing to discount.'],
+  ['nohsn',  'No HSN',          p=>!p.hsn,
+             'Needed on a GST invoice. Until it is here, the invoice has to be finished by hand.'],
+  ['nocode', 'No product code', p=>!p.code,
+             'The code is how a supplier and the office refer to it on the phone.'],
+  ['nodesc', 'No description',  p=>!p.desc,
+             'One line saying what it is. It is also what the search reads.'],
+  ['onephoto','Only one photo', p=>((p.imgs||[]).length||(p.img?1:0))<=1,
+             'A second angle is the difference between a card someone taps and one they scroll past.'],
+  ['nophoto','No photo',        p=>!p.img||p.img==='_placeholder',
+             'Shows as a dash on the card.'],
+];
+let gapPick='norate';
+
+function drawGaps(){
+  const total=P.length;
+  $('#gapPick').innerHTML=GAPS.map(([k,l,f])=>
+    '<button class="'+(gapPick===k?'on':'')+'" data-g="'+k+'">'+l+'<b>'+P.filter(f).length+'</b></button>').join('');
+  $('#gapPick').onclick=e=>{const b=e.target.closest('button'); if(!b) return;
+    gapPick=b.dataset.g; drawGaps();};
+
+  const row=GAPS.find(g=>g[0]===gapPick);
+  const list=P.filter(row[2]);
+  $('#gapStat').textContent=list.length+' of '+total+' products · '+row[3];
+  $('#gapList').innerHTML = list.length
+    ? list.slice(0,300).map(p=>
+        '<tr data-slug="'+esc(p.slug)+'"><td class="nm">'+esc(p.name)+
+        '<div class="ph">'+esc(p.brand)+(p.code?' · '+esc(p.code):'')+'</div></td>'+
+        '<td><button class="ibtn">Fill it in</button></td></tr>').join('')
+      + (list.length>300 ? '<tr><td colspan="2" class="ph">…and '+(list.length-300)+' more</td></tr>' : '')
+    : '<tr><td class="ph">Nothing missing here. </td></tr>';
+  $('#gapList').onclick=e=>{
+    const tr=e.target.closest('tr[data-slug]'); if(!tr) return;
+    const p=P.find(x=>x.slug===tr.dataset.slug);
+    if(p) edit(P.indexOf(p));
+  };
+}
+
+/* The searches that found nothing, most-asked first.
+
+   Reads catalog.searches_with_nothing, which does not exist until
+   supabase/03_events.sql has been run — so an error here is the expected
+   state on day one and says so, rather than showing an empty list that reads
+   as "nobody uses the site". */
+async function loadSearches(){
+  const stat=$('#searchStat'), list=$('#searchList');
+  stat.textContent='Loading…'; list.innerHTML='';
+  let data, error;
+  try{
+    ({data,error}=await PMAuth.sb.from('searches_with_nothing').select('*').limit(60));
+  }catch(e){ error=e; }
+  if(error){
+    const missing=/does not exist|schema cache|relation|PGRST/i.test(error.message||'');
+    stat.textContent='';
+    list.innerHTML='<tr><td class="ph">'+(missing
+      ? 'Search logging is not switched on yet. Run <b>supabase/03_events.sql</b> once in '+
+        'Supabase → SQL Editor and this fills itself in from then on. Nothing is lost '+
+        'in the meantime except the searches nobody is recording.'
+      : 'Could not read the search log — '+esc(error.message||'unknown error'))+'</td></tr>';
+    return;
+  }
+  const rows=data||[];
+  stat.textContent = rows.length
+    ? rows.length+' different searches came back empty'
+    : 'Nothing has come back empty yet.';
+  list.innerHTML = rows.length ? rows.map(r=>
+    '<tr><td class="nm">'+esc(r.query)+
+    '<div class="ph">last asked '+new Date(r.last_asked).toLocaleDateString('en-IN',
+      {day:'numeric',month:'short',year:'numeric'})+'</div></td>'+
+    '<td class="ph">'+r.times+'&times;</td></tr>').join('')
+    : '<tr><td class="ph">Either everything is being found, or nobody has searched yet.</td></tr>';
 }
 
 /* ---------------- publish ---------------- */

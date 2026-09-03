@@ -19,6 +19,9 @@ and no longer deployed; it is still in git history if it is ever wanted back
 | `shop.html` | A dealer's own customer list and their offers |
 | `exchange.html` | Dealer-to-dealer stock exchange |
 | `config.js`, `supabase-auth.js` | Supabase URL, publishable key, shared sign-in |
+| `pm-ui.js` | The sign-in gate, account button and helpers the four signed-in pages share |
+| `sw.js`, `manifest.webmanifest`, `assets/icon-*` | What makes it installable and work offline |
+| `tools/thumbs.mjs` | Builds the 300px WebP grid thumbnails into `images/thumb/` |
 | `data.json` | What the public catalogue reads. **Not** the database — see Publishing |
 | `images/` | Product photos |
 | `api/p.js` | Server-renders one product's `<head>` so WhatsApp shows a real link preview |
@@ -99,6 +102,16 @@ Every other screen (admin panel, order book, dealer screen) shows that person's
 photo or first initial in the header, linking to `index.html?profile=1`. None of
 them carries a sign-out button of its own. Leaving is not the main thing anyone
 came to do.
+
+The product sheet's action row — Edit this product, Enquire on WhatsApp, or
+the consumer's "ask the shop" — depends on who is signed in, and the sheet is
+routinely on screen before the allowlist lookup comes back. So it is drawn by
+one function, `sheetActionsHtml()`, and redrawn by `repriceSheet()` the moment
+the session lands. Without that, coming back here from the admin panel showed
+the admin **Enquire on WhatsApp** — an order pad they are deliberately not
+supposed to have, on their own product — and a dealer opening a shared product
+link got no order steppers at all. The size table already worked this way; the
+buttons do now too.
 
 `admin.html?edit=<slug>&back=<slug>` is the other cross-page link: the
 catalogue's "Edit this product" uses it. The admin panel keeps itself hidden
@@ -210,6 +223,112 @@ Admin and office deliberately have no order pad on the catalogue — an order
 placed by the admin would go to Patel Marketing's own number. They see "Edit
 this product" instead.
 
+## Buttons
+
+There is one set, defined once in `index.html` and mirrored in the four
+signed-in pages. Four kinds, and the rule for picking one:
+
+| | When |
+|---|---|
+| `primary` | The one thing this screen is for. One per screen |
+| `secondary` | A real alternative to it — same weight, less shouting |
+| `quiet` | Supporting actions. **Still a button**: bordered, on a surface |
+| `danger` | Destructive. Outlined red, not a solid red block |
+
+Every one is at least 44px tall, because this is used one-handed on a phone in
+a shop, and all four take their colours from the theme so nothing is hard-coded.
+
+This exists because there was no system and it showed. **Sign out, Orders and
+Your customers were `.sgnbtn.ghost` — transparent, no border — so the three
+things a signed-in dealer most needs to tap rendered as grey text.** "Open admin
+panel" was the same shape painted green with an inline style, so the account
+screen had a green button, a blue button and three pieces of text all meaning
+"tap me". In the four panel pages `.btn.g` (g for green) was the *primary*
+action, which is why Done and Save were green there while the primary action on
+the catalogue was blue.
+
+`.g`, `.o` and `.r` still work — `.g` is now an alias for `primary`, so there is
+one primary colour instead of two — and no existing markup had to change.
+
+## Units, and products without size rows
+
+A product priced by size rows has always been able to say it is sold by the
+dozen or in boxes of six: `variants` carries `unit` and `moq`. A product priced
+as a single line could not — there was no field for it, so the catalogue
+hard-coded "Piece" for all 130 of them and the order pad stepped them one at a
+time. Someone looking for the unit ended up typing "Piece" into **Pack / spec
+line**, which is not what that field is for.
+
+The admin panel now has **Unit** and **MOQ** next to Rate and MRP, shown only
+when a product has no size rows — with rows, all four come from the rows, so
+there is one answer rather than two that can disagree. The catalogue reads
+`p.unit` and `p.moq` with Piece and one as the fallbacks.
+
+The size rows themselves were unusable on a phone: six columns in a modal left
+the unit dropdown about forty pixels wide, which is why it read as missing.
+Below 560px a row is now two lines, and the column headings give way to the
+placeholders the inputs already carried.
+
+Run `supabase/04_product_unit.sql` to add the two columns to the database. Until
+you do, the site is still correct — it reads `data.json`, which carries both
+fields as soon as you publish — but the Publish tab's compare will keep
+reporting them as different.
+
+## Ordering the same things again
+
+A dealer buys roughly the same forty items every month, so the catalogue keeps
+what they did last time.
+
+**Your orders**, on the account screen, lists every order that account has sent,
+newest first, with where each one has got to. It reads the same
+`order_summary` and `order_items` the office reads in `orders.html` and a dealer
+reads in `shop.html` — same rows, same policies, nothing new in the database.
+
+**Order again** puts that order's lines back in the order pad. Two things about
+it are worth knowing:
+
+- **It repeats at today's rates, not the rates on the old order.** That is not
+  a special case; the basket has only ever stored `{slug, size, qty}` and looks
+  up the name, rate and unit at render time, so a repeat is priced the same way
+  a fresh order is.
+- **A line only comes back if the order pad could still price it.** It is
+  checked with the same `resolveItem()` the pad uses, so a repeat can never
+  leave a line in the basket that the pad would quietly drop. Products that
+  have gone, and sizes that have gone, are counted and reported rather than
+  disappearing.
+
+Repeating an order twice adds to the existing lines instead of listing the same
+size twice. An empty order pad offers the same list, because an empty pad is
+exactly when someone wants last month's order.
+
+Admin and office do not get this, for the same reason they have no order pad:
+they order for other people, from the order book.
+
+## Saved, and sorting
+
+The heart **beside the button** saves a product. **Saved** next to the product
+count filters to that list, and only appears once there is something in it.
+
+Beside the button, not on the photo, and that matters. It started at the photo's
+top-right — which is exactly where the FEATURED badge sits, so the two drew on
+top of each other and read as "FEATU♥". Worse, it put a save button in the
+middle of the biggest tap target on the card: in Compact view, a 146px card with
+a 118px image, aiming for the product and catching the corner saved it instead
+of opening it — and because the whole card takes the pressed state, it looked
+like the product was about to open. Beside the button it is unmistakably its own
+control and the photo is entirely "open this product" again.
+
+It lives in `localStorage`, keyed by phone like recently-viewed — no table, no
+policy, and it still works with no signal. The trade-off is that it is per
+device: saving on the shop laptop does not save on the phone. If that starts to
+matter it becomes a table, and nothing else has to change.
+
+The sort control next to it offers rate low to high, rate high to low, name, and
+best rated. **Suggested** is the default and is the old behaviour — the
+hand-curated category and brand order, which leads with what the business leads
+with. Under either rate sort, the 127 products with no rate at all sort last
+both ways: something we cannot price is not the cheapest thing we sell.
+
 ## The noticeboard
 
 The Noticeboard tab in the admin panel puts a message at the top of the
@@ -228,6 +347,93 @@ noticeboard is for today.
 
 See `APP.md`. Short version: the site can be made installable to a home screen
 in about a day and for nothing, and that is worth doing before anything else.
+
+## An app on the home screen, and no signal
+
+The catalogue is installable. `manifest.webmanifest` and `sw.js` give it an
+icon, its own window, and — the part that matters in a shop with one bar of
+signal — it opens and works offline. Browsing, searching, the product sheets
+and the order pad all work with no network; signing in and sending an order do
+not, and fail clearly rather than hanging.
+
+**`sw.js` is the most dangerous file in this repository.** The build number and
+the `?v=` convention exist because phones served stale files and a fix looked
+like it had done nothing; a service worker is that failure with a longer memory,
+and the people it strands are dealers, not developers. Read the comment at the
+top of the file before changing it. The four rules it keeps:
+
+- **the cache name is the build number**, passed in as `sw.js?v=<build>` so
+  there is still exactly one build number in the project — the one in
+  `supabase-auth.js` you already bump — and activation deletes every other cache;
+- **`data.json` is network-first**, cache only as the no-signal fallback, so the
+  published catalogue can never be pinned to an old copy;
+- **nothing cross-origin and nothing that is not a `GET` is touched**, so
+  Supabase — sign-in, orders, reviews, the noticeboard — always goes to the
+  network;
+- **there is no `skipWaiting()`**. A new version installs and waits, and a strip
+  at the bottom of the page offers it. The reader picks the moment.
+
+If a worker ever does go wrong, it is undone by a normal push, not by asking
+every dealer to clear their browser. The replacement `sw.js` that unregisters
+itself is in `ROADMAP.md`.
+
+Grid cards, the sheet's thumbnail strip and the related-product rows use 300px
+WebP thumbnails from `images/thumb/`, built by `tools/thumbs.mjs` — 30.3 MB of
+photos becomes 2.7 MB, and a first paint drops from about 650 KB of images to
+88 KB. The hero image and the lightbox still use the real photo. A thumbnail
+that has not been built yet is harmless: the `<img>` carries an `onerror` that
+swaps in the original JPEG. You do not normally run the script — a GitHub
+Action rebuilds thumbnails whenever `images/` changes on a push, because photos
+are uploaded through GitHub rather than from a checkout.
+
+## What people searched for, and what is missing
+
+Two things the admin panel could not tell you before, both under
+**What's missing**.
+
+**The gaps, as a queue.** The products list has had "No rate" and "No photo"
+quick filters for a while; this adds the fields a wholesaler actually gets asked
+for and treats them as work rather than a statistic. Counted from the draft in
+front of you, so they fall as you fill them in:
+
+| Missing | Products | Why it matters |
+|---|---|---|
+| No rate at all | 127 | Cannot be quoted or ordered. This is the one that costs money |
+| No MRP | 178 | Nothing to show a consumer, nothing to discount |
+| No HSN | 483 | Cannot go on a GST invoice without finishing it by hand |
+| No product code | 128 | How the supplier and the office refer to it on the phone |
+| Only one photo | 583 | A second angle is a card someone taps rather than scrolls past |
+| No description | 24 | One line saying what it is — the search reads it too |
+
+Tap any row to open that product's editor.
+
+**What people searched for and did not find.** Every empty search is either
+something to stock or something named in a way nobody types, and until now every
+one of them was thrown away.
+
+This needs one thing done once: run **`supabase/03_events.sql`** in Supabase →
+SQL Editor. Until you do, the catalogue quietly does not log and the panel says
+so rather than showing an empty list that reads as "nobody uses the site".
+
+The log is deliberately small. Four kinds of row — a search, an empty search, a
+product opened, an order placed — no device id, no IP, nothing leaving the
+database. Events queue in the page and go up in one batch, on a timer and when
+the phone backgrounds it, so browsing costs a request or two rather than one per
+tap; every insert is fire-and-forget with the failure swallowed, so logging can
+never be what breaks the catalogue.
+
+**Anyone may write to it; only admin and office may read it.** That asymmetry is
+the point — a browsing log the page can read back out is a different and worse
+thing than a browsing log, and one dealer must never be able to pull what another
+has been pricing up. The policies in `03_events.sql` are the whole of that
+guarantee, so read them before changing them.
+
+## What to build next
+
+See `ROADMAP.md` — what was missing and why it mattered, what was built in
+response, and the things that were deliberately left alone (push notifications,
+fuzzy search, automated publishing, the stock exchange) with the reasoning for
+each.
 
 ## Notes for whoever edits this next
 
