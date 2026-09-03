@@ -32,6 +32,7 @@ in the right place.
 | `screens-browse.js` | Home, shop, category, search, product, saved, promo |
 | `screens-order.js` | Cart, checkout, placed, orders, order, repeat |
 | `screens-account.js` | Sign in, account, settings, help |
+| `screens-signup.js` | Joining, the application form, approvals, notifications |
 | `ARCHITECTURE.md` | How the app is put together and the rules its code keeps |
 | `admin.html` | Admin panel — products, contacts, reviews, publishing |
 | `shop.html` | A dealer's own customer list and their offers |

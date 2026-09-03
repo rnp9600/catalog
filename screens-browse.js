@@ -67,7 +67,14 @@ PM.route('/', function(){
   scrollTop();
 
   const nb = document.getElementById('hdrNotices');
-  if(nb) nb.onclick = noticesSheet;
+  // The same bell means two things depending on who is holding the phone: the
+  // office's own queue, or the noticeboard everyone else reads.
+  if(nb) nb.onclick = () => { if(PM.CAN_APPROVE) PM.go('/notifications'); else noticesSheet(); };
+  if(nb && PM.CAN_APPROVE) PM.loadNotifications().then(rows => {
+    const n = rows.filter(x => !x.is_read).length;
+    if(n && document.getElementById('hdrNotices'))
+      nb.insertAdjacentHTML('beforeend', '<span class="dot num">'+(n>9?'9+':n)+'</span>');
+  }).catch(()=>{});
   drawBuyAgain();
 });
 

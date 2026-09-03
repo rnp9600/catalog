@@ -70,6 +70,7 @@ ui.js                 icons, product card, stepper, sheet, toast, bars
 screens-browse.js     home, shop, category, search, product, saved, promo
 screens-order.js      cart, checkout, placed, orders, order, repeat
 screens-account.js    sign in, account, settings, help
+screens-signup.js     join, the application form, approvals, notifications
 sw.js                 the service worker (scope /)
 manifest.webmanifest  installable app metadata
 v3/                   the archived previous build, with its own sw and manifest
@@ -102,7 +103,10 @@ page. A build step would end that.
 | Repeat | `#/repeat/:id` | every line back with a stepper and a remove, at today's rates |
 | Saved | `#/saved` | per-account, on the phone, works offline |
 | Account | `#/account` | profile, role, links into admin / order book / shop / exchange |
-| Sign in | `#/signin` | phone OTP, the PIN path for test numbers, end-customer sign-up |
+| Sign in | `#/signin` | phone OTP, and the PIN path for test numbers |
+| Join | `#/join`, `#/join/form`, `#/join/status` | a proven number with no account tells us who it is |
+| Approvals | `#/approvals`, `#/approve/:id` | the queue, filtered to what this person may decide |
+| Notifications | `#/notifications` | routed by department, not broadcast to everyone |
 | Settings | `#/settings` | light/dark/auto, four text sizes, motion, install, force refresh |
 | Help | `#/help` | the six questions people actually ask |
 | PWA | `sw.js` | installable, offline catalogue, build-numbered cache |
@@ -149,6 +153,29 @@ Never from a number typed into the page. A dealer sees trade rates and a
 stepper; an end customer sees their shop's offer or the printed MRP;
 Patel Marketing's own staff see neither, because an order they placed
 would be addressed to themselves.
+
+**Getting in is a queue, not a wall.** The OTP proves a phone and nothing
+more. A number with no allowlist row used to be told "we do not
+recognise that number" and that was the end of it — every dealer and
+every member of staff had to be typed in by an admin, one at a time.
+Now they fill a form, it lands in `catalog.signup_requests` as pending,
+and somebody in the office decides. They can browse the whole catalogue
+while they wait; they simply cannot trade.
+
+**Who may approve is data, not code.** `catalog.departments` carries
+three booleans per department — may approve a dealer, staff, a customer
+— and `catalog.can_approve(kind)` is the only thing that reads them. So
+"only an admin or an office manager lets new staff in" is a row someone
+can change, and a screen that got it wrong would still be refused by the
+database. The same table routes notifications through
+`catalog.notify_routes`, which is why a delivery driver is not told
+about a dealer application.
+
+**The nickname rule.** Optional, and the only blank on an otherwise
+filled form. Where it is set the office sees it; where it is not they
+see "Firm name (Area)" — because two shops called Sharma Traders is the
+normal case, and the area is what tells them apart. One SQL function,
+`catalog.display_name`, so the app never re-implements it.
 
 **Never cache anything to Supabase.** Sessions, orders, reviews and the
 noticeboard go straight to the network. That is an explicit early return

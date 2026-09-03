@@ -34,6 +34,7 @@ const SHELL = [
   './', './index.html', './app.css?v=41',
   './core.js?v=41', './ui.js?v=41',
   './screens-browse.js?v=41', './screens-order.js?v=41', './screens-account.js?v=41',
+  './screens-signup.js?v=41',
   './app.js?v=41', './manifest.webmanifest',
   './config.js?v=41', './supabase-auth.js?v=41',
   './assets/icon-192.png', './assets/favicon-32.png',

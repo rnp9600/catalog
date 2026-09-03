@@ -44,10 +44,10 @@ function drawPhoneStep(){
           : '')+'</p>'+
     '</div>'+
     '<div class="menulist" style="margin-top:14px">'+
-      '<button class="menurow" id="siNew">'+icon('user')+
-        '<div class="grow"><b>Shopping for yourself?</b>'+
-        '<small>Sign up as a customer of a shop near you</small></div>'+
-        '<span class="chev">'+icon('chev')+'</span></button>'+
+      '<a class="menurow" href="#/join">'+icon('plus')+
+        '<div class="grow"><b>New here?</b>'+
+        '<small>Dealer, customer or staff — put your number in above, then tell us who you are</small></div>'+
+        '<span class="chev">'+icon('chev')+'</span></a>'+
       '<a class="menurow" href="#/help">'+icon('info')+
         '<div class="grow"><b>Trouble signing in?</b><small>What to check, and how to reach us</small></div>'+
         '<span class="chev">'+icon('chev')+'</span></a>'+
@@ -81,12 +81,6 @@ function drawPhoneStep(){
     }
     drawOtpStep(digits);
   };
-  document.getElementById('siNew').onclick = () => sheet({
-    title:'Shopping for yourself?',
-    body:'<p class="muted" style="line-height:1.6">Put in your phone number above and continue. '+
-      'If we do not know it yet, the next screen lets you sign up as a customer — '+
-      'you will see the shop’s prices and offers rather than trade rates.</p>',
-    foot:'<button class="btn btn-primary btn-block" data-sheet-close>Got it</button>'});
 }
 
 function drawOtpStep(digits){
@@ -143,64 +137,21 @@ function wireCodeStep(digits, isPin){
     const s = await PM.refreshSession();
     UI.cartbar(); UI.tabbar();
     if(!s){
-      // The token is real but there is no allowlist row — a number
-      // Supabase accepted that we do not know yet. Offer the sign-up
-      // rather than dead-ending on "we do not recognise that number".
+      // The token is real but there is no allowlist row — a number Supabase
+      // accepted that we do not know yet. Where they go depends on whether
+      // they have already applied, which the session lookup has just found
+      // out. Either way it is a screen, not the dead end this used to be.
+      window.__PM_PHONE_TAIL = digits;
       btn.disabled = false; btn.textContent = 'Sign in';
-      drawSignupStep(digits);
+      await PM.loadDepartments();
+      const st = PM.SIGNUP;
+      PM.go((st && st.status && st.status !== 'none') ? '/join/status' : '/join', true);
       return;
     }
     toast('Signed in — '+PM.roleLabel().toLowerCase());
     PM.go('/account', true);
   };
   const fail = m => '<div class="strip" style="background:var(--bad-wash);color:var(--bad)">'+esc(m)+'</div>';
-}
-
-function drawSignupStep(digits){
-  view().innerHTML =
-    '<div class="card card-pad" style="margin-top:16px">'+
-      '<h2 style="font-size:1.1rem;font-weight:750;letter-spacing:-.02em">Nearly there</h2>'+
-      '<p class="tiny muted" style="margin:6px 0 14px;line-height:1.55">'+
-        'Your number checked out, but we do not have you on our list yet. '+
-        'Tell us who you are and you can start browsing as a customer. '+
-        'A dealer account is set up by us — send us a message and we will do it.</p>'+
-      '<label class="field"><span>Your name</span>'+
-        '<input class="input" id="suName" autocomplete="name" placeholder="Name"></label>'+
-      '<label class="field"><span>City</span>'+
-        '<input class="input" id="suCity" autocomplete="address-level2" placeholder="Hubli"></label>'+
-      '<div id="siErr"></div>'+
-      '<button class="btn btn-primary btn-lg btn-block" id="suGo">Create my account</button>'+
-      '<button class="btn btn-quiet btn-block" id="suWa" style="margin-top:8px">'+
-        icon('wa')+'Ask for a dealer account</button>'+
-    '</div>';
-  document.getElementById('suGo').onclick = async function(){
-    const name = document.getElementById('suName').value.trim();
-    const city = document.getElementById('suCity').value.trim();
-    const err = document.getElementById('siErr');
-    if(!name){ err.innerHTML = '<div class="strip" style="background:var(--bad-wash);'+
-      'color:var(--bad)">Please put in your name.</div>'; return; }
-    this.disabled = true; this.textContent = 'Creating…';
-    try{
-      const {error} = await PMAuth.sb.rpc('self_signup_end_customer',
-        {p_name:name, p_city:city||null});
-      if(error) throw error;
-    }catch(e){
-      this.disabled = false; this.textContent = 'Create my account';
-      err.innerHTML = '<div class="strip" style="background:var(--bad-wash);color:var(--bad)">'+
-        esc((e && e.message) || 'Could not create the account just now.')+'</div>';
-      return;
-    }
-    await PM.refreshSession();
-    UI.cartbar(); UI.tabbar();
-    toast('Welcome');
-    PM.go('/account', true);
-  };
-  document.getElementById('suWa').onclick = () => {
-    const n = String(PM.CFG.whatsapp||'917892967505').replace(/\D/g,'');
-    window.open('https://wa.me/'+n+'?text='+encodeURIComponent(
-      'Hello Patel Marketing, I would like a dealer account. My number is +91'+digits+'.'),
-      '_blank','noopener');
-  };
 }
 
 /* ============ account ============================================== */
@@ -252,6 +203,11 @@ PM.route('/account', function(){
       row('heart','Saved','Products you kept on this phone','#/saved')+
     '</div>'+
 
+    (PM.CAN_APPROVE ? '<div class="menulist" style="margin-top:14px" id="acOffice">'+
+      row('shield','Approvals','New dealers, customers and staff waiting','#/approvals')+
+      row('bell','Notifications','What your department needs to know','#/notifications')+
+      '</div>' : '')+
+
     (PM.isOffice() ? '<div class="menulist" style="margin-top:14px">'+
       row('receipt','Order book','Every order that came in','orders.html')+
       row('edit','Admin panel','Rates, photos, stock and people','admin.html')+
@@ -273,6 +229,16 @@ PM.route('/account', function(){
     '<p class="tiny muted" style="text-align:center;margin-top:14px">'+
       'Patel Marketing · v4 · build '+(window.PMAuth?PMAuth.BUILD:'?')+'</p>';
   scrollTop();
+
+  if(PM.CAN_APPROVE) PM.loadApprovals().then(rows => {
+    const n = rows.filter(r => r.status === 'pending').length;
+    const box = document.getElementById('acOffice');
+    if(!n || !box) return;
+    const small = box.querySelector('.menurow small');
+    if(small) small.textContent = n + ' ' + PM.plural(n,'application') + ' waiting';
+    const b = box.querySelector('.menurow b');
+    if(b) b.innerHTML = 'Approvals <span class="badge badge-brand num">'+n+'</span>';
+  }).catch(()=>{});
 
   const wa = view().querySelector('[data-wa]');
   if(wa) wa.onclick = e => {

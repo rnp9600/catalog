@@ -363,6 +363,17 @@ const roleLabel    = () => !signedIn() ? 'Browsing' :
 
 let RATINGS = {}, NOTICES = [], SHOP_OFFERS = {}, SHOP_INFO = null;
 
+/* Where an applicant stands, for a number the allowlist does not know.
+   'member'   already set up — the ordinary case
+   'pending'  applied, waiting for someone in the office to decide
+   'rejected' turned down, with a reason if one was given
+   'none'     signed in, never applied
+   Without this a proven phone with no row was a dead end: the old screen
+   said "we do not recognise that number" and stopped. */
+let SIGNUP = null;
+let CAN_APPROVE = false;
+let DEPARTMENTS = [];
+
 /* False until the first session lookup has come back, either way. It
    matters because the app paints before it knows who is looking — that
    is deliberate, the catalogue is public and nobody should watch a
@@ -385,14 +396,17 @@ async function doRefreshSession(){
   if(!A || !A.sb){ SESS=null; return null; }
   let sess=null;
   try{ sess = await A.currentSession(); }catch(e){}
-  if(!sess){ SESS=null; loadSaved(); return null; }
+  if(!sess){ SESS=null; SIGNUP=null; loadSaved(); return null; }
   let row = null;
   try{ row = await A.myAllowlistRow(); }catch(e){}
   if(!row){
     // A lookup that failed is our fault, not theirs. Keep the Supabase
     // session — signing them out would cost another paid SMS to get back
-    // to the same point.
+    // to the same point. Then ask where they stand: applied and waiting,
+    // turned down, or never applied. That is the difference between a
+    // dead end and a queue.
     SESS = null;
+    await loadSignupStatus();
   } else {
     const full = dg(sess.user && sess.user.phone), last = full.slice(-10);
     SESS = {ok:true, admin:!!row.is_admin, role:row.role||'dealer',
@@ -401,8 +415,68 @@ async function doRefreshSession(){
       dealerType:row.dealer_type||null, gst:row.gst||'', photo:row.photo_url||''};
   }
   loadSaved();
-  await Promise.all([loadRatings(), loadNotices(), loadShopOffers()]);
+  await Promise.all([loadRatings(), loadNotices(), loadShopOffers(), loadApprovalRights()]);
   return SESS;
+}
+
+/* ---------- signing up, and being approved ------------------------ */
+async function loadSignupStatus(){
+  SIGNUP = null;
+  if(!window.PMAuth || !PMAuth.sb) return null;
+  try{
+    const {data, error} = await PMAuth.sb.rpc('my_signup_status');
+    if(error) return null;
+    SIGNUP = (Array.isArray(data) ? data[0] : data) || null;
+  }catch(e){}
+  return SIGNUP;
+}
+async function loadApprovalRights(){
+  CAN_APPROVE = false;
+  if(!signedIn() || !window.PMAuth || !PMAuth.sb) return;
+  try{
+    const {data, error} = await PMAuth.sb.rpc('can_approve_any');
+    CAN_APPROVE = !error && !!data;
+  }catch(e){}
+}
+async function loadDepartments(){
+  if(DEPARTMENTS.length) return DEPARTMENTS;
+  try{
+    const {data} = await PMAuth.sb.from('departments').select('*').order('sort');
+    DEPARTMENTS = data || [];
+  }catch(e){ DEPARTMENTS = []; }
+  return DEPARTMENTS;
+}
+// The phone is never sent: submit_signup reads it from the token, so a form
+// cannot apply on somebody else's behalf.
+async function submitSignup(payload){
+  const {data, error} = await PMAuth.sb.rpc('submit_signup', {payload});
+  if(error) throw new Error(error.message || 'Could not send that just now.');
+  await loadSignupStatus();
+  return data;
+}
+async function loadApprovals(){
+  // The view filters itself to what this caller may act on, so there is no
+  // second place for that rule to drift out of step.
+  const {data, error} = await PMAuth.sb.from('approval_queue').select('*').limit(120);
+  if(error) throw error;
+  return data || [];
+}
+async function decideSignup(id, ok, note){
+  const {data, error} = await PMAuth.sb.rpc('decide_signup',
+    {p_id:id, p_ok:!!ok, p_note:note||null});
+  if(error) throw new Error(error.message || 'Could not record that.');
+  return data;
+}
+async function loadNotifications(){
+  try{
+    const {data, error} = await PMAuth.sb.from('my_notifications').select('*').limit(40);
+    if(error) return [];
+    return data || [];
+  }catch(e){ return []; }
+}
+async function markNotificationsRead(ids){
+  if(!ids || !ids.length) return;
+  try{ await PMAuth.sb.rpc('mark_notifications_read', {p_ids:ids}); }catch(e){}
 }
 async function loadRatings(){
   try{
@@ -675,6 +749,9 @@ return {
   SORTS, sortList, pricedFirst, CAT_FIRST, BRAND_FIRST,
   refreshSession, get SESS(){return SESS},
   signedIn, isEndCustomer, isOffice, isDealer, canOrder, roleLabel, sessionSettled,
+  get SIGNUP(){return SIGNUP}, get CAN_APPROVE(){return CAN_APPROVE},
+  loadSignupStatus, loadDepartments, get DEPARTMENTS(){return DEPARTMENTS},
+  submitSignup, loadApprovals, decideSignup, loadNotifications, markNotificationsRead,
   get RATINGS(){return RATINGS}, get NOTICES(){return NOTICES},
   get SHOP_INFO(){return SHOP_INFO}, offerFor,
   loadSaved, toggleSaved, isSaved, savedProducts,
