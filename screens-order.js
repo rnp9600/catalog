@@ -44,7 +44,7 @@ function drawCart(){
                                    : 'Orders go through your shop',
           PM.isOffice() ? 'Open the order book to see what dealers have sent in.'
                         : 'Ask your shop for anything you have saved — they order for you.',
-          PM.isOffice() ? '<a class="btn btn-primary" href="../orders.html">Open the order book</a>'
+          PM.isOffice() ? '<a class="btn btn-primary" href="orders.html">Open the order book</a>'
                         : '<a class="btn btn-primary" href="#/saved">See what you saved</a>')
       : empty('bag','Sign in to build an order',
           'Trade rates and the order pad are for dealer accounts. Sign in with your phone number.',
@@ -336,10 +336,10 @@ PM.route('/orders', function(){
   if(PM.isOffice()){
     view().innerHTML =
       '<div class="menulist" style="margin-top:14px">'+
-      '<a class="menurow" href="../orders.html">'+icon('receipt')+
+      '<a class="menurow" href="orders.html">'+icon('receipt')+
         '<div class="grow"><b>The order book</b><small>Every order that came in</small></div>'+
         '<span class="chev">'+icon('chev')+'</span></a>'+
-      '<a class="menurow" href="../admin.html">'+icon('edit')+
+      '<a class="menurow" href="admin.html">'+icon('edit')+
         '<div class="grow"><b>Admin panel</b><small>Rates, photos, stock</small></div>'+
         '<span class="chev">'+icon('chev')+'</span></a>'+
       '</div>';

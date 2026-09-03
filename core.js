@@ -5,14 +5,13 @@
    hung off one global, PM, because this app has no bundler and adding
    one would mean nobody but a developer could ship a change.
 
-   Shared with V3 on purpose:
-     ../data.json      one catalogue, one file, no copy to keep in step
-     ../images/**      including the generated thumbnails
-     ../config.js      firm details, WhatsApp number, promo strips
-     ../supabase-auth.js   phone OTP, the allowlist row, the build number
-     localStorage keys the two versions genuinely share (saved list,
-     recently viewed, the order in progress) so a dealer can move
-     between /v4/ and / mid-order and lose nothing.
+   Shared with the archived V3 at /v3/ and with the four office panels:
+     data.json         one catalogue, one file, no copy to keep in step
+     images/**         including the generated thumbnails
+     config.js         firm details, WhatsApp number, promo strips
+     supabase-auth.js  phone OTP, the allowlist row, the build number
+     localStorage keys both versions read (saved list, recently viewed,
+     the order in progress), so nothing was lost when V4 took the root.
    ------------------------------------------------------------------ */
 window.PM = (function(){
 'use strict';
@@ -36,8 +35,8 @@ const plural = (n,one,many) => n===1 ? one : (many||one+'s');
    one falls back to the full JPEG at runtime rather than showing the
    browser's broken-image icon — a <picture> element does NOT fall back
    on a 404, which is how V3 shipped 900 broken thumbnails once. */
-const IMG   = n => n ? '../images/'+n+'.jpg' : '';
-const THUMB = n => n ? '../images/thumb/'+n+'.webp' : '';
+const IMG   = n => n ? 'images/'+n+'.jpg' : '';
+const THUMB = n => n ? 'images/thumb/'+n+'.webp' : '';
 window.pmImgFallback = function(img){
   img.onerror = null;                       // one retry, never a loop
   const full = img.getAttribute('data-full');
@@ -62,7 +61,7 @@ const bySlug = s => BY_SLUG[s] || null;
 const live = () => P.filter(p => !p.hidden);
 
 async function loadCatalogue(){
-  const r = await fetch('../data.json', {cache:'no-cache'});
+  const r = await fetch('data.json', {cache:'no-cache'});
   if(!r.ok) throw new Error('data.json '+r.status);
   P = await r.json();
   indexProducts();

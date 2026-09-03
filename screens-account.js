@@ -253,13 +253,13 @@ PM.route('/account', function(){
     '</div>'+
 
     (PM.isOffice() ? '<div class="menulist" style="margin-top:14px">'+
-      row('receipt','Order book','Every order that came in','../orders.html')+
-      row('edit','Admin panel','Rates, photos, stock and people','../admin.html')+
+      row('receipt','Order book','Every order that came in','orders.html')+
+      row('edit','Admin panel','Rates, photos, stock and people','admin.html')+
       '</div>' : '')+
 
     (PM.isDealer() ? '<div class="menulist" style="margin-top:14px">'+
-      row('tag','Your shop screen','Offers you show your own customers','../shop.html')+
-      row('repeat','Exchange','Stock other dealers are offering','../exchange.html')+
+      row('tag','Your shop screen','Offers you show your own customers','shop.html')+
+      row('repeat','Exchange','Stock other dealers are offering','exchange.html')+
       '</div>' : '')+
 
     '<div class="menulist" style="margin-top:14px">'+
@@ -430,7 +430,7 @@ PM.route('/settings', function(){
           '<button class="btn btn-secondary btn-sm" id="setRefresh">Refresh</button></div>'+
         '<div class="setrow"><div class="grow"><b>Version</b>'+
           '<small>v4 · build '+(window.PMAuth?PMAuth.BUILD:'?')+'</small></div>'+
-          '<a class="btn btn-quiet btn-sm" href="../index.html">Old catalogue</a></div>'+
+          '<a class="btn btn-quiet btn-sm" href="v3/index.html">Old catalogue</a></div>'+
       '</div></section>'+
 
     '<p class="tiny muted" style="text-align:center;margin-top:16px;line-height:1.6">'+

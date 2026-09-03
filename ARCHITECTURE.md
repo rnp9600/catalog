@@ -1,9 +1,10 @@
-# V4 — the catalogue as a shop
+# The app — V4, the catalogue as a shop
 
-V3 is a catalogue with an order pad bolted on: one 4,800-line HTML file
-where every screen is an overlay drawn on top of one long product grid.
-It works, and it is still what `/` serves. But it had a failure that no
-amount of patching fixes, and that failure is why this folder exists.
+This is what `/` serves. Before it, V3 was a catalogue with an order pad
+bolted on: one 4,800-line HTML file where every screen was an overlay
+drawn on top of one long product grid. It worked, and it is archived at
+`/v3/`. But it had a failure that no amount of patching fixes, and that
+failure is why V4 exists.
 
 ## The bug that started it
 
@@ -23,10 +24,10 @@ sheet did not add one. So the phone's Back button and the edge-swipe
 gesture had nothing to go back to and did the only thing left: they left
 the site.
 
-V3 has since been given a router that pushes a history entry for each of
-its overlays, and that fixes the reported case. But it is a router
+V3 was given a router that pushes a history entry for each of its
+overlays, and that fixed the reported case. But it was a router
 retrofitted onto twelve overlays that were each written assuming they
-were the only thing on screen, and every new overlay is a chance to
+were the only thing on screen, and every new overlay was a chance to
 forget. The durable fix is for a screen to *be* a screen.
 
 ## What V4 is
@@ -41,18 +42,19 @@ Mobile first, because essentially every customer is on a phone: a bottom
 tab bar within thumb reach, sheets that rise from the bottom, safe-area
 insets honoured, and a 44px floor on anything you press.
 
-## What it shares with V3
+## What it shares
 
-Nothing important is duplicated. V4 reads:
+Nothing important is duplicated. The app, the archived V3 at `/v3/` and
+the four office panels all read the same:
 
 | | |
 |---|---|
-| `../data.json` | the 743 products — one catalogue, not a copy to keep in step |
-| `../images/**` | photos and the generated 300px WebP thumbnails |
-| `../config.js` | firm details, WhatsApp number, promo strips |
-| `../supabase-auth.js` | phone OTP, the allowlist row, the build number |
+| `data.json` | the 743 products — one catalogue, not a copy to keep in step |
+| `images/**` | photos and the generated 300px WebP thumbnails |
+| `config.js` | firm details, WhatsApp number, promo strips |
+| `supabase-auth.js` | phone OTP, the allowlist row, the build number |
 | Supabase | the same tables, policies and RPCs — no schema change at all |
-| `localStorage` | the saved list, recently viewed and the order in progress use **V3's keys**, so a dealer can move between `/` and `/v4/` mid-order and lose nothing |
+| `localStorage` | the saved list, recently viewed and the order in progress use **V3's keys**, so nothing was lost when V4 took the root |
 
 Shared product links stay on `/p/:slug`, which Vercel rewrites to the API
 route that renders the WhatsApp preview card. V4 accepts that link, and
@@ -65,12 +67,19 @@ index.html            the shell: header, view, tab bar, print styles
 app.css               the whole design system, in reading order
 core.js               data, price, search, cart, session, router
 ui.js                 icons, product card, stepper, sheet, toast, bars
-screens-browse.js     home, shop, category, search, product, saved
+screens-browse.js     home, shop, category, search, product, saved, promo
 screens-order.js      cart, checkout, placed, orders, order, repeat
 screens-account.js    sign in, account, settings, help
-sw.js                 the service worker
+sw.js                 the service worker (scope /)
 manifest.webmanifest  installable app metadata
+v3/                   the archived previous build, with its own sw and manifest
 ```
+
+Two service workers live on this origin and must never fight. The root
+one caches under `pm-v4-<build>` and sweeps its own family plus the
+legacy `pm-v<build>` names the pre-V4 root left behind; `/v3/`'s caches
+under `pm-v3-<build>` and sweeps only that. Verified by upgrading a
+browser that had the old root caches: legacy gone, archive untouched.
 
 Eight files instead of one. No bundler and no `package.json`: the whole
 point of this repo is that a person who is not a developer can open a
@@ -82,6 +91,7 @@ page. A build step would end that.
 | Module | Where | Notes |
 |---|---|---|
 | Home | `#/` | search, notices, promo hero, categories, **buy again**, featured, recently viewed |
+| Promo | `#/promo/:id` | one config.js strip, matched on all five of its rules |
 | Catalogue | `#/shop`, `#/shop/:cat` | categories → sub-groups → grid, with sort |
 | Search | `#/search?q=` | typo-tolerant, live suggestions, recent searches, popular groups |
 | Product | `#/product/:slug` | swipe gallery, role-aware price, size rows with steppers, specs, ratings, share, related |
@@ -148,7 +158,7 @@ in `sw.js`, not an omission.
 
 ```
 python3 -m http.server 8000     # from the repo root
-# then open http://localhost:8000/v4/
+# then open http://localhost:8000/
 ```
 
 Test numbers are on the five accounts documented in the root README, PIN
@@ -159,7 +169,7 @@ read-only view, a stepper, and a shop price respectively.
 Worth checking by hand on a phone, because these are the things that
 were wrong before:
 
-1. Open `/v4/?p=paxton-ci-cast-iron-dosa-tawa` cold. Press Back. You
+1. Open `/?p=paxton-ci-cast-iron-dosa-tawa` cold. Press Back. You
    should land on the catalogue, not out of the browser.
 2. Product → product → cart → Back → Back → Back. Each step should
    retrace, and the last should be home.
@@ -188,15 +198,9 @@ having to clear a browser.
 
 ## Where this is going
 
-V4 lives at `/v4/` while it is being tried, exactly as `/v2/` did before
-it. Nothing at `/` changes, so a bad day here costs nothing.
-
-When it has been used for real — a few orders placed, a few dealers
-asked — promoting it is a folder move plus a redirect: `/v4/*` becomes
-`/`, today's root becomes `/v3/`, and `vercel.json` gains the redirect
-pair that `/v2` and `/v3` already have. The relative paths (`../data.json`,
-`../images`) are the only thing that changes, and they change in one
-place each.
+V4 was tried at `/v4/` and is now the root. The previous build moved to
+`/v3/`, `/v2/` was retired, and `/v4/…` redirects here so links from the
+trial still land in the right place.
 
 Not built yet, and deliberately:
 
