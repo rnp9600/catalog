@@ -399,6 +399,39 @@ One shape, in every view:
 - **The action row is pinned to the foot** (`margin-top:auto`), so every card in
   a row is the same height and every button lines up.
 
+## The back button
+
+A customer opened a shared product link from WhatsApp, wanted to see the rest of
+the catalogue, and pressed Back. **The browser closed.**
+
+Every screen here is an overlay over one page, and opening one used
+`history.replaceState` — so no history entry was ever created. Arriving on
+`/p/<slug>` in a fresh tab, that product *was* the first entry: Back had nowhere
+to go but out of the site, and a phone's edge-swipe is the same gesture. There
+was no way to reach the catalogue without spotting the small × in the corner.
+
+Two things fix it, in `VIEWS` near the top of the sheet code:
+
+1. **Opening a screen pushes a history entry and Back pops it.** The ×, the
+   backdrop and Escape all go through `dismissView()`, which calls
+   `history.back()` — so closing by tap, by key and by swipe are the same
+   operation and the URL never disagrees with the screen.
+2. **Landing directly on a product seeds the catalogue underneath it first.**
+   Back then lands on the catalogue, and only a second Back leaves the site.
+
+Reopening the *same* screen replaces rather than stacks, so Back never walks
+through six copies of one product — but moving from one product to another
+pushes, because that is a journey and Back should retrace it.
+
+**Adding a screen? Give it an entry in `VIEWS` and it inherits all of this.**
+
+## Adding to the order from inside a product
+
+The floating basket is `z-index:150` and an open sheet is `200`, so adding to
+your order from inside a product put the confirmation *behind* the thing you
+were looking at. The sheet has its own bar stuck to the bottom of it instead —
+count, total, and a way through to the order.
+
 ## The bottom of the screen
 
 Three things live down there — the basket, the "a new version is ready" strip

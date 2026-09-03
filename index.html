@@ -374,6 +374,18 @@ body.v-compact .ph{font-size:.66rem}
 .sactions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
 .sactions .btn{flex:1 1 calc(50% - 4px);min-width:130px}
 .sactions .btn.wide{flex:1 1 100%}
+/* The floating basket is z-150 and an open sheet is z-200, so adding to your
+   order from inside a product put the confirmation behind the thing you were
+   looking at. The sheet gets its own bar instead — stuck to the bottom of the
+   sheet, inside it, where the thumb already is. */
+.sheetcart{position:sticky;bottom:0;z-index:5;margin:14px -16px -16px;padding:12px 16px;
+ background:var(--sf);border-top:1px solid var(--bd);
+ display:flex;align-items:center;gap:10px;
+ box-shadow:0 -8px 24px rgba(var(--sh),.10)}
+.sheetcart[hidden]{display:none}
+.sheetcart .sc{flex:1;min-width:0;font-size:.78rem;color:var(--tm)}
+.sheetcart .sc b{display:block;font-size:.9rem;font-weight:800;color:var(--tx)}
+.sheetcart .btn{flex:0 0 auto}
 .snoteline{font-size:.74rem;color:var(--tm);margin-top:10px;line-height:1.55}
 .snoteline a{color:var(--pr);font-weight:700}
 .related{margin-top:24px}
@@ -1164,11 +1176,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 38</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 39</footer>
 
-<script src="config.js?v=38"></script>
+<script src="config.js?v=39"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=38"></script>
+<script src="supabase-auth.js?v=39"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1942,7 +1954,7 @@ function sheetNote(p, rows){
 }
 const ov=document.getElementById('ov'),sheet=document.getElementById('sheet');
 let CUR=null;
-function openSheet(p){
+function openSheet(p, silent){
   if(!p)return;
   CUR=p;
   const imgs=(p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[]));
@@ -2017,6 +2029,7 @@ function openSheet(p){
      ${p.note?`<div class="snote">ℹ️ ${p.note}</div>`:''}
      ${vt}
      <div id="sactWrap">${sheetActionsHtml(p)}</div>
+     <div class="sheetcart" id="sheetCart" hidden></div>
      <div class="revwrap" id="revwrap">
        <h4>What buyers say</h4>
        <div class="rsum" id="revSum">Loading reviews…</div>
@@ -2030,7 +2043,7 @@ function openSheet(p){
   // Reflect the open product in the address bar, so the browser's own share
   // and copy-link give a working product link too. replaceState, not pushState:
   // we don't want every related-product tap stacking up the back button.
-  try{history.replaceState(null,'','?p='+slugOf(p))}catch(e){}
+  pushView('product', {slug:p.slug||slugOf(p)}, '?p='+slugOf(p));
   document.getElementById('sxb').onclick=closeSheet;
   const hi=document.getElementById('hi');
   if(hi){document.getElementById('heroimg').onclick=()=>lbOpen(hi.src,p.name,p.brand+' · '+p.sub);}
@@ -2096,32 +2109,117 @@ function wireSheetActions(p){
   };
 }
 
-function closeSheet(){ov.classList.remove('open');document.body.style.overflow='';CUR=null;
-  try{history.replaceState(null,'',location.pathname)}catch(e){}}
-ov.addEventListener('click',closeSheet);
+function closeSheet(){
+  ov.classList.remove('open');document.body.style.overflow='';CUR=null;
+  // Only rewrite the URL when we are not mid-navigation; popstate has already
+  // set it to whatever it is going back to.
+  if(!NAV){ try{history.replaceState({pm:'home'},'',location.pathname)}catch(e){} }
+}
+ov.addEventListener('click',()=>dismissView('product'));
+
+/* ---------- the back button ----------
+
+   A customer opened a shared product link from WhatsApp, wanted to see the
+   rest of the catalogue, and pressed Back. The browser closed.
+
+   Why: every screen on this site is an overlay over one page, and opening one
+   used history.replaceState — so no history entry was ever created. Arriving
+   on /p/<slug> in a fresh tab, the entry for that product WAS the first entry.
+   Back from it had nowhere to go but out of the site, and a phone's edge-swipe
+   is the same gesture, so there was no way to browse without knowing to hunt
+   for the small × in the corner.
+
+   Two things fix it:
+
+   1. Opening a screen pushes a history entry, and Back pops it. The × and the
+      backdrop go through history.back() too, so tapping close and swiping back
+      are the same operation and the URL never disagrees with the screen.
+
+   2. Landing directly on a product seeds the catalogue underneath it first.
+      Back then lands on the catalogue — which is what that customer wanted —
+      and only a second Back leaves the site.
+
+   Add a screen? Give it an entry in VIEWS and it inherits all of this. */
+const VIEWS = {
+  product:  { close: ()=>closeSheet(),       open: st=>{ const p=bySlug(st.slug); if(p) openSheet(p,true); } },
+  order:    { close: ()=>closeOrderSheet(),  open: ()=>openOrderSheet(true) },
+  account:  { close: ()=>closeSignIn(),      open: ()=>openProfile(true) },
+  orders:   { close: ()=>closeSignIn(),      open: ()=>openMyOrders(true) },
+  repeat:   { close: ()=>closeSignIn(),      open: st=>orderAgain(st.ref,null,true) },
+  shops:    { close: ()=>closeSignIn(),      open: ()=>openShops(true) },
+  signin:   { close: ()=>closeSignIn(),      open: ()=>openSignIn(true) },
+  filters:  { close: ()=>closeFilterSheet(), open: ()=>openFilterSheet(true) },
+  settings: { close: ()=>closeSettings(),    open: ()=>openSettings(true) },
+  pdf:      { close: ()=>closePdfSheet(),    open: ()=>openPdfSheet(true) },
+  help:     { close: ()=>closeHelp(),        open: ()=>openHelp(true) },
+  photo:    { close: ()=>closeLb(),          open: ()=>{} },
+};
+const bySlug = sl => P.find(x=>String(x.slug||'')===String(sl));
+
+// Set while we are the ones driving history, so the open/close functions do
+// not push entries for a move that history has already made.
+let NAV=false;
+
+function closeAllViews(){
+  NAV=true;
+  try{ Object.keys(VIEWS).forEach(k=>{ try{ VIEWS[k].close(); }catch(e){} }); }
+  finally{ NAV=false; }
+}
+/* Called by every open* function. `silent` is true when we are restoring a
+   screen the history already knows about. */
+function pushView(name, data, url){
+  if(NAV) return;
+  const st=Object.assign({pm:name}, data||{});
+  try{
+    // Reopening the SAME thing replaces rather than stacks, so Back never has
+    // to walk through six copies of one product. Moving from one product to
+    // another still pushes, because that is a journey and Back should retrace
+    // it — same key, different value, is a different screen.
+    const cur=history.state;
+    const same = cur && cur.pm===name &&
+      Object.keys(st).every(k=>cur[k]===st[k]);
+    if(same) history.replaceState(st,'',url||location.href);
+    else history.pushState(st,'',url||location.href);
+  }catch(e){}
+}
+/* Every × and every backdrop tap comes through here rather than calling the
+   close function directly, so closing by tap and closing by Back are the same
+   operation. */
+function dismissView(name){
+  if(history.state && history.state.pm===name && !NAV){ history.back(); return; }
+  const v=VIEWS[name]; if(v){ NAV=true; try{ v.close(); } finally{ NAV=false; } }
+}
+window.addEventListener('popstate', function(e){
+  const st=e.state||{pm:'home'};
+  closeAllViews();
+  if(st.pm && st.pm!=='home' && VIEWS[st.pm]){
+    NAV=true;
+    try{ VIEWS[st.pm].open(st); } catch(err){} finally{ NAV=false; }
+  }
+});
 
 /* ---------- lightbox ---------- */
 const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg'),
       lbn=document.getElementById('lbn'),lbb=document.getElementById('lbb');
-function lbOpen(src,n,b){lbimg.src=src;lbn.textContent=n;lbb.textContent=b;lb.classList.add('open')}
+function lbOpen(src,n,b){lbimg.src=src;lbn.textContent=n;lbb.textContent=b;lb.classList.add('open');pushView('photo');}
 function closeLb(){lb.classList.remove('open')}
-lb.addEventListener('click',closeLb);
-document.getElementById('lbx').addEventListener('click',closeLb);
+lb.addEventListener('click',()=>dismissView('photo'));
+document.getElementById('lbx').addEventListener('click',()=>dismissView('photo'));
 
 /* ---------- filter sheet ---------- */
 const fov=document.getElementById('fov');
-function openFilterSheet(){fov.classList.add('open');document.body.style.overflow='hidden'}
+function openFilterSheet(silent){fov.classList.add('open');document.body.style.overflow='hidden';pushView('filters');}
 function closeFilterSheet(){fov.classList.remove('open');document.body.style.overflow=''}
 document.getElementById('filterBtn').addEventListener('click',openFilterSheet);
-document.getElementById('fxb').addEventListener('click',closeFilterSheet);
-fov.addEventListener('click',closeFilterSheet);
-document.getElementById('applyFiltersBtn').addEventListener('click',closeFilterSheet);
+document.getElementById('fxb').addEventListener('click',()=>dismissView('filters'));
+fov.addEventListener('click',()=>dismissView('filters'));
+document.getElementById('applyFiltersBtn').addEventListener('click',()=>dismissView('filters'));
 document.getElementById('clearFiltersBtn').addEventListener('click',()=>{
   fc='All';fs='All';fb='All';afterFilterChange();});
 
 /* ---------- settings sheet (view, theme, export) ---------- */
 const sov=document.getElementById('sov');
-function openSettings(){sov.classList.add('open');document.body.style.overflow='hidden'}
+function openSettings(silent){sov.classList.add('open');document.body.style.overflow='hidden';pushView('settings');}
 function closeSettings(){sov.classList.remove('open');document.body.style.overflow=''}
 document.getElementById('settingsBtn').addEventListener('click',function(){
   openSettings();
@@ -2136,16 +2234,18 @@ document.getElementById('settingsBtn').addEventListener('click',function(){
     if(row){ row.innerHTML='<h4>Your account</h4>'+menuSignHtml(); wireMenuSign(); }
   }catch(e){}
 });
-document.getElementById('sxbtn').addEventListener('click',closeSettings);
-sov.addEventListener('click',closeSettings);
+document.getElementById('sxbtn').addEventListener('click',()=>dismissView('settings'));
+sov.addEventListener('click',()=>dismissView('settings'));
 
+// Escape is the same door as Back and the same door as the ×, so all three
+// leave the URL and the screen agreeing with each other.
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
-  if(lb.classList.contains('open'))closeLb();
-  else if(document.getElementById('hov').classList.contains('open'))closeHelp();
-  else if(document.getElementById('pov').classList.contains('open'))closePdfSheet();
-  else if(fov.classList.contains('open'))closeFilterSheet();
-  else if(sov.classList.contains('open'))closeSettings();
-  else if(ov.classList.contains('open'))closeSheet();});
+  if(lb.classList.contains('open'))dismissView('photo');
+  else if(document.getElementById('hov').classList.contains('open'))dismissView('help');
+  else if(document.getElementById('pov').classList.contains('open'))dismissView('pdf');
+  else if(fov.classList.contains('open'))dismissView('filters');
+  else if(sov.classList.contains('open'))dismissView('settings');
+  else if(ov.classList.contains('open'))dismissView('product');});
 
 /* ---------- PDF export ---------- */
 /* Two layouts share one grouping engine.
@@ -2370,11 +2470,11 @@ function syncPdfControls(){
   document.getElementById('optMrp').checked=PDFO.mrp;
   document.getElementById('optThumb').checked=PDFO.thumb;
 }
-function openPdfSheet(){syncPdfControls();pdfRefresh();pov.classList.add('open');document.body.style.overflow='hidden'}
+function openPdfSheet(silent){syncPdfControls();pdfRefresh();pov.classList.add('open');document.body.style.overflow='hidden';pushView('pdf');}
 function closePdfSheet(){pov.classList.remove('open');document.body.style.overflow=''}
 document.getElementById('pdfBtn').addEventListener('click',openPdfSheet);
-document.getElementById('pxb').addEventListener('click',closePdfSheet);
-pov.addEventListener('click',closePdfSheet);
+document.getElementById('pxb').addEventListener('click',()=>dismissView('pdf'));
+pov.addEventListener('click',()=>dismissView('pdf'));
 document.querySelectorAll('#optLayout button').forEach(b=>b.onclick=()=>{
   PDFO.layout=b.dataset.v;
   document.querySelectorAll('#optLayout button').forEach(x=>x.classList.remove('on'));
@@ -2407,11 +2507,11 @@ document.getElementById('pdfGo').addEventListener('click',()=>{
    anyone to sign in. If storage is blocked entirely we just show the hint. */
 const HINT_KEY='v3_pm_hint_seen';
 const hov=document.getElementById('hov');
-function openHelp(){hov.classList.add('open');document.body.style.overflow='hidden'}
+function openHelp(silent){hov.classList.add('open');document.body.style.overflow='hidden';pushView('help');}
 function closeHelp(){hov.classList.remove('open');document.body.style.overflow=''}
 document.getElementById('helpBtn').addEventListener('click',openHelp);
-document.getElementById('hxb').addEventListener('click',closeHelp);
-hov.addEventListener('click',closeHelp);
+document.getElementById('hxb').addEventListener('click',()=>dismissView('help'));
+hov.addEventListener('click',()=>dismissView('help'));
 
 (function(){
   let seen=false;
@@ -2654,7 +2754,15 @@ fetch('data.json').then(r=>r.json()).then(d=>{P=d;
     const hit=P.find(x=>String(x.slug||'').toLowerCase()===low)
            ||P.find(x=>legacySlug(x)===low)
            ||P.find(x=>(x.code||'').toLowerCase()===low);
-    if(hit)openSheet(hit);
+    if(hit){
+      /* This is the fix for the customer who pressed Back and lost the site.
+         Landing straight on a product from WhatsApp, that product IS the first
+         entry in a fresh tab, so Back had nowhere to go but out. Put the
+         catalogue underneath it first: Back now lands on the catalogue, which
+         is what they were trying to reach, and only a second Back leaves. */
+      try{ history.replaceState({pm:'home'},'',location.pathname); }catch(e){}
+      openSheet(hit);
+    }
   }
 }).catch(()=>{g.innerHTML='<div class="empty"><strong>Could not load data.json</strong>Serve this folder over http, not by double-clicking index.html</div>';});
 
@@ -3018,7 +3126,9 @@ function openProfileIfAsked(){
   if(qs.get('profile')!=='1') return;
   qs.delete('profile');
   const rest=qs.toString();
-  try{ history.replaceState(null,'',location.pathname+(rest?'?'+rest:'')); }catch(e){}
+  // Same reasoning as a shared product link: the panels send people here, so
+  // Back should reach the catalogue rather than the panel they just left.
+  try{ history.replaceState({pm:'home'},'',location.pathname+(rest?'?'+rest:'')); }catch(e){}
   openProfile();
 }
 
@@ -3259,7 +3369,7 @@ function wireOrderLines(){
 }
 
 function wireOrderSheet(){
-  const x=document.getElementById('oxb'); if(x) x.onclick=closeOrderSheet;
+  const x=document.getElementById('oxb'); if(x) x.onclick=()=>dismissView('order');
   const nf=document.getElementById('ofName'), sf=document.getElementById('ofShop'), pf=document.getElementById('ofPhone');
   if(nf) nf.value = (SESS && SESS.name && SESS.name!=='Signed in') ? SESS.name : '';
   if(sf) sf.value = (SESS && SESS.shop) || '';
@@ -3319,11 +3429,12 @@ function wireAfterPlaced(items, meta, ref){
   if(done) done.onclick=function(){ closeOrderSheet(); };
 }
 function orderOverlay(){ return document.getElementById('oov'); }
-function openOrderSheet(){
+function openOrderSheet(silent){
   const ov2=orderOverlay();
   document.getElementById('osheet').innerHTML=orderSheetHtml();
   ov2.classList.add('open'); document.body.style.overflow='hidden';
   wireOrderSheet();
+  pushView('order');
   const again=document.getElementById('oAgain');
   if(again) again.onclick=function(){ closeOrderSheet(); openMyOrders(); };
 }
@@ -3332,6 +3443,24 @@ function closeOrderSheet(){
   if(!document.getElementById('ov').classList.contains('open')) document.body.style.overflow='';
 }
 // Wires the +/− steppers rendered inside the product sheet by openSheet().
+/* Kept in step by every path that changes a quantity, because the floating
+   basket is behind the sheet and this is the only confirmation the reader can
+   actually see from in here. */
+function drawSheetCart(){
+  const el=document.getElementById('sheetCart');
+  if(!el) return;
+  const n=basketCount();
+  if(!canOrder() || !n){ el.hidden=true; el.innerHTML=''; return; }
+  const items=orderItems();
+  const total=orderShowPrice()?orderTotal(items):null;
+  el.hidden=false;
+  el.innerHTML='<div class="sc"><b>'+n+' in your order</b>'+
+    (total!=null&&total>0?rupee(total):items.length+' line'+(items.length===1?'':'s'))+'</div>'+
+    '<button class="btn primary" id="scGo">View order</button>';
+  const go=document.getElementById('scGo');
+  if(go) go.onclick=()=>openOrderSheet();
+}
+
 function wireOrderStepper(p){
   const root=sheet;
   function paint(){
@@ -3339,6 +3468,7 @@ function wireOrderStepper(p){
       el.textContent = qtyFor(p.slug, el.dataset.qv);
     });
     root.querySelectorAll('[data-qm]').forEach(el=>{ el.disabled = qtyFor(p.slug, el.dataset.qm)<=0; });
+    drawSheetCart();   // the only basket the reader can see from in here
   }
   root.querySelectorAll('[data-qp]').forEach(btn=>btn.onclick=function(e){
     e.stopPropagation();
@@ -3355,7 +3485,7 @@ function wireOrderStepper(p){
   paint();
 }
 const _obarBtn=document.getElementById('obar'); if(_obarBtn) _obarBtn.onclick=openOrderSheet;
-const _oov=document.getElementById('oov'); if(_oov) _oov.addEventListener('click', closeOrderSheet);
+const _oov=document.getElementById('oov'); if(_oov) _oov.addEventListener('click', ()=>dismissView('order'));
 obarRender();
 function span(nums){ const a=nums.filter(x=>x!=null); if(!a.length)return null;
   const lo=Math.min(...a),hi=Math.max(...a); return {lo,hi,one:lo===hi}; }
@@ -3441,7 +3571,7 @@ function signOverlay(){
   }
   return ov2;
 }
-function openSignIn(){
+function openSignIn(silent){
   // Signed in there is nothing to sign in to — that tap means "my account",
   // which is one screen, openProfile().
   if(signedIn()) return openProfile();
@@ -3449,6 +3579,7 @@ function openSignIn(){
   document.getElementById('sgnSheet').innerHTML =
     PENDING_PHONE ? otpHtml(PENDING_PHONE) : signInHtml();
   ov2.classList.add('open'); document.body.style.overflow='hidden';
+  pushView('signin');
   if(PENDING_PHONE) wireOtpStep(); else wireSignIn();
   const sv=document.getElementById('sov'); if(sv) sv.classList.remove('open');
   const f=document.getElementById(PENDING_PHONE?'sgnOtp':'sgnPh'); if(f) setTimeout(()=>f.focus(),120);
@@ -3613,7 +3744,7 @@ function wireAccountExtras(){
 }
 function wireSignIn(){
   const x=document.getElementById('sgnX');
-  if(x) x.onclick=closeSignIn;
+  if(x) x.onclick=dismissSign;
   const go=document.getElementById('sgnGo');
   const inp=document.getElementById('sgnPh'), echo=document.getElementById('sgnEcho');
   if(inp) inp.oninput=function(){
@@ -3673,7 +3804,7 @@ function wireSignIn(){
     const f=document.getElementById('sgnOtp'); if(f) setTimeout(()=>f.focus(),120);
   };
   const skip=document.getElementById('sgnSkip');
-  if(skip) skip.onclick=closeSignIn;
+  if(skip) skip.onclick=dismissSign;
 }
 
 /* ---------- reviews on the open product ---------- */
@@ -3770,7 +3901,7 @@ function renderReviewForm(p){
 // listed is a decision somebody made rather than a side effect of being on
 // the allowlist. Wholesalers are not consumer-facing and never appear.
 let DIRECTORY=[];
-function openShops(){
+function openShops(silent){
   // signOverlay() builds the sheet on first use — openShops can be the first
   // thing a new consumer taps, before the sign-in panel has ever been opened.
   const ov2=signOverlay();
@@ -3778,6 +3909,7 @@ function openShops(){
   if(!sh) return;
   sh.innerHTML=shopsHtml();
   ov2.classList.add('open'); document.body.style.overflow='hidden';
+  pushView('shops');
   wireShops();
   loadDirectory();
 }
@@ -3860,7 +3992,7 @@ async function loadDirectory_refresh(){
   drawDirectory();
 }
 function wireShops(){
-  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  const x=document.getElementById('sgnX'); if(x) x.onclick=dismissSign;
   const c=document.getElementById('shopCity'); if(c) c.oninput=drawDirectory;
 }
 
@@ -3885,7 +4017,7 @@ const OSAID={new:'Received',confirmed:'Confirmed',packed:'Packed',
              sent:'On its way',completed:'Delivered',cancelled:'Cancelled'};
 let MYORDERS=[], MYITEMS={};
 
-function openMyOrders(){
+function openMyOrders(silent){
   const ov2=signOverlay();
   const sh=document.getElementById('sgnSheet'); if(!sh) return;
   sh.innerHTML=
@@ -3897,7 +4029,8 @@ function openMyOrders(){
    '<div id="myOrders"><p style="font-size:.8rem;color:var(--tm)">Loading your orders…</p></div>'+
    '</div></div>';
   ov2.classList.add('open'); document.body.style.overflow='hidden';
-  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  pushView('orders');
+  const x=document.getElementById('sgnX'); if(x) x.onclick=dismissSign;
   loadMyOrders();
 }
 
@@ -4018,14 +4151,15 @@ async function orderAgain(ref, btn){
   openRepeatSheet();
 }
 
-function openRepeatSheet(){
+function openRepeatSheet(silent){
   const ov2=signOverlay();
   const sh=document.getElementById('sgnSheet'); if(!sh) return;
   sh.innerHTML=
    '<div class="shead"><strong>Order again</strong><button class="sx" id="sgnX">×</button></div>'+
    '<div class="sbody"><div class="sgn" id="repWrap"></div></div>';
   ov2.classList.add('open'); document.body.style.overflow='hidden';
-  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  pushView('repeat',{ref:REPEAT.ref});
+  const x=document.getElementById('sgnX'); if(x) x.onclick=()=>dismissView('repeat');
   drawRepeat();
 }
 
@@ -4100,7 +4234,7 @@ function addRepeatToBasket(){
   toastMsg(live.length+' item'+(live.length===1?'':'s')+' added to your order');
 }
 
-function openProfile(){
+function openProfile(silent){
   const ov2=signOverlay();
   const sh=document.getElementById('sgnSheet'); if(!sh) return;
   const trade=!isEndCustomer();
@@ -4145,7 +4279,8 @@ function openProfile(){
    accountExtrasHtml()+
    '</div></div>';
   ov2.classList.add('open'); document.body.style.overflow='hidden';
-  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  pushView('account');
+  const x=document.getElementById('sgnX'); if(x) x.onclick=dismissSign;
   wirePhoto(); wireAccountExtras();
   document.getElementById('pfSave').onclick=async function(){
     const msg=document.getElementById('sgnMsg');
@@ -4259,7 +4394,7 @@ function signupHtml(phoneDigits){
    '<div class="sgnmsg" id="sgnMsg"></div></div></div>';
 }
 function wireSignup(){
-  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  const x=document.getElementById('sgnX'); if(x) x.onclick=dismissSign;
   const go=document.getElementById('suGo');
   if(!go) return;
   go.onclick=async function(){
@@ -4281,7 +4416,7 @@ function wireSignup(){
   };
 }
 function wireOtpStep(){
-  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  const x=document.getElementById('sgnX'); if(x) x.onclick=dismissSign;
   const back=document.getElementById('sgnBack');
   if(back) back.onclick=function(){
     PENDING_PHONE=null;
@@ -4334,6 +4469,13 @@ function wireOtpStep(){
              :SESS.role==='staff'?'Signed in — office access'
              :'Signed in as '+SESS.name);
   };
+}
+/* The account, orders, repeat, shops and sign-in screens all share one
+   overlay, so the × asks history which of them is actually open. */
+function dismissSign(){
+  const st=history.state&&history.state.pm;
+  if(st && VIEWS[st] && VIEWS[st].close===VIEWS.account.close) return dismissView(st);
+  dismissView('account');
 }
 function closeSignIn(){
   const ov2=document.getElementById('sgnOv');
@@ -4548,7 +4690,7 @@ function enhanceGallery(){
 const _openSheet = openSheet;
 openSheet = function(p){
   _openSheet(p);
-  try{ repriceSheet(); enhanceGallery(); wireOrderStepper(p); }catch(e){}
+  try{ repriceSheet(); enhanceGallery(); wireOrderStepper(p); drawSheetCart(); }catch(e){}
 };
 
 markWho(); retailMark(); refreshSession();
