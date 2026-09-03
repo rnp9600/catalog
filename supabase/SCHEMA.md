@@ -106,8 +106,12 @@ with no date is a dump nobody trusts.
 |---|---|---|
 | `01_schema.sql` | The original four tables. History only — **not** the live schema | no |
 | `02_seed.sql` | Sample rows for a fresh project | only on a fresh project |
-| `03_events.sql` | The search/event log. Until it runs, nothing is logged | **yes** |
-| `04_product_unit.sql` | `products.unit` and `products.moq` for single-line products | **yes** |
+| `03_events.sql` | The search/event log | ✅ applied 2026-09-03 |
+| `04_product_unit.sql` | `products.unit` / `products.moq`, and the RPC that writes them | ✅ applied 2026-09-03 |
+
+Both were applied as Supabase migrations (`events_log_reshape_and_searches_view`
+and `products_unit_and_moq`), so `supabase migration list` is the authority on
+what has run. The files are the explanation; the migrations are the record.
 
 ## Keeping it honest
 
