@@ -142,25 +142,32 @@ h1{font-size:1.85rem;font-weight:800;letter-spacing:-.028em;line-height:1.1;marg
  display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 .savetog.on{background:var(--pr);border-color:var(--pr);color:#fff}
 .savetog[hidden]{display:none}
-/* The save control sits beside the button, not on the photo — see saveDot().
-   38px so it is a real touch target, and clearly separate from the card. */
-.cardact{display:flex;gap:6px;align-items:stretch;margin-top:8px}
+/* The action row is pinned to the foot of the card, so buttons line up across
+   a row whatever length the names above them ran to. */
+.cardact{display:flex;gap:6px;align-items:stretch;margin-top:auto;padding-top:4px}
 .cardact .cta{margin-top:0;flex:1;width:auto}
-.savedot{flex:0 0 auto;width:38px;border-radius:var(--rs);
- border:1.5px solid var(--bd);background:var(--sf);color:var(--tm);font-size:.95rem;line-height:1;
- cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+
+/* The save control is the only thing on the photo, top-left, on a solid pill
+   so it stays legible over a dark pan or a white background alike. It sat
+   top-right for a while, which is where the FEATURED badge was — they drew on
+   top of each other and read as "FEATU♥". Now the badges are below the photo
+   and this corner is its own. */
+.savedot{position:absolute;top:8px;left:8px;z-index:3;width:34px;height:34px;border-radius:50%;
+ border:1px solid var(--bd);background:var(--sf);color:var(--tm);
+ font-size:.95rem;line-height:1;cursor:pointer;padding:0;
+ display:flex;align-items:center;justify-content:center;
+ box-shadow:0 2px 8px rgba(var(--sh),.14);transition:transform .12s,background .15s}
 .savedot.on{background:var(--pr);border-color:var(--pr);color:#fff}
-.savedot:active{transform:scale(.94)}
+.savedot:active{transform:scale(.9)}
 /* List view lays the card out on a grid, so the pair has to take the cell the
    button used to hold. */
-body.v-list .cardact{grid-column:4;grid-row:1/4;align-self:center;margin-top:0}
-/* Compact hides the button, so the heart is the only thing in the row — put
-   it on the right, small, under the price. This is the view most people leave
-   the site on, so losing the ability to save from it was not an option; what
-   had to go was the heart sitting on the photo, where a 118px-tall image and a
-   146px card made catching it by accident almost the default. */
-body.v-compact .cardact{display:flex;justify-content:flex-end;margin-top:6px}
-body.v-compact .savedot{width:34px;height:30px;font-size:.85rem}
+body.v-list .cardact{grid-column:4;grid-row:1/5;align-self:center;margin-top:0;padding-top:0}
+/* Compact drops the button entirely — the whole card is the tap target there —
+   so there is no action row to reserve space for. The heart stays on the photo
+   like every other view; a bit smaller because the card is. */
+body.v-compact .cardact{display:none}
+body.v-compact .savedot{width:30px;height:30px;font-size:.85rem;top:6px;left:6px}
+body.v-compact .cardtags{display:none}
 
 /* ---------- Your orders ---------- */
 .ocard{border:1px solid var(--bd);border-radius:var(--rs);padding:11px 12px;margin-bottom:9px;background:var(--sf)}
@@ -197,15 +204,25 @@ body.v-compact .savedot{width:34px;height:30px;font-size:.85rem}
 .card:hover .med img{transform:scale(1.05)}
 .noimg{color:#c9c9c9;font-size:2rem;font-weight:800;font-family:var(--fm)}
 .card.out .med{filter:grayscale(1);opacity:.45}
-.bg{position:absolute;font-size:.57rem;font-weight:700;letter-spacing:.04em;padding:4px 8px;border-radius:999px;text-transform:uppercase;z-index:2}
-.bg.tl{top:8px;left:8px}.bg.tr{top:8px;right:8px}
-.bg.ft{background:var(--ac);color:#fff}
-.bg.ht{background:#fff;color:var(--pr);border:1px solid var(--prt)}
-.bg.oos{background:#B4433B;color:#fff}
-.bg.ct{background:#fff;color:var(--tm);border:1px solid var(--bd);font-family:var(--fm)}
-.bd_{padding:13px;display:flex;flex-direction:column;gap:5px;flex:1}
-.nm{font-size:.9rem;font-weight:700;line-height:1.3}
-.ds{font-size:.74rem;color:var(--tm);line-height:1.42}
+/* One chip, four meanings, under the photo instead of over it. */
+.cardtags{display:flex;gap:5px;flex-wrap:wrap}
+.ctag{font-family:var(--fd);font-size:.58rem;font-weight:800;letter-spacing:.05em;padding:3px 8px;
+ border-radius:999px;text-transform:uppercase;white-space:nowrap;line-height:1.55}
+.ctag.ft{background:var(--act);color:var(--ac)}
+.ctag.ht{background:var(--sf2);color:var(--pr)}
+.ctag.oos{background:#F6DEDC;color:#8C2F28}
+.ctag.ct{background:var(--sf2);color:var(--tm);font-family:var(--fm);letter-spacing:0;font-weight:600}
+
+/* Every card in a row is the same height and every button lines up, because
+   the action row is pushed to the bottom and the two blocks of text that can
+   run long are clamped. Before this a two-line name and a three-line name gave
+   two different card heights side by side, and the space left over collected
+   at the foot of the shorter one. */
+.bd_{padding:13px;display:flex;flex-direction:column;gap:6px;flex:1}
+.nm{font-size:.9rem;font-weight:700;line-height:1.3;
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ds{font-size:.74rem;color:var(--tm);line-height:1.42;
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .br{font-family:var(--fm);font-size:.59rem;font-weight:500;color:var(--tm);opacity:.8}
 .cd{font-family:var(--fm);font-size:.59rem;font-weight:600;color:var(--pr)}
 .sp{display:flex;gap:5px;flex-wrap:wrap;background:var(--sf2);border-radius:var(--rs);padding:6px 8px;
@@ -256,13 +273,17 @@ body.v-list .med{height:auto;width:150px;flex-shrink:0;border-bottom:0;border-ri
 body.v-list .bd_{padding:13px 16px;display:grid;
  grid-template-columns:minmax(220px,2.2fr) minmax(150px,1.6fr) minmax(110px,.9fr) 150px;
  gap:14px;align-items:center}
-body.v-list .nm{grid-column:1;font-size:.94rem}
-body.v-list .ds{grid-column:1;grid-row:2;margin-top:-8px}
-body.v-list .sp{grid-column:2;grid-row:1/3;align-self:center;margin:0}
-body.v-list .vcount{grid-column:2;grid-row:3;justify-self:start}
+/* The tag row is a new first child of .bd_, so the wide list layout has to
+   make room for it at the top of column one — otherwise it took row 1 and
+   pushed the product name below its own description. */
+body.v-list .cardtags{grid-column:1;grid-row:1}
+body.v-list .nm{grid-column:1;grid-row:2;font-size:.94rem}
+body.v-list .ds{grid-column:1;grid-row:3;margin-top:-8px}
+body.v-list .sp{grid-column:2;grid-row:1/4;align-self:center;margin:0}
+body.v-list .vcount{grid-column:2;grid-row:4;justify-self:start}
 body.v-list .szbtn,body.v-list .szlist,body.v-list .refnote{display:none}
-body.v-list .br{grid-column:1;grid-row:3;margin-top:-6px}
-body.v-list .pw{grid-column:3;grid-row:1/4;align-self:center;margin:0;padding:0;text-align:right}
+body.v-list .br{grid-column:1;grid-row:4;margin-top:-6px}
+body.v-list .pw{grid-column:3;grid-row:1/5;align-self:center;margin:0;padding:0;text-align:right}
 body.v-list .cta{margin:0;width:100%}
 body.v-list .card:hover{transform:none;box-shadow:0 4px 14px rgba(var(--sh),.1)}
 
@@ -473,6 +494,7 @@ footer{margin-top:36px;text-align:center;padding:18px 0;color:var(--tm);font-siz
      grid child. Without it here the wrapper kept grid-column:4 in a one-column
      grid, which forced an implicit fourth column and squeezed every product
      name down to one word per line. */
+  body.v-list .cardtags,body.v-list .nm,body.v-list .ds,body.v-list .br,
   body.v-list .sp,body.v-list .pw,body.v-list .cardact,body.v-list .vcount{
     grid-column:1;grid-row:auto;text-align:left}
   body.v-list .cardact{justify-content:flex-start}
@@ -556,13 +578,6 @@ body.m-off .reveal{opacity:1;transform:none}
 .signlink:hover{text-decoration:underline}
 
 /* profile button in the header */
-/* The order was only reachable through a bar that appeared once something was
-   in it, so a dealer had no way to see or open an empty order. */
-#cartBtn{position:relative}
-#cartBtn b{position:absolute;top:-3px;right:-3px;min-width:17px;height:17px;padding:0 4px;
- border-radius:999px;background:var(--ac);color:#fff;font-size:.6rem;font-weight:800;
- line-height:17px;text-align:center;display:none}
-#cartBtn b.on{display:block}
 #whoBtn{position:relative}
 #whoBtn.in::after{content:'';position:absolute;top:5px;right:5px;width:7px;height:7px;
  border-radius:50%;background:var(--ac);border:1.5px solid var(--sf)}
@@ -698,9 +713,20 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
 .qbtn:disabled{opacity:.35;cursor:default}
 .qv{font-family:var(--fm);font-size:.78rem;font-weight:700;min-width:16px;text-align:center}
 .singleAdd{display:flex;align-items:center;gap:10px;margin-top:10px}
-.obar{position:fixed;left:16px;bottom:16px;z-index:150;background:var(--tx);color:var(--bg);
- padding:10px 16px;border-radius:999px;font-size:.78rem;font-weight:700;cursor:pointer;
- box-shadow:0 8px 24px rgba(0,0,0,.25);display:none;align-items:center;gap:8px;border:0;font-family:var(--fd)}
+/* The basket floats bottom-right, which is where a thumb rests and where every
+   other app on the phone puts its one main action. It was bottom-left, over
+   the start of whatever row happened to be at the foot of the page. */
+.obar{position:fixed;right:16px;bottom:16px;z-index:150;background:var(--pr);color:#fff;
+ padding:13px 18px;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;
+ box-shadow:0 8px 26px rgba(var(--sh),.34);display:none;align-items:center;gap:9px;border:0;
+ font-family:var(--fd);min-height:52px;transition:transform .12s}
+.obar:active{transform:scale(.96)}
+.obar.empty{background:var(--sf);color:var(--tx);border:1.5px solid var(--bd);
+ box-shadow:0 4px 16px rgba(var(--sh),.14)}
+.obar.empty .n{background:var(--sf2);color:var(--tm)}
+.obar svg{flex-shrink:0}
+.obar .n{background:rgba(255,255,255,.22);border-radius:999px;padding:2px 8px;
+ font-family:var(--fm);font-size:.76rem;min-width:24px;text-align:center}
 .obar.on{display:flex}
 /* The basket pill floats over the page, so the page has to end above it —
    otherwise it sits on top of whatever the last row happens to be. */
@@ -879,13 +905,6 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
     <polyline points="7 10 12 15 17 10"/>
     <line x1="12" y1="15" x2="12" y2="3"/>
    </svg>
-  </button>
-  <button class="gearbtn" id="cartBtn" aria-label="Your order" title="Your order" style="display:none">
-   <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
-    <path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/>
-   </svg>
-   <b id="cartN"></b>
   </button>
   <button class="gearbtn" id="settingsBtn" aria-label="Menu" title="View & theme">
    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1081,17 +1100,17 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
 
 <div class="ov" id="oov"><div class="sheet" id="osheet" onclick="event.stopPropagation()"></div></div>
 
-<button class="obar" id="obar"><span id="obarTxt"></span></button>
+<button class="obar" id="obar" aria-label="Your order"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/></svg><span id="obarTxt">Your order</span><span class="n" id="obarN">0</span></button>
 
 <div class="lb" id="lb"><button class="lbx" id="lbx">×</button>
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 35</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 36</footer>
 
-<script src="config.js?v=35"></script>
+<script src="config.js?v=36"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=35"></script>
+<script src="supabase-auth.js?v=36"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -1466,11 +1485,21 @@ function saveDot(p){
     'title="'+(on?'Saved — tap to remove':'Save for later')+'">'+(on?'\u2665':'\u2661')+'</button>';
 }
 function card(p,i){
+  /* Badges used to be absolutely positioned ON the photo, top-left and
+     top-right. Three things were wrong with that: they covered the product,
+     which is the one thing the card exists to show; the top-right one ran off
+     the edge of a narrow card, so "FEATURED" read "FEATURE"; and both corners
+     were then occupied, leaving nowhere sensible for the save control.
+
+     They are a chip row under the photo now. The photo carries exactly one
+     overlay — the heart, top-left — and nothing else sits on top of a product
+     again. */
   const b=[];
-  if(p.stock==='out')b.push('<span class="bg tr oos">Out of stock</span>');
-  else if(p.feat)b.push('<span class="bg tr ft">Featured</span>');
-  if(p.hotel)b.push('<span class="bg tl ht">🏨 Hotel size</span>');
-  else if((p.imgs||[]).length>1)b.push(`<span class="bg tl ct">${p.imgs.length} photos</span>`);
+  if(p.stock==='out')b.push('<span class="ctag oos">Out of stock</span>');
+  else if(p.feat)b.push('<span class="ctag ft">Featured</span>');
+  if(p.hotel)b.push('<span class="ctag ht">Hotel size</span>');
+  else if((p.imgs||[]).length>1)b.push('<span class="ctag ct">'+p.imgs.length+' photos</span>');
+  const tags = b.length ? '<div class="cardtags">'+b.join('')+'</div>' : '';
   const nv=(p.variants||[]).length;
   const vc=nv>1?`<span class="vcount">${nv} sizes &amp; options</span>`:'';
   const sz=(!nv&&p.sizes&&p.sizes.length)
@@ -1482,14 +1511,16 @@ function card(p,i){
   const statusChip=isEndCustomer()&&shopOfferFor(p)&&shopOfferFor(p).status
     ?`<span class="statuschip ${shopOfferFor(p).status}">${STATUS_LABEL[shopOfferFor(p).status]||shopOfferFor(p).status}</span>`:'';
   return `<div class="card ${p.stock==='out'?'out':''}" data-open="${i}" style="animation-delay:${Math.min(i,14)*.028}s">
-   <div class="med">${b.join('')}${im}</div>
-   <div class="bd_"><div class="nm">${p.name}</div>
+   <div class="med">${im}${saveDot(p)}</div>
+   <div class="bd_">
+    ${tags}
+    <div class="nm">${p.name}</div>
     ${p.desc?`<div class="ds">${p.desc}</div>`:''}
     ${specHtml(p)}${vc}${sz}
     <span class="br">${p.brand}${p.code?' · <span class="cd">'+p.code+'</span>':''}</span>
     ${starsHtml(p.slug)}
     <div class="pw">${priceLine(p)}${statusChip}</div>
-    <div class="cardact">${cta}${saveDot(p)}</div></div></div>`;
+    <div class="cardact">${cta}</div></div></div>`;
 }
 
 let VIEW=[];
@@ -2664,21 +2695,21 @@ function setQty(slug,size,qty){
 }
 function basketCount(){ return BASKET.reduce((n,b)=>n+b.qty,0); }
 function obarRender(){
-  const cb=document.getElementById('cartBtn');
-  if(cb){
-    cb.style.display = canOrder() ? '' : 'none';
-    const n=basketCount(), tag=document.getElementById('cartN');
-    if(tag){ tag.textContent=n>99?'99+':n; tag.classList.toggle('on', n>0); }
-  }
   const b=document.getElementById('obar'); if(!b) return;
   // End customers browse, they don't order online — see V3-AMENDMENTS.md.
   // Nor does Patel Marketing's own side: an order they placed would be
   // addressed to themselves.
   if(!canOrder()){ b.classList.remove('on'); document.body.classList.remove('has-obar'); return; }
+
   const n=basketCount();
-  document.getElementById('obarTxt').innerHTML = '🧺 <b>'+n+'</b> in your order';
-  b.classList.toggle('on', n>0);
-  document.body.classList.toggle('has-obar', n>0);
+  document.getElementById('obarTxt').textContent = 'Your order';
+  document.getElementById('obarN').textContent = n>99 ? '99+' : n;
+  // Shown whenever this person can order, empty or not. The header used to
+  // carry a second cart for exactly this reason — so an empty order was still
+  // reachable — and two baskets on one screen is one too many.
+  b.classList.toggle('on', true);
+  b.classList.toggle('empty', n===0);
+  document.body.classList.add('has-obar');
 }
 // 130 products have no size rows and no rate — whole brands of them. They
 // could not be added to an order at all, which is backwards: not knowing the
@@ -2921,7 +2952,6 @@ function wireOrderStepper(p){
   paint();
 }
 const _obarBtn=document.getElementById('obar'); if(_obarBtn) _obarBtn.onclick=openOrderSheet;
-const _cartBtn=document.getElementById('cartBtn'); if(_cartBtn) _cartBtn.onclick=openOrderSheet;
 const _oov=document.getElementById('oov'); if(_oov) _oov.addEventListener('click', closeOrderSheet);
 obarRender();
 function span(nums){ const a=nums.filter(x=>x!=null); if(!a.length)return null;
