@@ -186,11 +186,8 @@ body.v-compact .cardtags{display:none}
 .oline .q{font-family:var(--fm);color:var(--tm);flex:0 0 34px}
 .oline .n{flex:1}
 .oline .p{font-family:var(--fm);color:var(--tm)}
-.obtns{display:flex;gap:7px;margin-top:9px}
-.obtn{flex:1;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);border-radius:var(--rs);
- padding:8px;font-family:var(--fd);font-weight:700;font-size:.74rem;cursor:pointer}
-.obtn.pri{background:var(--pr);border-color:var(--pr);color:#fff}
-.obtn:disabled{opacity:.6}
+.obtns{display:flex;gap:7px;margin-top:10px}
+.obtns .btn{flex:1}
 
 /* ---------- GRID (default) ---------- */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(226px,1fr));gap:15px}
@@ -706,9 +703,10 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
 
 /* ---------- v3: order pad (basket, stepper, checkout) ---------- */
 .vord{display:flex;align-items:center;justify-content:flex-end;gap:6px}
-.qbtn{width:24px;height:24px;border-radius:50%;border:1px solid var(--bd);background:var(--sf);
- color:var(--tx);font-size:.9rem;line-height:1;cursor:pointer;flex-shrink:0;display:flex;
- align-items:center;justify-content:center}
+.qbtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bd);background:var(--sf);
+ color:var(--tx);font-size:1rem;font-weight:700;line-height:1;cursor:pointer;flex-shrink:0;display:flex;
+ align-items:center;justify-content:center;padding:0}
+.qbtn:disabled{opacity:.4;cursor:default}
 .qbtn:hover{border-color:var(--pr);color:var(--pr)}
 .qbtn:disabled{opacity:.35;cursor:default}
 .qv{font-family:var(--fm);font-size:.78rem;font-weight:700;min-width:16px;text-align:center}
@@ -728,17 +726,28 @@ body.m-off .hero-img img.slideL,body.m-off .hero-img img.slideR{animation:none}
 .obar .n{background:rgba(255,255,255,.22);border-radius:999px;padding:2px 8px;
  font-family:var(--fm);font-size:.76rem;min-width:24px;text-align:center}
 .obar.on{display:flex}
-/* The basket pill floats over the page, so the page has to end above it —
-   otherwise it sits on top of whatever the last row happens to be. */
-body.has-obar{padding-bottom:104px}
+/* THE BOTTOM DOCK.
+
+   Three things live down here — the basket, the "new version" strip and the
+   toast — and each was positioned on its own. With the basket showing, the
+   update strip drew straight underneath it: "A new version of the catalogue is
+   ready" with its Reload button hidden behind the basket, both unreadable.
+
+   One variable settles it. --dock is the height the basket takes when it is
+   showing, and everything else at the bottom sits above that. */
+:root{--dock:0px;--swdock:0px}
+body.has-obar{--dock:68px;padding-bottom:104px}
+body.has-swbar{--swdock:72px}
 .obar b{font-family:var(--fm)}
 .orow2{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--bd)}
 .orow2:last-child{border-bottom:0}
 .orow2 .oi{flex:1;min-width:0}
 .orow2 .oi b{display:block;font-size:.85rem;font-weight:700;line-height:1.3}
 .orow2 .oi small{display:block;color:var(--tm);font-size:.7rem;font-family:var(--fm);margin-top:2px}
-.orow2 .orm{border:0;background:var(--sf2);color:var(--tm);width:26px;height:26px;border-radius:50%;
- font-size:1rem;line-height:1;cursor:pointer;flex-shrink:0}
+.orm{border:1px solid var(--bd);background:var(--sf);color:var(--tm);width:34px;height:34px;
+ border-radius:50%;font-size:1.05rem;line-height:1;cursor:pointer;flex-shrink:0;
+ display:flex;align-items:center;justify-content:center;padding:0}
+.orm:hover{border-color:#E7C4C0;color:#B3261E;background:#FDEDEB}
 .ototal{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;
  border-top:1.5px solid var(--bd);margin-top:6px;font-weight:800;font-size:.95rem}
 .ototal span{font-family:var(--fm)}
@@ -748,6 +757,20 @@ body.has-obar{padding-bottom:104px}
 .ofg input{width:100%;padding:11px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);
  background:var(--sf);font-family:var(--fd);font-size:.88rem;color:var(--tx)}
 .oempty{padding:30px 10px;text-align:center;color:var(--tm);font-size:.83rem}
+
+/* ---------- Order again, before it reaches the basket ---------- */
+.reprow{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--bd)}
+.reprow:last-of-type{border-bottom:0}
+.reprow .oi{flex:1;min-width:0}
+.reprow .oi b{display:block;font-size:.85rem;font-weight:700;line-height:1.3}
+.reprow .oi small{display:block;color:var(--tm);font-size:.7rem;font-family:var(--fm);margin-top:2px}
+.repqty{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.repqty b{font-family:var(--fm);font-size:.85rem;min-width:22px;text-align:center}
+.repqty .qbtn{width:30px;height:30px;font-size:1rem}
+.repgone{margin-top:14px;background:var(--sf2);border-radius:var(--rs);padding:11px 13px}
+.repgone b{display:block;font-size:.72rem;font-weight:800;text-transform:uppercase;
+ letter-spacing:.05em;color:var(--tm);margin-bottom:5px}
+.repgone span{display:block;font-size:.76rem;color:var(--tm);line-height:1.5;margin-top:3px}
 
 /* ---------- v3: end-customer mode ---------- */
 .campaign{margin:16px 0 2px;border-radius:var(--r);padding:16px 18px;
@@ -873,19 +896,22 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  font:inherit;font-weight:700;padding:0;cursor:pointer}
 /* Shown only when a new version is sitting waiting. Never automatic — see
    rule 4 in sw.js. */
-.swbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:120;display:none;
- align-items:center;gap:10px;padding:11px 13px;border-radius:var(--rs);
+.swbar{position:fixed;left:12px;right:12px;bottom:calc(12px + var(--dock));z-index:120;display:none;
+ align-items:center;gap:10px;padding:12px 14px;border-radius:var(--r);
  background:var(--pr);color:#fff;box-shadow:0 10px 30px rgba(var(--sh),.28);
- font-size:.8rem;font-weight:600}
+ font-size:.8rem;font-weight:600;flex-wrap:wrap}
 .swbar.on{display:flex}
-.swbar b{flex:1;font-weight:600}
-.swbar button{border:0;border-radius:999px;padding:7px 13px;font-family:var(--fd);
- font-weight:800;font-size:.76rem;cursor:pointer;background:#fff;color:var(--pr)}
-.swbar .later{background:transparent;color:#fff;text-decoration:underline;padding:7px 4px}
+.swbar b{flex:1 1 100%;font-weight:600;line-height:1.4}
+.swbar .btn{min-height:38px;padding:8px 16px;font-size:.78rem;
+ background:#fff;color:var(--pr);border-color:#fff}
+.swbar .btn:hover{filter:brightness(.96)}
+.swbar .later{margin-left:auto;border:0;background:transparent;color:#fff;
+ text-decoration:underline;font-family:var(--fd);font-weight:700;font-size:.78rem;
+ padding:8px 4px;cursor:pointer}
 </style></head><body data-theme="sky" class="v-grid">
 <div class="swbar" id="swbar" role="status">
   <b>A new version of the catalogue is ready.</b>
-  <button id="swGo">Reload</button>
+  <button class="btn" id="swGo">Reload</button>
   <button class="later" id="swLater">Later</button>
 </div>
 <header><div class="hin">
@@ -1039,7 +1065,7 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
     <div class="pwarn" id="pdfWarn" style="display:none"></div>
 
     <div class="sactions">
-      <button id="pdfGo">Generate PDF</button>
+      <button class="btn primary wide" id="pdfGo">Generate PDF</button>
     </div>
     <p class="oh" style="margin-top:10px">Opens your browser's print dialog — choose <strong>Save as PDF</strong> as the destination. Turn on "Headers and footers" there if you want page numbers.</p>
   </div>
@@ -1054,8 +1080,8 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
   <div class="fsection" id="subwrap" style="display:none"><h4>Type</h4><div class="filters" id="sf"></div></div>
   <div class="fsection"><h4>Brand</h4><div class="filters" id="bf"></div></div>
   <div class="sactions">
-   <button class="alt" id="clearFiltersBtn">Clear all</button>
-   <button id="applyFiltersBtn">Show results</button>
+   <button class="btn quiet" id="clearFiltersBtn">Clear all</button>
+   <button class="btn primary" id="applyFiltersBtn">Show results</button>
   </div>
  </div>
 </div></div>
@@ -1106,11 +1132,11 @@ textarea:focus-visible{outline:2.5px solid var(--ac);outline-offset:2px;border-r
  <div class="lbi" onclick="event.stopPropagation()"><img id="lbimg" src="" alt="">
  <div class="lbc"><strong id="lbn"></strong><span id="lbb"></span></div></div></div>
 
-<footer>Patel Marketing — wholesale kitchenware · build 36</footer>
+<footer>Patel Marketing — wholesale kitchenware · build 37</footer>
 
-<script src="config.js?v=36"></script>
+<script src="config.js?v=37"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="supabase-auth.js?v=36"></script>
+<script src="supabase-auth.js?v=37"></script>
 <script>
 /* ---- built-in settings ----------------------------------------------
    The catalogue works even if config.js is missing, stale or cached.
@@ -2796,28 +2822,37 @@ function orderSheetHtml(){
     '<div class="sbody"><div class="oempty">Nothing in your order yet. Open a product and use the '+
     '<b>+</b> next to a size to add it.</div>'+
     // An empty pad is exactly the moment someone wants last month's order back.
-    (canOrder()?'<button class="obtn pri" id="oAgain" style="width:100%;margin-top:14px">'+
-      'Repeat one of your past orders</button>':'')+
+    (canOrder()?'<button class="btn primary wide" id="oAgain" style="margin-top:14px">'+
+      '\u21bb Repeat a past order</button>':'')+
     '</div>';
   const showP=orderShowPrice();
+  // The pad could only remove a line. Changing "12" to "6" meant closing it,
+  // finding the product again and working the stepper there — the same detour
+  // that made repeating an order useless without editing.
   const rows=items.map((it,idx)=>{
     const u=orderUnitPrice(it);
+    const step=(it.moq&&it.moq>1)?it.moq:1;
     return '<div class="orow2"><div class="oi"><b>'+esc(it.name)+'</b><small>'+
-      (it.size&&it.size!=='Standard'?esc(it.size)+' · ':'')+it.qty+' '+unitAbbr(it.unit)+
-      (it.moq&&it.moq>1?' · in '+it.moq+'s':'')+
+      (it.size&&it.size!=='Standard'?esc(it.size)+' · ':'')+unitAbbr(it.unit)+
+      (step>1?' · in '+step+'s':'')+
       (showP ? (u!=null ? ' · ₹'+u+' = ₹'+(u*it.qty) : ' · rate on request') : '')+
       '</small></div>'+
+      '<div class="repqty">'+
+        '<button class="qbtn" data-oless="'+idx+'" aria-label="Fewer">−</button>'+
+        '<b>'+it.qty+'</b>'+
+        '<button class="qbtn" data-omore="'+idx+'" aria-label="More">+</button>'+
+      '</div>'+
       '<button class="orm" data-rm="'+idx+'" aria-label="Remove">×</button></div>';
   }).join('');
   const total=showP?'<div class="ototal"><span>Total</span><span>'+rupee(orderTotal(items))+'</span></div>':'';
   return '<div class="shead"><strong>Your order</strong><button class="sx" id="oxb">×</button></div>'+
-   '<div class="sbody">'+rows+total+
+   '<div class="sbody"><div id="oLines">'+rows+total+'</div>'+
    (showP?'':'<p class="oh" style="margin-top:8px">Sign in to see rates on your order — you can still send it as a quantity list.</p>')+
    '<div class="ofg" style="margin-top:18px"><label>Your name</label><input id="ofName" placeholder="Full name"></div>'+
    '<div class="ofg"><label>Shop</label><input id="ofShop" placeholder="Shop or firm name"></div>'+
    '<div class="ofg"><label>Phone</label><input id="ofPhone" type="tel" inputmode="numeric" maxlength="15" placeholder="98765 43210"></div>'+
    '<div class="sactions" style="margin-top:6px">'+
-     '<button id="oPlace">Place this order</button></div>'+
+     '<button class="btn primary wide" id="oPlace">Place this order</button></div>'+
    '<p class="oh" style="margin-top:10px">Placing it puts the order on Patel Marketing\'s books with a '+
    'reference, so you can follow it under <b>Your orders</b>. You can send it on WhatsApp or save the PDF '+
    'straight afterwards.</p>'+
@@ -2836,9 +2871,9 @@ function orderPlacedHtml(ref, recorded){
       : 'We could not reach our server just now, so it is not on the books yet — send it on WhatsApp '+
         'and we will enter it by hand from the reference.')+'</p>'+
     '<div class="sactions" style="margin-top:10px">'+
-      '<button id="oSend">Send on WhatsApp</button>'+
-      '<button class="alt" id="oPdf">Save the PDF</button>'+
-      '<button class="alt" id="oDone">Done</button>'+
+      '<button class="btn primary wide" id="oSend">Send on WhatsApp</button>'+
+      '<button class="btn quiet" id="oPdf">Save the PDF</button>'+
+      '<button class="btn quiet" id="oDone">Done</button>'+
     '</div></div>';
 }
 function readOrderMeta(){
@@ -2851,17 +2886,46 @@ function readOrderMeta(){
   }
   return {name,shop,phone:phone.slice(-10)};
 }
+/* Just the lines and the total. Redrawing the whole sheet on every +/- would
+   rebuild the name, shop and phone fields underneath whoever was typing in
+   them, and throw away the scroll position with it. */
+function redrawOrderLines(){
+  const box=document.getElementById('oLines');
+  if(!box){ openOrderSheet(); return; }
+  const items=orderItems();
+  if(!items.length){ openOrderSheet(); return; }   // last line went: back to the empty state
+  const tmp=document.createElement('div');
+  tmp.innerHTML=orderSheetHtml();
+  const fresh=tmp.querySelector('#oLines');
+  box.innerHTML = fresh ? fresh.innerHTML : '';
+  wireOrderLines();
+  obarRender();
+}
+function wireOrderLines(){
+  document.querySelectorAll('#osheet [data-rm]').forEach(b=>b.onclick=function(){
+    const it=orderItems()[+this.dataset.rm];
+    if(it) setQty(it.slug, it.size, 0);
+    redrawOrderLines();
+  });
+  document.querySelectorAll('#osheet [data-oless],#osheet [data-omore]').forEach(b=>b.onclick=function(){
+    const less=this.hasAttribute('data-oless');
+    const it=orderItems()[+(less?this.dataset.oless:this.dataset.omore)];
+    if(!it) return;
+    // setQty already rounds to the supplier's minimum, so stepping by it keeps
+    // the two agreeing instead of the pad silently correcting the reader.
+    const step=moqFor(it.slug,it.size);
+    setQty(it.slug, it.size, Math.max(0, it.qty + (less?-step:step)));
+    redrawOrderLines();
+  });
+}
+
 function wireOrderSheet(){
   const x=document.getElementById('oxb'); if(x) x.onclick=closeOrderSheet;
   const nf=document.getElementById('ofName'), sf=document.getElementById('ofShop'), pf=document.getElementById('ofPhone');
   if(nf) nf.value = (SESS && SESS.name && SESS.name!=='Signed in') ? SESS.name : '';
   if(sf) sf.value = (SESS && SESS.shop) || '';
   if(pf) pf.value = (SESS && SESS.phone) ? SESS.phone.slice(-10) : '';
-  document.querySelectorAll('#osheet [data-rm]').forEach(b=>b.onclick=function(){
-    const it=orderItems()[+this.dataset.rm];
-    if(it) setQty(it.slug, it.size, 0);
-    openOrderSheet();
-  });
+  wireOrderLines();
   const place=document.getElementById('oPlace');
   if(place) place.onclick=async function(){
     const meta=readOrderMeta(); if(!meta) return;
@@ -3533,8 +3597,8 @@ function drawMyOrders(){
           {day:'numeric',month:'short',year:'numeric'})+'</div>'+
       '<div class="olines" id="ol-'+esc(o.ref)+'"></div>'+
       '<div class="obtns">'+
-        '<button class="obtn" data-lines="'+esc(o.ref)+'">What was on it</button>'+
-        '<button class="obtn pri" data-again="'+esc(o.ref)+'">Order again</button>'+
+        '<button class="btn quiet sm" data-lines="'+esc(o.ref)+'">What was on it</button>'+
+        '<button class="btn primary sm" data-again="'+esc(o.ref)+'">Order again</button>'+
       '</div></div>';
   }).join('');
   box.onclick=async function(e){
@@ -3578,35 +3642,123 @@ async function orderLines(o){
    test the order pad itself uses, so a repeat can never leave a line in the
    basket the pad would silently drop: if a product has gone, or that size has,
    it is reported instead of vanishing. */
+/* Repeating an order is a review, not a shortcut.
+
+   It used to tip the whole of a past order straight into the basket and open
+   the pad. That is wrong for how this is actually used: a dealer repeats last
+   month's order and then wants two of this, none of that, six instead of
+   twelve. Doing that afterwards means hunting each line down again in a full
+   basket — the exact job repeating was supposed to save.
+
+   So the order opens as a list they can edit first: change any quantity, drop
+   anything they do not want this time, see what it comes to at today's rates,
+   and only then add it. Lines that can no longer be ordered are shown greyed
+   with the reason rather than quietly missing. */
+let REPEAT={ref:null, lines:[]};
+
 async function orderAgain(ref, btn){
   const o=MYORDERS.find(x=>x.ref===ref); if(!o) return;
-  if(btn){ btn.disabled=true; btn.textContent='Adding…'; }
+  if(btn){ btn.disabled=true; btn.textContent='Opening…'; }
   const its=await orderLines(o);
-  let added=0; const gone=[];
-  its.forEach(it=>{
+  if(btn){ btn.disabled=false; btn.textContent='Order again'; }
+
+  REPEAT={ ref:ref, lines: its.map(function(it){
     const qty=Math.max(1, +it.qty||1);
+    const label=it.name+(it.size&&it.size!=='Standard'?' ('+it.size+')':'');
     // order_items may or may not carry the slug depending on when it was
     // written, so fall back to the name the order was placed under.
     const p=(it.slug && P.find(x=>x.slug===it.slug)) ||
             P.find(x=>x.name===it.name && !x.hidden) || null;
-    const label=it.name+(it.size&&it.size!=='Standard'?' ('+it.size+')':'');
-    if(!p || p.hidden){ gone.push(label); return; }
+    if(!p || p.hidden) return {gone:'no longer in the catalogue', label:label, qty:qty};
     const cand={slug:p.slug, size:it.size||'Standard', qty:qty};
-    if(!resolveItem(cand)){ gone.push(label); return; }
-    const line=findLine(cand.slug,cand.size);
-    if(line) line.qty+=qty; else BASKET.push(cand);
-    added++;
+    const r=resolveItem(cand);
+    if(!r) return {gone:'that size has gone', label:label, qty:qty};
+    return {gone:null, slug:p.slug, size:cand.size, name:p.name, qty:qty,
+            unit:r.unit, moq:(r.moq&&r.moq>1)?r.moq:1, price:r.price};
+  })};
+  openRepeatSheet();
+}
+
+function openRepeatSheet(){
+  const ov2=signOverlay();
+  const sh=document.getElementById('sgnSheet'); if(!sh) return;
+  sh.innerHTML=
+   '<div class="shead"><strong>Order again</strong><button class="sx" id="sgnX">×</button></div>'+
+   '<div class="sbody"><div class="sgn" id="repWrap"></div></div>';
+  ov2.classList.add('open'); document.body.style.overflow='hidden';
+  const x=document.getElementById('sgnX'); if(x) x.onclick=closeSignIn;
+  drawRepeat();
+}
+
+function repeatLive(){ return REPEAT.lines.filter(l=>!l.gone && l.qty>0); }
+
+function drawRepeat(){
+  const w=document.getElementById('repWrap'); if(!w) return;
+  const live=repeatLive(), gone=REPEAT.lines.filter(l=>l.gone);
+  const showP=orderShowPrice();
+  const total=live.reduce((t,l)=>t+((l.price!=null?l.price:0)*l.qty),0);
+  const pieces=live.reduce((t,l)=>t+l.qty,0);
+
+  w.innerHTML =
+    '<p>Everything on <b>'+esc(REPEAT.ref)+'</b>, at today&rsquo;s rates. '+
+    'Change the quantities or drop anything you do not need this time, then add '+
+    'it to your order.</p>'+
+    (live.length ? live.map(function(l,i){
+      return '<div class="reprow" data-i="'+i+'">'+
+        '<div class="oi"><b>'+esc(l.name)+'</b><small>'+
+          (l.size&&l.size!=='Standard'?esc(l.size)+' · ':'')+
+          (l.price!=null ? '₹'+l.price+'/'+unitAbbr(l.unit) : 'rate on request')+
+          (l.moq>1?' · in '+l.moq+'s':'')+
+        '</small></div>'+
+        '<div class="repqty">'+
+          '<button class="qbtn" data-less="'+i+'" aria-label="Fewer">−</button>'+
+          '<b>'+l.qty+'</b>'+
+          '<button class="qbtn" data-more="'+i+'" aria-label="More">+</button>'+
+        '</div>'+
+        '<button class="orm" data-drop="'+i+'" aria-label="Remove">×</button>'+
+      '</div>';
+    }).join('') : '<div class="oempty">Nothing from that order can be ordered today.</div>')+
+    (gone.length ? '<div class="repgone"><b>Not available now</b>'+
+      gone.map(g=>'<span>'+esc(g.label)+' — '+g.gone+'</span>').join('')+'</div>' : '')+
+    (live.length && showP && total>0
+      ? '<div class="ototal"><span>'+pieces+' pcs</span><span>'+rupee(total)+'</span></div>' : '')+
+    '<div class="btnstack" style="margin-top:16px">'+
+      (live.length?'<button class="btn primary" id="repAdd">Add '+live.length+
+        ' item'+(live.length===1?'':'s')+' to my order</button>':'')+
+      '<button class="btn quiet" id="repBack">Back to your orders</button>'+
+    '</div>';
+
+  w.onclick=function(e){
+    const b=e.target.closest('[data-less],[data-more],[data-drop]');
+    if(!b) return;
+    const act = b.hasAttribute('data-drop') ? 'drop'
+              : b.hasAttribute('data-less') ? 'less' : 'more';
+    const l = repeatLive()[+b.dataset[act]];
+    if(!l) return;
+    // Steps by the supplier's minimum, the same rule the order pad follows, so
+    // a repeat cannot produce a quantity the pad would immediately round.
+    if(act==='drop')      l.qty = 0;
+    else if(act==='less') l.qty = Math.max(0, l.qty - l.moq);
+    else                  l.qty = l.qty + l.moq;
+    drawRepeat();
+  };
+  const add=document.getElementById('repAdd');
+  if(add) add.onclick=addRepeatToBasket;
+  const back=document.getElementById('repBack');
+  if(back) back.onclick=openMyOrders;
+}
+
+function addRepeatToBasket(){
+  const live=repeatLive();
+  if(!live.length){ toastMsg('Nothing left to add'); return; }
+  live.forEach(function(l){
+    const line=findLine(l.slug,l.size);
+    if(line) line.qty+=l.qty; else BASKET.push({slug:l.slug,size:l.size,qty:l.qty});
   });
   saveBasket();
-  if(btn){ btn.disabled=false; btn.textContent='Order again'; }
-  if(!added){
-    toastMsg('Nothing from that order is still in the catalogue');
-    return;
-  }
   closeSignIn();
   openOrderSheet();
-  toastMsg(added+' item'+(added===1?'':'s')+' added'+
-    (gone.length?' · '+gone.length+' no longer in the catalogue':''));
+  toastMsg(live.length+' item'+(live.length===1?'':'s')+' added to your order');
 }
 
 function openProfile(){
@@ -3863,7 +4015,9 @@ function markWho(){
 }
 function toastMsg(m){
   const d=document.createElement('div'); d.textContent=m;
-  d.style.cssText='position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:400;'+
+  // Above the basket too — see the dock note in the CSS.
+  d.style.cssText='position:fixed;bottom:calc(22px + var(--dock) + var(--swdock));left:50%;transform:translateX(-50%);'+
+    'z-index:400;max-width:calc(100vw - 32px);text-align:center;'+
     'background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:.82rem;font-weight:600';
   document.body.appendChild(d); setTimeout(()=>d.remove(),2200);
 }
@@ -4146,11 +4300,13 @@ function noteSearch(text, hits){
     if(!sw || !bar) return;
     waiting=sw;
     bar.classList.add('on');
+    document.body.classList.add('has-swbar');
   }
   if(bar){
     const go=document.getElementById('swGo'), later=document.getElementById('swLater');
     if(go) go.onclick=function(){
       bar.classList.remove('on');
+      document.body.classList.remove('has-swbar');
       if(!waiting){ location.reload(); return; }
       // The page reloads when the new worker takes over, not before — so the
       // reader never sees half of one version and half of the next.
@@ -4159,7 +4315,10 @@ function noteSearch(text, hits){
       },{once:true});
       waiting.postMessage('skip-waiting');
     };
-    if(later) later.onclick=function(){ bar.classList.remove('on'); };
+    if(later) later.onclick=function(){
+      bar.classList.remove('on');
+      document.body.classList.remove('has-swbar');
+    };
   }
 
   window.addEventListener('load',function(){
