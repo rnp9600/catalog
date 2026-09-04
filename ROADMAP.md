@@ -281,6 +281,23 @@ for no saving worth having. Item 4 whenever (2) lands. The signal to stop
 waiting on any of them: `data.json` past about 1.5MB, or the unfiltered grid
 taking more than a beat to appear on a mid-range Android.
 
+**Letting a Claude session write to Storage.** Sessions can already do SQL,
+migrations and Edge Function deploys through the Supabase MCP — that is how the
+sign-up schema and the live catalogue were built and tested. What they cannot do
+is reach `<project>.supabase.co` over HTTPS, so no PostgREST, no Auth and no
+Storage upload. That is the sandbox's network policy, not a Supabase setting.
+
+It turns out not to be a blocker for photos: the Action added alongside this
+keeps the bucket in step from GitHub, which is better than a session doing it by
+hand anyway. `supabase/AGENT-ACCESS.md` has the three routes, what each costs,
+and the checks behind them — including the one that surprised me, which is that
+the *database* can reach both the bucket and GitHub raw, so a route exists today
+with nothing reconfigured at all.
+
+The smallest useful change, if it is ever wanted, is to allow the project domain
+in the environment's network policy and supply only the publishable key: that
+buys read access for verification, with no write privilege.
+
 ## The one thing that is not a feature
 
 The five test numbers are live credentials on the live site, and `README.md`

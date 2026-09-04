@@ -115,6 +115,12 @@ Both were applied as Supabase migrations (`events_log_reshape_and_searches_view`
 and `products_unit_and_moq`), so `supabase migration list` is the authority on
 what has run. The files are the explanation; the migrations are the record.
 
+## What an agent session can reach
+
+`AGENT-ACCESS.md` — what a Claude session can and cannot do against this
+project, why, and what would have to change. Read it before concluding that
+something is impossible from a session; one route needs nothing reconfigured.
+
 ## Keeping it honest
 
 A schema dump is only worth what its freshness is worth. Re-run it whenever a
