@@ -1,104 +1,74 @@
-# Uploading photos to Supabase Storage
+# Photos and the Supabase bucket
 
-The bucket is already created — `catalog-images`, public read, empty. Photos
-are organized **by brand**, one folder per brand, matching the local
-`images/` folder exactly:
+> **This is now automatic.** `.github/workflows/sync-images.yml` mirrors
+> `images/` into the `catalog-images` bucket on every push that touches a
+> photo. The manual instructions below are kept for the first run and for
+> when something needs doing by hand.
+
+## The one thing to set up
+
+The Action needs the **service role** key, which bypasses row-level security
+and therefore must never be in this repository:
+
+1. Supabase dashboard → **Project Settings → API Keys** → copy `service_role`.
+2. GitHub → **Settings → Secrets and variables → Actions → New repository
+   secret**.
+3. Name it `SUPABASE_SERVICE_KEY`, paste, save.
+
+That is the whole setup. GitHub masks the value in logs, and the Action skips
+itself with a warning rather than failing if the secret is absent.
+
+The publishable key in `config.js` is a different key, is meant to be public,
+and cannot write to the bucket.
+
+## Running it by hand
+
+From the **Actions** tab → *Sync photos to Supabase* → **Run workflow**. There
+is a tick-box for `prune`, which also deletes bucket files that are no longer
+in `images/`. It is off by default and not run automatically on a push,
+because a photo deleted by mistake would otherwise take the bucket copy with
+it.
+
+Locally, if you have the key:
 
 ```
-images/
-├── mazda/        243 files
-├── senso/         97 files
-├── india-gold/    36 files
-├── ns-priyam/     34 files
-├── elephant/      19 files
-├── paxton-ci/     14 files
-├── vyan/           6 files
-└── lepel/          3 files
+SUPABASE_URL=https://vcrzauuxvgpsbforiszz.supabase.co \
+SUPABASE_SERVICE_KEY=... \
+node tools/sync-images.mjs --dry-run     # say what would change
+node tools/sync-images.mjs               # upload what is missing or changed
+node tools/sync-images.mjs --prune       # ...and remove what is no longer here
 ```
 
-This is a **one-time bulk upload**, not a "figure out what's missing" job:
-nothing is in the bucket yet, so there's nothing to compare against. Upload
-each brand folder once, and it's done.
+It compares by name and size, so a second run does nothing. It refuses to run
+at all if fewer than 100 local files are found, so a checkout that went wrong
+cannot empty the bucket.
 
----
+## What the first run will do
 
-## Upload (10 minutes, on your phone)
+The bucket was filled once from a zip and has drifted since. As of the change
+that added this Action it held 897 of the 900 photos the catalogue references:
 
-1. Download and unzip **`catalog-images-for-supabase.zip`** — it already has
-   the 8 brand folders above, 442 files total.
-2. Open `supabase.com/dashboard` → your **Chandler** project → **Storage**
-   → the **catalog-images** bucket.
-3. Tap **Create folder**, name it `mazda`. Open it, tap **Upload files**,
-   select all files from the local `mazda/` folder, upload.
-> The `paxton-ci`, `paxton-alu` and `paxton-kw` folders keep those names even
-> though the three brands were merged into one **Paxton**. Folder names are
-> only paths — every product's `img` field points at them, so renaming would
-> mean touching 53 image references for no visible gain.
+| | |
+|---|---|
+| Missing outright | 6 — the `yellow-samosa-*` photos, plus `_placeholder` |
+| Under old names | 27 — still `paxton-ci/`, `paxton-alu/`, `paxton-kw/`, now one `paxton/` folder |
+| Thumbnails | **0 of 904** — none had ever been uploaded |
 
-4. Repeat for `senso`, `india-gold`, `ns-priyam`, `elephant`, `paxton-ci`,
-   `vyan`, `lepel` — same steps each time. Mazda's the big one (243 files);
-   the rest are quick.
+So the first run uploads **938 files** and, with `--prune`, deletes the 27
+stale ones. About 30 MB. After that it is a handful of files per push.
 
-No per-file matching at any point — each folder is uploaded once, complete.
+Note that the folder rename could not be done with a database update: Supabase
+Storage keys the stored object by its path, so changing `storage.objects.name`
+would leave the row pointing at nothing. The Action does it properly — uploads
+under the new name, then deletes the old.
 
----
+## What the bucket is for
 
-## Turning it on in the catalogue
+**Not** for serving the site. The catalogue reads `images/` from Vercel's CDN:
+faster, free, cached for a year, versioned in git, and it has the 300px WebP
+thumbnails that make the grid cheap on a phone. The bucket is the off-site
+copy and what the admin panel uploads into, so it wants to be complete and
+current — which is what this Action is for.
 
-`index.html` already has the switch built in, right near the top of the
-`<script>` block:
-
-```js
-const IMAGE_SOURCE = 'local'; // 'local' | 'supabase'
-```
-
-Once all 8 folders are uploaded, change that one line to:
-
-```js
-const IMAGE_SOURCE = 'supabase';
-```
-
-and push. Every image on the site now loads from Supabase Storage instead of
-the GitHub repo — same brand/filename paths, nothing else changes. Flip it
-back to `'local'` any time if you want to fall back.
-
-You can test before committing to the switch: open
-```
-https://vcrzauuxvgpsbforiszz.supabase.co/storage/v1/object/public/catalog-images/mazda/mz001.jpg
-```
-in a browser. If the Mazda oil dispenser photo loads, the bucket is working
-and the switch is safe to flip.
-
-The database already expects this structure — `catalog.products.images`
-was updated to store `mazda/mz001` style paths, not bare filenames, so the
-Supabase side and the static site agree on where every photo lives.
-
----
-
-## Adding new photos from here on
-
-Once this is live, adding a photo for a new product is: **Storage → catalog-
-images → open the right brand folder → Upload files → pick the photo from
-your phone.** No GitHub, no zip, no commit. Name the file to match the
-product's image entry (e.g. a new Mazda product coded `MZ-198` would use
-`mazda/mz198.jpg`) and it appears on the site immediately — no redeploy
-needed, since the front end fetches the image straight from the bucket's
-public URL.
-
-A new brand later is just a new folder — **Create folder** with that brand's
-slug (lowercase, hyphens for spaces, e.g. a brand called "Royal Chef" → 
-`royal-chef`), same upload steps.
-
----
-
-## Why I couldn't do the upload myself
-
-Worth being straight about this: the tools I have for Supabase only run SQL
-against the database — they can create the bucket, its permissions, and the
-brand-folder paths in the product data (done), but they can't push binary
-file bytes into Storage, and my own sandbox has no outbound internet access
-to call Supabase's upload API directly even if I tried. Getting bytes from
-your phone into their storage has to go through you, once. Everything
-downstream of that — the data, the page, the switch above — is already
-wired up and waiting.
-
+Photos are organised by brand, one folder per brand, mirroring `images/`
+exactly, with `thumb/` mirroring it again underneath.

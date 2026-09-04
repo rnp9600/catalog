@@ -1,0 +1,86 @@
+# Keep the Supabase Storage bucket in step with images/.
+#
+# The bucket was filled once, by hand, from a zip — and has been drifting ever
+# since. When this was written it held 897 of the 900 photos the catalogue
+# references, six were missing outright, 27 were still filed under the old
+# paxton-ci / paxton-alu / paxton-kw folder names, and none of the 904
+# generated thumbnails were there at all.
+#
+# Nobody did anything wrong. Photos are added through GitHub's upload page, so
+# there is never anyone at a terminal to re-upload afterwards — the same reason
+# the thumbnails needed an Action. So: thumbs.yml converts the photo, this puts
+# both in the bucket, and neither depends on somebody remembering.
+#
+# Needs one secret, added once:
+#   Settings -> Secrets and variables -> Actions -> New repository secret
+#     Name:  SUPABASE_SERVICE_KEY
+#     Value: the service_role key from Supabase -> Project Settings -> API Keys
+#
+# That key bypasses row-level security completely, which is why it lives there
+# and never in this repository. GitHub masks it in the logs. The publishable
+# key in config.js is a different thing, is meant to be public, and cannot
+# write to the bucket.
+name: Sync photos to Supabase
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'images/**'
+      - 'tools/sync-images.mjs'
+  workflow_dispatch:
+    inputs:
+      prune:
+        description: 'Also delete bucket files that are no longer in images/'
+        type: boolean
+        default: false
+
+concurrency:
+  group: sync-images            # never two uploads into one bucket at once
+  cancel-in-progress: false     # let a running upload finish rather than half-doing it
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # A repository without the secret should say so plainly and stop, not
+      # fail with an authentication error nobody can read.
+      - name: Check the secret is set
+        env:
+          KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::warning::SUPABASE_SERVICE_KEY is not set — skipping."
+            echo "Add it under Settings → Secrets and variables → Actions."
+            echo "skip=1" >> "$GITHUB_ENV"
+          fi
+
+      # Always says what it is about to do before it does it, so the log is
+      # readable after the fact.
+      - name: What would change
+        if: env.skip != '1'
+        env:
+          SUPABASE_URL: https://vcrzauuxvgpsbforiszz.supabase.co
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/sync-images.mjs --dry-run
+
+      - name: Upload
+        if: env.skip != '1'
+        env:
+          SUPABASE_URL: https://vcrzauuxvgpsbforiszz.supabase.co
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        # Pruning is deliberately not automatic on a push: a photo deleted by
+        # mistake would take the bucket copy with it. Run it from the Actions
+        # tab, with the box ticked, when you mean it.
+        run: |
+          if [ "${{ inputs.prune }}" = "true" ]; then
+            node tools/sync-images.mjs --prune
+          else
+            node tools/sync-images.mjs
+          fi

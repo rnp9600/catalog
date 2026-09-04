@@ -42,6 +42,7 @@ in the right place.
 | `pm-ui.js` | The sign-in gate, account button and helpers the four signed-in pages share |
 | `sw.js`, `manifest.webmanifest`, `assets/icon-*` | What makes it installable and work offline |
 | `tools/thumbs.mjs` | Builds the 300px WebP grid thumbnails into `images/thumb/` |
+| `tools/sync-images.mjs` | Mirrors `images/` into the Supabase Storage bucket — see `supabase/UPLOAD_IMAGES.md` |
 | `data.json` | What the public catalogue reads by default. The database can now serve it instead — see `ARCHITECTURE.md` |
 | `images/` | Product photos |
 | `api/p.js` | Server-renders one product's `<head>` so WhatsApp shows a real link preview |
