@@ -20,22 +20,24 @@ them and read their source.
 ## What does not
 
 **Any direct HTTPS from the session to `<project>.supabase.co`.** The sandbox's
-egress proxy answers `403` to `CONNECT` for that host — an environment network
-policy, nothing to do with Supabase:
+egress proxy answers `403` to `CONNECT`. This is an **allowlist**, and it is a
+property of the Claude Code environment, not of Supabase. Measured:
 
-```
-$ curl -o /dev/null -w '%{http_code}' https://vcrzauuxvgpsbforiszz.supabase.co/rest/v1/
-000
-# proxy log: connect_rejected — "gateway answered 403 to CONNECT"
-```
+| Host | Reachable |
+|---|---|
+| `api.github.com`, `github.com`, `raw.githubusercontent.com` | yes |
+| `registry.npmjs.org` | yes |
+| `vcrzauuxvgpsbforiszz.supabase.co` | **no** — `connect_rejected` |
+| `patelmarketing-catalog.vercel.app` | **no** — the live site itself |
+| `example.com` | **no** (which is what shows it is an allowlist, not a blocklist) |
 
-So no PostgREST, no Auth, no Storage upload or download, and no end-to-end
-check of the live-catalogue read — that one had to be proved against a stub
-shaped like the view instead.
+So: no PostgREST, no Auth, no Storage, and no fetching the deployed site to
+check a change went out. Both of those had to be worked around by asking the
+database to make the request instead.
 
-**Writing to Storage, by any route the session controls directly.** It needs
-the service-role key, which is correctly not in this repository, and would
-still be blocked by the network policy even if it were.
+**Writing to Storage, by any route the session controls directly.** Needs the
+service-role key, which is correctly not in this repository, and would be
+blocked by the network policy anyway.
 
 **Renaming a stored object with SQL.** Worth knowing before someone tries it:
 Storage keys the stored file by its path, so `update storage.objects set name`
@@ -101,24 +103,31 @@ Only worth building if a real task needs it. If it is built:
 
 ### 3. Give the session direct access
 
-The tidiest to use and the one with the widest blast radius. Two things, and
-**the first is not a Supabase setting** — this is the part the question
-assumed:
+The tidiest to use and the one with the widest blast radius. **Two things, and
+neither is a Supabase setting** — this is the part the question usually
+assumes wrong.
 
-- **The network policy of the Claude Code environment** has to allow
-  `vcrzauuxvgpsbforiszz.supabase.co`. It is set where the environment is
-  configured, not in Supabase. See
-  <https://code.claude.com/docs/en/claude-code-on-the-web>.
-- **A key, supplied as an environment variable** on that environment — never
-  in the repo, never in a commit. Prefer a **new-style secret key**
-  (`sb_secret_…`, Supabase → Project Settings → API Keys) over the legacy
-  `service_role` JWT: it can be rotated or revoked on its own without
-  invalidating everything else.
+**a. Open the hosts in the environment's network policy.** Configured where
+the environment is, not in Supabase — see
+<https://code.claude.com/docs/en/claude-code-on-the-web>. Two are worth adding:
 
-With just the *publishable* key and the network opened, a session could at
-least **read** PostgREST and public Storage — enough to verify a live-catalogue
-change end to end instead of against a stub, with no write privilege at all.
-That is the smallest useful step and probably the one to take first.
+```
+vcrzauuxvgpsbforiszz.supabase.co        database, auth, storage
+patelmarketing-catalog.vercel.app       the live site, to check a deploy
+```
+
+**b. A key, as an environment variable on that environment** — never in the
+repo, never in a commit. Pick the lowest one that does the job:
+
+| Key | What it buys | Risk |
+|---|---|---|
+| **Publishable** (`sb_publishable_…`, already public in `config.js`) | Read PostgREST and public Storage. Verify a change end to end instead of against a stand-in. | None it does not already have — it is restricted by row-level security |
+| **Secret** (`sb_secret_…`, Project Settings → API Keys) | Upload to Storage, fix the bucket, run one-off data jobs | Bypasses row-level security. Prefer this over the legacy `service_role` JWT because it can be revoked on its own |
+
+**Start with the network plus the publishable key.** That is the whole of the
+verification gap and carries no write privilege at all — the live-catalogue
+read in this repo had to be proved against a stub for exactly this reason. Add
+a secret key only when a task actually needs to write, and revoke it after.
 
 ## Do not
 
