@@ -1,57 +1,114 @@
 {
   "rewrites": [
-    { "source": "/p/:id", "destination": "/api/p?id=:id" }
+    {
+      "source": "/v4/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/v4/:path*",
+      "destination": "/:path*"
+    },
+    {
+      "source": "/p/:id",
+      "destination": "/api/p?id=:id"
+    }
   ],
   "redirects": [
-    { "source": "/v4", "destination": "/", "permanent": false },
-    { "source": "/v4/", "destination": "/", "permanent": false },
-    { "source": "/v4/:path*", "destination": "/:path*", "permanent": false },
-
-    { "source": "/v2", "destination": "/", "permanent": false },
-    { "source": "/v2/", "destination": "/", "permanent": false },
-    { "source": "/v2/:path*", "destination": "/", "permanent": false },
-
-    { "source": "/v3", "destination": "/v3/", "permanent": false }
+    {
+      "source": "/v4",
+      "destination": "/v4/",
+      "permanent": false
+    },
+    {
+      "source": "/v2",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/v2/",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/v2/:path*",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/v3",
+      "destination": "/v3/",
+      "permanent": false
+    }
   ],
   "headers": [
     {
       "source": "/sw.js",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
-        { "key": "Service-Worker-Allowed", "value": "/" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
       ]
     },
     {
       "source": "/v3/sw.js",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
-        { "key": "Service-Worker-Allowed", "value": "/v3/" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/v3/"
+        }
       ]
     },
     {
       "source": "/manifest.webmanifest",
       "headers": [
-        { "key": "Content-Type", "value": "application/manifest+json" },
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     },
     {
       "source": "/v3/manifest.webmanifest",
       "headers": [
-        { "key": "Content-Type", "value": "application/manifest+json" },
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     },
     {
       "source": "/data.json",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     },
     {
       "source": "/images/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
   ]

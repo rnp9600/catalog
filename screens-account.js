@@ -461,21 +461,7 @@ PM.route('/settings', function(){
       body:'<p class="muted" style="line-height:1.65">On Android, open the browser menu and choose '+
         '<b>Install app</b> or <b>Add to Home screen</b>.<br><br>'+
         'On an iPhone, tap the share button and choose <b>Add to Home Screen</b>.<br><br>'+
-        'It then opens like any other app, and the catalogue keeps working with no signal.</p>'+
-        // An icon added while the app was being tried at /v4/ is a DIFFERENT
-        // installed app as far as the phone is concerned — a web app is
-        // identified by its address, and that address now forwards here. It
-        // still works, but it shows a browser bar across the top because it is
-        // being sent outside where it was installed. There is no way to move an
-        // installed icon; it has to be replaced. Nothing is lost by doing so:
-        // the saved list, the order in progress and being signed in all belong
-        // to the website, not to the icon.
-        '<div class="strip" style="margin-top:14px;display:block">'+
-        '<b>Installed it while we were testing?</b><br>'+
-        'An icon added from the trial address shows a bar with the web address '+
-        'across the top. Remove that icon and install again from here. '+
-        'Your saved products, your order and your sign-in all stay — they belong '+
-        'to the site, not to the icon.</div>',
+        'It then opens like any other app, and the catalogue keeps working with no signal.</p>',
       foot:'<button class="btn btn-primary btn-block" data-sheet-close>Got it</button>'});
   };
   document.getElementById('setRefresh').onclick = async function(){
