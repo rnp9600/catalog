@@ -258,8 +258,18 @@ card would pull a ~25KB JPEG instead of a ~3KB WebP — roughly eight
 times the data on a dealer's phone — and six real photos are missing
 from it. Photos are static, content-addressed by filename, cached for a
 year and served from Vercel's edge; the database is for what changes.
-Moving them later means uploading the six missing files plus the
-`thumb/` mirror, then pointing `IMG`/`THUMB` at the bucket.
+The bucket is still worth keeping current as the off-site copy, and it
+had drifted badly — 6 photos missing, 27 under the old Paxton folder
+names, and none of the 904 thumbnails. That is now
+`.github/workflows/sync-images.yml`, which mirrors `images/` on every
+push that touches a photo; the one-off manual upload is retired. Moving
+the *site* to the bucket later would then be a change to `IMG`/`THUMB`
+and nothing else.
+
+The rename could not be done in SQL, which is worth knowing before
+someone tries: Supabase Storage keys the stored object by its path, so
+updating `storage.objects.name` leaves the row pointing at nothing. A
+move is an upload under the new name followed by a delete.
 
 ## Where this is going
 
