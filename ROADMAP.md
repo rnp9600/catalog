@@ -298,6 +298,13 @@ The smallest useful change, if it is ever wanted, is to allow the project domain
 in the environment's network policy and supply only the publishable key: that
 buys read access for verification, with no write privilege.
 
+**Never redirect an address that was ever installable.** `/v4/` was a trial
+address people installed from; turning it into a redirect put a browser bar
+across the top of their app, because a redirect sends an installed app outside
+its own scope. It is a rewrite now, so the old icons keep working. Worth
+remembering the next time a folder is promoted — `ARCHITECTURE.md` has the
+detail.
+
 ## The one thing that is not a feature
 
 The five test numbers are live credentials on the live site, and `README.md`

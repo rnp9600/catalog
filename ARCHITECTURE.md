@@ -224,32 +224,40 @@ self.addEventListener('activate', async () => {
 Every installed copy tears itself out on the next visit, with nobody
 having to clear a browser.
 
-## Moving the app's address costs everyone a reinstall
+## An installed app is pinned to its address — so keep the address alive
 
-Worth knowing before the next promotion, because it caught us.
+This one was found the hard way and is worth reading before the next move.
 
 A web app's identity to the phone is its **address**. The trial manifest at
-`/v4/` declared `id: /v4/`, `scope: /v4/` and `theme_color: #0E6E60`. Anyone
-who installed during the trial has an icon pinned to that. `/v4/` now
-redirects to `/`, which is *outside* that installed app's scope, so Chrome
-opens it with a browser bar across the top — tinted with the theme colour
-frozen at install time, which is why it appears in the old teal rather than
-sky.
+`/v4/` declared `scope: /v4/` and `theme_color: #0E6E60`. Anyone who installed
+during the trial has an icon pinned to that scope.
 
-Nothing is broken; it is the same site with a bar over it. But there is no way
-to move an installed icon to a new `id`, so the only cure is to remove it and
-install again from the root. Nothing is lost by doing so: the saved list, the
-order in progress and the Supabase session are all `localStorage` on the
-origin, which does not change.
+Promoting V4 to the root first made `/v4/` **redirect** to `/`. That sends the
+installed app outside its own scope, and Chrome's response is to wrap it in a
+browser bar showing the address — painted with the theme colour frozen at
+install time, so it appeared in the old teal rather than sky. The app was fine;
+it just stopped looking like one. Sampling the reported screenshot returned
+`#0E6E60` exactly, which is how this was pinned down rather than guessed.
 
-Settings therefore says which of the two it is running as — "Running as an
-installed app" or "right now this is a browser tab" — and the install sheet
-explains the trial-icon case, because the symptom is confusing and the fix is
-not guessable.
+**The fix is a rewrite, not a redirect.** `vercel.json` now serves the root app
+*at* `/v4/`:
 
-**Next time**: promoting a trial folder to the root is a reinstall for its
-testers. Either accept it and say so, or run the trial at the address it will
-eventually live at.
+```json
+{ "source": "/v4/",       "destination": "/index.html" },
+{ "source": "/v4/:path*", "destination": "/:path*" }
+```
+
+A rewrite does not change the address, so the old icon stays inside its scope
+and keeps opening as an app. The catch-all makes every relative path the page
+asks for — `app.css`, `core.js`, `data.json`, `images/` — resolve to the same
+file the root would have served, so there is still one copy of everything.
+Verified end to end at `/v4/`: 200 rather than 30x, manifest resolving to
+`scope: /v4/` and `display: standalone`, service worker active at `/v4/`, and
+the whole app working, photos included.
+
+**The rule**: when an address has ever been installable, never redirect it
+away. Rewrite it, and it keeps working for the people who installed it. A
+redirect silently downgrades their app to a browser tab.
 
 ## V4.1 — the catalogue live from the database
 
