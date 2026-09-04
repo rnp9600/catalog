@@ -305,6 +305,17 @@ function readMode(){
   let v; try{ v = localStorage.getItem(MODE_KEY); }catch(e){}
   return (v==='light'||v==='dark'||v==='auto') ? v : 'auto';
 }
+// Whether the phone is showing this as an installed app rather than a tab.
+// Worth surfacing: an app installed from the old /v4/ trial address is sent
+// outside its own scope now, which is why it shows a browser bar, and the only
+// cure is to install it again from here.
+const standalone = () => {
+  try{
+    return window.matchMedia('(display-mode: standalone)').matches
+        || window.matchMedia('(display-mode: minimal-ui)').matches
+        || window.navigator.standalone === true;
+  }catch(e){ return false; }
+};
 const systemDark = () => {
   try{ return window.matchMedia('(prefers-color-scheme: dark)').matches; }catch(e){ return false; }
 };
@@ -389,8 +400,12 @@ PM.route('/settings', function(){
     '<section class="section"><div class="section-head"><h2>This app</h2></div>'+
       '<div class="card card-pad">'+
         '<div class="setrow"><div class="grow"><b>Install on your phone</b>'+
-          '<small>Opens like an app, works with no signal</small></div>'+
-          '<button class="btn btn-secondary btn-sm" id="setInstall">Install</button></div>'+
+          '<small>'+(standalone()
+            ? 'Running as an installed app'
+            : 'Opens like an app, works with no signal — right now this is a browser tab')+
+          '</small></div>'+
+          '<button class="btn btn-secondary btn-sm" id="setInstall">'+
+          (standalone()?'Reinstall':'Install')+'</button></div>'+
         '<div class="setrow"><div class="grow"><b>Refresh the catalogue</b>'+
           '<small>Pull the newest rates and photos now</small></div>'+
           '<button class="btn btn-secondary btn-sm" id="setRefresh">Refresh</button></div>'+
@@ -446,7 +461,21 @@ PM.route('/settings', function(){
       body:'<p class="muted" style="line-height:1.65">On Android, open the browser menu and choose '+
         '<b>Install app</b> or <b>Add to Home screen</b>.<br><br>'+
         'On an iPhone, tap the share button and choose <b>Add to Home Screen</b>.<br><br>'+
-        'It then opens like any other app, and the catalogue keeps working with no signal.</p>',
+        'It then opens like any other app, and the catalogue keeps working with no signal.</p>'+
+        // An icon added while the app was being tried at /v4/ is a DIFFERENT
+        // installed app as far as the phone is concerned — a web app is
+        // identified by its address, and that address now forwards here. It
+        // still works, but it shows a browser bar across the top because it is
+        // being sent outside where it was installed. There is no way to move an
+        // installed icon; it has to be replaced. Nothing is lost by doing so:
+        // the saved list, the order in progress and being signed in all belong
+        // to the website, not to the icon.
+        '<div class="strip" style="margin-top:14px;display:block">'+
+        '<b>Installed it while we were testing?</b><br>'+
+        'An icon added from the trial address shows a bar with the web address '+
+        'across the top. Remove that icon and install again from here. '+
+        'Your saved products, your order and your sign-in all stay — they belong '+
+        'to the site, not to the icon.</div>',
       foot:'<button class="btn btn-primary btn-block" data-sheet-close>Got it</button>'});
   };
   document.getElementById('setRefresh').onclick = async function(){

@@ -224,6 +224,33 @@ self.addEventListener('activate', async () => {
 Every installed copy tears itself out on the next visit, with nobody
 having to clear a browser.
 
+## Moving the app's address costs everyone a reinstall
+
+Worth knowing before the next promotion, because it caught us.
+
+A web app's identity to the phone is its **address**. The trial manifest at
+`/v4/` declared `id: /v4/`, `scope: /v4/` and `theme_color: #0E6E60`. Anyone
+who installed during the trial has an icon pinned to that. `/v4/` now
+redirects to `/`, which is *outside* that installed app's scope, so Chrome
+opens it with a browser bar across the top — tinted with the theme colour
+frozen at install time, which is why it appears in the old teal rather than
+sky.
+
+Nothing is broken; it is the same site with a bar over it. But there is no way
+to move an installed icon to a new `id`, so the only cure is to remove it and
+install again from the root. Nothing is lost by doing so: the saved list, the
+order in progress and the Supabase session are all `localStorage` on the
+origin, which does not change.
+
+Settings therefore says which of the two it is running as — "Running as an
+installed app" or "right now this is a browser tab" — and the install sheet
+explains the trial-icon case, because the symptom is confusing and the fix is
+not guessable.
+
+**Next time**: promoting a trial folder to the root is a reinstall for its
+testers. Either accept it and say so, or run the trial at the address it will
+eventually live at.
+
 ## V4.1 — the catalogue live from the database
 
 Publishing is: edit in the admin panel, download `data.json`, upload it to
